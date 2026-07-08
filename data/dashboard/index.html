@@ -1,0 +1,1036 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Sharpie Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            padding: 20px;
+            background: #0f0f12;
+            color: #e4e4e7;
+            line-height: 1.5;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+        .filters-container {
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            background: #18181b;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #27272a;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .filter-group label {
+            font-size: 11px;
+            color: #a1a1aa;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filters-container select {
+            padding: 10px;
+            background: #27272a;
+            color: white;
+            border: 1px solid #3f3f46;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+        }
+        .table-responsive-container {
+            width: 100%;
+            background: #18181b;
+            border-radius: 8px;
+            border: 1px solid #27272a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            background: #202024;
+            padding: 14px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #a1a1aa;
+            border-bottom: 2px solid #27272a;
+        }
+        td {
+            padding: 14px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid #27272a;
+            color: #e4e4e7;
+        }
+        tr:hover {
+            background: #202024;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .league-badge {
+            background: #3f3f46;
+            color: #fff;
+        }
+        
+        @media (max-width: 900px) {
+            body {
+                padding: 10px;
+            }
+            .table-responsive-container {
+                background: transparent;
+                border: none;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead {
+                display: none;
+            }
+            tr {
+                background: #18181b;
+                margin-bottom: 15px;
+                border-radius: 8px;
+                border: 1px solid #27272a;
+                padding: 10px 5px;
+            }
+            td {
+                text-align: right;
+                padding: 8px 15px;
+                font-size: 14px;
+                border-bottom: 1px solid #202024;
+                position: relative;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            td:last-child {
+                border-bottom: none;
+            }
+            td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #a1a1aa;
+                text-transform: uppercase;
+                font-size: 11px;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📊 Sharpie Dashboard</h1>
+
+    <div class="filters-container">
+        <div class="filter-group"><label>Fecha</label><select id="dateFilter" onchange="filterData()"><option value="">Todas</option></select></div>
+        <div class="filter-group"><label>Hora</label><select id="timeFilter" onchange="filterData()"><option value="">Todas</option></select></div>
+        <div class="filter-group"><label>Liga</label><select id="leagueFilter" onchange="filterData()"><option value="">Todas</option></select></div>
+        <div class="filter-group"><label>Trend</label><select id="trendFilter" onchange="filterData()"><option value="">Todos</option></select></div>
+        <div class="filter-group"><label>Acción</label><select id="actionFilter" onchange="filterData()"><option value="">Todas</option></select></div>
+    </div>
+
+    <div class="table-responsive-container">
+        <table id="dashboardTable">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Liga</th>
+                    <th>Partido</th>
+                    <th>Mercado</th>
+                    <th>Pick</th>
+                    <th>Sharpie</th>
+                    <th>Market</th>
+                    <th>Trend</th>
+                    <th>Acción</th>
+                    <th>Stake</th>
+                    <th>Prioridad</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr data-iso="2026-07-08T16:35:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:35 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>CHI Cubs @ BAL Orioles</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">BAL Orioles</td>
+                <td data-label="Sharpie">89</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:35:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:35 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>CHI Cubs @ BAL Orioles</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">BAL Orioles -1.5</td>
+                <td data-label="Sharpie">97</td>
+                <td data-label="Market">100</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:35:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:35 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>CHI Cubs @ BAL Orioles</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 10</td>
+                <td data-label="Sharpie">52</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>Athletics @ DET Tigers</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">DET Tigers</td>
+                <td data-label="Sharpie">46</td>
+                <td data-label="Market">55</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>Athletics @ DET Tigers</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">DET Tigers -1.5</td>
+                <td data-label="Sharpie">54</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>Athletics @ DET Tigers</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 9</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">65</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>NY Yankees @ TB Rays</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">TB Rays</td>
+                <td data-label="Sharpie">71</td>
+                <td data-label="Market">75</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>NY Yankees @ TB Rays</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">TB Rays -1.5</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>NY Yankees @ TB Rays</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 7.5</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>ATL Braves @ PIT Pirates</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">PIT Pirates</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>ATL Braves @ PIT Pirates</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">ATL Braves -1.5</td>
+                <td data-label="Sharpie">89</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>ATL Braves @ PIT Pirates</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 9</td>
+                <td data-label="Sharpie">71</td>
+                <td data-label="Market">75</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>SEA Mariners @ MIA Marlins</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">MIA Marlins</td>
+                <td data-label="Sharpie">46</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>SEA Mariners @ MIA Marlins</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">SEA Mariners -1.5</td>
+                <td data-label="Sharpie">97</td>
+                <td data-label="Market">100</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>SEA Mariners @ MIA Marlins</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 9</td>
+                <td data-label="Sharpie">81</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:45:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:45 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>HOU Astros @ WAS Nationals</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">WAS Nationals</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">65</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:45:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:45 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>HOU Astros @ WAS Nationals</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">WAS Nationals -1.5</td>
+                <td data-label="Sharpie">97</td>
+                <td data-label="Market">100</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T16:45:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">04:45 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>HOU Astros @ WAS Nationals</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 10</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>PHI Phillies @ CIN Reds</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">CIN Reds</td>
+                <td data-label="Sharpie">89</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>PHI Phillies @ CIN Reds</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">CIN Reds -1.5</td>
+                <td data-label="Sharpie">97</td>
+                <td data-label="Market">100</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>PHI Phillies @ CIN Reds</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 8.5</td>
+                <td data-label="Sharpie">71</td>
+                <td data-label="Market">70</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>KC Royals @ NY Mets</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">NY Mets</td>
+                <td data-label="Sharpie">81</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>KC Royals @ NY Mets</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">NY Mets -1.5</td>
+                <td data-label="Sharpie">97</td>
+                <td data-label="Market">100</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>KC Royals @ NY Mets</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 9.5</td>
+                <td data-label="Sharpie">65</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>BOS Red Sox @ CHI White Sox</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">CHI White Sox</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>BOS Red Sox @ CHI White Sox</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">CHI White Sox -1.5</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>BOS Red Sox @ CHI White Sox</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 8</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">65</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>CLE Guardians @ MIN Twins</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">MIN Twins</td>
+                <td data-label="Sharpie">54</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>CLE Guardians @ MIN Twins</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">MIN Twins -1.5</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">60</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:40:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:40 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>CLE Guardians @ MIN Twins</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 8.5</td>
+                <td data-label="Sharpie">81</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:45:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:45 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>MIL Brewers @ STL Cardinals</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">STL Cardinals</td>
+                <td data-label="Sharpie">54</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:45:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:45 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>MIL Brewers @ STL Cardinals</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">MIL Brewers -1.5</td>
+                <td data-label="Sharpie">81</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T17:45:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">05:45 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>MIL Brewers @ STL Cardinals</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 8</td>
+                <td data-label="Sharpie">81</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T18:05:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">06:05 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>LA Angels @ TEX Rangers</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">TEX Rangers</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">25</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T18:05:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">06:05 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>LA Angels @ TEX Rangers</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">TEX Rangers -1.5</td>
+                <td data-label="Sharpie">65</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T18:05:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">06:05 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>LA Angels @ TEX Rangers</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 7.5</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">25</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T20:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">08:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>COL Rockies @ LA Dodgers</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">LA Dodgers</td>
+                <td data-label="Sharpie">58</td>
+                <td data-label="Market">65</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T20:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">08:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>COL Rockies @ LA Dodgers</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">LA Dodgers -1.5</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">65</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T20:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">08:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>COL Rockies @ LA Dodgers</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 10</td>
+                <td data-label="Sharpie">97</td>
+                <td data-label="Market">100</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T20:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">08:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>ARI Diamondbacks @ SD Padres</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">SD Padres</td>
+                <td data-label="Sharpie">65</td>
+                <td data-label="Market">25</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T20:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">08:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>ARI Diamondbacks @ SD Padres</strong></td>
+                <td data-label="Mercado">Run Line</td>
+                <td data-label="Pick">SD Padres -1.5</td>
+                <td data-label="Sharpie">65</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">🚨 Público</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-08T20:10:00">
+                <td data-label="Fecha">2026-07-08</td>
+                <td data-label="Hora">08:10 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">MLB</span></td>
+                <td data-label="Partido"><strong>ARI Diamondbacks @ SD Padres</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 8.5</td>
+                <td data-label="Sharpie">71</td>
+                <td data-label="Market">75</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🔵 INCLINACIÓN</td>
+                <td data-label="Stake">3.0u</td>
+                <td data-label="Prioridad">⚡ PRONTO</td>
+            </tr>
+            
+            <tr data-iso="2026-07-09T14:00:00">
+                <td data-label="Fecha">2026-07-09</td>
+                <td data-label="Hora">02:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>France vs Morocco</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">France</td>
+                <td data-label="Sharpie">46</td>
+                <td data-label="Market">55</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-09T14:00:00">
+                <td data-label="Fecha">2026-07-09</td>
+                <td data-label="Hora">02:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>France vs Morocco</strong></td>
+                <td data-label="Mercado">Spread</td>
+                <td data-label="Pick">France -1</td>
+                <td data-label="Sharpie">97</td>
+                <td data-label="Market">100</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-09T14:00:00">
+                <td data-label="Fecha">2026-07-09</td>
+                <td data-label="Hora">02:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>France vs Morocco</strong></td>
+                <td data-label="Mercado">Total</td>
+                <td data-label="Pick">Over 2</td>
+                <td data-label="Sharpie">46</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-10T13:00:00">
+                <td data-label="Fecha">2026-07-10</td>
+                <td data-label="Hora">01:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>Spain vs Belgium</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">Spain</td>
+                <td data-label="Sharpie">60</td>
+                <td data-label="Market">65</td>
+                <td data-label="Trend">🟡 Mixto</td>
+                <td data-label="Acción">🟡 VIGILAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">👀 OBSERVAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-10T13:00:00">
+                <td data-label="Fecha">2026-07-10</td>
+                <td data-label="Hora">01:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>Spain vs Belgium</strong></td>
+                <td data-label="Mercado">Spread</td>
+                <td data-label="Pick">Spain -1</td>
+                <td data-label="Sharpie">46</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-11T15:00:00">
+                <td data-label="Fecha">2026-07-11</td>
+                <td data-label="Hora">03:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>Norway vs England</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">Norway</td>
+                <td data-label="Sharpie">89</td>
+                <td data-label="Market">85</td>
+                <td data-label="Trend">🔥 Sharp Divergence</td>
+                <td data-label="Acción">🟢 APOSTAR</td>
+                <td data-label="Stake">5.0u</td>
+                <td data-label="Prioridad">🔥 AHORA</td>
+            </tr>
+            
+            <tr data-iso="2026-07-11T15:00:00">
+                <td data-label="Fecha">2026-07-11</td>
+                <td data-label="Hora">03:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>Norway vs England</strong></td>
+                <td data-label="Mercado">Spread</td>
+                <td data-label="Pick">England -1</td>
+                <td data-label="Sharpie">46</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-11T19:00:00">
+                <td data-label="Fecha">2026-07-11</td>
+                <td data-label="Hora">07:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>Argentina vs Switzerland</strong></td>
+                <td data-label="Mercado">Moneyline</td>
+                <td data-label="Pick">Argentina</td>
+                <td data-label="Sharpie">46</td>
+                <td data-label="Market">30</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            <tr data-iso="2026-07-11T19:00:00">
+                <td data-label="Fecha">2026-07-11</td>
+                <td data-label="Hora">07:00 PM</td>
+                <td data-label="Liga"><span class="badge league-badge">WORLD_CUP_2026</span></td>
+                <td data-label="Partido"><strong>Argentina vs Switzerland</strong></td>
+                <td data-label="Mercado">Spread</td>
+                <td data-label="Pick">Argentina -1</td>
+                <td data-label="Sharpie">46</td>
+                <td data-label="Market">50</td>
+                <td data-label="Trend">⚪ Consenso</td>
+                <td data-label="Acción">🔴 PASAR</td>
+                <td data-label="Stake">0u</td>
+                <td data-label="Prioridad">❌ DESCARTAR</td>
+            </tr>
+            
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+    const activeFilters = { date: "", time: "", league: "", trend: "", action: "" };
+
+    function populateFilters() {
+        const rows = Array.from(document.querySelectorAll("#dashboardTable tbody tr"));
+        
+        const sets = {
+            date: new Set(),
+            time: new Set(),
+            league: new Set(),
+            trend: new Set(),
+            action: new Set()
+        };
+
+        // Poblar conjuntos únicamente basándonos en filas que sigan visibles y que NO hayan expirado
+        rows.forEach(row => {
+            if (row.style.display !== "none") {
+                sets.date.add(row.cells[0].innerText.trim());
+                sets.time.add(row.cells[1].innerText.trim());
+                sets.league.add(row.cells[2].innerText.trim());
+                sets.trend.add(row.cells[8].innerText.trim());
+                sets.action.add(row.cells[9].innerText.trim());
+            }
+        });
+
+        updateSelectOptions("dateFilter", sets.date, activeFilters.date, "Todas");
+        updateSelectOptions("timeFilter", sets.time, activeFilters.time, "Todas");
+        updateSelectOptions("leagueFilter", sets.league, activeFilters.league, "Todas");
+        updateSelectOptions("trendFilter", sets.trend, activeFilters.trend, "Todos");
+        updateSelectOptions("actionFilter", sets.action, activeFilters.action, "Todas");
+    }
+
+    function updateSelectOptions(elementId, valueSet, currentValue, defaultText) {
+        const select = document.getElementById(elementId);
+        select.innerHTML = `<option value="">${defaultText}</option>`;
+        
+        Array.from(valueSet).sort().forEach(val => {
+            const selected = val === currentValue ? "selected" : "";
+            select.innerHTML += `<option value="${val}" ${selected}>${val}</option>`;
+        });
+    }
+
+    function filterData() {
+        activeFilters.date = document.getElementById("dateFilter").value;
+        activeFilters.time = document.getElementById("timeFilter").value;
+        activeFilters.league = document.getElementById("leagueFilter").value;
+        activeFilters.trend = document.getElementById("trendFilter").value;
+        activeFilters.action = document.getElementById("actionFilter").value;
+
+        const rows = document.querySelectorAll("#dashboardTable tbody tr");
+        const now = new Date();
+
+        rows.forEach(row => {
+            const matchIso = row.getAttribute("data-iso");
+            const matchDateObj = new Date(matchIso);
+
+            // Filtro de expiración estricto: si el partido ya pasó respecto a la hora actual de la CDMX, se oculta
+            if (matchDateObj < now) {
+                row.style.display = "none";
+                return;
+            }
+
+            const dText = row.cells[0].innerText;
+            const tText = row.cells[1].innerText;
+            const lText = row.cells[2].innerText;
+            const trText = row.cells[8].innerText;
+            const aText = row.cells[9].innerText;
+
+            const mDate = !activeFilters.date || dText === activeFilters.date;
+            const mTime = !activeFilters.time || tText === activeFilters.time;
+            const mLeague = !activeFilters.league || lText === activeFilters.league;
+            const mTrend = !activeFilters.trend || trText.includes(activeFilters.trend);
+            const mAction = !activeFilters.action || aText.includes(activeFilters.action);
+
+            if (mDate && mTime && mLeague && mTrend && mAction) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        populateFilters();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Ejecución inicial ocultando partidos obsoletos antes de armar los menús desplegables
+        filterData();
+    });
+    </script>
+</body>
+</html>
