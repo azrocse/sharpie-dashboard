@@ -41,7 +41,7 @@ class DraftKingsScraper:
 
     def build_url(
         self,
-        league_id,
+        league_slug,
         date_range,
         page
     ):
@@ -51,20 +51,22 @@ class DraftKingsScraper:
 
             f"{self.base_url}"
 
-            f"?tb_eg={league_id}"
+            f"?tb_eg={league_slug}"
 
             f"&tb_edate={date_range}"
+
+            f"&tb_emt=0"
+
+            f"&itm_content={league_slug}"
 
             f"&tb_page={page}"
 
         )
 
 
-
-
     def fetch_page(
         self,
-        league_id,
+        league_slug,
         date_range,
         page
     ):
@@ -72,7 +74,7 @@ class DraftKingsScraper:
 
         url = self.build_url(
 
-            league_id,
+            league_slug,
 
             date_range,
 
@@ -273,7 +275,7 @@ class DraftKingsScraper:
     def scrape_league(
         self,
         league_name,
-        league_id,
+        league_slug,
         date_range="today"
     ):
 
@@ -319,15 +321,13 @@ class DraftKingsScraper:
 
             html = self.fetch_page(
 
-                league_id,
+                league_slug,
 
                 date_range,
 
                 page
 
             )
-
-
 
             events = self.extract_events(
 

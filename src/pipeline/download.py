@@ -3,38 +3,27 @@ from league_config import load_leagues
 from scraper.draftkings import DraftKingsScraper
 
 
-
 def download_all():
-
 
     scraper = DraftKingsScraper()
 
-
     leagues = load_leagues()
-
 
     downloaded = []
 
-
-
     for league_name, league in leagues.items():
-
-
 
         if not league.get(
             "enabled",
             False
         ):
-
             continue
-
-
 
         files = scraper.scrape_league(
 
             league_name,
 
-            league["id"],
+            league["slug"],
 
             league.get(
                 "date_range",
@@ -43,17 +32,13 @@ def download_all():
 
         )
 
-
-
         downloaded.append({
 
             "league":
                 league_name,
 
-
-            "id":
-                league["id"],
-
+            "slug":
+                league["slug"],
 
             "date_range":
                 league.get(
@@ -61,12 +46,9 @@ def download_all():
                     "today"
                 ),
 
-
             "files":
                 files
 
         })
-
-
 
     return downloaded
