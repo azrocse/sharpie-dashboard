@@ -6,12 +6,10 @@ on:
   schedule:
     - cron: "0 * * * *"
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 jobs:
   sharpie:
     runs-on: ubuntu-latest
@@ -38,6 +36,15 @@ jobs:
         run: |
           python -B src/main.py
 
+      # PASO DE DIAGNÓSTICO: Nos va a decir en el log dónde quedó el index.html
+      - name: Diagnosticar archivos generados
+        run: |
+          echo "=== Listando archivos en la raíz ==="
+          ls -la
+          echo "=== Buscando index.html en todo el proyecto ==="
+          find . -name "index.html"
+
+      # Si tu script genera el archivo dentro de 'src/', cambia path: '.' por path: './src'
       - name: Configurar Pages
         uses: actions/configure-pages@v5
 
