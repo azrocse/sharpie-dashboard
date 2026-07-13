@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharpie Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #333;
+            margin-bottom: 30px;
+        }
+        h1 { margin: 0; color: #00ffcc; }
+        .card {
+            background-color: #262626;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+        th { background-color: #333; color: #00ffcc; }
+        tr:hover { background-color: #3d3d3d; }
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .active { background-color: #00ffcc; color: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sharpie Dashboard</h1>
+            <p>Actualización automática vía GitHub Actions</p>
+        </header>
+        <main>
+            <div class="card">
+                <h2>Análisis de Probabilidades Recientes</h2>
+                <div id="content">
+                    {{CONTENT}}
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
