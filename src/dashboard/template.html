@@ -717,12 +717,10 @@ function setupFilters(){
     if (p.date && p.date > latestDate) latestDate = p.date; 
   });
 
-  const dateInput = document.getElementById("fDate");
-  if(latestDate) {
-    dateInput.value = latestDate;
-    state.date = latestDate;
-  }
-  dateInput.addEventListener("change", e => { state.date = e.target.value; render(); });
+    const dateInput = document.getElementById("fDate");
+    // Ya no se preselecciona ninguna fecha — se muestran todos los eventos
+    // próximos por defecto; el usuario filtra manualmente si lo desea.
+    dateInput.addEventListener("change", e => { state.date = e.target.value; render(); });
 
   const buildSel = (id, label, items, mapFn) => {
     const sel = document.getElementById(id);

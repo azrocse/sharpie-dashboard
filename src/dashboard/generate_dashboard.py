@@ -990,28 +990,17 @@ def generate_dashboard(events_data):
 
 
 
-    dashboard_data={
-
-
-        "generated":
-            now_str,
-
-
-
-        "events":
-            events_data,
-
-
-
-        "stats":
-            stats
-
-    }
-
+    # ========================================================
+    # JSON PARA EL FRONTEND
+    # El template.html espera un ARRAY plano de picks en PICKS
+    # (usa PICKS.filter / PICKS.forEach directamente), no el
+    # objeto agrupado {generated, events, stats}. El template ya
+    # calcula upcoming/finished por su cuenta comparando p.iso.
+    # ========================================================
 
 
     json_data=json.dumps(
-        dashboard_data,
+        all_events,
         ensure_ascii=False
     )
 
