@@ -33,7 +33,8 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add --ignore-unmatch index.html data/analyzed
+          [ -f index.html ] && git add index.html || echo "index.html no encontrado"
+          [ -d data/analyzed ] && git add data/analyzed || echo "data/analyzed no encontrado"
           if ! git diff --cached --quiet; then
             git commit -m "🤖 Actualización automática Sharpie"
             git fetch origin main
