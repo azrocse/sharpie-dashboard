@@ -2,318 +2,1127 @@ import json
 import os
 from datetime import datetime, timedelta
 
+
+# ============================================================
+# RUTAS
+# ============================================================
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 BASE_DIR = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        "..",
-        ".."
-    )
+    os.path.join(CURRENT_DIR, "..", "..")
 )
 
-INPUT_FILE = os.path.join(
+INPUT_DIR = os.path.join(
     BASE_DIR,
     "data",
     "analyzed"
 )
 
-OUTPUT_DIR = os.path.join(
-    BASE_DIR,
-    "data",
-    "dashboard"
-)
+OUTPUT_DIR = BASE_DIR
 
-os.makedirs(
-    OUTPUT_DIR,
-    exist_ok=True
-)
 
+
+# ============================================================
+# LOCALIZAR ARCHIVO FUENTE
+# ============================================================
 
 def get_latest_file():
-    direct_file = os.path.join(INPUT_FILE, "sharpie.json")
-    if os.path.exists(direct_file):
-        return direct_file
 
-    if not os.path.exists(INPUT_FILE):
+    direct = os.path.join(
+        INPUT_DIR,
+        "sharpie.json"
+    )
+
+    if os.path.exists(direct):
+        return direct
+
+
+    if not os.path.exists(INPUT_DIR):
         return None
-    folders = sorted(os.listdir(INPUT_FILE))
-    if not folders:
+
+
+    candidates=[]
+
+
+    for root,dirs,files in os.walk(INPUT_DIR):
+
+        for file in files:
+
+            if file.lower()=="sharpie.json":
+
+                candidates.append(
+                    os.path.join(root,file)
+                )
+
+
+    if not candidates:
         return None
-        
-    latest = folders[-1]
-    fallback_path = os.path.join(INPUT_FILE, latest, "sharpie.json")
-    if os.path.exists(fallback_path):
-        return fallback_path
-        
-    return None
 
 
-def parse_match_datetime(time_raw):
-    current_year = 2026
+    return max(
+        candidates,
+        key=os.path.getmtime
+    )
+
+
+
+# ============================================================
+# FECHAS
+# ============================================================
+
+def parse_match_datetime(raw):
+
+    now=datetime.now()
+
+
+    if not raw:
+        return (
+            now.strftime("%Y-%m-%d"),
+            "--:--",
+            now.strftime("%Y-%m-%dT00:00:00")
+        )
+
+
+    raw=str(raw).strip()
+
+
+    formats=[
+
+        "%Y-%m-%dT%H:%M:%S",
+
+        "%Y-%m-%d %H:%M:%S",
+
+    ]
+
+
+    for fmt in formats:
+
+        try:
+
+            dt=datetime.strptime(raw,fmt)
+
+            return (
+                dt.strftime("%Y-%m-%d"),
+                dt.strftime("%H:%M"),
+                dt.strftime("%Y-%m-%dT%H:%M:%S")
+            )
+
+        except:
+            pass
+
+
+
     try:
-        if "," in time_raw:
-            date_part, time_part = [p.strip() for p in time_raw.split(",")]
-            full_str = f"{date_part}/{current_year} {time_part}"
-            
-            dt_et = datetime.strptime(full_str, "%m/%d/%Y %I:%M%p")
-            dt_cdmx = dt_et - timedelta(hours=2)
-            
-            return dt_cdmx.strftime("%Y-%m-%d"), dt_cdmx.strftime("%I:%M %p"), dt_cdmx.strftime("%Y-%m-%dT%H:%M:%S")
-    except Exception:
+
+        if "," in raw:
+
+            date_part,time_part=[
+                x.strip()
+                for x in raw.split(",",1)
+            ]
+
+
+            year=now.year
+
+
+            full=f"{date_part}/{year} {time_part}"
+
+
+            dt=datetime.strptime(
+                full,
+                "%m/%d/%Y %I:%M%p"
+            )
+
+
+            # ET -> CDMX
+            dt=dt-timedelta(hours=2)
+
+
+            return (
+
+                dt.strftime("%Y-%m-%d"),
+
+                dt.strftime("%H:%M"),
+
+                dt.strftime(
+                    "%Y-%m-%dT%H:%M:%S"
+                )
+
+            )
+
+    except:
         pass
-    
-    return "2026-07-08", time_raw, "2026-07-08T00:00:00"
 
 
-def generate_html(leagues_data):
-    rows = ""
 
-    for league_obj in leagues_data:
-        markets = league_obj.get("markets", [])
-        
-        for market in markets:
-            date_part, time_part, full_iso = parse_match_datetime(market.get('time', ''))
-            league = market.get("league", "UNKNOWN")
-            trend = market.get("market_trend", "🟡 Mixto")
-            action = market.get("action", "🔴 PASAR")
+    return (
 
-            rows += f"""
-            <tr data-iso="{full_iso}">
-                <td data-label="Fecha">{date_part}</td>
-                <td data-label="Hora">{time_part}</td>
-                <td data-label="Liga"><span class="badge league-badge">{league}</span></td>
-                <td data-label="Partido"><strong>{market.get('game', '')}</strong></td>
-                <td data-label="Mercado">{market.get('market', '')}</td>
-                <td data-label="Pick">{market.get('pick', '')}</td>
-                <td data-label="Sharpie">{market.get('sharpie', '')}</td>
-                <td data-label="Market">{market.get('market_score', '')}</td>
-                <td data-label="Trend">{trend}</td>
-                <td data-label="Acción">{action}</td>
-                <td data-label="Stake">{market.get('stake', 0)}u</td>
-                <td data-label="Prioridad">{market.get('priority', '')}</td>
-            </tr>
-            """
+        now.strftime("%Y-%m-%d"),
 
-    html = f"""
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📊 Sharpie Dashboard</title>
-    <style>
-        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            padding: 20px; background: #0f0f12; color: #e4e4e7; line-height: 1.5;
-        }}
-        h1 {{ margin-bottom: 20px; font-size: 1.8rem; color: #fff; }}
-        .filters-container {{
-            margin-bottom: 25px; display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px; background: #18181b; padding: 20px; border-radius: 8px; border: 1px solid #27272a;
-        }}
-        .filter-group {{ display: flex; flex-direction: column; gap: 6px; }}
-        .filter-group label {{
-            font-size: 11px; color: #a1a1aa; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-        }}
-        .filters-container select {{
-            padding: 10px; background: #27272a; color: white; border: 1px solid #3f3f46;
-            border-radius: 6px; cursor: pointer; font-size: 14px; width: 100%; outline: none;
-        }}
-        .filters-container select:disabled {{
-            opacity: 0.4; cursor: not-allowed; background: #1f1f23;
-        }}
-        .table-responsive-container {{ width: 100%; background: #18181b; border-radius: 8px; border: 1px solid #27272a; }}
-        table {{ width: 100%; border-collapse: collapse; text-align: left; }}
-        th {{ background: #202024; padding: 14px 16px; font-size: 13px; font-weight: 600; text-transform: uppercase; color: #a1a1aa; border-bottom: 2px solid #27272a; }}
-        td {{ padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #27272a; color: #e4e4e7; }}
-        tr:hover {{ background: #202024; }}
-        .badge {{ display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }}
-        .league-badge {{ background: #3f3f46; color: #fff; }}
-        
-        @media (max-width: 900px) {{
-            body {{ padding: 10px; }}
-            .table-responsive-container {{ background: transparent; border: none; }}
-            table, thead, tbody, th, td, tr {{ display: block; }}
-            thead {{ display: none; }}
-            tr {{ background: #18181b; margin-bottom: 15px; border-radius: 8px; border: 1px solid #27272a; padding: 10px 5px; }}
-            td {{
-                text-align: right; padding: 8px 15px; font-size: 14px; border-bottom: 1px solid #202024;
-                position: relative; display: flex; justify-content: space-between; align-items: center;
-            }}
-            td:last-child {{ border-bottom: none; }}
-            td::before {{ content: attr(data-label); font-weight: 600; color: #a1a1aa; text-transform: uppercase; font-size: 11px; text-align: left; }}
-        }}
-    </style>
-</head>
-<body>
+        raw,
 
-    <h1>📊 Sharpie Dashboard</h1>
+        now.strftime("%Y-%m-%dT00:00:00")
 
-    <div class="filters-container">
-        <div class="filter-group"><label>Fecha</label><select id="dateFilter" onchange="filterData()"><option value="">Todas</option></select></div>
-        <div class="filter-group"><label>Hora</label><select id="timeFilter" onchange="filterData()" disabled><option value="">Selecciona Fecha</option></select></div>
-        <div class="filter-group"><label>Liga</label><select id="leagueFilter" onchange="filterData()"><option value="">Todas</option></select></div>
-        <div class="filter-group"><label>Trend</label><select id="trendFilter" onchange="filterData()"><option value="">Todos</option></select></div>
-        <div class="filter-group"><label>Acción</label><select id="actionFilter" onchange="filterData()"><option value="">Todas</option></select></div>
-    </div>
-
-    <div class="table-responsive-container">
-        <table id="dashboardTable">
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Liga</th>
-                    <th>Partido</th>
-                    <th>Mercado</th>
-                    <th>Pick</th>
-                    <th>Sharpie</th>
-                    <th>Market</th>
-                    <th>Trend</th>
-                    <th>Acción</th>
-                    <th>Stake</th>
-                    <th>Prioridad</th>
-                </tr>
-            </thead>
-            <tbody>
-                {rows}
-            </tbody>
-        </table>
-    </div>
-
-    <script>
-    const activeFilters = {{ date: "", time: "", league: "", trend: "", action: "" }};
-
-    function populateFilters() {{
-        const rows = Array.from(document.querySelectorAll("#dashboardTable tbody tr"));
-        
-        const sets = {{
-            date: new Set(),
-            time: new Set(),
-            league: new Set(),
-            trend: new Set(),
-            action: new Set()
-        }};
-
-        rows.forEach(row => {{
-            if (row.style.display !== "none") {{
-                sets.date.add(row.cells[0].innerText.trim());
-                sets.time.add(row.cells[1].innerText.trim());
-                sets.league.add(row.cells[2].innerText.trim());
-                sets.trend.add(row.cells[8].innerText.trim());
-                sets.action.add(row.cells[9].innerText.trim());
-            }}
-        }});
-
-        // Siempre dejamos disponibles las fechas globales válidas
-        if (!activeFilters.date) {{
-            const allDates = new Set();
-            rows.forEach(r => {{
-                const matchIso = r.getAttribute("data-iso");
-                if (new Date(matchIso) >= new Date()) {{
-                    allDates.add(r.cells[0].innerText.trim());
-                }}
-            }});
-            updateSelectOptions("dateFilter", allDates, activeFilters.date, "Todas");
-        }}
-
-        // Control de activación secuencial para la hora
-        const timeSelect = document.getElementById("timeFilter");
-        if (activeFilters.date) {{
-            timeSelect.disabled = false;
-            updateSelectOptions("timeFilter", sets.time, activeFilters.time, "Todas");
-        }} else {{
-            timeSelect.disabled = true;
-            timeSelect.innerHTML = '<option value="">Selecciona Fecha</option>';
-            activeFilters.time = "";
-        }}
-
-        updateSelectOptions("leagueFilter", sets.league, activeFilters.league, "Todas");
-        updateSelectOptions("trendFilter", sets.trend, activeFilters.trend, "Todos");
-        updateSelectOptions("actionFilter", sets.action, activeFilters.action, "Todas");
-    }}
-
-    function updateSelectOptions(elementId, valueSet, currentValue, defaultText) {{
-        const select = document.getElementById(elementId);
-        const savedValue = select.value;
-        select.innerHTML = `<option value="">${{defaultText}}</option>`;
-        
-        Array.from(valueSet).sort().forEach(val => {{
-            const selected = val === currentValue || val === savedValue ? "selected" : "";
-            select.innerHTML += `<option value="${{val}}" ${{selected}}>${{val}}</option>`;
-        }});
-    }}
-
-    function filterData() {{
-        activeFilters.date = document.getElementById("dateFilter").value;
-        activeFilters.time = document.getElementById("timeFilter").value;
-        activeFilters.league = document.getElementById("leagueFilter").value;
-        activeFilters.trend = document.getElementById("trendFilter").value;
-        activeFilters.action = document.getElementById("actionFilter").value;
-
-        const rows = document.querySelectorAll("#dashboardTable tbody tr");
-        const now = new Date();
-
-        rows.forEach(row => {{
-            const matchIso = row.getAttribute("data-iso");
-            const matchDateObj = new Date(matchIso);
-
-            if (matchDateObj < now) {{
-                row.style.display = "none";
-                return;
-            }}
-
-            const dText = row.cells[0].innerText;
-            const tText = row.cells[1].innerText;
-            const lText = row.cells[2].innerText;
-            const trText = row.cells[8].innerText;
-            const aText = row.cells[9].innerText;
-
-            const mDate = !activeFilters.date || dText === activeFilters.date;
-            const mTime = !activeFilters.time || tText === activeFilters.time;
-            const mLeague = !activeFilters.league || lText === activeFilters.league;
-            const mTrend = !activeFilters.trend || trText.includes(activeFilters.trend);
-            const mAction = !activeFilters.action || aText.includes(activeFilters.action);
-
-            if (mDate && mTime && mLeague && mTrend && mAction) {{
-                row.style.display = "";
-            }} else {{
-                row.style.display = "none";
-            }}
-        }});
-
-        populateFilters();
-    }}
-
-    document.addEventListener("DOMContentLoaded", () => {{
-        filterData();
-    }});
-    </script>
-</body>
-</html>
-"""
-    return html
+    )
 
 
-def generate_dashboard():
-    file = get_latest_file()
-    if not file:
-        print("❌ Error: No se encontró ningún archivo 'sharpie.json'.")
-        return
 
-    with open(file, encoding="utf-8") as f:
-        data = json.load(f)
+# ============================================================
+# ESTADO DEL EVENTO
+# ============================================================
 
-    html = generate_html(data)
-    output = os.path.join(OUTPUT_DIR, "index.html")
+def classify_event_status(iso):
 
-    with open(output, "w", encoding="utf-8") as f:
-        f.write(html)
+    try:
 
-    print()
-    print("✓ Dashboard creado con filtros secuenciales Fecha -> Hora:", output)
+        event_time=datetime.fromisoformat(
+            iso
+        )
+
+    except:
+
+        return "finished"
 
 
-if __name__ == "__main__":
-    generate_dashboard()
+
+    now=datetime.now()
+
+
+    diff=(event_time-now).total_seconds()
+
+
+
+    # todavía no empieza
+    if diff>0:
+
+        return "upcoming"
+
+
+
+    # máximo 5 horas considerado live
+    if diff>-18000:
+
+        return "live"
+
+
+
+    return "finished"
+
+
+
+
+# ============================================================
+# CLASIFICADORES
+# ============================================================
+
+
+def classify_action(text):
+
+    text=(text or "").upper()
+
+    if "APOSTAR" in text:
+        return "bet"
+
+    return "pass"
+
+
+
+def classify_trend(text):
+
+    t=(text or "").lower()
+
+
+    if "sharp" in t or "🔥" in t:
+        return "sharp"
+
+
+    if "mixto" in t:
+        return "mixed"
+
+
+    if "consenso" in t:
+        return "consensus"
+
+
+    if "public" in t or "público" in t:
+        return "public"
+
+
+    return "other"
+
+
+
+def classify_priority(text):
+
+    t=(text or "").upper()
+
+
+    if "AHORA" in t:
+        return "now"
+
+
+    if "PRONTO" in t:
+        return "soon"
+
+
+    return "watch"
+
+
+
+
+# ============================================================
+# VALIDACIONES
+# ============================================================
+
+
+def safe_float(value):
+
+    try:
+        return float(value or 0)
+
+    except:
+
+        return 0
+
+
+
+def safe_score(value):
+
+    try:
+
+        value=float(value)
+
+    except:
+
+        return 0
+
+
+    return max(
+        0,
+        min(
+            100,
+            value
+        )
+    )
+
+
+
+def safe_pct(value):
+
+    try:
+
+        value=float(value)
+
+    except:
+
+        return None
+
+
+    return max(
+        0,
+        min(
+            100,
+            value
+        )
+    )
+
+
+
+# ============================================================
+# DETECCIÓN WHALE
+# ============================================================
+
+
+def detect_whale(market):
+
+
+    if market.get("whale"):
+        return True
+
+
+    handle=safe_pct(
+        market.get("handle_pct")
+    )
+
+    bets=safe_pct(
+        market.get("bets_pct")
+    )
+
+
+    if handle is not None and bets is not None:
+
+        if handle-bets >=15:
+            return True
+
+
+
+    blob=" ".join(
+        str(
+            market.get(k,"")
+        )
+
+        for k in [
+            "priority",
+            "action",
+            "reason",
+            "market_trend"
+        ]
+
+    ).lower()
+
+
+
+    return (
+        "whale" in blob
+        or
+        "🐋" in blob
+    )
+
+# ============================================================
+# BUILD PICKS
+# ============================================================
+
+def build_picks(raw_data):
+
+    print("\n[DEBUG] Iniciando análisis universal de mercados...")
+
+
+    events = {
+
+        "upcoming": [],
+        "live": [],
+        "finished": []
+
+    }
+
+
+    # --------------------------------------------------------
+    # Buscador recursivo universal
+    # --------------------------------------------------------
+
+    def extract_markets(node):
+
+        found=[]
+
+
+        if isinstance(node,list):
+
+            for item in node:
+
+                found.extend(
+                    extract_markets(item)
+                )
+
+
+        elif isinstance(node,dict):
+
+
+            if (
+                "markets" in node
+                and
+                isinstance(node["markets"],list)
+            ):
+
+                found.extend(
+                    node["markets"]
+                )
+
+
+            elif (
+                "game" in node
+                or
+                "pick" in node
+            ):
+
+                found.append(node)
+
+
+
+            for value in node.values():
+
+                if isinstance(
+                    value,
+                    (dict,list)
+                ):
+
+                    found.extend(
+                        extract_markets(value)
+                    )
+
+
+        return found
+
+
+
+    markets=extract_markets(raw_data)
+
+
+    print(
+        f"[DEBUG] Mercados encontrados: {len(markets)}"
+    )
+
+
+
+    counter=0
+
+
+
+    for market in markets:
+
+
+        game=market.get(
+            "game"
+        )
+
+
+        pick=market.get(
+            "pick"
+        )
+
+
+
+        # --------------------------------------------
+        # Validación mínima
+        # --------------------------------------------
+
+        if not game and not pick:
+            continue
+
+
+        if (
+            not market.get("market")
+            and
+            not market.get("type")
+        ):
+            continue
+
+
+
+        counter+=1
+
+
+
+        # --------------------------------------------
+        # Fecha
+        # --------------------------------------------
+
+
+        date,time,iso=parse_match_datetime(
+            market.get(
+                "time",
+                ""
+            )
+        )
+
+
+
+        status=classify_event_status(
+            iso
+        )
+
+
+
+        # --------------------------------------------
+        # Métricas dinero
+        # --------------------------------------------
+
+
+        handle=safe_pct(
+            market.get(
+                "handle_pct"
+            )
+        )
+
+
+        bets=safe_pct(
+            market.get(
+                "bets_pct"
+            )
+        )
+
+
+        divergence=None
+
+
+        if (
+            handle is not None
+            and
+            bets is not None
+        ):
+
+            divergence=round(
+                handle-bets,
+                2
+            )
+
+
+
+        # --------------------------------------------
+        # Scores
+        # --------------------------------------------
+
+
+        market_score=safe_score(
+            market.get(
+                "market_score",
+                0
+            )
+        )
+
+
+        confidence=safe_score(
+            market.get(
+                "confidence",
+                market_score
+            )
+        )
+
+
+        edge=safe_score(
+            market.get(
+                "edge",
+                0
+            )
+        )
+
+
+
+        # Score combinado
+        # prioriza dinero + modelo
+
+
+        sharp_score=round(
+
+            (
+                market_score * .45
+                +
+                confidence * .35
+                +
+                max(
+                    divergence or 0,
+                    0
+                ) * .20
+
+            ),
+
+            1
+
+        )
+
+
+
+        # --------------------------------------------
+        # Riesgo
+        # --------------------------------------------
+
+
+        risk="MEDIUM"
+
+
+        if sharp_score>=80:
+
+            risk="LOW"
+
+
+        elif sharp_score<55:
+
+            risk="HIGH"
+
+
+
+
+        # --------------------------------------------
+        # Objeto final
+        # --------------------------------------------
+
+
+        item={
+
+
+            "id":counter,
+
+
+            "game":
+                game or "Evento desconocido",
+
+
+            "league":
+                market.get(
+                    "league",
+                    "Otras Ligas"
+                ),
+
+
+
+            "market":
+                market.get(
+                    "market",
+                    market.get(
+                        "type",
+                        "Línea estándar"
+                    )
+                ),
+
+
+
+            "pick":
+                pick or "Sin selección",
+
+
+
+            "action":
+                market.get(
+                    "action",
+                    "🔴 PASAR"
+                ),
+
+
+
+            "actionKey":
+                classify_action(
+                    market.get(
+                        "action",
+                        ""
+                    )
+                ),
+
+
+
+            "trend":
+                market.get(
+                    "market_trend",
+                    "🟡 Mixto"
+                ),
+
+
+
+            "trendKey":
+                classify_trend(
+                    market.get(
+                        "market_trend",
+                        ""
+                    )
+                ),
+
+
+
+            "priority":
+                market.get(
+                    "priority",
+                    ""
+                ),
+
+
+
+            "priorityKey":
+                classify_priority(
+                    market.get(
+                        "priority",
+                        ""
+                    )
+                ),
+
+
+
+            "stake":
+                safe_float(
+                    market.get(
+                        "stake",
+                        0
+                    )
+                ),
+
+
+
+            "score":
+                sharp_score,
+
+
+
+            "marketScore":
+                market_score,
+
+
+
+            "confidence":
+                confidence,
+
+
+
+            "edge":
+                edge,
+
+
+
+            "risk":
+                risk,
+
+
+
+            "reason":
+                market.get(
+                    "reason",
+                    ""
+                ),
+
+
+
+            "date":
+                date,
+
+
+
+            "time":
+                time,
+
+
+
+            "iso":
+                iso,
+
+
+
+            "status":
+                status,
+
+
+
+            "whale":
+                detect_whale(
+                    market
+                ),
+
+
+
+            "handlePct":
+                handle,
+
+
+
+            "betsPct":
+                bets,
+
+
+
+            "divergence":
+                divergence
+
+        }
+
+
+
+        events[status].append(
+            item
+        )
+
+
+
+
+    print(
+        "[DEBUG] Resultado:"
+    )
+
+
+    print(
+        f"  Próximos: {len(events['upcoming'])}"
+    )
+
+
+    print(
+        f"  Live: {len(events['live'])}"
+    )
+
+
+    print(
+        f"  Finalizados: {len(events['finished'])}"
+    )
+
+
+    return events
+# ============================================================
+# GENERATE DASHBOARD
+# ============================================================
+
+def generate_dashboard(events_data):
+
+    print("\n--- [DEBUG START: GENERATE DASHBOARD] ---")
+
+
+    now_str=datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+
+
+
+    current_dir=os.path.dirname(
+        os.path.abspath(__file__)
+    )
+
+
+
+    template_path=os.path.join(
+        current_dir,
+        "template.html"
+    )
+
+
+
+    print(
+        f"[DEBUG] Buscando plantilla: {template_path}"
+    )
+
+
+
+    if not os.path.exists(template_path):
+
+        raise FileNotFoundError(
+            f"No existe template.html: {template_path}"
+        )
+
+
+
+    with open(
+        template_path,
+        "r",
+        encoding="utf-8"
+    ) as file:
+
+        html_template=file.read()
+
+
+
+    # ========================================================
+    # MÉTRICAS GLOBALES PARA DASHBOARD
+    # ========================================================
+
+
+    upcoming=events_data.get(
+        "upcoming",
+        []
+    )
+
+
+    live=events_data.get(
+        "live",
+        []
+    )
+
+
+    finished=events_data.get(
+        "finished",
+        []
+    )
+
+
+
+    all_events=(
+        upcoming
+        +
+        live
+        +
+        finished
+    )
+
+
+
+    stats={
+
+
+        "total":
+            len(all_events),
+
+
+
+        "upcoming":
+            len(upcoming),
+
+
+
+        "live":
+            len(live),
+
+
+
+        "finished":
+            len(finished),
+
+
+
+        "bets":
+            len(
+                [
+                    x
+                    for x in all_events
+                    if x.get("actionKey")=="bet"
+                ]
+            ),
+
+
+
+        "whales":
+            len(
+                [
+                    x
+                    for x in all_events
+                    if x.get("whale")
+                ]
+            ),
+
+
+
+        "stake":
+            round(
+
+                sum(
+                    x.get(
+                        "stake",
+                        0
+                    )
+                    for x in all_events
+                ),
+
+                2
+
+            )
+
+    }
+
+
+
+    dashboard_data={
+
+
+        "generated":
+            now_str,
+
+
+
+        "events":
+            events_data,
+
+
+
+        "stats":
+            stats
+
+    }
+
+
+
+    json_data=json.dumps(
+        dashboard_data,
+        ensure_ascii=False
+    )
+
+
+
+    print(
+        "[DEBUG] Datos preparados:"
+    )
+
+
+    print(
+        f"  Total eventos: {stats['total']}"
+    )
+
+    print(
+        f"  Próximos: {stats['upcoming']}"
+    )
+
+    print(
+        f"  Live: {stats['live']}"
+    )
+
+    print(
+        f"  Finalizados: {stats['finished']}"
+    )
+
+
+
+    # ========================================================
+    # INYECCIÓN HTML
+    # ========================================================
+
+
+    html_content=html_template.replace(
+
+        "__GENERATED_AT__",
+
+        now_str
+
+    )
+
+
+
+    html_content=html_content.replace(
+
+        "__PICKS_JSON__",
+
+        json_data
+
+    )
+
+
+
+    # ========================================================
+    # SALIDA
+    # ========================================================
+
+
+    repo_root=os.path.abspath(
+
+        os.path.join(
+            current_dir,
+            "..",
+            ".."
+        )
+
+    )
+
+
+
+    output_file=os.path.join(
+
+        repo_root,
+
+        "index.html"
+
+    )
+
+
+
+    os.makedirs(
+
+        os.path.dirname(output_file),
+
+        exist_ok=True
+
+    )
+
+
+
+    with open(
+
+        output_file,
+
+        "w",
+
+        encoding="utf-8"
+
+    ) as file:
+
+        file.write(
+            html_content
+        )
+
+
+
+    print(
+        f"[DEBUG] Dashboard generado: {output_file}"
+    )
+
+
+    print(
+        "--- [DEBUG END: GENERATE DASHBOARD ] ---\n"
+    )
