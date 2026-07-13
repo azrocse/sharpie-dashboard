@@ -19,27 +19,9 @@ jobs:
       - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
-          pip install -r src/requirements.txt
+          if [ -f src/requirements.txt ]; then pip install -r src/requirements.txt; fi
       - name: Ejecutar Sharpie
         env:
           PYTHONDONTWRITEBYTECODE: 1
         run: |
           python -B src/main.py
-      - name: Limpiar bytecode residual
-        run: |
-          find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-          find . -name "*.pyc" -delete
-      - name: Commit automático
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          [ -f index.html ] && git add index.html || echo "index.html no encontrado"
-          [ -d data/analyzed ] && git add data/analyzed || echo "data/analyzed no encontrado"
-          if ! git diff --cached --quiet; then
-            git commit -m "🤖 Actualización automática Sharpie"
-            git fetch origin main
-            git merge origin/main --no-edit -X ours
-            git push origin main
-          else
-            echo "Sin cambios."
-          fi
