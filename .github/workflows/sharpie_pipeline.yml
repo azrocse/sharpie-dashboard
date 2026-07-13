@@ -1,0 +1,44 @@
+﻿name: Sharpie Pipeline
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+jobs:
+  sharpie:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r src/requirements.txt
+      - name: Ejecutar Sharpie
+        env:
+          PYTHONDONTWRITEBYTECODE: 1
+        run: |
+          python -B src/main.py
+      - name: Limpiar bytecode residual
+        run: |
+          find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+          find . -name "*.pyc" -delete
+      - name: Commit automático
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add index.html data/analyzed
+          if ! git diff --cached --quiet; then
+            git commit -m "🤖 Actualización automática Sharpie"
+            git fetch origin main
+            git merge origin/main --no-edit -X ours
+            git push origin main
+          else
+            echo "Sin cambios."
+          fi
