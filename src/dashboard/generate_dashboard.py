@@ -306,29 +306,31 @@ def safe_score(value):
         )
     )
 
-
-
-def safe_pct(value):
-
+def safe_pct(val):
+    if val is None:
+        return None
     try:
-
-        value=float(value)
-
-    except:
-
+        # Si es un string con '%', quitarlo
+        if isinstance(val, str):
+            val = val.replace('%', '').strip()
+        # Convertir a float y manejar decimales (ej: 0.52 -> 52)
+        num = float(val)
+        if 0 < num < 1:
+            return int(num * 100)
+        return int(num)
+    except Exception:
         return None
 
-
-    return max(
-        0,
-        min(
-            100,
-            value
-        )
-    )
-
-
-
+def safe_float(val):
+    if val is None:
+        return 0.0
+    try:
+        if isinstance(val, str):
+            val = val.replace('%', '').strip()
+        return float(val)
+    except Exception:
+        return 0.0
+    
 # ============================================================
 # DETECCIÓN WHALE
 # ============================================================
@@ -462,362 +464,134 @@ def build_picks(raw_data):
         f"[DEBUG] Mercados encontrados: {len(markets)}"
     )
 
-
-
-    counter=0
-
-
+# --------------------------------------------------------
+    # Procesar mercados evitando duplicados
+    # --------------------------------------------------------
+    counter = 0
+    seen_picks = set() # Set para evitar duplicaciones
 
     for market in markets:
+        game = market.get("game")
+        pick = market.get("pick")
 
-
-        game=market.get(
-            "game"
-        )
-
-
-        pick=market.get(
-            "pick"
-        )
-
-
-
-        # --------------------------------------------
         # Validación mínima
-        # --------------------------------------------
-
         if not game and not pick:
             continue
 
-
-        if (
-            not market.get("market")
-            and
-            not market.get("type")
-        ):
+        if not market.get("market") and not market.get("type"):
             continue
 
+        # Evitar duplicados exactos usando una llave única (Game + Pick + Market)
+        unique_key = f"{game}||{pick}||{market.get('market', market.get('type'))}"
+        if unique_key in seen_picks:
+            continue
+        seen_picks.add(unique_key)
 
+        counter += 1
 
-        counter+=1
+        # Fechas
+        date, time, iso = parse_match_datetime(market.get("time", ""))
+        status = classify_event_status(iso)
 
+        # Métricas de dinero (Smart Money)
+        handle = safe_pct(market.get("handle_pct"))
+        bets = safe_pct(market.get("bets_pct"))
+        divergence = None
 
+        if handle is not None and bets is not None:
+            divergence = round(handle - bets, 2)
 
-        # --------------------------------------------
-        # Fecha
-        # --------------------------------------------
-
-
-        date,time,iso=parse_match_datetime(
-            market.get(
-                "time",
-                ""
-            )
-        )
-
-
-
-        status=classify_event_status(
-            iso
-        )
-
-
-
-        # --------------------------------------------
-        # Métricas dinero
-        # --------------------------------------------
-
-
-        handle=safe_pct(
-            market.get(
-                "handle_pct"
-            )
-        )
-
-
-        bets=safe_pct(
-            market.get(
-                "bets_pct"
-            )
-        )
-
-
-        divergence=None
-
-
-        if (
-            handle is not None
-            and
-            bets is not None
-        ):
-
-            divergence=round(
-                handle-bets,
-                2
-            )
-
-
-
-        # --------------------------------------------
         # Scores
-        # --------------------------------------------
-
-
-        market_score=safe_score(
-            market.get(
-                "market_score",
-                0
-            )
-        )
-
-
-        confidence=safe_score(
-            market.get(
-                "confidence",
-                market_score
-            )
-        )
-
-
-        edge=safe_score(
-            market.get(
-                "edge",
-                0
-            )
-        )
-
-
+        market_score = safe_score(market.get("market_score", 0))
+        confidence = safe_score(market.get("confidence", market_score))
+        
+        # Obtener o estimar el Edge
+        edge = safe_score(market.get("edge", 0))
 
         # Score combinado
-        # prioriza dinero + modelo
-
-
-        sharp_score=round(
-
-            (
-                market_score * .45
-                +
-                confidence * .35
-                +
-                max(
-                    divergence or 0,
-                    0
-                ) * .20
-
-            ),
-
+        sharp_score = round(
+            (market_score * .45 + confidence * .35 + max(divergence or 0, 0) * .20),
             1
-
         )
 
-
-
-        # --------------------------------------------
-        # Riesgo
-        # --------------------------------------------
-
-
-        risk="MEDIUM"
-
-
-        if sharp_score>=80:
-
-            risk="LOW"
-
-
-        elif sharp_score<55:
-
-            risk="HIGH"
-
-
-
-
-        # --------------------------------------------
-        # Objeto final
-        # --------------------------------------------
-
-
-        item={
-
-
-            "id":counter,
-
-
-            "game":
-                game or "Evento desconocido",
-
-
-            "league":
-                market.get(
-                    "league",
-                    "Otras Ligas"
-                ),
-
-
-
-            "market":
-                market.get(
-                    "market",
-                    market.get(
-                        "type",
-                        "Línea estándar"
-                    )
-                ),
-
-
-
-            "pick":
-                pick or "Sin selección",
-
-
-
-            "action":
-                market.get(
-                    "action",
-                    "🔴 PASAR"
-                ),
-
-
-
-            "actionKey":
-                classify_action(
-                    market.get(
-                        "action",
-                        ""
-                    )
-                ),
-
-
-
-            "trend":
-                market.get(
-                    "market_trend",
-                    "🟡 Mixto"
-                ),
-
-
-
-            "trendKey":
-                classify_trend(
-                    market.get(
-                        "market_trend",
-                        ""
-                    )
-                ),
-
-
-
-            "priority":
-                market.get(
-                    "priority",
-                    ""
-                ),
-
-
-
-            "priorityKey":
-                classify_priority(
-                    market.get(
-                        "priority",
-                        ""
-                    )
-                ),
-
-
-
-            "stake":
-                safe_float(
-                    market.get(
-                        "stake",
-                        0
-                    )
-                ),
-
-
-
-            "score":
-                sharp_score,
-
-
-
-            "marketScore":
-                market_score,
-
-
-
-            "confidence":
-                confidence,
-
-
-
-            "edge":
-                edge,
-
-
-
-            "risk":
-                risk,
-
-
-
-            "reason":
-                market.get(
-                    "reason",
-                    ""
-                ),
-
-
-
-            "date":
-                date,
-
-
-
-            "time":
-                time,
-
-
-
-            "iso":
-                iso,
-
-
-
-            "status":
-                status,
-
-
-
-            "whale":
-                detect_whale(
-                    market
-                ),
-
-
-
-            "handlePct":
-                handle,
-
-
-
-            "betsPct":
-                bets,
-
-
-
-            "divergence":
-                divergence
-
+        # Determinar Riesgo
+        risk = "MEDIUM"
+        if sharp_score >= 80:
+            risk = "LOW"
+        elif sharp_score < 55:
+            risk = "HIGH"
+
+# --- EXTRACCIÓN Y ESTIMACIÓN DE MODELO Y EV (CORREGIDO) ---
+        # 1. Intentar obtener el modelo del JSON
+        raw_model = market.get("model_prob", market.get("modelProb"))
+        model_val = safe_pct(raw_model)
+
+        # Si el JSON trae un modelo válido (> 0), lo usamos. 
+        # Si no lo trae (o es None/0), calculamos un estimado matemático basado en el Edge.
+        if model_val and model_val > 0:
+            model_prob = int(model_val)
+        else:
+            # Estimación matemática: evita que se dispare a más de 99% o baje de 50%
+            estimated_prob = 50 + int(edge / 2)
+            model_prob = int(min(99, max(50, estimated_prob)))
+
+        # 2. Intentar obtener el EV
+        raw_ev = market.get("ev")
+        ev_val = safe_float(raw_ev)
+        
+        # Si el EV ya viene calculado en el JSON, lo usamos.
+        if ev_val is not None and ev_val > 0:
+            ev = ev_val
+        else:
+            # Si no viene, lo calculamos como el 80% del Edge
+            ev = round(edge * 0.8, 1) if edge > 0 else 0.0
+
+        # --- 📊 NUEVO: EXTRACCIÓN SEGURA DE BETS Y HANDLE ---
+        # Buscamos en todas las variantes posibles de nombres de llaves en el JSON de origen
+        raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets")))
+        raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle")))
+
+        # Convertimos a entero de forma segura usando tu función safe_float/safe_pct
+        # Si no existen en el JSON de origen, por defecto asignamos 50 (para evitar nulls)
+        bets = int(safe_float(raw_bets)) if safe_float(raw_bets) is not None else 50
+        handle = int(safe_float(raw_handle)) if safe_float(raw_handle) is not None else 50
+
+        # Calculamos la divergencia absoluta de forma dinámica
+        divergence = abs(handle - bets)
+
+        # --- OBJETO FINAL LIMPIO ---
+        item = {
+            "id": counter,
+            "game": game or "Evento desconocido",
+            "league": market.get("league", "Otras Ligas"),
+            "market": market.get("market", market.get("type", "Línea estándar")),
+            "pick": pick or "Sin selección",
+            "action": market.get("action", "🔴 PASAR"),
+            "actionKey": classify_action(market.get("action", "")),
+            "trend": market.get("market_trend", "🟡 Mixto"),
+            "trendKey": classify_trend(market.get("market_trend", "")),
+            "priority": market.get("priority", ""),
+            "priorityKey": classify_priority(market.get("priority", "")),
+            "stake": safe_float(market.get("stake", 0)),
+            "score": sharp_score,
+            "marketScore": market_score,
+            "confidence": confidence,
+            "edge": edge,
+            "modelProb": model_prob,  # Recibe el valor limpio y calculado arriba
+            "ev": ev,
+            "risk": risk,
+            "reason": market.get("reason", ""),
+            "date": date,
+            "time": time,
+            "iso": iso,
+            "status": status,
+            "whale": detect_whale(market),
+            "handlePct": handle,       # <--- Ahora sí existe la variable local
+            "betsPct": bets,           # <--- Ahora sí existe la variable local
+            "divergence": divergence   # <--- Ahora sí existe la variable local
         }
-
-
-
-        events[status].append(
-            item
-        )
-
-
-
+        
+        events[status].append(item)
 
     print(
         "[DEBUG] Resultado:"
@@ -991,28 +765,21 @@ def generate_dashboard(events_data):
 
 
 
-    dashboard_data={
-
-
-        "generated":
-            now_str,
-
-
-
-        "events":
-            events_data,
-
-
-
-        "stats":
-            stats
-
-    }
-
+    # ========================================================
+    # template.html usa PICKS como ARRAY PLANO en TODO el JS:
+    # PICKS.filter(...), PICKS.forEach(...), eventStatus(p) por
+    # pick individual, etc. Antes se mandaba un objeto envuelto
+    # {generated, events, stats}, lo que rompía absolutamente
+    # todo con "PICKS.filter is not a function" apenas cargaba
+    # la página (nunca llegaba a pintar nada). Cada pick ya trae
+    # su "status" individual, así que basta con el array plano.
+    # Las estadísticas ("stats") ya no se inyectan al frontend
+    # porque el template las recalcula solo desde PICKS.
+    # ========================================================
 
 
     json_data=json.dumps(
-        dashboard_data,
+        all_events,
         ensure_ascii=False
     )
 

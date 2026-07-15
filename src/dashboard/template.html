@@ -1229,6 +1229,14 @@ const TREND_ICON = {
 };
 
 
+// FALTABA POR COMPLETO. Se llama en setupFilters() para etiquetar
+// el <select> de tendencias; al no existir, el script entero
+// truena con "trendTag is not defined" apenas hay algún pick con
+// trendKey, y como el crash pasa ANTES de render(), nada se dibuja.
+function trendTag(key){
+    return `${TREND_ICON[key]||"⚙️"} ${TREND_LABEL[key]||"Sin clasificación"}`;
+}
+
 
 
 
@@ -1240,6 +1248,20 @@ const TREND_ICON = {
 
 
 function eventStatus(p){
+
+    // generate_dashboard.py manda p.status en minúsculas:
+    // "upcoming" | "live" | "finished". Se traduce a los códigos
+    // que usa este archivo: PENDING | LIVE | FINISHED. Sin esto,
+    // upcoming()/live()/history() (y por lo tanto el ticker de
+    // métricas) siempre daban 0, aunque las tarjetas sí pintaran.
+    const STATUS_MAP = {
+        "upcoming": "PENDING",
+        "live": "LIVE",
+        "finished": "FINISHED"
+    };
+
+    if(p.status && STATUS_MAP[p.status])
+        return STATUS_MAP[p.status];
 
     if(p.status)
         return p.status;
@@ -1313,61 +1335,30 @@ function history(){
 */
 
 
-function calculateEdge(p){
-
-    if(
-        p.edge !== undefined
-    )
-        return p.edge;
-
-
-    if(
-        p.modelProb &&
-        p.marketProb
-    )
-    {
-
-        return (
-            p.modelProb -
-            p.marketProb
-        );
-
-    }
-
-
-    return 0;
-
+function calculateEdge(p) {
+  // 1. Si Python ya calculó e inyectó un "edge", usamos ese directamente
+  if (p.edge !== undefined && p.edge !== null) {
+    return Number(p.edge);
+  }
+  // 2. Si no viene calculado, hacemos el fallback matemático tradicional
+  if (p.modelProb && p.marketProb) {
+    return Number(p.modelProb) - Number(p.marketProb);
+  }
+  return 0;
 }
-
-
-
 
 function calculateSmartMoney(p){
-
-    if(
-        p.divergence !== undefined
-    )
+    // Validar que divergence no sea undefined ni null
+    if(p.divergence !== undefined && p.divergence !== null) {
         return p.divergence;
-
-
-    if(
-        p.handlePct != null &&
-        p.betsPct != null
-    )
-    {
-
-        return (
-            p.handlePct -
-            p.betsPct
-        );
-
     }
 
+    if(p.handlePct != null && p.betsPct != null) {
+        return (p.handlePct - p.betsPct);
+    }
 
     return 0;
-
 }
-
 
 
 
@@ -1720,164 +1711,197 @@ function sortPicks(list){
 ========================================
 */
 
-
 function drawCards(list){
+    const box = document.getElementById("cardsView");
+    box.innerHTML = "";
 
+    list.forEach(p => {
+        const edge = p.edge !== undefined ? p.edge : 0;
 
-    const box =
-    document.getElementById(
-        "cardsView"
-    );
+        // Recuperar porcentajes de dinero y boletos asegurando enteros válidos
+        const handle = (p.handlePct !== null && p.handlePct !== undefined) ? parseInt(p.handlePct) : 50;
+        const bets = (p.betsPct !== null && p.betsPct !== undefined) ? parseInt(p.betsPct) : 50;
 
+        // El indicador real de dinero inteligente es la diferencia a favor del dinero (Handle > Bets)
+        const smartMoneyDivergence = Math.max(0, handle - bets);
+        const isWhale = p.whale || p.trendKey === "smart" || smartMoneyDivergence >= 15;
 
-    box.innerHTML="";
+        const div = document.createElement("div");
+        div.className = `pcard ${p.actionKey} ${isWhale ? "whale" : ""}`;
 
+        // Determinar estilo del badge de acción rápida (Apostar / Pasar)
+        const isBet = p.actionKey === "bet";
+        const actionBadge = isBet 
+            ? `<span style="padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; background: var(--teal-soft); color: var(--teal); border: 1px solid var(--teal);">🟢 APOSTAR</span>`
+            : `<span style="padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; background: var(--red-soft); color: var(--red); border: 1px solid var(--red);">🔴 PASAR</span>`;
 
+        div.innerHTML = `
+        <!-- Cabecera de la Tarjeta -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 4px;">
+            <div class="game" style="flex: 1; font-weight: bold; font-size: 14px;">
+                ${p.game}
+            </div>
+            <div>
+                ${actionBadge}
+            </div>
+        </div>
+
+        <div style="color:var(--muted); font-size:12px; margin-bottom: 10px;">
+            ${p.league} · ${p.time}
+        </div>
+
+        <!-- Cuerpo de Datos Técnicos -->
+        <div class="pick" style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+            <strong style="font-size: 15px; color: var(--text);">
+                ${p.pick}
+            </strong>
+            <br>
+            <span style="font-size: 13px; color: var(--muted);">${p.market}</span>
+
+            <!-- Grid de Métricas Clave (Smart Money de texto estático ha sido eliminado) -->
+            <div style="margin-top:12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
+                <div>Modelo: <b>${p.modelProb ? p.modelProb + '%' : '-%'}</b></div>
+                <div>Edge: <b class="edge" style="color: var(--teal);">+${edge}%</b></div>
+                <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
+            </div>
+        </div>
+
+        <!-- 📊 Barra de Distribución Real: Boletos (Volumen) vs Dinero (Handle) -->
+        <div style="margin-top: 14px; margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px;">
+                <span>Boletos (Volumen): <b style="color: #4a90e2;">${bets}%</b></span>
+                <span>Dinero (Handle): <b style="color: #2ecc71;">${handle}%</b></span>
+            </div>
+            
+            <!-- Barra dual -->
+            <div style="width: 100%; height: 8px; background: #2e3035; border-radius: 4px; overflow: hidden; display: flex;">
+                <!-- Fracción Boletos (Azul) -->
+                <div style="width: ${bets}%; height: 100%; background: #4a90e2; transition: width 0.3s;"></div>
+                <!-- Fracción Dinero (Verde Brillante) -->
+                <div style="width: ${handle}%; height: 100%; background: #2ecc71; transition: width 0.3s;"></div>
+            </div>
+
+            <!-- Alerta de Smart Money calculada dinámicamente -->
+            ${smartMoneyDivergence >= 10 ? `
+                <div style="font-size: 10.5px; color: #ff9f43; margin-top: 5px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                    🐳 Smart Money: +${smartMoneyDivergence}% de dinero respaldando este pick.
+                </div>
+            ` : ''}
+        </div>
+
+        <!-- Footer con Tags Globales -->
+        <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="tag" style="margin: 0; background: rgba(255,159,67,0.1); color: #ff9f43;">
+                🔥 Score: <b>${p.score || 0}</b>
+            </span>
+
+            <span class="tag" style="margin: 0;">
+                Stake <b>${p.stake || 0}u</b>
+            </span>
+
+            <span class="tag" style="margin: 0;">
+                EV <b>${p.ev ? p.ev + '%' : '0%'}</b>
+            </span>
+
+            <span class="tag" style="margin: 0; text-transform: uppercase;">
+                🛡️ ${p.risk || "N/A"}
+            </span>
+        </div>
+
+        <!-- Justificación técnica si existe -->
+        ${p.reason ? `
+        <p style="margin-top:12px; font-size: 12.5px; color:var(--muted); line-height: 1.4; border-top: 1px dashed var(--border); padding-top: 8px;">
+            ${p.reason}
+        </p>` : ''}
+        `;
+
+        box.appendChild(div);
+    });
+}
+
+// FALTABA POR COMPLETO. render() la llama cuando state.view==="board"
+// (pestaña "Tablero Pro"); sin ella, dar clic ahí tronaba con
+// "drawBoard is not defined".
+function drawBoard(list){
+
+    const tbody = document.getElementById("boardBody");
+    tbody.innerHTML = "";
 
     list.forEach(p=>{
 
+        const edge = calculateEdge(p);
+        const smart = calculateSmartMoney(p);
 
-        const smart =
-        calculateSmartMoney(p);
+        const tr = document.createElement("tr");
 
-
-        const edge =
-        calculateEdge(p);
-
-
-
-        const div =
-        document.createElement("div");
-
-
-
-        div.className =
-        `pcard ${p.actionKey}
-        ${smart>=10?"whale":""}`;
-
-
-
-
-        div.innerHTML = `
-
-
-        <div class="game">
-
-        ${p.game}
-
-        </div>
-
-
-
-        <div style="color:var(--muted);font-size:12px">
-
-        ${p.league}
-        ·
-        ${p.time}
-
-        </div>
-
-
-
-
-        <div class="pick">
-
-        <strong>
-        ${p.pick}
-        </strong>
-
-
-        <br>
-
-        ${p.market}
-
-
-
-        <div style="margin-top:10px">
-
-        Modelo:
-        <b>
-        ${p.modelProb || "-"}%
-        </b>
-
-        </div>
-
-
-        <div>
-
-        Edge:
-        <b class="edge">
-        +${edge}%
-        </b>
-
-        </div>
-
-
-        <div>
-
-        Smart Money:
-        <b>
-        ${smart}%
-        </b>
-
-        </div>
-
-
-        </div>
-
-
-
-
-        <div>
-
-        <span class="tag">
-        Stake ${p.stake || 0}u
-        </span>
-
-
-        <span class="tag">
-        EV ${p.ev || 0}%
-        </span>
-
-
-        <span class="tag">
-        ${p.risk || "N/A"}
-        </span>
-
-
-        </div>
-
-
-        <p style="margin-top:12px;color:var(--muted)">
-
-        ${p.reason || ""}
-
-        </p>
-
-
+        tr.innerHTML = `
+            <td>${p.time || "--:--"}</td>
+            <td>
+                <div style="font-weight:700">${p.game}</div>
+                <div style="color:var(--muted);font-size:11px">${p.league || ""}</div>
+            </td>
+            <td>${p.market || ""}</td>
+            <td>${p.modelProb || "-"}%</td>
+            <td class="edge">+${edge}%</td>
+            <td>${smart}%</td>
+            <td>${p.ev || 0}%</td>
+            <td>${p.risk || "N/A"}</td>
+            <td>${p.stake || 0}u</td>
+            <td>${p.actionKey === "bet" ? "🟢 APOSTAR" : "🔴 PASAR"}</td>
         `;
 
-
-
-        box.appendChild(div);
-
+        tbody.appendChild(tr);
 
     });
 
+}
+
+
+// FALTABA POR COMPLETO. Igual que drawBoard: se necesita para la
+// pestaña "Historial" (state.view==="history"), que tampoco tenía
+// listener en el botón viewHistory (agregado en setupFilters()).
+function drawHistory(list){
+
+    const tbody = document.getElementById("historyBody");
+    tbody.innerHTML = "";
+
+    list.forEach(p=>{
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${p.game}</td>
+            <td>${p.pick}</td>
+            <td>${p.result || "—"}</td>
+            <td>${p.roi != null ? p.roi + "%" : "—"}</td>
+            <td>${p.league || ""}</td>
+            <td>${p.date || ""} ${p.time || ""}</td>
+        `;
+
+        tbody.appendChild(tr);
+
+    });
 
 }
 
 function render(){
-  const filtered = applyFilters(PICKS);
+
+  // "history" filtra sobre eventos ya finalizados; las demás vistas
+  // (cards/board) trabajan sobre el universo completo de PICKS.
+  const source = state.view === "history" ? history() : PICKS;
+
+  const filtered = applyFilters(source);
   const sorted = sortPicks(filtered);
 
   updateMetrics(sorted);
 
   const empty = document.getElementById("emptyState");
 
+  document.getElementById("cardsView").style.display="none";
+  document.getElementById("boardView").style.display="none";
+  document.getElementById("historyView").style.display="none";
+
   if(sorted.length === 0){
-    document.getElementById("cardsView").style.display="none";
-    document.getElementById("boardView").style.display="none";
     empty.style.display="block";
     return;
   }
@@ -1885,9 +1909,14 @@ function render(){
   empty.style.display="none";
 
   if(state.view === "cards"){
+    document.getElementById("cardsView").style.display="grid";
     drawCards(sorted);
-  } else {
+  } else if(state.view === "board") {
+    document.getElementById("boardView").style.display="block";
     drawBoard(sorted);
+  } else {
+    document.getElementById("historyView").style.display="block";
+    drawHistory(sorted);
   }
 }
 
@@ -1914,38 +1943,24 @@ function setupFilters(){
   });
 
 
-  function createSelect(id,label,data,mapper){
-
-    const sel=document.getElementById(id);
-
-    sel.innerHTML=`<option value="">${label}</option>`;
-
+function createSelect(id, label, data, mapper) {
+    const sel = document.getElementById(id);
+    sel.innerHTML = `<option value="">${label}</option>`;
 
     [...data]
-    .sort()
-    .forEach(item=>{
+      .sort()
+      .forEach(item => {
+        const text = mapper ? mapper(item) : item;
+        // Se inyecta en una sola línea de texto sin espacios colaterales
+        sel.innerHTML += `<option value="${item}">${text}</option>`;
+      });
 
-      sel.innerHTML += `
-        <option value="${item}">
-          ${mapper ? mapper(item) : item}
-        </option>
-      `;
-
-    });
-
-
-    sel.addEventListener("change",e=>{
-
-      const key=id.replace("f","").toLowerCase();
-
-      state[key]=e.target.value;
-
+    sel.addEventListener("change", e => {
+      const key = id.replace("f", "").toLowerCase();
+      state[key] = e.target.value;
       render();
-
     });
-
   }
-
 
   createSelect(
     "fDate",
@@ -2080,21 +2095,18 @@ function setupFilters(){
   const boardBtn=
     document.getElementById("viewBoard");
 
+  const historyBtn=
+    document.getElementById("viewHistory");
+
 
 
   cardsBtn.onclick=()=>{
 
     state.view="cards";
 
-    cardsBtn.setAttribute(
-      "aria-pressed",
-      true
-    );
-
-    boardBtn.setAttribute(
-      "aria-pressed",
-      false
-    );
+    cardsBtn.setAttribute("aria-pressed", true);
+    boardBtn.setAttribute("aria-pressed", false);
+    historyBtn.setAttribute("aria-pressed", false);
 
     render();
 
@@ -2106,15 +2118,24 @@ function setupFilters(){
 
     state.view="board";
 
-    cardsBtn.setAttribute(
-      "aria-pressed",
-      false
-    );
+    cardsBtn.setAttribute("aria-pressed", false);
+    boardBtn.setAttribute("aria-pressed", true);
+    historyBtn.setAttribute("aria-pressed", false);
 
-    boardBtn.setAttribute(
-      "aria-pressed",
-      true
-    );
+    render();
+
+  };
+
+
+  // FALTABA. El botón existía en el HTML pero sin listener, así que
+  // la pestaña "Historial" no hacía nada.
+  historyBtn.onclick=()=>{
+
+    state.view="history";
+
+    cardsBtn.setAttribute("aria-pressed", false);
+    boardBtn.setAttribute("aria-pressed", false);
+    historyBtn.setAttribute("aria-pressed", true);
 
     render();
 
