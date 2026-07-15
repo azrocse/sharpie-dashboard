@@ -840,6 +840,7 @@ def build_picks(raw_data):
 
 
     return events
+
 # ============================================================
 # GENERATE DASHBOARD
 # ============================================================
@@ -990,17 +991,28 @@ def generate_dashboard(events_data):
 
 
 
-    # ========================================================
-    # JSON PARA EL FRONTEND
-    # El template.html espera un ARRAY plano de picks en PICKS
-    # (usa PICKS.filter / PICKS.forEach directamente), no el
-    # objeto agrupado {generated, events, stats}. El template ya
-    # calcula upcoming/finished por su cuenta comparando p.iso.
-    # ========================================================
+    dashboard_data={
+
+
+        "generated":
+            now_str,
+
+
+
+        "events":
+            events_data,
+
+
+
+        "stats":
+            stats
+
+    }
+
 
 
     json_data=json.dumps(
-        all_events,
+        dashboard_data,
         ensure_ascii=False
     )
 
