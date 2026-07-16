@@ -2,80 +2,41 @@ import json
 import os
 from datetime import datetime, timedelta
 
-
 # ============================================================
 # RUTAS
 # ============================================================
-
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-BASE_DIR = os.path.abspath(
-    os.path.join(CURRENT_DIR, "..", "..")
-)
-
-INPUT_DIR = os.path.join(
-    BASE_DIR,
-    "data",
-    "analyzed"
-)
-
+BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
+INPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
 OUTPUT_DIR = BASE_DIR
-
-
 
 # ============================================================
 # LOCALIZAR ARCHIVO FUENTE
 # ============================================================
-
 def get_latest_file():
-
-    direct = os.path.join(
-        INPUT_DIR,
-        "sharpie.json"
-    )
-
+    direct = os.path.join(INPUT_DIR, "sharpie.json")
     if os.path.exists(direct):
         return direct
-
 
     if not os.path.exists(INPUT_DIR):
         return None
 
-
-    candidates=[]
-
-
-    for root,dirs,files in os.walk(INPUT_DIR):
-
+    candidates = []
+    for root, dirs, files in os.walk(INPUT_DIR):
         for file in files:
-
-            if file.lower()=="sharpie.json":
-
-                candidates.append(
-                    os.path.join(root,file)
-                )
-
+            if file.lower() == "sharpie.json":
+                candidates.append(os.path.join(root, file))
 
     if not candidates:
         return None
 
-
-    return max(
-        candidates,
-        key=os.path.getmtime
-    )
-
-
+    return max(candidates, key=os.path.getmtime)
 
 # ============================================================
-# FECHAS
+# FECHAS Y HORAS
 # ============================================================
-
 def parse_match_datetime(raw):
-
-    now=datetime.now()
-
-
+    now = datetime.now()
     if not raw:
         return (
             now.strftime("%Y-%m-%d"),
@@ -83,244 +44,92 @@ def parse_match_datetime(raw):
             now.strftime("%Y-%m-%dT00:00:00")
         )
 
-
-    raw=str(raw).strip()
-
-
-    formats=[
-
+    raw = str(raw).strip()
+    formats = [
         "%Y-%m-%dT%H:%M:%S",
-
         "%Y-%m-%d %H:%M:%S",
-
     ]
 
-
     for fmt in formats:
-
         try:
-
-            dt=datetime.strptime(raw,fmt)
-
+            dt = datetime.strptime(raw, fmt)
             return (
                 dt.strftime("%Y-%m-%d"),
                 dt.strftime("%H:%M"),
                 dt.strftime("%Y-%m-%dT%H:%M:%S")
             )
-
         except:
             pass
 
-
-
     try:
-
         if "," in raw:
-
-            date_part,time_part=[
-                x.strip()
-                for x in raw.split(",",1)
-            ]
-
-
-            year=now.year
-
-
-            full=f"{date_part}/{year} {time_part}"
-
-
-            dt=datetime.strptime(
-                full,
-                "%m/%d/%Y %I:%M%p"
-            )
-
-
+            date_part, time_part = [x.strip() for x in raw.split(",", 1)]
+            year = now.year
+            full = f"{date_part}/{year} {time_part}"
+            dt = datetime.strptime(full, "%m/%d/%Y %I:%M%p")
             # ET -> CDMX
-            dt=dt-timedelta(hours=2)
-
-
+            dt = dt - timedelta(hours=2)
             return (
-
                 dt.strftime("%Y-%m-%d"),
-
                 dt.strftime("%H:%M"),
-
-                dt.strftime(
-                    "%Y-%m-%dT%H:%M:%S"
-                )
-
+                dt.strftime("%Y-%m-%dT%H:%M:%S")
             )
-
     except:
         pass
 
-
-
     return (
-
         now.strftime("%Y-%m-%d"),
-
         raw,
-
         now.strftime("%Y-%m-%dT00:00:00")
-
     )
 
-
-
-# ============================================================
-# ESTADO DEL EVENTO
-# ============================================================
-
 def classify_event_status(iso):
-
     try:
-
-        event_time=datetime.fromisoformat(
-            iso
-        )
-
+        event_time = datetime.fromisoformat(iso)
     except:
-
         return "finished"
 
+    now = datetime.now()
+    diff = (event_time - now).total_seconds()
 
-
-    now=datetime.now()
-
-
-    diff=(event_time-now).total_seconds()
-
-
-
-    # todavía no empieza
-    if diff>0:
-
+    if diff > 0:
         return "upcoming"
-
-
-
-    # máximo 5 horas considerado live
-    if diff>-18000:
-
+    if diff > -18000:
         return "live"
-
-
-
     return "finished"
-
-
-
 
 # ============================================================
 # CLASIFICADORES
 # ============================================================
-
-
 def classify_action(text):
-
-    text=(text or "").upper()
-
+    text = (text or "").upper()
     if "APOSTAR" in text:
         return "bet"
-
     return "pass"
 
-
-
 def classify_trend(text):
-
-    t=(text or "").lower()
-
-
+    t = (text or "").lower()
     if "sharp" in t or "🔥" in t:
         return "sharp"
-
-
     if "mixto" in t:
         return "mixed"
-
-
     if "consenso" in t:
         return "consensus"
-
-
     if "public" in t or "público" in t:
         return "public"
-
-
     return "other"
 
-
-
 def classify_priority(text):
-
-    t=(text or "").upper()
-
-
+    t = (text or "").upper()
     if "AHORA" in t:
         return "now"
-
-
     if "PRONTO" in t:
         return "soon"
-
-
     return "watch"
 
-
-
-
 # ============================================================
-# VALIDACIONES
+# CONVERSORES Y VALIDACIONES SEGURAS
 # ============================================================
-
-
-def safe_float(value):
-
-    try:
-        return float(value or 0)
-
-    except:
-
-        return 0
-
-
-
-def safe_score(value):
-
-    try:
-
-        value=float(value)
-
-    except:
-
-        return 0
-
-
-    return max(
-        0,
-        min(
-            100,
-            value
-        )
-    )
-
-def safe_pct(val):
-    if val is None:
-        return None
-    try:
-        # Si es un string con '%', quitarlo
-        if isinstance(val, str):
-            val = val.replace('%', '').strip()
-        # Convertir a float y manejar decimales (ej: 0.52 -> 52)
-        num = float(val)
-        if 0 < num < 1:
-            return int(num * 100)
-        return int(num)
-    except Exception:
-        return None
-
 def safe_float(val):
     if val is None:
         return 0.0
@@ -330,158 +139,102 @@ def safe_float(val):
         return float(val)
     except Exception:
         return 0.0
-    
+
+def safe_score(value):
+    try:
+        value = float(value)
+    except:
+        return 0
+    return max(0, min(100, value))
+
+def safe_pct(val):
+    if val is None:
+        return None
+    try:
+        if isinstance(val, str):
+            val = val.replace('%', '').strip()
+        num = float(val)
+        if 0 < num < 1:
+            return int(num * 100)
+        return int(num)
+    except Exception:
+        return None
+
+def american_to_decimal(american_odds):
+    """Convierte momios americanos (ej: -110, +150) a decimal de forma segura."""
+    try:
+        odds = float(american_odds)
+        if odds == 0:
+            return None
+        if odds > 0:
+            return (odds / 100.0) + 1.0
+        else:
+            return (100.0 / abs(odds)) + 1.0
+    except (ValueError, TypeError):
+        return None
+
 # ============================================================
 # DETECCIÓN WHALE
 # ============================================================
-
-
 def detect_whale(market):
-
-
     if market.get("whale"):
         return True
 
-
-    handle=safe_pct(
-        market.get("handle_pct")
-    )
-
-    bets=safe_pct(
-        market.get("bets_pct")
-    )
-
+    handle = safe_pct(market.get("handle_pct"))
+    bets = safe_pct(market.get("bets_pct"))
 
     if handle is not None and bets is not None:
-
-        if handle-bets >=15:
+        if handle - bets >= 15:
             return True
 
-
-
-    blob=" ".join(
-        str(
-            market.get(k,"")
-        )
-
-        for k in [
-            "priority",
-            "action",
-            "reason",
-            "market_trend"
-        ]
-
+    blob = " ".join(
+        str(market.get(k, ""))
+        for k in ["priority", "action", "reason", "market_trend"]
     ).lower()
 
-
-
-    return (
-        "whale" in blob
-        or
-        "🐋" in blob
-    )
+    return "whale" in blob or "🐋" in blob
 
 # ============================================================
 # BUILD PICKS
 # ============================================================
-
 def build_picks(raw_data):
-
     print("\n[DEBUG] Iniciando análisis universal de mercados...")
-
-
     events = {
-
         "upcoming": [],
         "live": [],
         "finished": []
-
     }
 
-
-    # --------------------------------------------------------
-    # Buscador recursivo universal
-    # --------------------------------------------------------
-
     def extract_markets(node):
-
-        found=[]
-
-
-        if isinstance(node,list):
-
+        found = []
+        if isinstance(node, list):
             for item in node:
-
-                found.extend(
-                    extract_markets(item)
-                )
-
-
-        elif isinstance(node,dict):
-
-
-            if (
-                "markets" in node
-                and
-                isinstance(node["markets"],list)
-            ):
-
-                found.extend(
-                    node["markets"]
-                )
-
-
-            elif (
-                "game" in node
-                or
-                "pick" in node
-            ):
-
+                found.extend(extract_markets(item))
+        elif isinstance(node, dict):
+            if "markets" in node and isinstance(node["markets"], list):
+                found.extend(node["markets"])
+            elif "game" in node or "pick" in node:
                 found.append(node)
-
-
-
             for value in node.values():
-
-                if isinstance(
-                    value,
-                    (dict,list)
-                ):
-
-                    found.extend(
-                        extract_markets(value)
-                    )
-
-
+                if isinstance(value, (dict, list)):
+                    found.extend(extract_markets(value))
         return found
 
+    markets = extract_markets(raw_data)
+    print(f"[DEBUG] Mercados encontrados: {len(markets)}")
 
-
-    markets=extract_markets(raw_data)
-
-
-    print(
-        f"[DEBUG] Mercados encontrados: {len(markets)}"
-    )
-
-# --------------------------------------------------------
-    # Procesar mercados evitando duplicados
-    # --------------------------------------------------------
     counter = 0
-    seen_picks = set() # Set para evitar duplicaciones
+    seen_picks = set()
 
     for market in markets:
         game = market.get("game")
         pick = market.get("pick")
 
-        # Validación mínima
         if not game and not pick:
             continue
-
         if not market.get("market") and not market.get("type"):
             continue
 
-        # Evitar duplicados exactos usando una llave única (Game + Pick + Market)
         unique_key = f"{game}||{pick}||{market.get('market', market.get('type'))}"
         if unique_key in seen_picks:
             continue
@@ -489,77 +242,71 @@ def build_picks(raw_data):
 
         counter += 1
 
-        # Fechas
+        # Fechas y estatus
         date, time, iso = parse_match_datetime(market.get("time", ""))
         status = classify_event_status(iso)
 
-        # Métricas de dinero (Smart Money)
-        handle = safe_pct(market.get("handle_pct"))
-        bets = safe_pct(market.get("bets_pct"))
-        divergence = None
+        # 1. Extracción segura de volumen de dinero (BETS y HANDLE)
+        raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets")))
+        raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle")))
 
-        if handle is not None and bets is not None:
-            divergence = round(handle - bets, 2)
+        bets = int(safe_float(raw_bets)) if safe_float(raw_bets) is not None else 50
+        handle = int(safe_float(raw_handle)) if safe_float(raw_handle) is not None else 50
+        divergence = abs(handle - bets)
 
-        # Scores
+        # 2. Score y Confianza
         market_score = safe_score(market.get("market_score", 0))
         confidence = safe_score(market.get("confidence", market_score))
-        
-        # Obtener o estimar el Edge
         edge = safe_score(market.get("edge", 0))
 
-        # Score combinado
+        # Cálculo dinámico del Score Combinado utilizando la divergencia real calculada
         sharp_score = round(
-            (market_score * .45 + confidence * .35 + max(divergence or 0, 0) * .20),
+            (market_score * .45 + confidence * .35 + max(divergence, 0) * .20),
             1
         )
 
-        # Determinar Riesgo
+        # Determinar Riesgo en base al Score
         risk = "MEDIUM"
         if sharp_score >= 80:
             risk = "LOW"
         elif sharp_score < 55:
             risk = "HIGH"
 
-# --- EXTRACCIÓN Y ESTIMACIÓN DE MODELO Y EV (CORREGIDO) ---
-        # 1. Intentar obtener el modelo del JSON
-        raw_model = market.get("model_prob", market.get("modelProb"))
+        # 3. Extracción de Modelo
+        raw_model = market.get("model_prob", market.get("model_pct", market.get("modelProb")))
         model_val = safe_pct(raw_model)
 
-        # Si el JSON trae un modelo válido (> 0), lo usamos. 
-        # Si no lo trae (o es None/0), calculamos un estimado matemático basado en el Edge.
         if model_val and model_val > 0:
             model_prob = int(model_val)
         else:
-            # Estimación matemática: evita que se dispare a más de 99% o baje de 50%
             estimated_prob = 50 + int(edge / 2)
             model_prob = int(min(99, max(50, estimated_prob)))
 
-        # 2. Intentar obtener el EV
+        # 4. Cálculo exacto de EV usando cuotas de DraftKings
+        raw_odds = market.get("draftkings_odds", market.get("dk_odds", market.get("odds", market.get("price"))))
+        decimal_odds = None
+
+        if raw_odds is not None:
+            val_odds = safe_float(raw_odds)
+            if 1.01 < val_odds < 50.0:
+                decimal_odds = val_odds
+            else:
+                decimal_odds = american_to_decimal(raw_odds)
+
+        # Extraer EV del JSON o calcularlo matemáticamente
         raw_ev = market.get("ev")
         ev_val = safe_float(raw_ev)
-        
-        # Si el EV ya viene calculado en el JSON, lo usamos.
+
         if ev_val is not None and ev_val > 0:
             ev = ev_val
+        elif decimal_odds is not None and model_prob > 0:
+            p_model_dec = model_prob / 100.0
+            calculated_ev = (p_model_dec * decimal_odds) - 1.0
+            ev = round(calculated_ev * 100.0, 1)
         else:
-            # Si no viene, lo calculamos como el 80% del Edge
             ev = round(edge * 0.8, 1) if edge > 0 else 0.0
 
-        # --- 📊 NUEVO: EXTRACCIÓN SEGURA DE BETS Y HANDLE ---
-        # Buscamos en todas las variantes posibles de nombres de llaves en el JSON de origen
-        raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets")))
-        raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle")))
-
-        # Convertimos a entero de forma segura usando tu función safe_float/safe_pct
-        # Si no existen en el JSON de origen, por defecto asignamos 50 (para evitar nulls)
-        bets = int(safe_float(raw_bets)) if safe_float(raw_bets) is not None else 50
-        handle = int(safe_float(raw_handle)) if safe_float(raw_handle) is not None else 50
-
-        # Calculamos la divergencia absoluta de forma dinámica
-        divergence = abs(handle - bets)
-
-        # --- OBJETO FINAL LIMPIO ---
+        # Objeto de datos final limpio para JS
         item = {
             "id": counter,
             "game": game or "Evento desconocido",
@@ -577,7 +324,7 @@ def build_picks(raw_data):
             "marketScore": market_score,
             "confidence": confidence,
             "edge": edge,
-            "modelProb": model_prob,  # Recibe el valor limpio y calculado arriba
+            "modelProb": model_prob,
             "ev": ev,
             "risk": risk,
             "reason": market.get("reason", ""),
@@ -586,311 +333,77 @@ def build_picks(raw_data):
             "iso": iso,
             "status": status,
             "whale": detect_whale(market),
-            "handlePct": handle,       # <--- Ahora sí existe la variable local
-            "betsPct": bets,           # <--- Ahora sí existe la variable local
-            "divergence": divergence   # <--- Ahora sí existe la variable local
+            "handlePct": handle,
+            "betsPct": bets,
+            "divergence": divergence
         }
         
         events[status].append(item)
 
-    print(
-        "[DEBUG] Resultado:"
-    )
-
-
-    print(
-        f"  Próximos: {len(events['upcoming'])}"
-    )
-
-
-    print(
-        f"  Live: {len(events['live'])}"
-    )
-
-
-    print(
-        f"  Finalizados: {len(events['finished'])}"
-    )
-
+    print("[DEBUG] Resultado:")
+    print(f"  Próximos: {len(events['upcoming'])}")
+    print(f"  Live: {len(events['live'])}")
+    print(f"  Finalizados: {len(events['finished'])}")
 
     return events
 
 # ============================================================
 # GENERATE DASHBOARD
 # ============================================================
-
 def generate_dashboard(events_data):
-
     print("\n--- [DEBUG START: GENERATE DASHBOARD] ---")
 
+    # Obtener la hora actual exacta ajustada a la CDMX (UTC-6 de forma manual y robusta para entornos cloud)
+    utc_now = datetime.utcnow()
+    cdmx_now = utc_now - timedelta(hours=6)
+    now_str = cdmx_now.strftime("%Y-%m-%d %H:%M:%S")
 
-    now_str=datetime.now().strftime(
-        "%Y-%m-%d %H:%M:%S"
-    )
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    template_path = os.path.join(current_dir, "template.html")
 
-
-
-    current_dir=os.path.dirname(
-        os.path.abspath(__file__)
-    )
-
-
-
-    template_path=os.path.join(
-        current_dir,
-        "template.html"
-    )
-
-
-
-    print(
-        f"[DEBUG] Buscando plantilla: {template_path}"
-    )
-
-
+    print(f"[DEBUG] Buscando plantilla: {template_path}")
 
     if not os.path.exists(template_path):
+        raise FileNotFoundError(f"No existe template.html: {template_path}")
 
-        raise FileNotFoundError(
-            f"No existe template.html: {template_path}"
-        )
+    with open(template_path, "r", encoding="utf-8") as file:
+        html_template = file.read()
 
+    upcoming = events_data.get("upcoming", [])
+    live = events_data.get("live", [])
+    finished = events_data.get("finished", [])
 
+    all_events = upcoming + live + finished
 
-    with open(
-        template_path,
-        "r",
-        encoding="utf-8"
-    ) as file:
-
-        html_template=file.read()
-
-
-
-    # ========================================================
-    # MÉTRICAS GLOBALES PARA DASHBOARD
-    # ========================================================
-
-
-    upcoming=events_data.get(
-        "upcoming",
-        []
-    )
-
-
-    live=events_data.get(
-        "live",
-        []
-    )
-
-
-    finished=events_data.get(
-        "finished",
-        []
-    )
-
-
-
-    all_events=(
-        upcoming
-        +
-        live
-        +
-        finished
-    )
-
-
-
-    stats={
-
-
-        "total":
-            len(all_events),
-
-
-
-        "upcoming":
-            len(upcoming),
-
-
-
-        "live":
-            len(live),
-
-
-
-        "finished":
-            len(finished),
-
-
-
-        "bets":
-            len(
-                [
-                    x
-                    for x in all_events
-                    if x.get("actionKey")=="bet"
-                ]
-            ),
-
-
-
-        "whales":
-            len(
-                [
-                    x
-                    for x in all_events
-                    if x.get("whale")
-                ]
-            ),
-
-
-
-        "stake":
-            round(
-
-                sum(
-                    x.get(
-                        "stake",
-                        0
-                    )
-                    for x in all_events
-                ),
-
-                2
-
-            )
-
+    stats = {
+        "total": len(all_events),
+        "upcoming": len(upcoming),
+        "live": len(live),
+        "finished": len(finished),
+        "bets": len([x for x in all_events if x.get("actionKey") == "bet"]),
+        "whales": len([x for x in all_events if x.get("whale")]),
+        "stake": round(sum(x.get("stake", 0) for x in all_events), 2)
     }
 
+    json_data = json.dumps(all_events, ensure_ascii=False)
 
+    print("[DEBUG] Datos preparados:")
+    print(f"  Total eventos: {stats['total']}")
+    print(f"  Próximos: {stats['upcoming']}")
+    print(f"  Live: {stats['live']}")
+    print(f"  Finalizados: {stats['finished']}")
 
-    # ========================================================
-    # template.html usa PICKS como ARRAY PLANO en TODO el JS:
-    # PICKS.filter(...), PICKS.forEach(...), eventStatus(p) por
-    # pick individual, etc. Antes se mandaba un objeto envuelto
-    # {generated, events, stats}, lo que rompía absolutamente
-    # todo con "PICKS.filter is not a function" apenas cargaba
-    # la página (nunca llegaba a pintar nada). Cada pick ya trae
-    # su "status" individual, así que basta con el array plano.
-    # Las estadísticas ("stats") ya no se inyectan al frontend
-    # porque el template las recalcula solo desde PICKS.
-    # ========================================================
+    # Inyecciones en el HTML de salida
+    html_content = html_template.replace("__GENERATED_AT__", now_str)
+    html_content = html_content.replace("__PICKS_JSON__", json_data)
 
+    repo_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
+    output_file = os.path.join(repo_root, "index.html")
 
-    json_data=json.dumps(
-        all_events,
-        ensure_ascii=False
-    )
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
+    with open(output_file, "w", encoding="utf-8") as file:
+        file.write(html_content)
 
-
-    print(
-        "[DEBUG] Datos preparados:"
-    )
-
-
-    print(
-        f"  Total eventos: {stats['total']}"
-    )
-
-    print(
-        f"  Próximos: {stats['upcoming']}"
-    )
-
-    print(
-        f"  Live: {stats['live']}"
-    )
-
-    print(
-        f"  Finalizados: {stats['finished']}"
-    )
-
-
-
-    # ========================================================
-    # INYECCIÓN HTML
-    # ========================================================
-
-
-    html_content=html_template.replace(
-
-        "__GENERATED_AT__",
-
-        now_str
-
-    )
-
-
-
-    html_content=html_content.replace(
-
-        "__PICKS_JSON__",
-
-        json_data
-
-    )
-
-
-
-    # ========================================================
-    # SALIDA
-    # ========================================================
-
-
-    repo_root=os.path.abspath(
-
-        os.path.join(
-            current_dir,
-            "..",
-            ".."
-        )
-
-    )
-
-
-
-    output_file=os.path.join(
-
-        repo_root,
-
-        "index.html"
-
-    )
-
-
-
-    os.makedirs(
-
-        os.path.dirname(output_file),
-
-        exist_ok=True
-
-    )
-
-
-
-    with open(
-
-        output_file,
-
-        "w",
-
-        encoding="utf-8"
-
-    ) as file:
-
-        file.write(
-            html_content
-        )
-
-
-
-    print(
-        f"[DEBUG] Dashboard generado: {output_file}"
-    )
-
-
-    print(
-        "--- [DEBUG END: GENERATE DASHBOARD ] ---\n"
-    )
+    print(f"[DEBUG] Dashboard generado con hora CDMX ({now_str}): {output_file}")
+    print("--- [DEBUG END: GENERATE DASHBOARD ] ---\n")

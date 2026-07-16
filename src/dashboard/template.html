@@ -1,2214 +1,1334 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
-
+<html lang="es" data-theme="dark">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Sharpie · Panel de Señales de Alta Precisión</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-
-<style>
-
-:root[data-theme="light"] {
-
---bg:#f4f7fb;
---panel:#ffffff;
---panel2:#f8fafc;
-
---border:#e2e8f0;
-
---text:#0f172a;
---muted:#64748b;
-
---amber:#f59e0b;
---amber-soft:#fff7ed;
-
---teal:#0d9488;
---teal-soft:#ecfeff;
-
---gold:#d97706;
---gold-soft:#fffbeb;
-
---red:#e11d48;
---red-soft:#fff1f2;
-
---shadow:
-0 10px 25px rgba(15,23,42,.06);
-
---radius:16px;
-
-}
-
-
-:root[data-theme="dark"] {
-
---bg:#0b1120;
---panel:#111827;
---panel2:#0f172a;
-
---border:#334155;
-
---text:#f8fafc;
---muted:#94a3b8;
-
---amber:#fbbf24;
---amber-soft:#422006;
-
---teal:#2dd4bf;
---teal-soft:#042f2e;
-
---gold:#fbbf24;
---gold-soft:#422006;
-
---red:#fb7185;
---red-soft:#450a0a;
-
---shadow:
-0 10px 25px rgba(0,0,0,.35);
-
-}
-
-
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
-
-
-body{
-
-background:
-radial-gradient(circle at top left,
-rgba(245,158,11,.08),
-transparent 35%),
-var(--bg);
-
-color:var(--text);
-
-font-family:
-"Plus Jakarta Sans",
-sans-serif;
-
-padding:24px;
-
-min-height:100vh;
-
-}
-
-
-
-.mono{
-
-font-family:
-"JetBrains Mono",
-monospace;
-
-}
-
-
-
-.header{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-gap:20px;
-
-padding-bottom:25px;
-
-border-bottom:1px solid var(--border);
-
-margin-bottom:25px;
-
-}
-
-
-
-.brand h1{
-
-font-size:34px;
-
-font-weight:800;
-
-letter-spacing:-1px;
-
-}
-
-
-.brand h1 span{
-
-color:var(--amber);
-
-}
-
-
-.tagline{
-
-color:var(--muted);
-
-font-size:14px;
-
-margin-top:5px;
-
-}
-
-
-
-#clock{
-
-font-size:22px;
-
-font-weight:800;
-
-color:var(--teal);
-
-}
-
-
-
-.updated{
-
-font-size:12px;
-
-color:var(--muted);
-
-}
-
-
-
-/* =====================
-   METRICAS PRINCIPALES
-===================== */
-
-
-.ticker{
-
-display:grid;
-
-grid-template-columns:
-repeat(6,1fr);
-
-gap:16px;
-
-margin-bottom:25px;
-
-}
-
-
-
-.chip{
-
-background:var(--panel);
-
-border:1px solid var(--border);
-
-border-radius:var(--radius);
-
-padding:18px;
-
-box-shadow:var(--shadow);
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-
-
-.chip:before{
-
-content:"";
-
-position:absolute;
-
-left:0;
-top:0;
-
-height:100%;
-
-width:5px;
-
-background:var(--border);
-
-}
-
-
-
-.chip.amber:before{
-background:var(--amber);
-}
-
-
-.chip.teal:before{
-background:var(--teal);
-}
-
-
-.chip.gold:before{
-background:var(--gold);
-}
-
-
-
-.label{
-
-font-size:11px;
-
-font-weight:800;
-
-color:var(--muted);
-
-text-transform:uppercase;
-
-letter-spacing:.8px;
-
-}
-
-
-
-.value{
-
-margin-top:8px;
-
-font-size:28px;
-
-font-weight:800;
-
-font-family:
-"JetBrains Mono",
-monospace;
-
-}
-
-
-
-/* =====================
-   TOOLBAR
-===================== */
-
-
-.toolbar{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:12px;
-
-align-items:center;
-
-background:var(--panel);
-
-padding:16px;
-
-border-radius:var(--radius);
-
-border:1px solid var(--border);
-
-box-shadow:var(--shadow);
-
-margin-bottom:25px;
-
-}
-
-
-
-.search-box{
-
-flex:1;
-
-min-width:250px;
-
-background:var(--panel2);
-
-border:1px solid var(--border);
-
-border-radius:10px;
-
-padding:10px 15px;
-
-}
-
-
-
-.search-box input{
-
-width:100%;
-
-background:none;
-
-border:none;
-
-outline:none;
-
-color:var(--text);
-
-}
-
-
-
-select,
-.btn-chip,
-.clear-btn{
-
-background:var(--panel2);
-
-border:1px solid var(--border);
-
-color:var(--text);
-
-padding:10px 14px;
-
-border-radius:10px;
-
-font-weight:700;
-
-cursor:pointer;
-
-}
-
-
-
-/* =====================
-   TABS
-===================== */
-
-
-.view-toggle{
-
-display:flex;
-
-gap:5px;
-
-background:var(--panel2);
-
-padding:4px;
-
-border-radius:12px;
-
-border:1px solid var(--border);
-
-}
-
-
-
-.view-toggle button{
-
-border:none;
-
-background:none;
-
-padding:10px 15px;
-
-border-radius:8px;
-
-cursor:pointer;
-
-font-weight:800;
-
-color:var(--muted);
-
-}
-
-
-
-.view-toggle button[aria-pressed="true"]{
-
-background:var(--panel);
-
-color:var(--text);
-
-box-shadow:var(--shadow);
-
-}
-
-
-
-/* =====================
-   TARJETAS
-===================== */
-
-
-#cardsView{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fill,minmax(360px,1fr));
-
-gap:20px;
-
-}
-
-
-
-.pcard{
-
-background:var(--panel);
-
-border:1px solid var(--border);
-
-border-radius:var(--radius);
-
-padding:20px;
-
-box-shadow:var(--shadow);
-
-position:relative;
-
-}
-
-
-
-.pcard.bet{
-
-border-top:4px solid var(--amber);
-
-}
-
-
-.pcard.pass{
-
-border-top:4px solid var(--red);
-
-}
-
-
-.pcard.whale{
-
-box-shadow:
-0 0 0 2px var(--gold);
-
-}
-
-
-
-.game{
-
-font-size:17px;
-
-font-weight:800;
-
-}
-
-
-
-.pick{
-
-margin-top:15px;
-
-background:var(--panel2);
-
-padding:14px;
-
-border-radius:12px;
-
-}
-
-
-
-.edge{
-
-color:var(--teal);
-
-font-weight:800;
-
-}
-
-
-
-.tag{
-
-display:inline-block;
-
-padding:5px 10px;
-
-border-radius:8px;
-
-font-size:11px;
-
-font-weight:800;
-
-margin:5px 4px 0 0;
-
-background:var(--panel2);
-
-border:1px solid var(--border);
-
-}
-
-
-
-/* =====================
-   TABLERO PRO
-===================== */
-
-
-#boardView{
-
-background:var(--panel);
-
-border:1px solid var(--border);
-
-border-radius:var(--radius);
-
-overflow:auto;
-
-box-shadow:var(--shadow);
-
-}
-
-
-
-table{
-
-width:100%;
-
-border-collapse:collapse;
-
-min-width:1200px;
-
-}
-
-
-th{
-
-text-align:left;
-
-padding:14px;
-
-font-size:11px;
-
-text-transform:uppercase;
-
-color:var(--muted);
-
-border-bottom:1px solid var(--border);
-
-}
-
-
-td{
-
-padding:14px;
-
-border-bottom:1px solid var(--border);
-
-font-size:13px;
-
-}
-
-
-
-/* =====================
-   HISTORIAL
-===================== */
-
-
-#historyView{
-
-background:var(--panel);
-
-border-radius:var(--radius);
-
-border:1px solid var(--border);
-
-padding:20px;
-
-box-shadow:var(--shadow);
-
-}
-
-
-
-/* RESPONSIVE */
-
-@media(max-width:900px){
-
-.ticker{
-
-grid-template-columns:
-repeat(3,1fr);
-
-}
-
-}
-
-
-@media(max-width:600px){
-
-.ticker{
-
-grid-template-columns:
-repeat(2,1fr);
-
-}
-
-.header{
-
-flex-direction:column;
-
-align-items:flex-start;
-
-}
-
-}
-
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharpie · Panel de Señales de Alta Precisión</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root[data-theme="light"] {
+            --bg: #f8fafc;
+            --panel: #ffffff;
+            --panel-card: #ffffff;
+            --panel2: #f1f5f9;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+            
+            --amber: #d97706;
+            --amber-soft: rgba(217, 119, 6, 0.06);
+            --teal: #0d9488;
+            --teal-soft: rgba(13, 148, 136, 0.06);
+            --red: #e11d48;
+            --red-soft: rgba(225, 29, 72, 0.04);
+            --blue: #2563eb;
+            --blue-soft: rgba(37, 99, 235, 0.06);
+            --gold: #d97706;
+            
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-premium: 0 10px 30px -5px rgba(13, 148, 136, 0.15);
+            --radius: 12px;
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0b1329;
+            --panel: #111c40;
+            --panel-card: #14224c;
+            --panel2: #1e295d;
+            --border: #243572;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            
+            --amber: #fbbf24;
+            --amber-soft: rgba(251, 191, 36, 0.06);
+            --teal: #2dd4bf;
+            --teal-soft: rgba(45, 212, 191, 0.06);
+            --red: #fb7185;
+            --red-soft: rgba(251, 113, 133, 0.04);
+            --blue: #60a5fa;
+            --blue-soft: rgba(96, 165, 251, 0.08);
+            --gold: #fbbf24;
+            
+            --shadow: 0 10px 25px rgba(0,0,0,.3);
+            --shadow-premium: 0 10px 30px -5px rgba(45, 212, 191, 0.2);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* TRANSICIÓN SUAVE (UI/UX) */
+        body, .pcard, th, td, select, input, .badge-action, .badge-tag, .chip, .toolbar, .btn-copy-telegram {
+            transition: background-color 0.4s ease, 
+                        border-color 0.4s ease, 
+                        color 0.4s ease, 
+                        box-shadow 0.4s ease;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: "Plus Jakarta Sans", sans-serif;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .mono {
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+
+        .brand h1 {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand h1 span {
+            color: var(--teal);
+        }
+
+        .tagline {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .timestamp-badge {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            box-shadow: var(--shadow);
+        }
+
+        #clock {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        .updated {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .theme-toggle {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        /* TICKER METRICAS */
+        .ticker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .chip {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .chip.amber { border-left: 3px solid var(--amber); }
+        .chip.teal { border-left: 3px solid var(--teal); }
+        .chip.gold { border-left: 3px solid var(--gold); }
+
+        .label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .value {
+            margin-top: 6px;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        /* TOOLBAR FILTROS Y ORDENAMIENTO */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            background: var(--panel);
+            padding: 14px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        select, .btn-chip, .clear-btn {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: var(--teal);
+        }
+
+        .btn-chip[aria-pressed="true"] {
+            background: rgba(251, 191, 36, 0.15);
+            border-color: var(--gold);
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .clear-btn {
+            background: transparent;
+            border-color: transparent;
+            color: var(--muted);
+        }
+
+        .clear-btn:hover {
+            color: var(--text);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: var(--panel2);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .view-toggle button {
+            border: none;
+            background: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .view-toggle button[aria-pressed="true"] {
+            background: var(--panel);
+            color: var(--text);
+            box-shadow: var(--shadow);
+        }
+
+        /* DISEÑO DE APARTADOS (SECCIONES DE TARJETAS) */
+        .section-container {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .premium-title { color: var(--teal); }
+        .free-title { color: var(--blue); }
+        .other-title { color: var(--muted); }
+
+        .section-count {
+            font-size: 11px;
+            background: var(--panel2);
+            color: var(--text);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            border: 1px solid var(--border);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        /* TARJETAS CARDS */
+        .pcard {
+            background: var(--panel-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .pcard.whale-alert {
+            box-shadow: var(--shadow), 0 0 0 2px var(--gold);
+        }
+
+        .pcard.free-strong-alert {
+            box-shadow: var(--shadow), 0 0 0 2px var(--blue);
+        }
+
+        .pcard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .game-title {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .meta-row {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .countdown-timer {
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 700;
+            font-size: 12px;
+            background: var(--panel2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+        
+        .countdown-timer.urgent {
+            color: var(--red);
+            background: var(--red-soft);
+            border-color: var(--red);
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        .pick-details {
+            background: var(--panel);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+
+        .pick-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .market-type {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .grid-metrics {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        /* BARRA DE VOLUMEN UNIFICADA */
+        .volume-container {
+            margin: 12px 0;
+        }
+
+        .volume-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .volume-bar-unified {
+            height: 8px;
+            background: var(--panel2);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .vol-bets-fill {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+
+        .vol-handle-fill {
+            height: 100%;
+            background: var(--teal);
+            transition: width 0.3s ease;
+        }
+
+        .whale-active-bar {
+            background: #00ffcc !important;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+        }
+
+        .whale-banner {
+            font-size: 11px;
+            color: var(--gold);
+            margin-top: 6px;
+            font-weight: 700;
+        }
+
+        .strong-candidate-banner {
+            font-size: 11px;
+            color: var(--blue);
+            margin-top: 6px;
+            font-weight: 700;
+        }
+
+        .card-footer-tags {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            gap: 8px;
+        }
+
+        .badge-tag {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+        }
+
+        /* BOTÓN TELEGRAM */
+        .btn-copy-telegram {
+            background: rgba(0, 136, 204, 0.1);
+            color: #0088cc;
+            border: 1px solid rgba(0, 136, 204, 0.2);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            outline: none;
+        }
+
+        .btn-copy-telegram:hover {
+            background: #0088cc;
+            color: #ffffff;
+            border-color: #0088cc;
+        }
+
+        .reasoning-text {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+            border-top: 1px dashed var(--border);
+            padding-top: 8px;
+        }
+
+        /* TABLERO PRO */
+        #boardView {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1150px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--panel2);
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--panel-card);
+        }
+
+        /* HISTORIAL CON KPIs */
+        #historyView {
+            background: var(--panel);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .performance-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .perf-kpi {
+            text-align: center;
+        }
+
+        .perf-kpi-val {
+            font-size: 20px;
+            font-weight: 800;
+            font-family: "JetBrains Mono", monospace;
+            margin-top: 4px;
+        }
+
+        /* BADGES DINÁMICOS */
+        .badge-action {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            display: inline-block;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: 0.5; }
+        }
+
+        @media(max-width: 950px) {
+            .ticker { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media(max-width: 640px) {
+            .ticker { grid-template-columns: repeat(2, 1fr); }
+            .header { flex-direction: column; align-items: flex-start; }
+            .header-meta { width: 100%; justify-content: space-between; }
+        }
+    </style>
 </head>
 <body>
 
-
 <div class="header">
-
     <div class="brand">
-
         <h1>Sharp<span>ie</span></h1>
-
-        <div class="tagline">
-            Inteligencia avanzada de mercado · Smart Money · Edge · Valor esperado
-        </div>
-
+        <div class="tagline">Inteligencia Avanzada de Mercados · Smart Money · Tracker Probabilístico</div>
     </div>
-
-
-    <div>
-
-        <div id="clock" class="mono">
-            --:--:--
+    <div class="header-meta">
+        <div class="timestamp-badge">
+            <div id="clock" class="mono">--:--:--</div>
+            <div class="updated">Generado (CDMX): __GENERATED_AT__</div>
         </div>
-
-        <div class="updated">
-            Generado: __GENERATED_AT__
-        </div>
-
+        <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
     </div>
-
-
 </div>
-
-
-
-<!-- =========================
-     INDICADORES PRINCIPALES
-========================= -->
-
 
 <div class="ticker">
-
-
     <div class="chip amber">
-
-        <div class="label">
-            🎯 Picks Premium
-        </div>
-
-        <div class="value" id="mPremium">
-            0
-        </div>
-
+        <div class="label">🎯 Picks Premium</div>
+        <div class="value" id="mPremium">0</div>
     </div>
-
-
-
     <div class="chip teal">
-
-        <div class="label">
-            📈 Edge Promedio
-        </div>
-
-        <div class="value" id="mEdge">
-            0%
-        </div>
-
+        <div class="label">📈 Edge Promedio</div>
+        <div class="value" id="mEdge">0%</div>
     </div>
-
-
-
-
     <div class="chip gold">
-
-        <div class="label">
-            🐋 Smart Money
-        </div>
-
-        <div class="value" id="mSharp">
-            0
-        </div>
-
+        <div class="label">🐋 Whale Alerts</div>
+        <div class="value" id="mSharp">0</div>
     </div>
-
-
-
-
     <div class="chip">
-
-        <div class="label">
-            💰 EV Positivo
-        </div>
-
-        <div class="value" id="mEV">
-            0
-        </div>
-
+        <div class="label">💰 EV Positivo</div>
+        <div class="value" id="mEV">0</div>
     </div>
-
-
-
-
     <div class="chip teal">
-
-        <div class="label">
-            ⏱ Próximos 60 Min
-        </div>
-
-        <div class="value" id="mSoon">
-            0
-        </div>
-
+        <div class="label">⏱️ Próxima Hora</div>
+        <div class="value" id="mSoon">0</div>
     </div>
-
-
-
-
     <div class="chip">
-
-        <div class="label">
-            🛡 Riesgo Bajo
-        </div>
-
-        <div class="value" id="mRisk">
-            0
-        </div>
-
+        <div class="label">🛡️ Riesgo Bajo</div>
+        <div class="value" id="mRisk">0</div>
     </div>
-
-
-
 </div>
-
-
-
-
-
-<!-- =========================
-     FILTROS
-========================= -->
-
 
 <div class="toolbar">
+    <div class="search-box">
+        <input id="search" placeholder="Buscar por equipo, liga, mercado...">
+    </div>
+    <select id="fSort">
+        <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
+        <option value="recommended">⭐ Ordenar por: Recomendados</option>
+        <option value="score">🔥 Ordenar por: Mayor Score</option>
+        <option value="edge">📈 Ordenar por: Mayor Edge</option>
+    </select>
+    <select id="fDate"><option value="">📆 Todas las fechas</option></select>
+    <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
+    <select id="fTrend"><option value="">📊 Todas las señales</option></select>
+    <select id="fAction"><option value="">🎯 Todas las acciones</option></select>
 
+    <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
+    <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
 
-<div class="search-box">
+    <div style="flex:1"></div>
 
-<input 
-id="search"
-placeholder="Buscar equipo, liga, mercado o análisis..."
->
-
+    <div class="view-toggle">
+        <button id="viewCards" aria-pressed="true">🎯 Tarjetas</button>
+        <button id="viewBoard" aria-pressed="false">📊 Tablero Pro</button>
+        <button id="viewHistory" aria-pressed="false">📚 Historial</button>
+    </div>
 </div>
 
-
-
-<select id="fDate">
-
-<option value="">
-📆 Todas las fechas
-</option>
-
-</select>
-
-
-
-<select id="fLeague">
-
-<option value="">
-🏆 Todas las ligas
-</option>
-
-</select>
-
-
-
-<select id="fTrend">
-
-<option value="">
-📊 Todas las señales
-</option>
-
-</select>
-
-
-
-
-<select id="fAction">
-
-<option value="">
-🎯 Todas las acciones
-</option>
-
-</select>
-
-
-
-
-<select id="sortSel">
-
-<option value="recommended">
-⭐ Recomendado
-</option>
-
-<option value="edge_desc">
-📈 Mayor Edge
-</option>
-
-<option value="score_desc">
-🔥 Mayor Score
-</option>
-
-<option value="stake_desc">
-💰 Mayor Stake
-</option>
-
-<option value="time_asc">
-⏱ Más próximos
-</option>
-
-</select>
-
-
-
-
-<button 
-class="btn-chip"
-id="whaleOnly">
-
-🐋 Smart Money
-
-</button>
-
-
-
-
-<button 
-class="clear-btn"
-id="clearBtn">
-
-Limpiar
-
-</button>
-
-
-
-
-<div style="flex:1"></div>
-
-
-
-
-<div class="view-toggle">
-
-
-<button 
-id="viewCards"
-aria-pressed="true">
-
-🎯 Oportunidades
-
-</button>
-
-
-
-<button 
-id="viewBoard"
-aria-pressed="false">
-
-📊 Tablero Pro
-
-</button>
-
-
-
-
-<button 
-id="viewHistory"
-aria-pressed="false">
-
-📚 Historial
-
-</button>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-<!-- =========================
-     VISTA OPORTUNIDADES
-========================= -->
-
-
-<div id="cardsView">
-
-</div>
-
-
-
-
-
-
-
-<!-- =========================
-     VISTA TABLERO PRO
-========================= -->
-
+<!-- CONTENEDOR DE TARJETAS MODIFICADO PARA LOS DOS APARTADOS -->
+<div id="cardsView"></div>
 
 <div id="boardView" style="display:none;">
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-<th>
-Horario
-</th>
-
-
-<th>
-Evento
-</th>
-
-
-<th>
-Mercado
-</th>
-
-
-<th>
-Modelo %
-</th>
-
-
-<th>
-Edge
-</th>
-
-
-<th>
-Smart Money
-</th>
-
-
-<th>
-EV
-</th>
-
-
-<th>
-Riesgo
-</th>
-
-
-<th>
-Stake
-</th>
-
-
-<th>
-Acción
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="boardBody">
-
-
-</tbody>
-
-
-
-</table>
-
-
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Límite / Tiempo</th>
+                    <th>Evento / Liga</th>
+                    <th>Mercado</th>
+                    <th>Selección</th>
+                    <th class="mono">Modelo %</th>
+                    <th class="mono">Edge</th>
+                    <th class="mono">Smart Diff</th>
+                    <th class="mono">EV Real</th>
+                    <th>Señal</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="boardBody"></tbody>
+        </table>
+    </div>
 </div>
-
-
-
-
-
-
-
-<!-- =========================
-     VISTA HISTORIAL
-========================= -->
-
 
 <div id="historyView" style="display:none;">
+    <div class="performance-summary">
+        <div class="perf-kpi">
+            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Picks Cerrados</div>
+            <div id="perfTotal" class="perf-kpi-val">—</div>
+        </div>
+        <div class="perf-kpi">
+            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Balance (Unidades)</div>
+            <div id="perfProfit" class="perf-kpi-val">—</div>
+        </div>
+        <div class="perf-kpi">
+            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Efectividad (Win Rate)</div>
+            <div id="perfWR" class="perf-kpi-val">—</div>
+        </div>
+        <div class="perf-kpi">
+            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Yield %</div>
+            <div id="perfYield" class="perf-kpi-val">—</div>
+        </div>
+    </div>
 
-
-<h3 style="margin-bottom:20px">
-
-📚 Historial de picks cerrados
-
-</h3>
-
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-<th>
-Evento
-</th>
-
-
-<th>
-Pick
-</th>
-
-
-<th>
-Resultado
-</th>
-
-
-<th>
-ROI
-</th>
-
-
-<th>
-Liga
-</th>
-
-
-<th>
-Fecha
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="historyBody">
-
-
-</tbody>
-
-
-
-</table>
-
-
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Evento / Liga</th>
+                    <th>Selección / Mercado</th>
+                    <th>Estado</th>
+                    <th>Resultado</th>
+                    <th class="mono">Resultado Neto</th>
+                    <th>Fecha / Hora</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+        </table>
+    </div>
 </div>
 
-
-
-
-
-
-
-<div 
-id="emptyState"
-style="display:none;
-text-align:center;
-padding:60px;
-color:var(--muted);">
-
-
-<h2>
-📭
-</h2>
-
-
-<p>
-No existen señales bajo los filtros seleccionados.
-</p>
-
-
-<button 
-class="btn-chip"
-id="emptyClear">
-
-Limpiar filtros
-
-</button>
-
-
+<div id="emptyState" style="display:none; text-align:center; padding:60px; color:var(--muted);">
+    <h2 style="font-size:32px; margin-bottom:10px;">📭</h2>
+    <p>No se encontraron registros activos operables bajo estos parámetros.</p>
 </div>
-
-
-
-
-
 
 <script>
-
-
 const PICKS = __PICKS_JSON__;
 
-
 const state = {
-
-    search:"",
-    date:"",
-    league:"",
-    trend:"",
-    action:"",
-    whaleOnly:false,
-
-    sort:"recommended",
-
-    view:"cards"
-
+    search: "",
+    date: "",
+    league: "",
+    trend: "",
+    action: "",
+    whaleOnly: false,
+    sort: "time",
+    view: "cards",
+    autoThemeEnabled: true
 };
 
-
-
-const TREND_LABEL = {
-
-    sharp:"Smart Money",
-    mixed:"Flujo Mixto",
-    consensus:"Consenso",
-    public:"Public Heavy",
-    other:"Normal"
-
-};
-
-
-
-const TREND_ICON = {
-
-    sharp:"🐋",
-    mixed:"🟡",
-    consensus:"⚪",
-    public:"🚨",
-    other:"⚙️"
-
-};
-
-
-// FALTABA POR COMPLETO. Se llama en setupFilters() para etiquetar
-// el <select> de tendencias; al no existir, el script entero
-// truena con "trendTag is not defined" apenas hay algún pick con
-// trendKey, y como el crash pasa ANTES de render(), nada se dibuja.
-function trendTag(key){
-    return `${TREND_ICON[key]||"⚙️"} ${TREND_LABEL[key]||"Sin clasificación"}`;
-}
-
-
-
-
-/*
-========================================
-   ESTADOS DE EVENTOS
-========================================
-*/
-
-
-function eventStatus(p){
-
-    // generate_dashboard.py manda p.status en minúsculas:
-    // "upcoming" | "live" | "finished". Se traduce a los códigos
-    // que usa este archivo: PENDING | LIVE | FINISHED. Sin esto,
-    // upcoming()/live()/history() (y por lo tanto el ticker de
-    // métricas) siempre daban 0, aunque las tarjetas sí pintaran.
-    const STATUS_MAP = {
-        "upcoming": "PENDING",
-        "live": "LIVE",
-        "finished": "FINISHED"
-    };
-
-    if(p.status && STATUS_MAP[p.status])
-        return STATUS_MAP[p.status];
-
-    if(p.status)
-        return p.status;
-
-
-    const now = new Date();
-
-    const start = new Date(p.iso);
-
-
-    /*
-    Si el backend no manda status,
-    se calcula automáticamente
-    */
-
-
-    if(start > now)
-        return "PENDING";
-
-
-    if(
-        start <= now &&
-        (!p.finished && !p.result)
-    )
-        return "LIVE";
-
-
-    return "FINISHED";
-
-}
-
-
-
-
-
-function upcoming(){
-
-    return PICKS.filter(
-        p=>eventStatus(p)==="PENDING"
-    );
-
-}
-
-
-
-function live(){
-
-    return PICKS.filter(
-        p=>eventStatus(p)==="LIVE"
-    );
-
-}
-
-
-
-function history(){
-
-    return PICKS.filter(
-        p=>eventStatus(p)==="FINISHED"
-    );
-
-}
-
-
-
-
-/*
-========================================
-   MÉTRICAS ANALÍTICAS
-========================================
-*/
-
-
-function calculateEdge(p) {
-  // 1. Si Python ya calculó e inyectó un "edge", usamos ese directamente
-  if (p.edge !== undefined && p.edge !== null) {
-    return Number(p.edge);
-  }
-  // 2. Si no viene calculado, hacemos el fallback matemático tradicional
-  if (p.modelProb && p.marketProb) {
-    return Number(p.modelProb) - Number(p.marketProb);
-  }
-  return 0;
-}
-
-function calculateSmartMoney(p){
-    // Validar que divergence no sea undefined ni null
-    if(p.divergence !== undefined && p.divergence !== null) {
-        return p.divergence;
-    }
-
-    if(p.handlePct != null && p.betsPct != null) {
-        return (p.handlePct - p.betsPct);
-    }
-
-    return 0;
-}
-
-
-
-
-function isPremium(p){
-
-    return (
-
-        p.actionKey==="bet"
-
-        &&
-
-        calculateEdge(p)>=5
-
-        &&
-
-        p.score>=75
-
-    );
-
-}
-
-
-
-
-
-
-
-function updateMetrics(){
-
-
-    const active = [
-
-        ...upcoming(),
-
-        ...live()
-
-    ];
-
-
-
-    const premium = active.filter(
-        isPremium
-    );
-
-
-
-    const edges = active.map(
-        calculateEdge
-    );
-
-
-
-    const avgEdge =
-        edges.length
-        ?
-        (
-            edges.reduce(
-                (a,b)=>a+b,0
-            )
-            /
-            edges.length
-        ).toFixed(1)
-
-        :
-        0;
-
-
-
-
-    const smart = active.filter(
-
-        p=>
-        calculateSmartMoney(p)>=10
-
-    );
-
-
-
-
-    const ev = active.filter(
-
-        p=>
-        Number(p.ev || 0)>0
-
-    );
-
-
-
-
-
-    const soon = active.filter(p=>{
-
-        const diff =
-        (
-            new Date(p.iso)
-            -
-            new Date()
-        )
-        /
-        60000;
-
-
-        return diff>=0 && diff<=60;
-
-    });
-
-
-
-
-
-    const lowRisk = active.filter(
-
-        p=>
-        (
-            p.risk==="LOW"
-            ||
-            p.risk==="low"
-        )
-
-    );
-
-
-
-
-    document
-    .getElementById("mPremium")
-    .innerText =
-    premium.length;
-
-
-
-    document
-    .getElementById("mEdge")
-    .innerText =
-    `${avgEdge}%`;
-
-
-
-    document
-    .getElementById("mSharp")
-    .innerText =
-    smart.length;
-
-
-
-    document
-    .getElementById("mEV")
-    .innerText =
-    ev.length;
-
-
-
-    document
-    .getElementById("mSoon")
-    .innerText =
-    soon.length;
-
-
-
-    document
-    .getElementById("mRisk")
-    .innerText =
-    lowRisk.length;
-
-
-}
-
-
-
-
-
-
-
-/*
-========================================
-   FILTROS
-========================================
-*/
-
-
-function applyFilters(list){
-
-
-    const text =
-    state.search
-    .toLowerCase()
-    .trim();
-
-
-
-    return list.filter(p=>{
-
-
-        if(
-            state.league &&
-            p.league!==state.league
-        )
-            return false;
-
-
-
-        if(
-            state.date &&
-            p.date!==state.date
-        )
-            return false;
-
-
-
-
-        if(
-            state.trend &&
-            p.trendKey!==state.trend
-        )
-            return false;
-
-
-
-
-        if(
-            state.action &&
-            p.actionKey!==state.action
-        )
-            return false;
-
-
-
-
-        if(
-            state.whaleOnly &&
-            calculateSmartMoney(p)<10
-        )
-            return false;
-
-
-
-
-        if(text)
-        {
-
-            const search = (
-
-                `${p.game}
-                ${p.pick}
-                ${p.market}
-                ${p.reason}`
-
-            )
-            .toLowerCase();
-
-
-
-            if(!search.includes(text))
-                return false;
-
+const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
+const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "🚨", other: "⚙️" };
+
+function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
+
+// ==========================================
+// LÓGICA DE CONTROL DE TEMA SEGÚN HORA DEL DÍA
+// ==========================================
+function updateThemeByTime() {
+    if (!state.autoThemeEnabled) return;
+
+    const hour = new Date().getHours();
+    const doc = document.documentElement;
+    
+    if (hour >= 6 && hour < 19) {
+        if (doc.getAttribute("data-theme") !== "light") {
+            doc.setAttribute("data-theme", "light");
         }
-
-
-
-        return true;
-
-
-    });
-
-
+    } else {
+        if (doc.getAttribute("data-theme") !== "dark") {
+            doc.setAttribute("data-theme", "dark");
+        }
+    }
 }
 
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.addEventListener("click", () => {
+    state.autoThemeEnabled = false;
+    const doc = document.documentElement;
+    const currentTheme = doc.getAttribute("data-theme");
+    doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
+});
 
+function isEventPending(p) {
+    const status = (p.status || "").toUpperCase();
+    if (status === "LIVE" || status === "FINISHED" || status === "WON" || status === "LOST") return false;
+    if (p.iso && new Date(p.iso) - new Date() <= 0) return false; 
+    return status === "UPCOMING" || status === "PENDING";
+}
 
+function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
+function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
 
+// PREMIUM PICKS - Filtro estricto
+function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && p.score >= 75; }
 
+// FREE PICKS - Filtro de Candidatos Operables No Premium
+function isFreePick(p) {
+    return !isPremium(p) && p.actionKey === "bet" && (calculateEdge(p) > 0 || p.score >= 60);
+}
 
+function getVisualConfig(p) {
+    const score = p.score || 0;
+    const key = p.trendKey;
+    const edge = calculateEdge(p);
+    const ev = Number(p.ev || 0);
 
-
-function sortPicks(list){
-
-
-    const arr=[...list];
-
-
-    switch(state.sort){
-
-
-        case "edge_desc":
-
-            return arr.sort(
-                (a,b)=>
-                calculateEdge(b)
-                -
-                calculateEdge(a)
-            );
-
-
-        case "score_desc":
-
-            return arr.sort(
-                (a,b)=>
-                b.score-a.score
-            );
-
-
-        case "stake_desc":
-
-            return arr.sort(
-                (a,b)=>
-                b.stake-a.stake
-            );
-
-
-
-        case "time_asc":
-
-            return arr.sort(
-                (a,b)=>
-                new Date(a.iso)
-                -
-                new Date(b.iso)
-            );
-
-
-        default:
-
-            return arr.sort((a,b)=>{
-
-                if(isPremium(b)!==isPremium(a))
-                    return isPremium(b)?1:-1;
-
-
-                return b.score-a.score;
-
-            });
-
-
+    // Ajustado a: PASS
+    if (p.actionKey === "pass" && edge < 5) {
+        return { bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ PASS" };
     }
 
+    // Ajustados a: MIXED y FILTER
+    if (key === "mixed" || key === "public" || key === "consensus") {
+        if (edge >= 8 || ev >= 5 || score >= 70) {
+            return { 
+                bg: "var(--amber-soft)", 
+                border: "var(--amber)", 
+                text: "var(--amber)", 
+                label: `🟨 ${key === "mixed" ? "MIXED" : key === "public" ? "PUBLIC" : "CONSENSO"} OK` 
+            };
+        } else {
+            return { 
+                bg: "var(--red-soft)", 
+                border: "var(--red)", 
+                text: "var(--red)", 
+                label: "⚠️ FILTER" 
+            };
+        }
+    }
 
+    if (key === "sharp" || score >= 80) {
+        return { bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
+    }
+
+    return { bg: "var(--panel2)", border: "var(--border)", text: "var(--text)", label: "⚡ ATENTO" };
 }
 
+function getCountdownText(isoString) {
+    if (!isoString) return { text: "--:--:--", urgent: false, expired: true };
+    const diff = new Date(isoString) - new Date();
+    if (diff <= 0) return { text: "¡INICIADO!", urgent: true, expired: true };
+    
+    const hrs = Math.floor(diff / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    const pad = (n) => String(n).padStart(2, '0');
+    
+    let timeStr = "";
+    if (hrs > 0) timeStr += `${pad(hrs)}h `;
+    timeStr += `${pad(mins)}m ${pad(secs)}s`;
+    
+    return { text: `⏳ ${timeStr}`, urgent: diff < 900000, expired: false };
+}
 
+// ==========================================
+// FUNCIÓN COPIAR FORMATO TELEGRAM (Cuota Dinámica DraftKings/Odds)
+// ==========================================
+function copyTelegramFormat(p, type) {
+    const headerTag = type === "PREMIUM" ? "🔥 PREMIUM PICK" : "🔥 FREE PICK";
+    const dateFormatted = p.date ? p.date.split("-").reverse().join("/") : "—/—/—";
+    
+    // Obtener cuota del origen (DraftKings suele venir mapeado en odds u odds_draftkings)
+    let cuotaValor = "";
+    if (p.odds !== undefined && p.odds !== null && p.odds !== 0) {
+        // Si el momio es positivo y no tiene el signo, se lo agregamos para formato americano clásico (+110)
+        cuotaValor = (Number(p.odds) > 0) ? `+${p.odds}` : p.odds;
+    } else if (p.price !== undefined && p.price !== null) {
+        cuotaValor = (Number(p.price) > 0) ? `+${p.price}` : p.price;
+    }
+    
+    const text = `${headerTag}
+📅 ${dateFormatted} | ⏰ ${p.time || "—:—"}
+🇺🇸 ${p.league}
+🏟️ ${p.game}
+🎯 Pick: ${p.pick} (${p.market})
+💵 Cuota: ${cuotaValor}
+💰 Stake: ${p.stake || 1}u`;
 
+    navigator.clipboard.writeText(text).then(() => {
+        alert(`¡Copiado al portapapeles en formato Telegram (${type})!`);
+    }).catch(err => {
+        console.error("Error al copiar automáticamente: ", err);
+    });
+}
 
+window.copyTelegramConfig = function(p, type) {
+    copyTelegramFormat(p, type);
+};
 
+function updateMetrics(allPicks) {
+    const active = allPicks.filter(isEventPending);
+    document.getElementById("mPremium").innerText = active.filter(isPremium).length;
+    
+    const edges = active.map(calculateEdge);
+    document.getElementById("mEdge").innerText = `${edges.length ? (edges.reduce((a, b) => a + b, 0) / edges.length).toFixed(1) : 0}%`;
+    document.getElementById("mSharp").innerText = active.filter(p => p.whale || calculateSmartMoney(p) >= 15).length;
+    document.getElementById("mEV").innerText = active.filter(p => Number(p.ev || 0) > 0).length;
+    
+    document.getElementById("mSoon").innerText = active.filter(p => {
+        if (!p.iso) return false;
+        const d = (new Date(p.iso) - new Date()) / 60000;
+        return d >= 0 && d <= 60;
+    }).length;
+    document.getElementById("mRisk").innerText = active.filter(p => p.risk === "LOW").length;
+}
 
+function applyFiltersAndSort(list) {
+    const text = state.search.toLowerCase().trim();
+    let result = list.filter(p => {
+        if (state.league && p.league !== state.league) return false;
+        if (state.date && p.date !== state.date) return false;
+        if (state.trend && p.trendKey !== state.trend) return false;
+        if (state.action && p.actionKey !== state.action) return false;
+        if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
 
+        if (text) {
+            const blob = `${p.game} ${p.pick} ${p.market} ${p.reason || ''}`.toLowerCase();
+            if (!blob.includes(text)) return false;
+        }
+        return true;
+    });
 
-/*
-========================================
-   TARJETAS
-========================================
-*/
+    return result.sort((a, b) => {
+        if (state.sort === "time") return new Date(a.iso || 0) - new Date(b.iso || 0);
+        if (state.sort === "score") return (b.score || 0) - (a.score || 0);
+        if (state.sort === "edge") return calculateEdge(b) - calculateEdge(a);
+        if (state.sort === "recommended") {
+            const scoreA = (isPremium(a) ? 1000 : 0) + (a.score || 0);
+            const scoreB = (isPremium(b) ? 1000 : 0) + (b.score || 0);
+            return scoreB - scoreA;
+        }
+        return 0;
+    });
+}
 
-function drawCards(list){
+// ==========================================================
+// DIBUJAR TARJETAS: CON APARTADOS DINÁMICOS PREMIUM vs FREE
+// ==========================================================
+function drawCards(list) {
     const box = document.getElementById("cardsView");
-    box.innerHTML = "";
+    box.innerHTML = `
+        <div class="section-container" id="premiumSection" style="display:none;">
+            <h3 class="section-title premium-title">🎯 Premium Picks <span class="section-count" id="countPremium">0</span></h3>
+            <div class="cards-grid" id="premiumGrid"></div>
+        </div>
+        <div class="section-container" id="freeSection" style="display:none;">
+            <h3 class="section-title free-title">🆓 Free Picks <span class="section-count" id="countFree">0</span></h3>
+            <div class="cards-grid" id="freeGrid"></div>
+        </div>
+        <div class="section-container" id="otherSection" style="display:none;">
+            <h3 class="section-title other-title">⚠️ Observaciones / Filtrados <span class="section-count" id="countOther">0</span></h3>
+            <div class="cards-grid" id="otherGrid"></div>
+        </div>
+    `;
+
+    const premiumGrid = document.getElementById("premiumGrid");
+    const freeGrid = document.getElementById("freeGrid");
+    const otherGrid = document.getElementById("otherGrid");
+
+    let premiumCount = 0;
+    let freeCount = 0;
+    let otherCount = 0;
 
     list.forEach(p => {
-        const edge = p.edge !== undefined ? p.edge : 0;
+        const isPrem = isPremium(p);
+        const isFree = isFreePick(p);
 
-        // Recuperar porcentajes de dinero y boletos asegurando enteros válidos
-        const handle = (p.handlePct !== null && p.handlePct !== undefined) ? parseInt(p.handlePct) : 50;
-        const bets = (p.betsPct !== null && p.betsPct !== undefined) ? parseInt(p.betsPct) : 50;
+        let targetGrid;
+        let cardType = "OTHER";
 
-        // El indicador real de dinero inteligente es la diferencia a favor del dinero (Handle > Bets)
-        const smartMoneyDivergence = Math.max(0, handle - bets);
-        const isWhale = p.whale || p.trendKey === "smart" || smartMoneyDivergence >= 15;
+        if (isPrem) {
+            targetGrid = premiumGrid;
+            premiumCount++;
+            cardType = "PREMIUM";
+        } else if (isFree) {
+            targetGrid = freeGrid;
+            freeCount++;
+            cardType = "FREE";
+        } else {
+            targetGrid = otherGrid;
+            otherCount++;
+        }
 
-        const div = document.createElement("div");
-        div.className = `pcard ${p.actionKey} ${isWhale ? "whale" : ""}`;
+        const smDiff = calculateSmartMoney(p);
+        const isWhale = p.whale || p.trendKey === "sharp" || smDiff >= 15;
+        
+        // Destacamos candidatos sobresalientes dentro de Free Picks
+        const isStrongFreeCandidate = isFree && (calculateEdge(p) >= 4 || p.score >= 70 || p.ev >= 3);
+        
+        const config = getVisualConfig(p);
+        const timerData = getCountdownText(p.iso);
 
-        // Determinar estilo del badge de acción rápida (Apostar / Pasar)
-        const isBet = p.actionKey === "bet";
-        const actionBadge = isBet 
-            ? `<span style="padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; background: var(--teal-soft); color: var(--teal); border: 1px solid var(--teal);">🟢 APOSTAR</span>`
-            : `<span style="padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; background: var(--red-soft); color: var(--red); border: 1px solid var(--red);">🔴 PASAR</span>`;
+        // Volumen Unificado (Tickets vs Handle)
+        const totalVol = (p.betsPct || 0) + (p.handlePct || 0) || 1;
+        const betShare = Math.round(((p.betsPct || 0) / totalVol) * 100);
+        const moneyShare = 100 - betShare;
 
-        div.innerHTML = `
-        <!-- Cabecera de la Tarjeta -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 4px;">
-            <div class="game" style="flex: 1; font-weight: bold; font-size: 14px;">
-                ${p.game}
-            </div>
+        const card = document.createElement("div");
+        
+        // Configuración de bordes y sombras para destacados
+        let cardClass = "pcard";
+        if (isPrem && isWhale) cardClass += " whale-alert";
+        if (isFree && isStrongFreeCandidate) cardClass += " free-strong-alert";
+        card.className = cardClass;
+
+        if (isFree && isStrongFreeCandidate) {
+            card.style.borderColor = "var(--blue)";
+        } else {
+            card.style.borderColor = config.border;
+        }
+
+        card.innerHTML = `
             <div>
-                ${actionBadge}
-            </div>
-        </div>
-
-        <div style="color:var(--muted); font-size:12px; margin-bottom: 10px;">
-            ${p.league} · ${p.time}
-        </div>
-
-        <!-- Cuerpo de Datos Técnicos -->
-        <div class="pick" style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
-            <strong style="font-size: 15px; color: var(--text);">
-                ${p.pick}
-            </strong>
-            <br>
-            <span style="font-size: 13px; color: var(--muted);">${p.market}</span>
-
-            <!-- Grid de Métricas Clave (Smart Money de texto estático ha sido eliminado) -->
-            <div style="margin-top:12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
-                <div>Modelo: <b>${p.modelProb ? p.modelProb + '%' : '-%'}</b></div>
-                <div>Edge: <b class="edge" style="color: var(--teal);">+${edge}%</b></div>
-                <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
-            </div>
-        </div>
-
-        <!-- 📊 Barra de Distribución Real: Boletos (Volumen) vs Dinero (Handle) -->
-        <div style="margin-top: 14px; margin-bottom: 14px;">
-            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px;">
-                <span>Boletos (Volumen): <b style="color: #4a90e2;">${bets}%</b></span>
-                <span>Dinero (Handle): <b style="color: #2ecc71;">${handle}%</b></span>
-            </div>
-            
-            <!-- Barra dual -->
-            <div style="width: 100%; height: 8px; background: #2e3035; border-radius: 4px; overflow: hidden; display: flex;">
-                <!-- Fracción Boletos (Azul) -->
-                <div style="width: ${bets}%; height: 100%; background: #4a90e2; transition: width 0.3s;"></div>
-                <!-- Fracción Dinero (Verde Brillante) -->
-                <div style="width: ${handle}%; height: 100%; background: #2ecc71; transition: width 0.3s;"></div>
-            </div>
-
-            <!-- Alerta de Smart Money calculada dinámicamente -->
-            ${smartMoneyDivergence >= 10 ? `
-                <div style="font-size: 10.5px; color: #ff9f43; margin-top: 5px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
-                    🐳 Smart Money: +${smartMoneyDivergence}% de dinero respaldando este pick.
+                <div class="pcard-header">
+                    <div class="game-title">${p.game}</div>
+                    <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
+                        ${config.label}
+                    </span>
                 </div>
-            ` : ''}
-        </div>
+                <div class="meta-row">
+                    <span>${p.league} · ${p.time || "--:--"}</span>
+                    <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
+                        ${timerData.text}
+                    </span>
+                </div>
+                
+                <div class="pick-details">
+                    <div class="pick-name">${p.pick}</div>
+                    <div class="market-type">${p.market}</div>
+                    
+                    <div class="grid-metrics">
+                        <div>Modelo: <b class="mono">${p.modelProb}%</b></div>
+                        <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
+                        <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
+                    </div>
+                </div>
 
-        <!-- Footer con Tags Globales -->
-        <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px;">
-            <span class="tag" style="margin: 0; background: rgba(255,159,67,0.1); color: #ff9f43;">
-                🔥 Score: <b>${p.score || 0}</b>
-            </span>
+                <div class="volume-container">
+                    <div class="volume-labels">
+                        <span>Tickets: ${p.betsPct}% (Público)</span>
+                        <span>Dinero: ${p.handlePct}% (Whales)</span>
+                    </div>
+                    <div class="volume-bar-unified">
+                        <div class="vol-bets-fill" style="width: ${betShare}%"></div>
+                        <div class="vol-handle-fill ${isWhale ? 'whale-active-bar' : ''}" style="width: ${moneyShare}%"></div>
+                    </div>
+                    ${isPrem && isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
+                    ${isFree && isStrongFreeCandidate ? `<div class="strong-candidate-banner">⭐ CANDIDATO FUERTE: EV +${p.ev}%</div>` : ''}
+                </div>
+            </div>
 
-            <span class="tag" style="margin: 0;">
-                Stake <b>${p.stake || 0}u</b>
-            </span>
-
-            <span class="tag" style="margin: 0;">
-                EV <b>${p.ev ? p.ev + '%' : '0%'}</b>
-            </span>
-
-            <span class="tag" style="margin: 0; text-transform: uppercase;">
-                🛡️ ${p.risk || "N/A"}
-            </span>
-        </div>
-
-        <!-- Justificación técnica si existe -->
-        ${p.reason ? `
-        <p style="margin-top:12px; font-size: 12.5px; color:var(--muted); line-height: 1.4; border-top: 1px dashed var(--border); padding-top: 8px;">
-            ${p.reason}
-        </p>` : ''}
+            <div class="card-footer-tags">
+                <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <span class="badge-tag">🔥 Score: ${p.score}</span>
+                    <span class="badge-tag">EV: <span class="mono">${p.ev}%</span></span>
+                    <span class="badge-tag">Stake: ${p.stake}u</span>
+                </div>
+                
+                <button class="btn-copy-telegram" onclick="event.stopPropagation(); copyTelegramConfig(${JSON.stringify(p).replace(/"/g, '&quot;')}, '${cardType}')">
+                    ✈️ Copiar
+                </button>
+            </div>
+            ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
         `;
-
-        box.appendChild(div);
+        targetGrid.appendChild(card);
     });
+
+    // Control dinámico de visibilidad para cada sección
+    if (premiumCount > 0) {
+        document.getElementById("premiumSection").style.display = "block";
+        document.getElementById("countPremium").innerText = premiumCount;
+    }
+    if (freeCount > 0) {
+        document.getElementById("freeSection").style.display = "block";
+        document.getElementById("countFree").innerText = freeCount;
+    }
+    if (otherCount > 0) {
+        document.getElementById("otherSection").style.display = "block";
+        document.getElementById("countOther").innerText = otherCount;
+    }
 }
 
-// FALTABA POR COMPLETO. render() la llama cuando state.view==="board"
-// (pestaña "Tablero Pro"); sin ella, dar clic ahí tronaba con
-// "drawBoard is not defined".
-function drawBoard(list){
-
+function drawBoard(list) {
     const tbody = document.getElementById("boardBody");
     tbody.innerHTML = "";
 
-    list.forEach(p=>{
-
-        const edge = calculateEdge(p);
-        const smart = calculateSmartMoney(p);
-
+    list.forEach(p => {
+        const config = getVisualConfig(p);
+        const timerData = getCountdownText(p.iso);
         const tr = document.createElement("tr");
-
         tr.innerHTML = `
-            <td>${p.time || "--:--"}</td>
             <td>
-                <div style="font-weight:700">${p.game}</div>
-                <div style="color:var(--muted);font-size:11px">${p.league || ""}</div>
+                <div class="mono" style="font-weight:700;">${p.time || "--:--"}</div>
+                <div class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}" style="font-size:10px; display:inline-block; margin-top:2px;">
+                    ${timerData.text}
+                </div>
             </td>
-            <td>${p.market || ""}</td>
-            <td>${p.modelProb || "-"}%</td>
-            <td class="edge">+${edge}%</td>
-            <td>${smart}%</td>
-            <td>${p.ev || 0}%</td>
-            <td>${p.risk || "N/A"}</td>
-            <td>${p.stake || 0}u</td>
-            <td>${p.actionKey === "bet" ? "🟢 APOSTAR" : "🔴 PASAR"}</td>
+            <td>
+                <div style="font-weight:700;">${p.game}</div>
+                <div style="color:var(--muted); font-size:11px;">${p.league}</div>
+            </td>
+            <td>${p.market}</td>
+            <td style="font-weight:600;">${p.pick}</td>
+            <td class="mono">${p.modelProb}%</td>
+            <td class="mono" style="color:var(--teal); font-weight:700;">+${calculateEdge(p)}%</td>
+            <td class="mono">${calculateSmartMoney(p)}%</td>
+            <td class="mono" style="font-weight:700;">${p.ev}%</td>
+            <td><b>${trendTag(p.trendKey)}</b></td>
+            <td>
+                <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}; font-size:10px; padding:2px 6px;">
+                    ${config.label}
+                </span>
+            </td>
         `;
-
         tbody.appendChild(tr);
-
     });
-
 }
 
-
-// FALTABA POR COMPLETO. Igual que drawBoard: se necesita para la
-// pestaña "Historial" (state.view==="history"), que tampoco tenía
-// listener en el botón viewHistory (agregado en setupFilters()).
-function drawHistory(list){
-
+function drawHistory(list) {
     const tbody = document.getElementById("historyBody");
     tbody.innerHTML = "";
+    
+    let totalBets = 0;
+    let wonBets = 0;
+    let totalUnidadesApostadas = 0;
+    let netProfit = 0;
 
-    list.forEach(p=>{
+    list.forEach(p => {
+        const rawRes = (p.result || "").toUpperCase();
+        const isWon = rawRes === "WON" || rawRes === "WIN";
+        const isLost = rawRes === "LOST" || rawRes === "LOSS";
+        
+        const stake = Number(p.stake || 0);
+        const odds = Number(p.odds || 0);
+        let profitUnits = 0;
+
+        if (isWon) {
+            totalBets++;
+            wonBets++;
+            totalUnidadesApostadas += stake;
+            
+            let parsedOddsMultiplier = 1.0; 
+            if (odds > 0) {
+                parsedOddsMultiplier = (odds / 100);
+            } else if (odds < 0) {
+                parsedOddsMultiplier = (100 / Math.abs(odds));
+            }
+            profitUnits = parsedOddsMultiplier * stake;
+            netProfit += profitUnits;
+        } else if (isLost) {
+            totalBets++;
+            totalUnidadesApostadas += stake;
+            profitUnits = -stake;
+            netProfit += profitUnits;
+        }
+
+        const status = (p.status || "").toUpperCase();
+        let statusBadge = `<span style="color:var(--muted)">🏁 Finalizado</span>`;
+        if (status === "LIVE" || (p.iso && new Date(p.iso) <= new Date() && p.result === "PENDING")) {
+            statusBadge = `<span style="color:var(--teal); font-weight:700;">⏱️ En Vivo</span>`;
+        }
+
+        let resText = "PENDIENTE"; 
+        let resColor = "var(--muted)";
+        if (isWon) { resText = "GANADA ✔"; resColor = "var(--teal)"; }
+        else if (isLost) { resText = "PERDIDA ❌"; resColor = "var(--red)"; }
 
         const tr = document.createElement("tr");
-
         tr.innerHTML = `
-            <td>${p.game}</td>
-            <td>${p.pick}</td>
-            <td>${p.result || "—"}</td>
-            <td>${p.roi != null ? p.roi + "%" : "—"}</td>
-            <td>${p.league || ""}</td>
-            <td>${p.date || ""} ${p.time || ""}</td>
+            <td>
+                <div style="font-weight:700;">${p.game}</div>
+                <div style="color:var(--muted); font-size:11px;">${p.league}</div>
+            </td>
+            <td>
+                <div style="font-weight:600;">${p.pick}</div>
+                <div style="color:var(--muted); font-size:11px;">${p.market}</div>
+            </td>
+            <td>${statusBadge}</td>
+            <td><b style="color:${resColor}">${resText}</b></td>
+            <td class="mono" style="font-weight:700; color: ${profitUnits >= 0 ? 'var(--teal)' : 'var(--red)'}">
+                ${profitUnits !== 0 ? (profitUnits > 0 ? '+' : '') + profitUnits.toFixed(2) + 'u' : '—'}
+            </td>
+            <td style="font-size:12px;">${p.date} ${p.time || ''}</td>
         `;
-
         tbody.appendChild(tr);
-
     });
 
+    const yieldRate = totalUnidadesApostadas > 0 ? (netProfit / totalUnidadesApostadas) * 100 : 0;
+    const winRate = totalBets > 0 ? (wonBets / totalBets) * 100 : 0;
+
+    document.getElementById("perfTotal").innerText = totalBets;
+    document.getElementById("perfProfit").innerText = `${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)}u`;
+    document.getElementById("perfProfit").style.color = netProfit >= 0 ? 'var(--teal)' : 'var(--red)';
+    document.getElementById("perfWR").innerText = `${winRate.toFixed(1)}%`;
+    document.getElementById("perfYield").innerText = `${yieldRate.toFixed(2)}%`;
+    document.getElementById("perfYield").style.color = yieldRate >= 0 ? 'var(--teal)' : 'var(--red)';
 }
 
-function render(){
+function render() {
+    const pendingEvents = PICKS.filter(isEventPending);
+    const historyEvents = PICKS.filter(p => !isEventPending(p));
 
-  // "history" filtra sobre eventos ya finalizados; las demás vistas
-  // (cards/board) trabajan sobre el universo completo de PICKS.
-  const source = state.view === "history" ? history() : PICKS;
+    updateMetrics(pendingEvents);
 
-  const filtered = applyFilters(source);
-  const sorted = sortPicks(filtered);
+    const targetList = state.view === "history" ? historyEvents : pendingEvents;
+    const filtered = applyFiltersAndSort(targetList);
 
-  updateMetrics(sorted);
+    const empty = document.getElementById("emptyState");
+    document.getElementById("cardsView").style.display = "none";
+    document.getElementById("boardView").style.display = "none";
+    document.getElementById("historyView").style.display = "none";
 
-  const empty = document.getElementById("emptyState");
+    if (filtered.length === 0) {
+        empty.style.display = "block";
+        return;
+    }
+    empty.style.display = "none";
 
-  document.getElementById("cardsView").style.display="none";
-  document.getElementById("boardView").style.display="none";
-  document.getElementById("historyView").style.display="none";
-
-  if(sorted.length === 0){
-    empty.style.display="block";
-    return;
-  }
-
-  empty.style.display="none";
-
-  if(state.view === "cards"){
-    document.getElementById("cardsView").style.display="grid";
-    drawCards(sorted);
-  } else if(state.view === "board") {
-    document.getElementById("boardView").style.display="block";
-    drawBoard(sorted);
-  } else {
-    document.getElementById("historyView").style.display="block";
-    drawHistory(sorted);
-  }
+    if (state.view === "cards") {
+        document.getElementById("cardsView").style.display = "block";
+        drawCards(filtered);
+    } else if (state.view === "board") {
+        document.getElementById("boardView").style.display = "block";
+        drawBoard(filtered);
+    } else {
+        document.getElementById("historyView").style.display = "block";
+        drawHistory(filtered);
+    }
 }
 
-
-/* ============================
-   FILTROS
-============================ */
-
-function setupFilters(){
-
-  const dates = new Set();
-  const leagues = new Set();
-  const trends = new Set();
-  const actions = new Set();
-
-
-  PICKS.forEach(p=>{
-
-    if(p.date) dates.add(p.date);
-    if(p.league) leagues.add(p.league);
-    if(p.trendKey) trends.add(p.trendKey);
-    if(p.actionKey) actions.add(p.actionKey);
-
-  });
-
-
-function createSelect(id, label, data, mapper) {
-    const sel = document.getElementById(id);
-    sel.innerHTML = `<option value="">${label}</option>`;
-
-    [...data]
-      .sort()
-      .forEach(item => {
-        const text = mapper ? mapper(item) : item;
-        // Se inyecta en una sola línea de texto sin espacios colaterales
-        sel.innerHTML += `<option value="${item}">${text}</option>`;
-      });
-
-    sel.addEventListener("change", e => {
-      const key = id.replace("f", "").toLowerCase();
-      state[key] = e.target.value;
-      render();
-    });
-  }
-
-  createSelect(
-    "fDate",
-    "📆 Todas las fechas",
-    dates
-  );
-
-
-  createSelect(
-    "fLeague",
-    "🏆 Todas las ligas",
-    leagues
-  );
-
-
-  createSelect(
-    "fTrend",
-    "📊 Todas las señales",
-    trends,
-    k=>trendTag(k)
-  );
-
-
-  createSelect(
-    "fAction",
-    "🎯 Todas las acciones",
-    actions,
-    k=>k==="bet"
-      ?"🟢 APOSTAR"
-      :"🔴 PASAR"
-  );
-
-
-
-  document
-  .getElementById("search")
-  .addEventListener("input",e=>{
-
-    state.search=e.target.value;
-
-    render();
-
-  });
-
-
-
-  document
-  .getElementById("sortSel")
-  .addEventListener("change",e=>{
-
-    state.sort=e.target.value;
-
-    render();
-
-  });
-
-
-
-  const whale=document.getElementById("whaleOnly");
-
-
-  whale.addEventListener("click",()=>{
-
-    state.whaleOnly=!state.whaleOnly;
-
-    whale.setAttribute(
-      "aria-pressed",
-      state.whaleOnly
-    );
-
-    render();
-
-  });
-
-
-
-  function clearFilters(){
-
-    state.search="";
-    state.date="";
-    state.league="";
-    state.trend="";
-    state.action="";
-    state.whaleOnly=false;
-
-
-    document.getElementById("search").value="";
-
-    [
-      "fDate",
-      "fLeague",
-      "fTrend",
-      "fAction"
-    ]
-    .forEach(id=>{
-      document.getElementById(id).value="";
+function setupFilters() {
+    const dates = new Set(), leagues = new Set(), trends = new Set(), actions = new Set();
+    PICKS.forEach(p => {
+        if (p.date) dates.add(p.date);
+        if (p.league) leagues.add(p.league);
+        if (p.trendKey) trends.add(p.trendKey);
+        if (p.actionKey) actions.add(p.actionKey);
     });
 
+    function buildSelector(id, placeholder, set, textMapper) {
+        const el = document.getElementById(id);
+        el.innerHTML = `<option value="">${placeholder}</option>`;
+        [...set].sort().forEach(v => {
+            el.innerHTML += `<option value="${v}">${textMapper ? textMapper(v) : v}</option>`;
+        });
+        el.addEventListener("change", e => {
+            const field = id.replace("f", "").toLowerCase();
+            state[field] = e.target.value;
+            render();
+        });
+    }
 
-    whale.setAttribute(
-      "aria-pressed",
-      false
-    );
+    buildSelector("fDate", "📆 Todas las fechas", dates);
+    buildSelector("fLeague", "🏆 Todas las ligas", leagues);
+    buildSelector("fTrend", "📊 Todas las señales", trends, k => trendTag(k));
+    buildSelector("fAction", "🎯 Todas las acciones", actions, k => k === "bet" ? "APOSTAR" : "PASS");
 
+    document.getElementById("fSort").addEventListener("change", e => {
+        state.sort = e.target.value;
+        render();
+    });
 
-    render();
+    document.getElementById("search").addEventListener("input", e => { state.search = e.target.value; render(); });
 
-  }
+    const whaleBtn = document.getElementById("whaleOnly");
+    whaleBtn.addEventListener("click", () => {
+        state.whaleOnly = !state.whaleOnly;
+        whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
+        render();
+    });
 
+    document.getElementById("clearBtn").addEventListener("click", () => {
+        state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.action = ""; state.whaleOnly = false; state.sort = "time";
+        document.getElementById("search").value = "";
+        document.getElementById("fSort").value = "time";
+        ["fDate", "fLeague", "fTrend", "fAction"].forEach(id => document.getElementById(id).value = "");
+        whaleBtn.setAttribute("aria-pressed", false);
+        render();
+    });
 
+    document.getElementById("viewCards").onclick = () => { state.view = "cards"; toggleTabs("viewCards"); render(); };
+    document.getElementById("viewBoard").onclick = () => { state.view = "board"; toggleTabs("viewBoard"); render(); };
+    document.getElementById("viewHistory").onclick = () => { state.view = "history"; toggleTabs("viewHistory"); render(); };
 
-  document
-  .getElementById("clearBtn")
-  .addEventListener(
-    "click",
-    clearFilters
-  );
-
-
-  document
-  .getElementById("emptyClear")
-  .addEventListener(
-    "click",
-    clearFilters
-  );
-
-
-
-  const cardsBtn=
-    document.getElementById("viewCards");
-
-  const boardBtn=
-    document.getElementById("viewBoard");
-
-  const historyBtn=
-    document.getElementById("viewHistory");
-
-
-
-  cardsBtn.onclick=()=>{
-
-    state.view="cards";
-
-    cardsBtn.setAttribute("aria-pressed", true);
-    boardBtn.setAttribute("aria-pressed", false);
-    historyBtn.setAttribute("aria-pressed", false);
-
-    render();
-
-  };
-
-
-
-  boardBtn.onclick=()=>{
-
-    state.view="board";
-
-    cardsBtn.setAttribute("aria-pressed", false);
-    boardBtn.setAttribute("aria-pressed", true);
-    historyBtn.setAttribute("aria-pressed", false);
-
-    render();
-
-  };
-
-
-  // FALTABA. El botón existía en el HTML pero sin listener, así que
-  // la pestaña "Historial" no hacía nada.
-  historyBtn.onclick=()=>{
-
-    state.view="history";
-
-    cardsBtn.setAttribute("aria-pressed", false);
-    boardBtn.setAttribute("aria-pressed", false);
-    historyBtn.setAttribute("aria-pressed", true);
-
-    render();
-
-  };
-
+    function toggleTabs(activeId) {
+        ["viewCards", "viewBoard", "viewHistory"].forEach(id => {
+            document.getElementById(id).setAttribute("aria-pressed", id === activeId);
+        });
+    }
 }
 
+function initEngine() {
+    const clock = document.getElementById("clock");
+    
+    updateThemeByTime();
 
+    setInterval(() => {
+        clock.innerText = new Date().toTimeString().split(" ")[0];
+        
+        updateThemeByTime();
 
-/* ============================
-   RELOJ
-============================ */
-
-
-function initClock(){
-
-  function update(){
-
-    const now=new Date();
-
-    document
-    .getElementById("clock")
-    .innerText=
-      now
-      .toTimeString()
-      .split(" ")[0];
-
-  }
-
-
-  update();
-
-  setInterval(
-    update,
-    1000
-  );
-
+        let needsReRender = false;
+        document.querySelectorAll(".countdown-timer").forEach(el => {
+            const iso = el.getAttribute("data-iso");
+            if (!iso) return;
+            const data = getCountdownText(iso);
+            el.innerText = data.text;
+            if (data.urgent) el.classList.add("urgent"); else el.classList.remove("urgent");
+            if (data.expired && state.view !== "history") needsReRender = true;
+        });
+        
+        if (needsReRender) render();
+    }, 1000);
 }
-
-
-
-/* ============================
-   AUTO ACTUALIZACIÓN
-   LIVE / PRÓXIMOS / FINALIZADOS
-============================ */
-
-
-function autoRefresh(){
-
-  setInterval(()=>{
-
-    render();
-
-  },30000);
-
-}
-
-
-
-/* ============================
-   START
-============================ */
-
 
 setupFilters();
-
-initClock();
-
-autoRefresh();
-
+initEngine();
 render();
-
 </script>
-
 </body>
 </html>
