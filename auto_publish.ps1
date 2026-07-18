@@ -14,7 +14,7 @@ python -B src\main.py *>> $log
 if ($LASTEXITCODE -eq 0) {
     git add .
     git commit -m "Auto-refresh dashboard $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
-    git push origin main *>> $log
+    git push origin main 2>&1 | Out-File $log -Append
     "[$(Get-Date)] Publicado." | Out-File $log -Append
 } else {
     "[$(Get-Date)] ERROR: main.py fallo, no se publica HTML desactualizado." | Out-File $log -Append
