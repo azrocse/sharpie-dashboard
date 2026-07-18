@@ -62,14 +62,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
-
-        /* TRANSICIÓN SUAVE (UI/UX) */
-        body, .pcard, th, td, select, input, .badge-action, .badge-tag, .chip, .toolbar, .btn-copy-telegram {
-            transition: background-color 0.4s ease, 
-                        border-color 0.4s ease, 
-                        color 0.4s ease, 
-                        box-shadow 0.4s ease;
+            transition: background-color 0.2s, border-color 0.2s;
         }
 
         body {
@@ -281,43 +274,13 @@
             box-shadow: var(--shadow);
         }
 
-        /* DISEÑO DE APARTADOS (SECCIONES DE TARJETAS) */
-        .section-container {
-            margin-bottom: 35px;
-        }
-
-        .section-title {
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .premium-title { color: var(--teal); }
-        .free-title { color: var(--blue); }
-        .other-title { color: var(--muted); }
-
-        .section-count {
-            font-size: 11px;
-            background: var(--panel2);
-            color: var(--text);
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-weight: 700;
-            border: 1px solid var(--border);
-        }
-
-        .cards-grid {
+        /* TARJETAS CARDS */
+        #cardsView {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 20px;
         }
 
-        /* TARJETAS CARDS */
         .pcard {
             background: var(--panel-card);
             border: 1px solid var(--border);
@@ -331,11 +294,8 @@
         }
 
         .pcard.whale-alert {
-            box-shadow: var(--shadow), 0 0 0 2px var(--gold);
-        }
-
-        .pcard.free-strong-alert {
-            box-shadow: var(--shadow), 0 0 0 2px var(--blue);
+            box-shadow: var(--shadow), 0 0 0 3px var(--blue) !important;
+            border-color: var(--blue) !important;
         }
 
         .pcard-header {
@@ -402,11 +362,10 @@
             margin-top: 10px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 6px;
+            gap: 8px;
             font-size: 12px;
         }
 
-        /* BARRA DE VOLUMEN UNIFICADA */
         .volume-container {
             margin: 12px 0;
         }
@@ -419,39 +378,19 @@
             margin-bottom: 4px;
         }
 
-        .volume-bar-unified {
-            height: 8px;
+        .volume-bar-wrapper {
+            width: 100%;
+            height: 6px;
             background: var(--panel2);
-            border-radius: 4px;
+            border-radius: 3px;
             overflow: hidden;
             display: flex;
         }
 
-        .vol-bets-fill {
-            height: 100%;
-            background: #3b82f6;
-            transition: width 0.3s ease;
-        }
-
-        .vol-handle-fill {
-            height: 100%;
-            background: var(--teal);
-            transition: width 0.3s ease;
-        }
-
-        .whale-active-bar {
-            background: #00ffcc !important;
-            box-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
-        }
+        .v-bets { background: #3b82f6; height: 100%; }
+        .v-handle { background: #10b981; height: 100%; }
 
         .whale-banner {
-            font-size: 11px;
-            color: var(--gold);
-            margin-top: 6px;
-            font-weight: 700;
-        }
-
-        .strong-candidate-banner {
             font-size: 11px;
             color: var(--blue);
             margin-top: 6px;
@@ -460,10 +399,9 @@
 
         .card-footer-tags {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
             margin-top: auto;
-            gap: 8px;
         }
 
         .badge-tag {
@@ -473,28 +411,6 @@
             font-weight: 700;
             background: var(--panel2);
             border: 1px solid var(--border);
-        }
-
-        /* BOTÓN TELEGRAM */
-        .btn-copy-telegram {
-            background: rgba(0, 136, 204, 0.1);
-            color: #0088cc;
-            border: 1px solid rgba(0, 136, 204, 0.2);
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            outline: none;
-        }
-
-        .btn-copy-telegram:hover {
-            background: #0088cc;
-            color: #ffffff;
-            border-color: #0088cc;
         }
 
         .reasoning-text {
@@ -552,35 +468,13 @@
             background: var(--panel-card);
         }
 
-        /* HISTORIAL CON KPIs */
+        /* HISTORIAL */
         #historyView {
             background: var(--panel);
             border-radius: var(--radius);
             border: 1px solid var(--border);
             padding: 20px;
             box-shadow: var(--shadow);
-        }
-
-        .performance-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        .perf-kpi {
-            text-align: center;
-        }
-
-        .perf-kpi-val {
-            font-size: 20px;
-            font-weight: 800;
-            font-family: "JetBrains Mono", monospace;
-            margin-top: 4px;
         }
 
         /* BADGES DINÁMICOS */
@@ -678,7 +572,6 @@
     </div>
 </div>
 
-<!-- CONTENEDOR DE TARJETAS MODIFICADO PARA LOS DOS APARTADOS -->
 <div id="cardsView"></div>
 
 <div id="boardView" style="display:none;">
@@ -690,6 +583,7 @@
                     <th>Evento / Liga</th>
                     <th>Mercado</th>
                     <th>Selección</th>
+                    <th class="mono">Cuota</th>
                     <th class="mono">Modelo %</th>
                     <th class="mono">Edge</th>
                     <th class="mono">Smart Diff</th>
@@ -704,25 +598,7 @@
 </div>
 
 <div id="historyView" style="display:none;">
-    <div class="performance-summary">
-        <div class="perf-kpi">
-            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Picks Cerrados</div>
-            <div id="perfTotal" class="perf-kpi-val">—</div>
-        </div>
-        <div class="perf-kpi">
-            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Balance (Unidades)</div>
-            <div id="perfProfit" class="perf-kpi-val">—</div>
-        </div>
-        <div class="perf-kpi">
-            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Efectividad (Win Rate)</div>
-            <div id="perfWR" class="perf-kpi-val">—</div>
-        </div>
-        <div class="perf-kpi">
-            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Yield %</div>
-            <div id="perfYield" class="perf-kpi-val">—</div>
-        </div>
-    </div>
-
+    <h3 style="margin-bottom:16px; font-weight:700;">📚 Registro Histórico de Eventos</h3>
     <div class="table-responsive">
         <table>
             <thead>
@@ -731,7 +607,7 @@
                     <th>Selección / Mercado</th>
                     <th>Estado</th>
                     <th>Resultado</th>
-                    <th class="mono">Resultado Neto</th>
+                    <th class="mono">ROI</th>
                     <th>Fecha / Hora</th>
                 </tr>
             </thead>
@@ -757,7 +633,7 @@ const state = {
     whaleOnly: false,
     sort: "time",
     view: "cards",
-    autoThemeEnabled: true
+    autoThemeEnabled: true 
 };
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
@@ -765,11 +641,8 @@ const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "�
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
 
-// ==========================================
-// LÓGICA DE CONTROL DE TEMA SEGÚN HORA DEL DÍA
-// ==========================================
 function updateThemeByTime() {
-    if (!state.autoThemeEnabled) return;
+    if (!state.autoThemeEnabled) return; 
 
     const hour = new Date().getHours();
     const doc = document.documentElement;
@@ -787,7 +660,7 @@ function updateThemeByTime() {
 
 const themeToggle = document.getElementById("themeToggle");
 themeToggle.addEventListener("click", () => {
-    state.autoThemeEnabled = false;
+    state.autoThemeEnabled = false; 
     const doc = document.documentElement;
     const currentTheme = doc.getAttribute("data-theme");
     doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
@@ -802,14 +675,7 @@ function isEventPending(p) {
 
 function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
-
-// PREMIUM PICKS - Filtro estricto
 function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && p.score >= 75; }
-
-// FREE PICKS - Filtro de Candidatos Operables No Premium
-function isFreePick(p) {
-    return !isPremium(p) && p.actionKey === "bet" && (calculateEdge(p) > 0 || p.score >= 60);
-}
 
 function getVisualConfig(p) {
     const score = p.score || 0;
@@ -817,26 +683,24 @@ function getVisualConfig(p) {
     const edge = calculateEdge(p);
     const ev = Number(p.ev || 0);
 
-    // Ajustado a: PASS
     if (p.actionKey === "pass" && edge < 5) {
-        return { bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ PASS" };
+        return { bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ PASAR" };
     }
 
-    // Ajustados a: MIXED y FILTER
     if (key === "mixed" || key === "public" || key === "consensus") {
         if (edge >= 8 || ev >= 5 || score >= 70) {
             return { 
                 bg: "var(--amber-soft)", 
                 border: "var(--amber)", 
                 text: "var(--amber)", 
-                label: `🟨 ${key === "mixed" ? "MIXED" : key === "public" ? "PUBLIC" : "CONSENSO"} OK` 
+                label: `🟨 ${key === "mixed" ? "MIXTO" : key === "public" ? "PUBLIC" : "CONSENSO"}` 
             };
         } else {
             return { 
                 bg: "var(--red-soft)", 
                 border: "var(--red)", 
                 text: "var(--red)", 
-                label: "⚠️ FILTER" 
+                label: "⚠️ FILTRADO / PASAR" 
             };
         }
     }
@@ -865,41 +729,6 @@ function getCountdownText(isoString) {
     return { text: `⏳ ${timeStr}`, urgent: diff < 900000, expired: false };
 }
 
-// ==========================================
-// FUNCIÓN COPIAR FORMATO TELEGRAM (Cuota Dinámica DraftKings/Odds)
-// ==========================================
-function copyTelegramFormat(p, type) {
-    const headerTag = type === "PREMIUM" ? "🔥 PREMIUM PICK" : "🔥 FREE PICK";
-    const dateFormatted = p.date ? p.date.split("-").reverse().join("/") : "—/—/—";
-    
-    // Obtener cuota del origen (DraftKings suele venir mapeado en odds u odds_draftkings)
-    let cuotaValor = "";
-    if (p.odds !== undefined && p.odds !== null && p.odds !== 0) {
-        // Si el momio es positivo y no tiene el signo, se lo agregamos para formato americano clásico (+110)
-        cuotaValor = (Number(p.odds) > 0) ? `+${p.odds}` : p.odds;
-    } else if (p.price !== undefined && p.price !== null) {
-        cuotaValor = (Number(p.price) > 0) ? `+${p.price}` : p.price;
-    }
-    
-    const text = `${headerTag}
-📅 ${dateFormatted} | ⏰ ${p.time || "—:—"}
-🇺🇸 ${p.league}
-🏟️ ${p.game}
-🎯 Pick: ${p.pick} (${p.market})
-💵 Cuota: ${cuotaValor}
-💰 Stake: ${p.stake || 1}u`;
-
-    navigator.clipboard.writeText(text).then(() => {
-        alert(`¡Copiado al portapapeles en formato Telegram (${type})!`);
-    }).catch(err => {
-        console.error("Error al copiar automáticamente: ", err);
-    });
-}
-
-window.copyTelegramConfig = function(p, type) {
-    copyTelegramFormat(p, type);
-};
-
 function updateMetrics(allPicks) {
     const active = allPicks.filter(isEventPending);
     document.getElementById("mPremium").innerText = active.filter(isPremium).length;
@@ -914,7 +743,7 @@ function updateMetrics(allPicks) {
         const d = (new Date(p.iso) - new Date()) / 60000;
         return d >= 0 && d <= 60;
     }).length;
-    document.getElementById("mRisk").innerText = active.filter(p => p.risk === "LOW").length;
+    document.getElementById("mRisk").innerText = active.filter(p => (p.risk || '').toUpperCase() === "LOW").length;
 }
 
 function applyFiltersAndSort(list) {
@@ -946,161 +775,91 @@ function applyFiltersAndSort(list) {
     });
 }
 
-// ==========================================================
-// DIBUJAR TARJETAS: CON APARTADOS DINÁMICOS PREMIUM vs FREE
-// ==========================================================
 function drawCards(list) {
     const box = document.getElementById("cardsView");
-    box.innerHTML = `
-        <div class="section-container" id="premiumSection" style="display:none;">
-            <h3 class="section-title premium-title">🎯 Premium Picks <span class="section-count" id="countPremium">0</span></h3>
-            <div class="cards-grid" id="premiumGrid"></div>
-        </div>
-        <div class="section-container" id="freeSection" style="display:none;">
-            <h3 class="section-title free-title">🆓 Free Picks <span class="section-count" id="countFree">0</span></h3>
-            <div class="cards-grid" id="freeGrid"></div>
-        </div>
-        <div class="section-container" id="otherSection" style="display:none;">
-            <h3 class="section-title other-title">⚠️ Observaciones / Filtrados <span class="section-count" id="countOther">0</span></h3>
-            <div class="cards-grid" id="otherGrid"></div>
-        </div>
-    `;
+    if (!box) {
+        console.error("❌ ERROR: No se encontró el contenedor del DOM '#cardsView'.");
+        return;
+    }
+    box.innerHTML = "";
 
-    const premiumGrid = document.getElementById("premiumGrid");
-    const freeGrid = document.getElementById("freeGrid");
-    const otherGrid = document.getElementById("otherGrid");
+    list.forEach((p, index) => {
+        try {
+            const smDiff = calculateSmartMoney(p);
+            const isWhale = p.whale || p.trendKey === "sharp" || smDiff >= 15;
+            const config = getVisualConfig(p);
+            const timerData = getCountdownText(p.iso);
+            const cuotaDetectada = p.odds || p.cuota || null;
 
-    let premiumCount = 0;
-    let freeCount = 0;
-    let otherCount = 0;
-
-    list.forEach(p => {
-        const isPrem = isPremium(p);
-        const isFree = isFreePick(p);
-
-        let targetGrid;
-        let cardType = "OTHER";
-
-        if (isPrem) {
-            targetGrid = premiumGrid;
-            premiumCount++;
-            cardType = "PREMIUM";
-        } else if (isFree) {
-            targetGrid = freeGrid;
-            freeCount++;
-            cardType = "FREE";
-        } else {
-            targetGrid = otherGrid;
-            otherCount++;
-        }
-
-        const smDiff = calculateSmartMoney(p);
-        const isWhale = p.whale || p.trendKey === "sharp" || smDiff >= 15;
-        
-        // Destacamos candidatos sobresalientes dentro de Free Picks
-        const isStrongFreeCandidate = isFree && (calculateEdge(p) >= 4 || p.score >= 70 || p.ev >= 3);
-        
-        const config = getVisualConfig(p);
-        const timerData = getCountdownText(p.iso);
-
-        // Volumen Unificado (Tickets vs Handle)
-        const totalVol = (p.betsPct || 0) + (p.handlePct || 0) || 1;
-        const betShare = Math.round(((p.betsPct || 0) / totalVol) * 100);
-        const moneyShare = 100 - betShare;
-
-        const card = document.createElement("div");
-        
-        // Configuración de bordes y sombras para destacados
-        let cardClass = "pcard";
-        if (isPrem && isWhale) cardClass += " whale-alert";
-        if (isFree && isStrongFreeCandidate) cardClass += " free-strong-alert";
-        card.className = cardClass;
-
-        if (isFree && isStrongFreeCandidate) {
-            card.style.borderColor = "var(--blue)";
-        } else {
+            const card = document.createElement("div");
+            card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
             card.style.borderColor = config.border;
-        }
 
-        card.innerHTML = `
-            <div>
-                <div class="pcard-header">
-                    <div class="game-title">${p.game}</div>
-                    <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
-                        ${config.label}
-                    </span>
-                </div>
-                <div class="meta-row">
-                    <span>${p.league} · ${p.time || "--:--"}</span>
-                    <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
-                        ${timerData.text}
-                    </span>
-                </div>
-                
-                <div class="pick-details">
-                    <div class="pick-name">${p.pick}</div>
-                    <div class="market-type">${p.market}</div>
+            card.innerHTML = `
+                <div>
+                    <div class="pcard-header">
+                        <div class="game-title">${p.game}</div>
+                        <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
+                            ${config.label}
+                        </span>
+                    </div>
+                    <div class="meta-row">
+                        <span>${p.league} · ${p.time || "--:--"}</span>
+                        <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
+                            ${timerData.text}
+                        </span>
+                    </div>
                     
-                    <div class="grid-metrics">
-                        <div>Modelo: <b class="mono">${p.modelProb}%</b></div>
-                        <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
-                        <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
+                    <div class="pick-details">
+                        <div class="pick-name">${p.pick}</div>
+                        <div class="market-type">${p.market}</div>
+                        
+                        <div class="grid-metrics">
+                            <div>Modelo: <b class="mono">${p.modelProb}%</b></div>
+                            <div>Cuota: <b class="mono" style="color:var(--amber);">${cuotaDetectada || '—'}</b></div>
+                            <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
+                            <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
+                        </div>
+                    </div>
+
+                    <div class="volume-container">
+                        <div class="volume-labels">
+                            <span>Tickets: ${p.betsPct || 0}%</span>
+                            <span>Dinero: ${p.handlePct || 0}%</span>
+                        </div>
+                        <div class="volume-bar-wrapper">
+                            <div class="v-bets" style="width: ${p.betsPct || 0}%"></div>
+                            <div class="v-handle" style="width: ${p.handlePct || 0}%"></div>
+                        </div>
+                        ${isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
                     </div>
                 </div>
 
-                <div class="volume-container">
-                    <div class="volume-labels">
-                        <span>Tickets: ${p.betsPct}% (Público)</span>
-                        <span>Dinero: ${p.handlePct}% (Whales)</span>
-                    </div>
-                    <div class="volume-bar-unified">
-                        <div class="vol-bets-fill" style="width: ${betShare}%"></div>
-                        <div class="vol-handle-fill ${isWhale ? 'whale-active-bar' : ''}" style="width: ${moneyShare}%"></div>
-                    </div>
-                    ${isPrem && isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
-                    ${isFree && isStrongFreeCandidate ? `<div class="strong-candidate-banner">⭐ CANDIDATO FUERTE: EV +${p.ev}%</div>` : ''}
+                <div class="card-footer-tags">
+                    <span class="badge-tag">🔥 Score: ${p.score || 0}</span>
+                    <span class="badge-tag">EV: <span class="mono">${p.ev || 0}%</span></span>
+                    <span class="badge-tag">Stake: ${p.stake || 0}u</span>
+                    <span class="badge-tag">${p.risk || 'NORMAL'}</span>
                 </div>
-            </div>
-
-            <div class="card-footer-tags">
-                <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                    <span class="badge-tag">🔥 Score: ${p.score}</span>
-                    <span class="badge-tag">EV: <span class="mono">${p.ev}%</span></span>
-                    <span class="badge-tag">Stake: ${p.stake}u</span>
-                </div>
-                
-                <button class="btn-copy-telegram" onclick="event.stopPropagation(); copyTelegramConfig(${JSON.stringify(p).replace(/"/g, '&quot;')}, '${cardType}')">
-                    ✈️ Copiar
-                </button>
-            </div>
-            ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
-        `;
-        targetGrid.appendChild(card);
+                ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
+            `;
+            box.appendChild(card);
+        } catch (err) {
+            console.error(`❌ ERROR de renderizado en tarjeta index ${index}:`, err);
+        }
     });
-
-    // Control dinámico de visibilidad para cada sección
-    if (premiumCount > 0) {
-        document.getElementById("premiumSection").style.display = "block";
-        document.getElementById("countPremium").innerText = premiumCount;
-    }
-    if (freeCount > 0) {
-        document.getElementById("freeSection").style.display = "block";
-        document.getElementById("countFree").innerText = freeCount;
-    }
-    if (otherCount > 0) {
-        document.getElementById("otherSection").style.display = "block";
-        document.getElementById("countOther").innerText = otherCount;
-    }
 }
 
 function drawBoard(list) {
     const tbody = document.getElementById("boardBody");
+    if (!tbody) return;
     tbody.innerHTML = "";
 
     list.forEach(p => {
         const config = getVisualConfig(p);
         const timerData = getCountdownText(p.iso);
         const tr = document.createElement("tr");
+        
         tr.innerHTML = `
             <td>
                 <div class="mono" style="font-weight:700;">${p.time || "--:--"}</div>
@@ -1114,10 +873,11 @@ function drawBoard(list) {
             </td>
             <td>${p.market}</td>
             <td style="font-weight:600;">${p.pick}</td>
+            <td class="mono" style="font-weight:700; color:var(--amber);">${p.odds || p.cuota || '—'}</td>
             <td class="mono">${p.modelProb}%</td>
             <td class="mono" style="color:var(--teal); font-weight:700;">+${calculateEdge(p)}%</td>
             <td class="mono">${calculateSmartMoney(p)}%</td>
-            <td class="mono" style="font-weight:700;">${p.ev}%</td>
+            <td class="mono" style="font-weight:700;">${p.ev || 0}%</td>
             <td><b>${trendTag(p.trendKey)}</b></td>
             <td>
                 <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}; font-size:10px; padding:2px 6px;">
@@ -1131,52 +891,25 @@ function drawBoard(list) {
 
 function drawHistory(list) {
     const tbody = document.getElementById("historyBody");
+    if (!tbody) return;
     tbody.innerHTML = "";
     
-    let totalBets = 0;
-    let wonBets = 0;
-    let totalUnidadesApostadas = 0;
-    let netProfit = 0;
-
     list.forEach(p => {
-        const rawRes = (p.result || "").toUpperCase();
-        const isWon = rawRes === "WON" || rawRes === "WIN";
-        const isLost = rawRes === "LOST" || rawRes === "LOSS";
-        
-        const stake = Number(p.stake || 0);
-        const odds = Number(p.odds || 0);
-        let profitUnits = 0;
-
-        if (isWon) {
-            totalBets++;
-            wonBets++;
-            totalUnidadesApostadas += stake;
-            
-            let parsedOddsMultiplier = 1.0; 
-            if (odds > 0) {
-                parsedOddsMultiplier = (odds / 100);
-            } else if (odds < 0) {
-                parsedOddsMultiplier = (100 / Math.abs(odds));
-            }
-            profitUnits = parsedOddsMultiplier * stake;
-            netProfit += profitUnits;
-        } else if (isLost) {
-            totalBets++;
-            totalUnidadesApostadas += stake;
-            profitUnits = -stake;
-            netProfit += profitUnits;
-        }
-
         const status = (p.status || "").toUpperCase();
         let statusBadge = `<span style="color:var(--muted)">🏁 Finalizado</span>`;
         if (status === "LIVE" || (p.iso && new Date(p.iso) <= new Date() && p.result === "PENDING")) {
-            statusBadge = `<span style="color:var(--teal); font-weight:700;">⏱️ En Vivo</span>`;
+            statusBadge = `<span style="color:var(--teal); font-weight:700;">⏱️ En Vivo / Iniciado</span>`;
         }
 
         let resText = "PENDIENTE"; 
         let resColor = "var(--muted)";
-        if (isWon) { resText = "GANADA ✔"; resColor = "var(--teal)"; }
-        else if (isLost) { resText = "PERDIDA ❌"; resColor = "var(--red)"; }
+        if (p.result === "WON" || p.result === "WIN") { 
+            resText = "GANADA ✔"; 
+            resColor = "var(--teal)"; 
+        } else if (p.result === "LOST" || p.result === "LOSS") { 
+            resText = "PERDIDA ❌"; 
+            resColor = "var(--red)"; 
+        }
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -1190,68 +923,89 @@ function drawHistory(list) {
             </td>
             <td>${statusBadge}</td>
             <td><b style="color:${resColor}">${resText}</b></td>
-            <td class="mono" style="font-weight:700; color: ${profitUnits >= 0 ? 'var(--teal)' : 'var(--red)'}">
-                ${profitUnits !== 0 ? (profitUnits > 0 ? '+' : '') + profitUnits.toFixed(2) + 'u' : '—'}
-            </td>
-            <td style="font-size:12px;">${p.date} ${p.time || ''}</td>
+            <td class="mono" style="font-weight:700;">${p.roi ? p.roi + '%' : '—'}</td>
+            <td style="font-size:12px;">${p.date || ''} ${p.time || ''}</td>
         `;
         tbody.appendChild(tr);
     });
-
-    const yieldRate = totalUnidadesApostadas > 0 ? (netProfit / totalUnidadesApostadas) * 100 : 0;
-    const winRate = totalBets > 0 ? (wonBets / totalBets) * 100 : 0;
-
-    document.getElementById("perfTotal").innerText = totalBets;
-    document.getElementById("perfProfit").innerText = `${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)}u`;
-    document.getElementById("perfProfit").style.color = netProfit >= 0 ? 'var(--teal)' : 'var(--red)';
-    document.getElementById("perfWR").innerText = `${winRate.toFixed(1)}%`;
-    document.getElementById("perfYield").innerText = `${yieldRate.toFixed(2)}%`;
-    document.getElementById("perfYield").style.color = yieldRate >= 0 ? 'var(--teal)' : 'var(--red)';
 }
 
+// Función central de filtrado y renderizado
 function render() {
-    const pendingEvents = PICKS.filter(isEventPending);
-    const historyEvents = PICKS.filter(p => !isEventPending(p));
+    // Si PICKS no está inicializado o está vacío
+    if (typeof PICKS === 'undefined' || !Array.isArray(PICKS) || PICKS.length === 0) {
+        document.getElementById("emptyState").style.display = "block";
+        document.getElementById("cardsView").style.display = "none";
+        document.getElementById("boardView").style.display = "none";
+        document.getElementById("historyView").style.display = "none";
+        return;
+    }
 
-    updateMetrics(pendingEvents);
+    // Actualizar las métricas generales en el ticker con los datos en bruto
+    updateMetrics(PICKS);
 
-    const targetList = state.view === "history" ? historyEvents : pendingEvents;
-    const filtered = applyFiltersAndSort(targetList);
+    // Separar registros activos de los finalizados/históricos
+    const activePicks = PICKS.filter(isEventPending);
+    const historyPicks = PICKS.filter(p => !isEventPending(p));
 
-    const empty = document.getElementById("emptyState");
+    // Ocultar todas las vistas principales por defecto
     document.getElementById("cardsView").style.display = "none";
     document.getElementById("boardView").style.display = "none";
     document.getElementById("historyView").style.display = "none";
+    document.getElementById("emptyState").style.display = "none";
 
-    if (filtered.length === 0) {
-        empty.style.display = "block";
-        return;
-    }
-    empty.style.display = "none";
-
-    if (state.view === "cards") {
-        document.getElementById("cardsView").style.display = "block";
-        drawCards(filtered);
-    } else if (state.view === "board") {
-        document.getElementById("boardView").style.display = "block";
-        drawBoard(filtered);
-    } else {
+    if (state.view === "history") {
         document.getElementById("historyView").style.display = "block";
-        drawHistory(filtered);
+        const filteredHistory = applyFiltersAndSort(historyPicks);
+        if (filteredHistory.length === 0) {
+            document.getElementById("emptyState").style.display = "block";
+        } else {
+            drawHistory(filteredHistory);
+        }
+    } else {
+        const filteredActive = applyFiltersAndSort(activePicks);
+        if (filteredActive.length === 0) {
+            document.getElementById("emptyState").style.display = "block";
+        } else {
+            if (state.view === "cards") {
+                document.getElementById("cardsView").style.display = "grid";
+                drawCards(filteredActive);
+            } else if (state.view === "board") {
+                document.getElementById("boardView").style.display = "block";
+                drawBoard(filteredActive);
+            }
+        }
     }
 }
 
 function setupFilters() {
-    const dates = new Set(), leagues = new Set(), trends = new Set(), actions = new Set();
-    PICKS.forEach(p => {
-        if (p.date) dates.add(p.date);
-        if (p.league) leagues.add(p.league);
-        if (p.trendKey) trends.add(p.trendKey);
-        if (p.actionKey) actions.add(p.actionKey);
-    });
+    console.group("=== DEBUGGER: CARGA DE DATOS ===");
+    console.log("1. ¿PICKS está definido?:", typeof PICKS !== 'undefined' ? "SÍ" : "NO");
+    
+    let dates = new Set();
+    let leagues = new Set();
+    let trends = new Set();
+    let actions = new Set();
+
+    if (typeof PICKS !== 'undefined' && Array.isArray(PICKS)) {
+        console.log(`2. Cantidad de registros cargados en PICKS: ${PICKS.length}`);
+        PICKS.forEach(p => {
+            if (p.date) dates.add(p.date);
+            if (p.league) leagues.add(p.league);
+            if (p.trendKey) trends.add(p.trendKey);
+            if (p.actionKey) actions.add(p.actionKey);
+        });
+        if (PICKS.length > 0) {
+            console.log("3. Estructura del primer registro de prueba:", PICKS[0]);
+        }
+    } else {
+        console.error("❌ ERROR CRÍTICO: La constante PICKS es undefined o inválida.");
+    }
+    console.groupEnd();
 
     function buildSelector(id, placeholder, set, textMapper) {
         const el = document.getElementById(id);
+        if (!el) return;
         el.innerHTML = `<option value="">${placeholder}</option>`;
         [...set].sort().forEach(v => {
             el.innerHTML += `<option value="${v}">${textMapper ? textMapper(v) : v}</option>`;
@@ -1266,30 +1020,47 @@ function setupFilters() {
     buildSelector("fDate", "📆 Todas las fechas", dates);
     buildSelector("fLeague", "🏆 Todas las ligas", leagues);
     buildSelector("fTrend", "📊 Todas las señales", trends, k => trendTag(k));
-    buildSelector("fAction", "🎯 Todas las acciones", actions, k => k === "bet" ? "APOSTAR" : "PASS");
+    buildSelector("fAction", "🎯 Todas las acciones", actions, k => k === "bet" ? "APOSTAR" : "PASAR");
 
-    document.getElementById("fSort").addEventListener("change", e => {
-        state.sort = e.target.value;
-        render();
-    });
+    const sortEl = document.getElementById("fSort");
+    if (sortEl) {
+        sortEl.addEventListener("change", e => {
+            state.sort = e.target.value;
+            render();
+        });
+    }
 
-    document.getElementById("search").addEventListener("input", e => { state.search = e.target.value; render(); });
+    const searchEl = document.getElementById("search");
+    if (searchEl) {
+        searchEl.addEventListener("input", e => { 
+            state.search = e.target.value; 
+            render(); 
+        });
+    }
 
     const whaleBtn = document.getElementById("whaleOnly");
-    whaleBtn.addEventListener("click", () => {
-        state.whaleOnly = !state.whaleOnly;
-        whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
-        render();
-    });
+    if (whaleBtn) {
+        whaleBtn.addEventListener("click", () => {
+            state.whaleOnly = !state.whaleOnly;
+            whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
+            render();
+        });
+    }
 
-    document.getElementById("clearBtn").addEventListener("click", () => {
-        state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.action = ""; state.whaleOnly = false; state.sort = "time";
-        document.getElementById("search").value = "";
-        document.getElementById("fSort").value = "time";
-        ["fDate", "fLeague", "fTrend", "fAction"].forEach(id => document.getElementById(id).value = "");
-        whaleBtn.setAttribute("aria-pressed", false);
-        render();
-    });
+    const clearBtn = document.getElementById("clearBtn");
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.action = ""; state.whaleOnly = false; state.sort = "time";
+            if (searchEl) searchEl.value = "";
+            if (sortEl) sortEl.value = "time";
+            ["fDate", "fLeague", "fTrend", "fAction"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = "";
+            });
+            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", false);
+            render();
+        });
+    }
 
     document.getElementById("viewCards").onclick = () => { state.view = "cards"; toggleTabs("viewCards"); render(); };
     document.getElementById("viewBoard").onclick = () => { state.view = "board"; toggleTabs("viewBoard"); render(); };
@@ -1297,7 +1068,8 @@ function setupFilters() {
 
     function toggleTabs(activeId) {
         ["viewCards", "viewBoard", "viewHistory"].forEach(id => {
-            document.getElementById(id).setAttribute("aria-pressed", id === activeId);
+            const el = document.getElementById(id);
+            if (el) el.setAttribute("aria-pressed", id === activeId);
         });
     }
 }
@@ -1308,7 +1080,7 @@ function initEngine() {
     updateThemeByTime();
 
     setInterval(() => {
-        clock.innerText = new Date().toTimeString().split(" ")[0];
+        if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];
         
         updateThemeByTime();
 
@@ -1326,6 +1098,7 @@ function initEngine() {
     }, 1000);
 }
 
+// Inicialización de la UI
 setupFilters();
 initEngine();
 render();

@@ -313,6 +313,7 @@ def build_picks(raw_data):
             "league": market.get("league", "Otras Ligas"),
             "market": market.get("market", market.get("type", "Línea estándar")),
             "pick": pick or "Sin selección",
+            "odds": market.get("odds", "—"),            
             "action": market.get("action", "🔴 PASAR"),
             "actionKey": classify_action(market.get("action", "")),
             "trend": market.get("market_trend", "🟡 Mixto"),
@@ -350,6 +351,10 @@ def build_picks(raw_data):
 # ============================================================
 # GENERATE DASHBOARD
 # ============================================================
+import os
+import json
+from datetime import datetime, timedelta
+
 def generate_dashboard(events_data):
     print("\n--- [DEBUG START: GENERATE DASHBOARD] ---")
 
@@ -385,6 +390,10 @@ def generate_dashboard(events_data):
         "stake": round(sum(x.get("stake", 0) for x in all_events), 2)
     }
 
+    # SEGURO: Generamos una cadena JSON estándar y limpia.
+    # json.dumps convierte True/False de Python en true/false de JS,
+    # escapa automáticamente todas las comillas dobles internas y caracteres especiales,
+    # y al no usar indent, lo genera en una sola línea súper compacta para que JS lo asigne de golpe.
     json_data = json.dumps(all_events, ensure_ascii=False)
 
     print("[DEBUG] Datos preparados:")
@@ -397,6 +406,7 @@ def generate_dashboard(events_data):
     html_content = html_template.replace("__GENERATED_AT__", now_str)
     html_content = html_content.replace("__PICKS_JSON__", json_data)
 
+    # Nota: Tu estructura actual asume que index.html va en la raíz del dashboard
     repo_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
     output_file = os.path.join(repo_root, "index.html")
 

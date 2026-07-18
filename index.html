@@ -62,14 +62,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
-
-        /* TRANSICIÓN SUAVE (UI/UX) */
-        body, .pcard, th, td, select, input, .badge-action, .badge-tag, .chip, .toolbar, .btn-copy-telegram {
-            transition: background-color 0.4s ease, 
-                        border-color 0.4s ease, 
-                        color 0.4s ease, 
-                        box-shadow 0.4s ease;
+            transition: background-color 0.2s, border-color 0.2s;
         }
 
         body {
@@ -281,43 +274,13 @@
             box-shadow: var(--shadow);
         }
 
-        /* DISEÑO DE APARTADOS (SECCIONES DE TARJETAS) */
-        .section-container {
-            margin-bottom: 35px;
-        }
-
-        .section-title {
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .premium-title { color: var(--teal); }
-        .free-title { color: var(--blue); }
-        .other-title { color: var(--muted); }
-
-        .section-count {
-            font-size: 11px;
-            background: var(--panel2);
-            color: var(--text);
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-weight: 700;
-            border: 1px solid var(--border);
-        }
-
-        .cards-grid {
+        /* TARJETAS CARDS */
+        #cardsView {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 20px;
         }
 
-        /* TARJETAS CARDS */
         .pcard {
             background: var(--panel-card);
             border: 1px solid var(--border);
@@ -331,11 +294,8 @@
         }
 
         .pcard.whale-alert {
-            box-shadow: var(--shadow), 0 0 0 2px var(--gold);
-        }
-
-        .pcard.free-strong-alert {
-            box-shadow: var(--shadow), 0 0 0 2px var(--blue);
+            box-shadow: var(--shadow), 0 0 0 3px var(--blue) !important;
+            border-color: var(--blue) !important;
         }
 
         .pcard-header {
@@ -402,11 +362,10 @@
             margin-top: 10px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 6px;
+            gap: 8px;
             font-size: 12px;
         }
 
-        /* BARRA DE VOLUMEN UNIFICADA */
         .volume-container {
             margin: 12px 0;
         }
@@ -419,39 +378,19 @@
             margin-bottom: 4px;
         }
 
-        .volume-bar-unified {
-            height: 8px;
+        .volume-bar-wrapper {
+            width: 100%;
+            height: 6px;
             background: var(--panel2);
-            border-radius: 4px;
+            border-radius: 3px;
             overflow: hidden;
             display: flex;
         }
 
-        .vol-bets-fill {
-            height: 100%;
-            background: #3b82f6;
-            transition: width 0.3s ease;
-        }
-
-        .vol-handle-fill {
-            height: 100%;
-            background: var(--teal);
-            transition: width 0.3s ease;
-        }
-
-        .whale-active-bar {
-            background: #00ffcc !important;
-            box-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
-        }
+        .v-bets { background: #3b82f6; height: 100%; }
+        .v-handle { background: #10b981; height: 100%; }
 
         .whale-banner {
-            font-size: 11px;
-            color: var(--gold);
-            margin-top: 6px;
-            font-weight: 700;
-        }
-
-        .strong-candidate-banner {
             font-size: 11px;
             color: var(--blue);
             margin-top: 6px;
@@ -460,10 +399,9 @@
 
         .card-footer-tags {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
             margin-top: auto;
-            gap: 8px;
         }
 
         .badge-tag {
@@ -473,28 +411,6 @@
             font-weight: 700;
             background: var(--panel2);
             border: 1px solid var(--border);
-        }
-
-        /* BOTÓN TELEGRAM */
-        .btn-copy-telegram {
-            background: rgba(0, 136, 204, 0.1);
-            color: #0088cc;
-            border: 1px solid rgba(0, 136, 204, 0.2);
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            outline: none;
-        }
-
-        .btn-copy-telegram:hover {
-            background: #0088cc;
-            color: #ffffff;
-            border-color: #0088cc;
         }
 
         .reasoning-text {
@@ -552,35 +468,13 @@
             background: var(--panel-card);
         }
 
-        /* HISTORIAL CON KPIs */
+        /* HISTORIAL */
         #historyView {
             background: var(--panel);
             border-radius: var(--radius);
             border: 1px solid var(--border);
             padding: 20px;
             box-shadow: var(--shadow);
-        }
-
-        .performance-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        .perf-kpi {
-            text-align: center;
-        }
-
-        .perf-kpi-val {
-            font-size: 20px;
-            font-weight: 800;
-            font-family: "JetBrains Mono", monospace;
-            margin-top: 4px;
         }
 
         /* BADGES DINÁMICOS */
@@ -618,7 +512,7 @@
     <div class="header-meta">
         <div class="timestamp-badge">
             <div id="clock" class="mono">--:--:--</div>
-            <div class="updated">Generado (CDMX): 2026-07-15 23:31:16</div>
+            <div class="updated">Generado (CDMX): 2026-07-17 19:35:35</div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
     </div>
@@ -678,7 +572,6 @@
     </div>
 </div>
 
-<!-- CONTENEDOR DE TARJETAS MODIFICADO PARA LOS DOS APARTADOS -->
 <div id="cardsView"></div>
 
 <div id="boardView" style="display:none;">
@@ -690,6 +583,7 @@
                     <th>Evento / Liga</th>
                     <th>Mercado</th>
                     <th>Selección</th>
+                    <th class="mono">Cuota</th>
                     <th class="mono">Modelo %</th>
                     <th class="mono">Edge</th>
                     <th class="mono">Smart Diff</th>
@@ -704,25 +598,7 @@
 </div>
 
 <div id="historyView" style="display:none;">
-    <div class="performance-summary">
-        <div class="perf-kpi">
-            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Picks Cerrados</div>
-            <div id="perfTotal" class="perf-kpi-val">—</div>
-        </div>
-        <div class="perf-kpi">
-            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Balance (Unidades)</div>
-            <div id="perfProfit" class="perf-kpi-val">—</div>
-        </div>
-        <div class="perf-kpi">
-            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Efectividad (Win Rate)</div>
-            <div id="perfWR" class="perf-kpi-val">—</div>
-        </div>
-        <div class="perf-kpi">
-            <div style="font-size: 11px; color: var(--muted); font-weight: 700;">Yield %</div>
-            <div id="perfYield" class="perf-kpi-val">—</div>
-        </div>
-    </div>
-
+    <h3 style="margin-bottom:16px; font-weight:700;">📚 Registro Histórico de Eventos</h3>
     <div class="table-responsive">
         <table>
             <thead>
@@ -731,7 +607,7 @@
                     <th>Selección / Mercado</th>
                     <th>Estado</th>
                     <th>Resultado</th>
-                    <th class="mono">Resultado Neto</th>
+                    <th class="mono">ROI</th>
                     <th>Fecha / Hora</th>
                 </tr>
             </thead>
@@ -746,7 +622,7 @@
 </div>
 
 <script>
-const PICKS = [{"id": 2, "game": "Juan Manuel Cerundolo vs Miomir Kecmanovic", "league": "SPORTS", "market": "Moneyline", "pick": "Juan Manuel Cerundolo", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 54.8, "marketScore": 65.0, "confidence": 65.0, "edge": 14.0, "modelProb": 57, "ev": 11.2, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "02:30", "iso": "2026-07-16T02:30:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 86, "divergence": 14}, {"id": 3, "game": "Hanshin Tigers @ Chunichi Dragons", "league": "SPORTS", "market": "Moneyline", "pick": "Chunichi Dragons", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 43.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 6, "betsPct": 24, "divergence": 18}, {"id": 4, "game": "Hanshin Tigers @ Chunichi Dragons", "league": "SPORTS", "market": "Run Line", "pick": "Hanshin Tigers -1.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.2, "marketScore": 85.0, "confidence": 85.0, "edge": 26.0, "modelProb": 63, "ev": 20.8, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 96, "betsPct": 70, "divergence": 26}, {"id": 5, "game": "Hanshin Tigers @ Chunichi Dragons", "league": "SPORTS", "market": "Total", "pick": "Over 7", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 75.0, "marketScore": 85.0, "confidence": 85.0, "edge": 35.0, "modelProb": 67, "ev": 28.0, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 73, "betsPct": 38, "divergence": 35}, {"id": 6, "game": "Chiba Lotte Marines @ Saitama Seibu Lions", "league": "SPORTS", "market": "Moneyline", "pick": "Saitama Seibu Lions", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.8, "marketScore": 85.0, "confidence": 85.0, "edge": 29.0, "modelProb": 64, "ev": 23.2, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 90, "betsPct": 61, "divergence": 29}, {"id": 7, "game": "Chiba Lotte Marines @ Saitama Seibu Lions", "league": "SPORTS", "market": "Run Line", "pick": "Saitama Seibu Lions -1.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 42.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 30, "betsPct": 40, "divergence": 10}, {"id": 8, "game": "Chiba Lotte Marines @ Saitama Seibu Lions", "league": "SPORTS", "market": "Total", "pick": "Over 6.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 60.6, "marketScore": 70.0, "confidence": 70.0, "edge": 23.0, "modelProb": 61, "ev": 18.4, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 45, "betsPct": 22, "divergence": 23}, {"id": 9, "game": "Yomiuri Giants @ Tokyo Yakult Swallows", "league": "SPORTS", "market": "Moneyline", "pick": "Tokyo Yakult Swallows", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 41.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 5, "betsPct": 13, "divergence": 8}, {"id": 10, "game": "Yomiuri Giants @ Tokyo Yakult Swallows", "league": "SPORTS", "market": "Run Line", "pick": "Yomiuri Giants -1.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 64.4, "marketScore": 75.0, "confidence": 75.0, "edge": 22.0, "modelProb": 61, "ev": 17.6, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 97, "betsPct": 75, "divergence": 22}, {"id": 11, "game": "Yomiuri Giants @ Tokyo Yakult Swallows", "league": "SPORTS", "market": "Total", "pick": "Over 7.5", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 89.0, "marketScore": 100, "confidence": 100, "edge": 45.0, "modelProb": 72, "ev": 36.0, "risk": "LOW", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 95, "betsPct": 50, "divergence": 45}, {"id": 12, "game": "Orix Buffaloes @ Tohoku Rakuten Golden Eagles", "league": "SPORTS", "market": "Moneyline", "pick": "Tohoku Rakuten Golden Eagles", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 49.0, "marketScore": 60.0, "confidence": 60.0, "edge": 5.0, "modelProb": 52, "ev": 4.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 69, "betsPct": 64, "divergence": 5}, {"id": 13, "game": "Orix Buffaloes @ Tohoku Rakuten Golden Eagles", "league": "SPORTS", "market": "Run Line", "pick": "Tohoku Rakuten Golden Eagles -1.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 60.8, "marketScore": 70.0, "confidence": 70.0, "edge": 24.0, "modelProb": 62, "ev": 19.2, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 49, "betsPct": 25, "divergence": 24}, {"id": 14, "game": "Orix Buffaloes @ Tohoku Rakuten Golden Eagles", "league": "SPORTS", "market": "Total", "pick": "Over 7", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.4, "marketScore": 85.0, "confidence": 85.0, "edge": 27.0, "modelProb": 63, "ev": 21.6, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 77, "betsPct": 50, "divergence": 27}, {"id": 15, "game": "Nikoloz Basilashvili vs Thiago Agustin Tirante", "league": "SPORTS", "market": "Moneyline", "pick": "Nikoloz Basilashvili", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.8, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "03:00", "iso": "2026-07-16T03:00:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 4, "divergence": 4}, {"id": 16, "game": "Kiwoom Heroes @ Hanwha Eagles", "league": "SPORTS", "market": "Moneyline", "pick": "Hanwha Eagles", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 53.2, "marketScore": 65.0, "confidence": 65.0, "edge": 6.0, "modelProb": 53, "ev": 4.8, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 98, "betsPct": 92, "divergence": 6}, {"id": 17, "game": "Kiwoom Heroes @ Hanwha Eagles", "league": "SPORTS", "market": "Run Line", "pick": "Hanwha Eagles -1.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 18, "game": "Kiwoom Heroes @ Hanwha Eagles", "league": "SPORTS", "market": "Total", "pick": "Over 9", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.0, "marketScore": 85.0, "confidence": 85.0, "edge": 25.0, "modelProb": 62, "ev": 20.0, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 75, "betsPct": 50, "divergence": 25}, {"id": 19, "game": "KIA Tigers @ SSG Landers", "league": "SPORTS", "market": "Moneyline", "pick": "SSG Landers", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.8, "marketScore": 50.0, "confidence": 50.0, "edge": 4.0, "modelProb": 52, "ev": 3.2, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 17, "betsPct": 13, "divergence": 4}, {"id": 20, "game": "KIA Tigers @ SSG Landers", "league": "SPORTS", "market": "Run Line", "pick": "KIA Tigers -1.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 63.6, "marketScore": 75.0, "confidence": 75.0, "edge": 18.0, "modelProb": 59, "ev": 14.4, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 98, "betsPct": 80, "divergence": 18}, {"id": 21, "game": "KIA Tigers @ SSG Landers", "league": "SPORTS", "market": "Total", "pick": "Over 10", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.2, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 32, "betsPct": 33, "divergence": 1}, {"id": 22, "game": "Lotte Giants @ Samsung Lions", "league": "SPORTS", "market": "Moneyline", "pick": "Samsung Lions", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.6, "marketScore": 85.0, "confidence": 85.0, "edge": 28.0, "modelProb": 64, "ev": 22.4, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 95, "betsPct": 67, "divergence": 28}, {"id": 23, "game": "Lotte Giants @ Samsung Lions", "league": "SPORTS", "market": "Run Line", "pick": "Samsung Lions -1.5", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 54.6, "marketScore": 65.0, "confidence": 65.0, "edge": 13.0, "modelProb": 56, "ev": 10.4, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 96, "betsPct": 83, "divergence": 13}, {"id": 24, "game": "Lotte Giants @ Samsung Lions", "league": "SPORTS", "market": "Total", "pick": "Over 10", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 75.0, "marketScore": 85.0, "confidence": 85.0, "edge": 35.0, "modelProb": 67, "ev": 28.0, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 85, "betsPct": 50, "divergence": 35}, {"id": 25, "game": "KT Wiz Suwon @ LG Twins", "league": "SPORTS", "market": "Moneyline", "pick": "LG Twins", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 63.2, "marketScore": 75.0, "confidence": 75.0, "edge": 16.0, "modelProb": 58, "ev": 12.8, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 94, "betsPct": 78, "divergence": 16}, {"id": 26, "game": "KT Wiz Suwon @ LG Twins", "league": "SPORTS", "market": "Run Line", "pick": "LG Twins -1.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.8, "marketScore": 85.0, "confidence": 85.0, "edge": 29.0, "modelProb": 64, "ev": 23.2, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 96, "betsPct": 67, "divergence": 29}, {"id": 27, "game": "KT Wiz Suwon @ LG Twins", "league": "SPORTS", "market": "Total", "pick": "Over 9", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 69.6, "marketScore": 80.0, "confidence": 80.0, "edge": 28.0, "modelProb": 64, "ev": 22.4, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 61, "betsPct": 33, "divergence": 28}, {"id": 28, "game": "Doosan Bears @ NC Dinos", "league": "SPORTS", "market": "Moneyline", "pick": "NC Dinos", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 48.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 9, "betsPct": 52, "divergence": 43}, {"id": 29, "game": "Doosan Bears @ NC Dinos", "league": "SPORTS", "market": "Run Line", "pick": "Doosan Bears -1.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 42.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 10, "divergence": 10}, {"id": 30, "game": "Doosan Bears @ NC Dinos", "league": "SPORTS", "market": "Total", "pick": "Over 8.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "03:30", "iso": "2026-07-16T03:30:00", "status": "upcoming", "whale": false, "handlePct": 33, "betsPct": 33, "divergence": 0}, {"id": 31, "game": "Jaime Faria vs Casper Ruud", "league": "SPORTS", "market": "Moneyline", "pick": "Jaime Faria", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "04:00", "iso": "2026-07-16T04:00:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 32, "game": "Mayar Sherif vs Kaitlin Quevedo", "league": "SPORTS", "market": "Moneyline", "pick": "Mayar Sherif", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 59.0, "marketScore": 70.0, "confidence": 70.0, "edge": 15.0, "modelProb": 57, "ev": 12.0, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "04:00", "iso": "2026-07-16T04:00:00", "status": "upcoming", "whale": false, "handlePct": 65, "betsPct": 50, "divergence": 15}, {"id": 33, "game": "Andrey Rublev vs Andrea Pellegrino", "league": "SPORTS", "market": "Moneyline", "pick": "Andrey Rublev", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.6, "marketScore": 55.0, "confidence": 55.0, "edge": 3.0, "modelProb": 51, "ev": 2.4, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "04:10", "iso": "2026-07-16T04:10:00", "status": "upcoming", "whale": false, "handlePct": 96, "betsPct": 93, "divergence": 3}, {"id": 34, "game": "Alejandro Tabilo vs Lautaro Midon", "league": "SPORTS", "market": "Moneyline", "pick": "Alejandro Tabilo", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "05:20", "iso": "2026-07-16T05:20:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 35, "game": "Oleksandra Oliynykova vs Elena Pridankina", "league": "SPORTS", "market": "Moneyline", "pick": "Oleksandra Oliynykova", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 25.8, "marketScore": 30.0, "confidence": 30.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "05:30", "iso": "2026-07-16T05:30:00", "status": "upcoming", "whale": false, "handlePct": 71, "betsPct": 80, "divergence": 9}, {"id": 36, "game": "Sumit Nagal vs Juan Bautista Torres", "league": "SPORTS", "market": "Moneyline", "pick": "Sumit Nagal", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "06:00", "iso": "2026-07-16T06:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 37, "game": "Jesper De Jong vs Sebastian Baez", "league": "SPORTS", "market": "Moneyline", "pick": "Jesper De Jong", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-16", "time": "06:30", "iso": "2026-07-16T06:30:00", "status": "upcoming", "whale": false, "handlePct": 40, "betsPct": 63, "divergence": 23}, {"id": 38, "game": "Alexander Bublik vs Quentin Halys", "league": "SPORTS", "market": "Moneyline", "pick": "Alexander Bublik", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "07:00", "iso": "2026-07-16T07:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 39, "game": "Alevtina Ibragimova vs Paula Badosa", "league": "SPORTS", "market": "Moneyline", "pick": "Alevtina Ibragimova", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "08:30", "iso": "2026-07-16T08:30:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 40, "game": "FC Astana vs FC Dinamo City", "league": "SPORTS", "market": "Moneyline", "pick": "FC Astana", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 53.8, "marketScore": 65.0, "confidence": 65.0, "edge": 9.0, "modelProb": 54, "ev": 7.2, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "09:00", "iso": "2026-07-16T09:00:00", "status": "upcoming", "whale": false, "handlePct": 86, "betsPct": 77, "divergence": 9}, {"id": 41, "game": "Inter Turku vs FK Sarajevo", "league": "SPORTS", "market": "Moneyline", "pick": "Inter Turku", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "09:00", "iso": "2026-07-16T09:00:00", "status": "upcoming", "whale": false, "handlePct": 55, "betsPct": 55, "divergence": 0}, {"id": 42, "game": "Sogdiana Jizak vs Xorazm Urganch", "league": "SPORTS", "market": "Moneyline", "pick": "Sogdiana Jizak", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 25.4, "marketScore": 30.0, "confidence": 30.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "09:00", "iso": "2026-07-16T09:00:00", "status": "upcoming", "whale": false, "handlePct": 73, "betsPct": 80, "divergence": 7}, {"id": 43, "game": "Neftchi Fargona vs Buxoro", "league": "SPORTS", "market": "Moneyline", "pick": "Neftchi Fargona", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 29.4, "marketScore": 25.0, "confidence": 25.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-16", "time": "09:00", "iso": "2026-07-16T09:00:00", "status": "upcoming", "whale": false, "handlePct": 33, "betsPct": 80, "divergence": 47}, {"id": 44, "game": "Elimai FC vs Alashkert", "league": "SPORTS", "market": "Moneyline", "pick": "Elimai FC", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.4, "marketScore": 50.0, "confidence": 50.0, "edge": 2.0, "modelProb": 51, "ev": 1.6, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "09:00", "iso": "2026-07-16T09:00:00", "status": "upcoming", "whale": false, "handlePct": 46, "betsPct": 44, "divergence": 2}, {"id": 45, "game": "Elimai FC vs Alashkert", "league": "SPORTS", "market": "Total", "pick": "Over 2.25", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "09:00", "iso": "2026-07-16T09:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 46, "game": "Alexander Shevchenko vs Dominic Stricker", "league": "SPORTS", "market": "Moneyline", "pick": "Alexander Shevchenko", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.8, "marketScore": 55.0, "confidence": 55.0, "edge": 4.0, "modelProb": 52, "ev": 3.2, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "09:30", "iso": "2026-07-16T09:30:00", "status": "upcoming", "whale": false, "handlePct": 87, "betsPct": 83, "divergence": 4}, {"id": 47, "game": "FC Pyunik vs Marsaxlokk", "league": "SPORTS", "market": "Moneyline", "pick": "FC Pyunik", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 28.0, "marketScore": 25.0, "confidence": 25.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-16", "time": "10:00", "iso": "2026-07-16T10:00:00", "status": "upcoming", "whale": false, "handlePct": 46, "betsPct": 86, "divergence": 40}, {"id": 48, "game": "Damir Dzumhur vs Matteo Arnaldi", "league": "SPORTS", "market": "Moneyline", "pick": "Damir Dzumhur", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "10:00", "iso": "2026-07-16T10:00:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 49, "game": "Paide Linnameeskond vs Hegelmann Litauen", "league": "SPORTS", "market": "Moneyline", "pick": "Paide Linnameeskond", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 63.8, "marketScore": 75.0, "confidence": 75.0, "edge": 19.0, "modelProb": 59, "ev": 15.2, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "10:00", "iso": "2026-07-16T10:00:00", "status": "upcoming", "whale": false, "handlePct": 92, "betsPct": 73, "divergence": 19}, {"id": 50, "game": "Panna Udvardy vs Katarzyna Kawa", "league": "SPORTS", "market": "Moneyline", "pick": "Panna Udvardy", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 91.4, "marketScore": 100, "confidence": 100, "edge": 57.0, "modelProb": 78, "ev": 45.6, "risk": "LOW", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "10:00", "iso": "2026-07-16T10:00:00", "status": "upcoming", "whale": false, "handlePct": 97, "betsPct": 40, "divergence": 57}, {"id": 51, "game": "Levadia Tallinn vs Caernarfon Town", "league": "SPORTS", "market": "Moneyline", "pick": "Levadia Tallinn", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 25.2, "marketScore": 30.0, "confidence": 30.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "10:30", "iso": "2026-07-16T10:30:00", "status": "upcoming", "whale": false, "handlePct": 88, "betsPct": 94, "divergence": 6}, {"id": 52, "game": "Barbora Krejcikova vs Carole Monnet", "league": "SPORTS", "market": "Moneyline", "pick": "Barbora Krejcikova", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "10:30", "iso": "2026-07-16T10:30:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 53, "game": "Rigas Futbola Skola vs Glentoran Belfast", "league": "SPORTS", "market": "Moneyline", "pick": "Rigas Futbola Skola", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 54.0, "marketScore": 65.0, "confidence": 65.0, "edge": 10.0, "modelProb": 55, "ev": 8.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "10:30", "iso": "2026-07-16T10:30:00", "status": "upcoming", "whale": false, "handlePct": 99, "betsPct": 89, "divergence": 10}, {"id": 54, "game": "Rigas Futbola Skola vs Glentoran Belfast", "league": "SPORTS", "market": "Total", "pick": "Over 2.75", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "10:30", "iso": "2026-07-16T10:30:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 55, "game": "Shkendija vs Europa FC Gibraltar", "league": "SPORTS", "market": "Moneyline", "pick": "Shkendija", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.8, "marketScore": 55.0, "confidence": 55.0, "edge": 4.0, "modelProb": 52, "ev": 3.2, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "12:00", "iso": "2026-07-16T12:00:00", "status": "upcoming", "whale": false, "handlePct": 97, "betsPct": 93, "divergence": 4}, {"id": 56, "game": "Clara Tauson vs Miriana Tona", "league": "SPORTS", "market": "Moneyline", "pick": "Clara Tauson", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "12:00", "iso": "2026-07-16T12:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 57, "game": "Ferencvaros vs Vojvodina", "league": "SPORTS", "market": "Moneyline", "pick": "Ferencvaros", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 53.6, "marketScore": 65.0, "confidence": 65.0, "edge": 8.0, "modelProb": 54, "ev": 6.4, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "12:15", "iso": "2026-07-16T12:15:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 92, "divergence": 8}, {"id": 58, "game": "DAL Mavericks @ OKC Thunder", "league": "SPORTS", "market": "Moneyline", "pick": "OKC Thunder", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.4, "marketScore": 55.0, "confidence": 55.0, "edge": 2.0, "modelProb": 51, "ev": 1.6, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "14:00", "iso": "2026-07-16T14:00:00", "status": "upcoming", "whale": false, "handlePct": 81, "betsPct": 79, "divergence": 2}, {"id": 59, "game": "DAL Mavericks @ OKC Thunder", "league": "SPORTS", "market": "Spread", "pick": "OKC Thunder -1.5", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 50.8, "marketScore": 60.0, "confidence": 60.0, "edge": 14.0, "modelProb": 57, "ev": 11.2, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "14:00", "iso": "2026-07-16T14:00:00", "status": "upcoming", "whale": false, "handlePct": 47, "betsPct": 33, "divergence": 14}, {"id": 60, "game": "DAL Mavericks @ OKC Thunder", "league": "SPORTS", "market": "Total", "pick": "Over 180.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 24.2, "marketScore": 30.0, "confidence": 30.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "14:00", "iso": "2026-07-16T14:00:00", "status": "upcoming", "whale": false, "handlePct": 74, "betsPct": 75, "divergence": 1}, {"id": 61, "game": "IF Vestri vs FK Qarabag", "league": "SPORTS", "market": "Moneyline", "pick": "IF Vestri", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.2, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "14:00", "iso": "2026-07-16T14:00:00", "status": "upcoming", "whale": false, "handlePct": 7, "betsPct": 8, "divergence": 1}, {"id": 62, "game": "BKN Nets @ HOU Rockets", "league": "SPORTS", "market": "Moneyline", "pick": "HOU Rockets", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 46.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-16", "time": "14:30", "iso": "2026-07-16T14:30:00", "status": "upcoming", "whale": false, "handlePct": 27, "betsPct": 60, "divergence": 33}, {"id": 63, "game": "BKN Nets @ HOU Rockets", "league": "SPORTS", "market": "Spread", "pick": "BKN Nets -2.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.4, "marketScore": 85.0, "confidence": 85.0, "edge": 27.0, "modelProb": 63, "ev": 21.6, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "14:30", "iso": "2026-07-16T14:30:00", "status": "upcoming", "whale": false, "handlePct": 94, "betsPct": 67, "divergence": 27}, {"id": 64, "game": "BKN Nets @ HOU Rockets", "league": "SPORTS", "market": "Total", "pick": "Over 180.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "14:30", "iso": "2026-07-16T14:30:00", "status": "upcoming", "whale": false, "handlePct": 67, "betsPct": 67, "divergence": 0}, {"id": 65, "game": "Racing Club vs Defensa y Justicia", "league": "SPORTS", "market": "Moneyline", "pick": "Racing Club", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "15:45", "iso": "2026-07-16T15:45:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 66, "game": "LA Lakers @ CHI Bulls", "league": "SPORTS", "market": "Moneyline", "pick": "CHI Bulls", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 50.8, "marketScore": 60.0, "confidence": 60.0, "edge": 14.0, "modelProb": 57, "ev": 11.2, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "16:00", "iso": "2026-07-16T16:00:00", "status": "upcoming", "whale": false, "handlePct": 26, "betsPct": 12, "divergence": 14}, {"id": 67, "game": "LA Lakers @ CHI Bulls", "league": "SPORTS", "market": "Spread", "pick": "LA Lakers -3.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "16:00", "iso": "2026-07-16T16:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 68, "game": "LA Lakers @ CHI Bulls", "league": "SPORTS", "market": "Total", "pick": "Over 181.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 63.0, "marketScore": 75.0, "confidence": 75.0, "edge": 15.0, "modelProb": 57, "ev": 12.0, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "16:00", "iso": "2026-07-16T16:00:00", "status": "upcoming", "whale": false, "handlePct": 95, "betsPct": 80, "divergence": 15}, {"id": 69, "game": "GS Warriors @ NY Knicks", "league": "SPORTS", "market": "Moneyline", "pick": "NY Knicks", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 75.8, "marketScore": 85.0, "confidence": 85.0, "edge": 39.0, "modelProb": 69, "ev": 31.2, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "17:00", "iso": "2026-07-16T17:00:00", "status": "upcoming", "whale": false, "handlePct": 75, "betsPct": 36, "divergence": 39}, {"id": 70, "game": "GS Warriors @ NY Knicks", "league": "SPORTS", "market": "Spread", "pick": "GS Warriors -7.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "17:00", "iso": "2026-07-16T17:00:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 71, "game": "GS Warriors @ NY Knicks", "league": "SPORTS", "market": "Total", "pick": "Over 172.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "17:00", "iso": "2026-07-16T17:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 72, "game": "NY Mets @ PHI Phillies", "league": "SPORTS", "market": "Moneyline", "pick": "PHI Phillies", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 25.0, "marketScore": 25.0, "confidence": 25.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-16", "time": "17:10", "iso": "2026-07-16T17:10:00", "status": "upcoming", "whale": false, "handlePct": 58, "betsPct": 83, "divergence": 25}, {"id": 73, "game": "NY Mets @ PHI Phillies", "league": "SPORTS", "market": "Run Line", "pick": "PHI Phillies -1.5", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 29.0, "marketScore": 25.0, "confidence": 25.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-16", "time": "17:10", "iso": "2026-07-16T17:10:00", "status": "upcoming", "whale": false, "handlePct": 50, "betsPct": 95, "divergence": 45}, {"id": 74, "game": "NY Mets @ PHI Phillies", "league": "SPORTS", "market": "Total", "pick": "Over 9.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.6, "marketScore": 50.0, "confidence": 50.0, "edge": 3.0, "modelProb": 51, "ev": 2.4, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "17:10", "iso": "2026-07-16T17:10:00", "status": "upcoming", "whale": false, "handlePct": 28, "betsPct": 25, "divergence": 3}, {"id": 75, "game": "POR Fire @ WAS Mystics", "league": "SPORTS", "market": "Moneyline", "pick": "WAS Mystics", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 25.6, "marketScore": 30.0, "confidence": 30.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "17:10", "iso": "2026-07-16T17:10:00", "status": "upcoming", "whale": false, "handlePct": 79, "betsPct": 87, "divergence": 8}, {"id": 76, "game": "POR Fire @ WAS Mystics", "league": "SPORTS", "market": "Spread", "pick": "WAS Mystics -5.5", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 75.4, "marketScore": 85.0, "confidence": 85.0, "edge": 37.0, "modelProb": 68, "ev": 29.6, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "17:10", "iso": "2026-07-16T17:10:00", "status": "upcoming", "whale": false, "handlePct": 97, "betsPct": 60, "divergence": 37}, {"id": 77, "game": "POR Fire @ WAS Mystics", "league": "SPORTS", "market": "Total", "pick": "Over 163.5", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 89.2, "marketScore": 100, "confidence": 100, "edge": 46.0, "modelProb": 73, "ev": 36.8, "risk": "LOW", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "17:10", "iso": "2026-07-16T17:10:00", "status": "upcoming", "whale": false, "handlePct": 96, "betsPct": 50, "divergence": 46}, {"id": 78, "game": "MEM Grizzlies @ ATL Hawks", "league": "SPORTS", "market": "Moneyline", "pick": "ATL Hawks", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 43.2, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "18:00", "iso": "2026-07-16T18:00:00", "status": "upcoming", "whale": false, "handlePct": 25, "betsPct": 41, "divergence": 16}, {"id": 79, "game": "MEM Grizzlies @ ATL Hawks", "league": "SPORTS", "market": "Spread", "pick": "ATL Hawks -3.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "18:00", "iso": "2026-07-16T18:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 80, "game": "MEM Grizzlies @ ATL Hawks", "league": "SPORTS", "market": "Total", "pick": "Over 183.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "18:00", "iso": "2026-07-16T18:00:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 81, "game": "San German @ Leones de Ponce", "league": "SPORTS", "market": "Moneyline", "pick": "Leones de Ponce", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "18:00", "iso": "2026-07-16T18:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 82, "game": "TOR Raptors @ MIA Heat", "league": "SPORTS", "market": "Moneyline", "pick": "MIA Heat", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 71.2, "marketScore": 80.0, "confidence": 80.0, "edge": 36.0, "modelProb": 68, "ev": 28.8, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "19:00", "iso": "2026-07-16T19:00:00", "status": "upcoming", "whale": false, "handlePct": 67, "betsPct": 31, "divergence": 36}, {"id": 83, "game": "TOR Raptors @ MIA Heat", "league": "SPORTS", "market": "Spread", "pick": "TOR Raptors -2.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.4, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-16", "time": "19:00", "iso": "2026-07-16T19:00:00", "status": "upcoming", "whale": false, "handlePct": 28, "betsPct": 50, "divergence": 22}, {"id": 84, "game": "TOR Raptors @ MIA Heat", "league": "SPORTS", "market": "Total", "pick": "Over 180.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "19:00", "iso": "2026-07-16T19:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 85, "game": "NY Liberty @ DAL Wings", "league": "SPORTS", "market": "Moneyline", "pick": "DAL Wings", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 84.0, "marketScore": 95.0, "confidence": 95.0, "edge": 40.0, "modelProb": 70, "ev": 32.0, "risk": "LOW", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-16", "time": "19:10", "iso": "2026-07-16T19:10:00", "status": "upcoming", "whale": false, "handlePct": 51, "betsPct": 11, "divergence": 40}, {"id": 86, "game": "NY Liberty @ DAL Wings", "league": "SPORTS", "market": "Spread", "pick": "DAL Wings -1.5", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 54.8, "marketScore": 65.0, "confidence": 65.0, "edge": 14.0, "modelProb": 57, "ev": 11.2, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "19:10", "iso": "2026-07-16T19:10:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 86, "divergence": 14}, {"id": 87, "game": "NY Liberty @ DAL Wings", "league": "SPORTS", "market": "Total", "pick": "Over 176.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.0, "marketScore": 85.0, "confidence": 85.0, "edge": 25.0, "modelProb": 62, "ev": 20.0, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "19:10", "iso": "2026-07-16T19:10:00", "status": "upcoming", "whale": false, "handlePct": 92, "betsPct": 67, "divergence": 25}, {"id": 88, "game": "POR Trail Blazers @ DEN Nuggets", "league": "SPORTS", "market": "Moneyline", "pick": "DEN Nuggets", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 43.8, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "20:00", "iso": "2026-07-16T20:00:00", "status": "upcoming", "whale": false, "handlePct": 50, "betsPct": 69, "divergence": 19}, {"id": 89, "game": "POR Trail Blazers @ DEN Nuggets", "league": "SPORTS", "market": "Spread", "pick": "DEN Nuggets -2.5", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-16", "time": "20:00", "iso": "2026-07-16T20:00:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 90, "game": "POR Trail Blazers @ DEN Nuggets", "league": "SPORTS", "market": "Total", "pick": "Over 182.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 63.8, "marketScore": 75.0, "confidence": 75.0, "edge": 19.0, "modelProb": 59, "ev": 15.2, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-16", "time": "20:00", "iso": "2026-07-16T20:00:00", "status": "upcoming", "whale": false, "handlePct": 94, "betsPct": 75, "divergence": 19}, {"id": 1, "game": "Grzegorz Adamiak vs Artur Daniel", "league": "SPORTS", "market": "Moneyline", "pick": "Grzegorz Adamiak", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 43.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-15", "time": "23:15", "iso": "2026-07-15T23:15:00", "status": "live", "whale": false, "handlePct": 5, "betsPct": 20, "divergence": 15}];
+const PICKS = [{"id": 7, "game": "WAS Nationals @ Athletics", "league": "SPORTS", "market": "Moneyline", "pick": "Athletics", "odds": "+113", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 41.4, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 6.5, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:40", "iso": "2026-07-17T19:40:00", "status": "upcoming", "whale": false, "handlePct": 18, "betsPct": 25, "divergence": 7}, {"id": 8, "game": "WAS Nationals @ Athletics", "league": "SPORTS", "market": "Run Line", "pick": "WAS Nationals -1.5", "odds": "-1", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 75.0, "marketScore": 85.0, "confidence": 85.0, "edge": 35.0, "modelProb": 67, "ev": 6667.0, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-17", "time": "19:40", "iso": "2026-07-17T19:40:00", "status": "upcoming", "whale": false, "handlePct": 85, "betsPct": 50, "divergence": 35}, {"id": 9, "game": "WAS Nationals @ Athletics", "league": "SPORTS", "market": "Total", "pick": "Over 10.5", "odds": "10.5", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 43.2, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 425.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:40", "iso": "2026-07-17T19:40:00", "status": "upcoming", "whale": false, "handlePct": 39, "betsPct": 55, "divergence": 16}, {"id": 10, "game": "STL Cardinals @ ARI Diamondbacks", "league": "SPORTS", "market": "Moneyline", "pick": "ARI Diamondbacks", "odds": "—", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 43.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:40", "iso": "2026-07-17T19:40:00", "status": "upcoming", "whale": false, "handlePct": 30, "betsPct": 45, "divergence": 15}, {"id": 11, "game": "STL Cardinals @ ARI Diamondbacks", "league": "SPORTS", "market": "Run Line", "pick": "STL Cardinals -1.5", "odds": "-1", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 89.4, "marketScore": 100, "confidence": 100, "edge": 47.0, "modelProb": 73, "ev": 7273.0, "risk": "LOW", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-17", "time": "19:40", "iso": "2026-07-17T19:40:00", "status": "upcoming", "whale": false, "handlePct": 96, "betsPct": 49, "divergence": 47}, {"id": 12, "game": "STL Cardinals @ ARI Diamondbacks", "league": "SPORTS", "market": "Total", "pick": "Over 9", "odds": "—", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 49.8, "marketScore": 60.0, "confidence": 60.0, "edge": 9.0, "modelProb": 54, "ev": 7.2, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:40", "iso": "2026-07-17T19:40:00", "status": "upcoming", "whale": false, "handlePct": 64, "betsPct": 55, "divergence": 9}, {"id": 13, "game": "DET Tigers @ LA Angels", "league": "SPORTS", "market": "Moneyline", "pick": "LA Angels", "odds": "—", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 41.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:45", "iso": "2026-07-17T19:45:00", "status": "upcoming", "whale": false, "handlePct": 8, "betsPct": 16, "divergence": 8}, {"id": 14, "game": "DET Tigers @ LA Angels", "league": "SPORTS", "market": "Run Line", "pick": "DET Tigers -1.5", "odds": "-1", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 75.2, "marketScore": 85.0, "confidence": 85.0, "edge": 36.0, "modelProb": 68, "ev": 6768.0, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-17", "time": "19:45", "iso": "2026-07-17T19:45:00", "status": "upcoming", "whale": false, "handlePct": 92, "betsPct": 56, "divergence": 36}, {"id": 15, "game": "DET Tigers @ LA Angels", "league": "SPORTS", "market": "Total", "pick": "Over 8.5", "odds": "8.5", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.6, "marketScore": 85.0, "confidence": 85.0, "edge": 28.0, "modelProb": 64, "ev": 444.0, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:45", "iso": "2026-07-17T19:45:00", "status": "upcoming", "whale": false, "handlePct": 85, "betsPct": 57, "divergence": 28}, {"id": 16, "game": "Wojciech Wojtaszczyk vs Pawel Adamus", "league": "SPORTS", "market": "Moneyline", "pick": "Wojciech Wojtaszczyk", "odds": "+230", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 50.4, "marketScore": 60.0, "confidence": 60.0, "edge": 12.0, "modelProb": 56, "ev": 84.8, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:45", "iso": "2026-07-17T19:45:00", "status": "upcoming", "whale": false, "handlePct": 62, "betsPct": 50, "divergence": 12}, {"id": 17, "game": "Matthew Forbes vs Bernard Tomic", "league": "SPORTS", "market": "Moneyline", "pick": "Matthew Forbes", "odds": "+135", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.2, "marketScore": 50.0, "confidence": 50.0, "edge": 1.0, "modelProb": 50, "ev": 17.5, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "19:50", "iso": "2026-07-17T19:50:00", "status": "upcoming", "whale": false, "handlePct": 7, "betsPct": 6, "divergence": 1}, {"id": 18, "game": "Robert Szymik vs Rafal Adach", "league": "SPORTS", "market": "Moneyline", "pick": "Robert Szymik", "odds": "+260", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 80.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "19:55", "iso": "2026-07-17T19:55:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 19, "game": "Jacek Oracz vs Cezary Pawlik", "league": "SPORTS", "market": "Moneyline", "pick": "Jacek Oracz", "odds": "+125", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 12.5, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:00", "iso": "2026-07-17T20:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 20, "game": "SF Giants @ SEA Mariners", "league": "SPORTS", "market": "Moneyline", "pick": "SEA Mariners", "odds": "+155", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.6, "marketScore": 55.0, "confidence": 55.0, "edge": 3.0, "modelProb": 51, "ev": 30.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:10", "iso": "2026-07-17T20:10:00", "status": "upcoming", "whale": false, "handlePct": 92, "betsPct": 89, "divergence": 3}, {"id": 21, "game": "SF Giants @ SEA Mariners", "league": "SPORTS", "market": "Run Line", "pick": "SEA Mariners -1.5", "odds": "-1", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 73.0, "marketScore": 85.0, "confidence": 85.0, "edge": 25.0, "modelProb": 62, "ev": 6162.0, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "20:10", "iso": "2026-07-17T20:10:00", "status": "upcoming", "whale": false, "handlePct": 81, "betsPct": 56, "divergence": 25}, {"id": 22, "game": "SF Giants @ SEA Mariners", "league": "SPORTS", "market": "Total", "pick": "Over 7", "odds": "+102", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 46.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 1.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-17", "time": "20:10", "iso": "2026-07-17T20:10:00", "status": "upcoming", "whale": false, "handlePct": 29, "betsPct": 62, "divergence": 33}, {"id": 23, "game": "CON Sun @ PHO Mercury", "league": "SPORTS", "market": "Moneyline", "pick": "PHO Mercury", "odds": "+154", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 24.2, "marketScore": 30.0, "confidence": 30.0, "edge": 0, "modelProb": 50, "ev": 27.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:10", "iso": "2026-07-17T20:10:00", "status": "upcoming", "whale": false, "handlePct": 83, "betsPct": 84, "divergence": 1}, {"id": 24, "game": "CON Sun @ PHO Mercury", "league": "SPORTS", "market": "Spread", "pick": "PHO Mercury -4.5", "odds": "-4", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 1200.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-17", "time": "20:10", "iso": "2026-07-17T20:10:00", "status": "upcoming", "whale": false, "handlePct": 27, "betsPct": 47, "divergence": 20}, {"id": 25, "game": "CON Sun @ PHO Mercury", "league": "SPORTS", "market": "Total", "pick": "Over 163.5", "odds": "163.5", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 54.8, "marketScore": 65.0, "confidence": 65.0, "edge": 14.0, "modelProb": 57, "ev": 50.2, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "20:10", "iso": "2026-07-17T20:10:00", "status": "upcoming", "whale": false, "handlePct": 84, "betsPct": 70, "divergence": 14}, {"id": 26, "game": "Jakub Jesiek vs Pawel Kurek", "league": "SPORTS", "market": "Moneyline", "pick": "Jakub Jesiek", "odds": "+105", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 49.4, "marketScore": 60.0, "confidence": 60.0, "edge": 7.0, "modelProb": 53, "ev": 8.7, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "20:10", "iso": "2026-07-17T20:10:00", "status": "upcoming", "whale": false, "handlePct": 57, "betsPct": 50, "divergence": 7}, {"id": 27, "game": "Artur Kubiak vs Oskar Jedrzejowski", "league": "SPORTS", "market": "Moneyline", "pick": "Artur Kubiak", "odds": "+100", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:20", "iso": "2026-07-17T20:20:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 28, "game": "LA Galaxy vs LAFC", "league": "SPORTS", "market": "Moneyline", "pick": "LA Galaxy", "odds": "+185", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.4, "marketScore": 50.0, "confidence": 50.0, "edge": 2.0, "modelProb": 51, "ev": 45.4, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:25", "iso": "2026-07-17T20:25:00", "status": "upcoming", "whale": false, "handlePct": 19, "betsPct": 17, "divergence": 2}, {"id": 29, "game": "LA Galaxy vs LAFC", "league": "SPORTS", "market": "Spread", "pick": "LAFC -0.25", "odds": "-0", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:25", "iso": "2026-07-17T20:25:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 30, "game": "LA Galaxy vs LAFC", "league": "SPORTS", "market": "Total", "pick": "Over 2.75", "odds": "2.75", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 37.5, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:25", "iso": "2026-07-17T20:25:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 31, "game": "POR Trail Blazers @ UTA Jazz", "league": "SPORTS", "market": "Moneyline", "pick": "UTA Jazz", "odds": "+140", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 46.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 20.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-17", "time": "20:30", "iso": "2026-07-17T20:30:00", "status": "upcoming", "whale": false, "handlePct": 10, "betsPct": 43, "divergence": 33}, {"id": 32, "game": "POR Trail Blazers @ UTA Jazz", "league": "SPORTS", "market": "Spread", "pick": "UTA Jazz -3.5", "odds": "-3", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 64.4, "marketScore": 75.0, "confidence": 75.0, "edge": 22.0, "modelProb": 61, "ev": 1994.3, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "20:30", "iso": "2026-07-17T20:30:00", "status": "upcoming", "whale": false, "handlePct": 77, "betsPct": 55, "divergence": 22}, {"id": 33, "game": "POR Trail Blazers @ UTA Jazz", "league": "SPORTS", "market": "Total", "pick": "Over 189.5", "odds": "189.5", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 49.2, "marketScore": 60.0, "confidence": 60.0, "edge": 6.0, "modelProb": 53, "ev": 53.4, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "20:30", "iso": "2026-07-17T20:30:00", "status": "upcoming", "whale": false, "handlePct": 58, "betsPct": 52, "divergence": 6}, {"id": 34, "game": "Grzegorz Sawicki vs Michal Durda", "league": "SPORTS", "market": "Moneyline", "pick": "Grzegorz Sawicki", "odds": "+350", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 125.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:35", "iso": "2026-07-17T20:35:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 35, "game": "Roman Wiza vs Damian Fira", "league": "SPORTS", "market": "Moneyline", "pick": "Roman Wiza", "odds": "—", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:45", "iso": "2026-07-17T20:45:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 36, "game": "Michal Wolny vs Marcin Wozniczka", "league": "SPORTS", "market": "Moneyline", "pick": "Michal Wolny", "odds": "+140", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 20.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "20:45", "iso": "2026-07-17T20:45:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 37, "game": "MIN Timberwolves @ LA Clippers", "league": "SPORTS", "market": "Moneyline", "pick": "LA Clippers", "odds": "+120", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 42.6, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 10.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "21:00", "iso": "2026-07-17T21:00:00", "status": "upcoming", "whale": false, "handlePct": 53, "betsPct": 66, "divergence": 13}, {"id": 38, "game": "MIN Timberwolves @ LA Clippers", "league": "SPORTS", "market": "Spread", "pick": "LA Clippers -2.5", "odds": "-2", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 75.8, "marketScore": 85.0, "confidence": 85.0, "edge": 39.0, "modelProb": 69, "ev": 3419.0, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-17", "time": "21:00", "iso": "2026-07-17T21:00:00", "status": "upcoming", "whale": false, "handlePct": 96, "betsPct": 57, "divergence": 39}, {"id": 39, "game": "MIN Timberwolves @ LA Clippers", "league": "SPORTS", "market": "Total", "pick": "Over 187.5", "odds": "187.5", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 74.4, "marketScore": 85.0, "confidence": 85.0, "edge": 32.0, "modelProb": 66, "ev": 89.8, "risk": "MEDIUM", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-17", "time": "21:00", "iso": "2026-07-17T21:00:00", "status": "upcoming", "whale": false, "handlePct": 92, "betsPct": 60, "divergence": 32}, {"id": 40, "game": "Juarez vs Puebla", "league": "SPORTS", "market": "Moneyline", "pick": "Juarez", "odds": "+370", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 53.8, "marketScore": 65.0, "confidence": 65.0, "edge": 9.0, "modelProb": 54, "ev": 153.8, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "21:00", "iso": "2026-07-17T21:00:00", "status": "upcoming", "whale": false, "handlePct": 99, "betsPct": 90, "divergence": 9}, {"id": 41, "game": "Rafal Glica vs Wojciech Urban", "league": "SPORTS", "market": "Moneyline", "pick": "Rafal Glica", "odds": "+125", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 12.5, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:00", "iso": "2026-07-17T21:00:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 42, "game": "Krzysztof Kotyl vs Jakub Wozniak", "league": "SPORTS", "market": "Moneyline", "pick": "Krzysztof Kotyl", "odds": "+140", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 20.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:00", "iso": "2026-07-17T21:00:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 43, "game": "Adrian Spychala vs Maciej Domin", "league": "SPORTS", "market": "Moneyline", "pick": "Adrian Spychala", "odds": "+125", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 3.0, "score": 64.8, "marketScore": 75.0, "confidence": 75.0, "edge": 24.0, "modelProb": 62, "ev": 39.5, "risk": "MEDIUM", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "21:00", "iso": "2026-07-17T21:00:00", "status": "upcoming", "whale": false, "handlePct": 91, "betsPct": 67, "divergence": 24}, {"id": 44, "game": "Mariusz Adamus vs Pawel Slosarczyk", "league": "SPORTS", "market": "Moneyline", "pick": "Mariusz Adamus", "odds": "+160", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🚨 Público", "trendKey": "public", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 47.8, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 30.0, "risk": "HIGH", "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-17", "time": "21:10", "iso": "2026-07-17T21:10:00", "status": "upcoming", "whale": false, "handlePct": 11, "betsPct": 50, "divergence": 39}, {"id": 45, "game": "Fremantle Dockers @ Port Adelaide Power", "league": "SPORTS", "market": "Moneyline", "pick": "Port Adelaide Power", "odds": "+800", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 40.0, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 350.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:15", "iso": "2026-07-17T21:15:00", "status": "upcoming", "whale": false, "handlePct": 0, "betsPct": 0, "divergence": 0}, {"id": 46, "game": "Fremantle Dockers @ Port Adelaide Power", "league": "SPORTS", "market": "Spread", "pick": "Fremantle Dockers -46.5", "odds": "-46", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 58.7, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:15", "iso": "2026-07-17T21:15:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 47, "game": "Maksymilian Miastowski vs Michal Wandachowicz", "league": "SPORTS", "market": "Moneyline", "pick": "Maksymilian Miastowski", "odds": "+330", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 115.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:25", "iso": "2026-07-17T21:25:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 48, "game": "Dariusz Wrobel vs Jaroslaw Rolak", "league": "SPORTS", "market": "Moneyline", "pick": "Dariusz Wrobel", "odds": "+110", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 5.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:25", "iso": "2026-07-17T21:25:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 49, "game": "Grzegorz Sawicki vs Marcin Lach", "league": "SPORTS", "market": "Moneyline", "pick": "Grzegorz Sawicki", "odds": "+270", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 85.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:25", "iso": "2026-07-17T21:25:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 50, "game": "Damian Wederlich vs Tibor Spanik", "league": "SPORTS", "market": "Moneyline", "pick": "Damian Wederlich", "odds": "—", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:45", "iso": "2026-07-17T21:45:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 51, "game": "Oskar Jadach vs Jacek Wieczerzak", "league": "SPORTS", "market": "Moneyline", "pick": "Oskar Jadach", "odds": "—", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 0.0, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "21:50", "iso": "2026-07-17T21:50:00", "status": "upcoming", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 1, "game": "Kamil Klocek vs Kacper Marchlewski", "league": "SPORTS", "market": "Moneyline", "pick": "Kamil Klocek", "odds": "+175", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 54.2, "marketScore": 65.0, "confidence": 65.0, "edge": 11.0, "modelProb": 55, "ev": 51.3, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:25", "iso": "2026-07-17T19:25:00", "status": "live", "whale": false, "handlePct": 96, "betsPct": 85, "divergence": 11}, {"id": 2, "game": "Michal Durda vs Pawel Kurek", "league": "SPORTS", "market": "Moneyline", "pick": "Michal Durda", "odds": "+320", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 21.6, "marketScore": 25.0, "confidence": 25.0, "edge": 0, "modelProb": 50, "ev": 110.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:25", "iso": "2026-07-17T19:25:00", "status": "live", "whale": false, "handlePct": 67, "betsPct": 75, "divergence": 8}, {"id": 3, "game": "Miroslav Necas vs Jan Pleskot", "league": "SPORTS", "market": "Moneyline", "pick": "Miroslav Necas", "odds": "—", "action": "🟢 APOSTAR", "actionKey": "bet", "trend": "🔥 Sharp Divergence", "trendKey": "sharp", "priority": "🔥 AHORA", "priorityKey": "now", "stake": 5.0, "score": 92.0, "marketScore": 100, "confidence": 100, "edge": 60.0, "modelProb": 80, "ev": 48.0, "risk": "LOW", "reason": "Handle supera ampliamente el porcentaje de boletos", "date": "2026-07-17", "time": "19:30", "iso": "2026-07-17T19:30:00", "status": "live", "whale": false, "handlePct": 85, "betsPct": 25, "divergence": 60}, {"id": 4, "game": "David Horak vs Frantisek Briza", "league": "SPORTS", "market": "Moneyline", "pick": "David Horak", "odds": "+125", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 12.5, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "19:30", "iso": "2026-07-17T19:30:00", "status": "live", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 5, "game": "Martin Vizek vs Jakub Hradecky", "league": "SPORTS", "market": "Moneyline", "pick": "Martin Vizek", "odds": "+105", "action": "🔴 PASAR", "actionKey": "pass", "trend": "⚪ Consenso", "trendKey": "consensus", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 44.0, "marketScore": 55.0, "confidence": 55.0, "edge": 0, "modelProb": 50, "ev": 2.5, "risk": "HIGH", "reason": "Handle y boletos muestran distribución similar", "date": "2026-07-17", "time": "19:30", "iso": "2026-07-17T19:30:00", "status": "live", "whale": false, "handlePct": 100, "betsPct": 100, "divergence": 0}, {"id": 6, "game": "Marcin Wozniczka vs Oskar Jedrzejowski", "league": "SPORTS", "market": "Moneyline", "pick": "Marcin Wozniczka", "odds": "+120", "action": "🔴 PASAR", "actionKey": "pass", "trend": "🟡 Mixto", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 42.8, "marketScore": 50.0, "confidence": 50.0, "edge": 0, "modelProb": 50, "ev": 10.0, "risk": "HIGH", "reason": "Movimiento sin ventaja clara", "date": "2026-07-17", "time": "19:35", "iso": "2026-07-17T19:35:00", "status": "live", "whale": false, "handlePct": 15, "betsPct": 29, "divergence": 14}];
 
 const state = {
     search: "",
@@ -757,7 +633,7 @@ const state = {
     whaleOnly: false,
     sort: "time",
     view: "cards",
-    autoThemeEnabled: true
+    autoThemeEnabled: true 
 };
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
@@ -765,11 +641,8 @@ const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "�
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
 
-// ==========================================
-// LÓGICA DE CONTROL DE TEMA SEGÚN HORA DEL DÍA
-// ==========================================
 function updateThemeByTime() {
-    if (!state.autoThemeEnabled) return;
+    if (!state.autoThemeEnabled) return; 
 
     const hour = new Date().getHours();
     const doc = document.documentElement;
@@ -787,7 +660,7 @@ function updateThemeByTime() {
 
 const themeToggle = document.getElementById("themeToggle");
 themeToggle.addEventListener("click", () => {
-    state.autoThemeEnabled = false;
+    state.autoThemeEnabled = false; 
     const doc = document.documentElement;
     const currentTheme = doc.getAttribute("data-theme");
     doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
@@ -802,14 +675,7 @@ function isEventPending(p) {
 
 function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
-
-// PREMIUM PICKS - Filtro estricto
 function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && p.score >= 75; }
-
-// FREE PICKS - Filtro de Candidatos Operables No Premium
-function isFreePick(p) {
-    return !isPremium(p) && p.actionKey === "bet" && (calculateEdge(p) > 0 || p.score >= 60);
-}
 
 function getVisualConfig(p) {
     const score = p.score || 0;
@@ -817,26 +683,24 @@ function getVisualConfig(p) {
     const edge = calculateEdge(p);
     const ev = Number(p.ev || 0);
 
-    // Ajustado a: PASS
     if (p.actionKey === "pass" && edge < 5) {
-        return { bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ PASS" };
+        return { bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ PASAR" };
     }
 
-    // Ajustados a: MIXED y FILTER
     if (key === "mixed" || key === "public" || key === "consensus") {
         if (edge >= 8 || ev >= 5 || score >= 70) {
             return { 
                 bg: "var(--amber-soft)", 
                 border: "var(--amber)", 
                 text: "var(--amber)", 
-                label: `🟨 ${key === "mixed" ? "MIXED" : key === "public" ? "PUBLIC" : "CONSENSO"} OK` 
+                label: `🟨 ${key === "mixed" ? "MIXTO" : key === "public" ? "PUBLIC" : "CONSENSO"}` 
             };
         } else {
             return { 
                 bg: "var(--red-soft)", 
                 border: "var(--red)", 
                 text: "var(--red)", 
-                label: "⚠️ FILTER" 
+                label: "⚠️ FILTRADO / PASAR" 
             };
         }
     }
@@ -865,41 +729,6 @@ function getCountdownText(isoString) {
     return { text: `⏳ ${timeStr}`, urgent: diff < 900000, expired: false };
 }
 
-// ==========================================
-// FUNCIÓN COPIAR FORMATO TELEGRAM (Cuota Dinámica DraftKings/Odds)
-// ==========================================
-function copyTelegramFormat(p, type) {
-    const headerTag = type === "PREMIUM" ? "🔥 PREMIUM PICK" : "🔥 FREE PICK";
-    const dateFormatted = p.date ? p.date.split("-").reverse().join("/") : "—/—/—";
-    
-    // Obtener cuota del origen (DraftKings suele venir mapeado en odds u odds_draftkings)
-    let cuotaValor = "";
-    if (p.odds !== undefined && p.odds !== null && p.odds !== 0) {
-        // Si el momio es positivo y no tiene el signo, se lo agregamos para formato americano clásico (+110)
-        cuotaValor = (Number(p.odds) > 0) ? `+${p.odds}` : p.odds;
-    } else if (p.price !== undefined && p.price !== null) {
-        cuotaValor = (Number(p.price) > 0) ? `+${p.price}` : p.price;
-    }
-    
-    const text = `${headerTag}
-📅 ${dateFormatted} | ⏰ ${p.time || "—:—"}
-🇺🇸 ${p.league}
-🏟️ ${p.game}
-🎯 Pick: ${p.pick} (${p.market})
-💵 Cuota: ${cuotaValor}
-💰 Stake: ${p.stake || 1}u`;
-
-    navigator.clipboard.writeText(text).then(() => {
-        alert(`¡Copiado al portapapeles en formato Telegram (${type})!`);
-    }).catch(err => {
-        console.error("Error al copiar automáticamente: ", err);
-    });
-}
-
-window.copyTelegramConfig = function(p, type) {
-    copyTelegramFormat(p, type);
-};
-
 function updateMetrics(allPicks) {
     const active = allPicks.filter(isEventPending);
     document.getElementById("mPremium").innerText = active.filter(isPremium).length;
@@ -914,7 +743,7 @@ function updateMetrics(allPicks) {
         const d = (new Date(p.iso) - new Date()) / 60000;
         return d >= 0 && d <= 60;
     }).length;
-    document.getElementById("mRisk").innerText = active.filter(p => p.risk === "LOW").length;
+    document.getElementById("mRisk").innerText = active.filter(p => (p.risk || '').toUpperCase() === "LOW").length;
 }
 
 function applyFiltersAndSort(list) {
@@ -946,161 +775,91 @@ function applyFiltersAndSort(list) {
     });
 }
 
-// ==========================================================
-// DIBUJAR TARJETAS: CON APARTADOS DINÁMICOS PREMIUM vs FREE
-// ==========================================================
 function drawCards(list) {
     const box = document.getElementById("cardsView");
-    box.innerHTML = `
-        <div class="section-container" id="premiumSection" style="display:none;">
-            <h3 class="section-title premium-title">🎯 Premium Picks <span class="section-count" id="countPremium">0</span></h3>
-            <div class="cards-grid" id="premiumGrid"></div>
-        </div>
-        <div class="section-container" id="freeSection" style="display:none;">
-            <h3 class="section-title free-title">🆓 Free Picks <span class="section-count" id="countFree">0</span></h3>
-            <div class="cards-grid" id="freeGrid"></div>
-        </div>
-        <div class="section-container" id="otherSection" style="display:none;">
-            <h3 class="section-title other-title">⚠️ Observaciones / Filtrados <span class="section-count" id="countOther">0</span></h3>
-            <div class="cards-grid" id="otherGrid"></div>
-        </div>
-    `;
+    if (!box) {
+        console.error("❌ ERROR: No se encontró el contenedor del DOM '#cardsView'.");
+        return;
+    }
+    box.innerHTML = "";
 
-    const premiumGrid = document.getElementById("premiumGrid");
-    const freeGrid = document.getElementById("freeGrid");
-    const otherGrid = document.getElementById("otherGrid");
+    list.forEach((p, index) => {
+        try {
+            const smDiff = calculateSmartMoney(p);
+            const isWhale = p.whale || p.trendKey === "sharp" || smDiff >= 15;
+            const config = getVisualConfig(p);
+            const timerData = getCountdownText(p.iso);
+            const cuotaDetectada = p.odds || p.cuota || null;
 
-    let premiumCount = 0;
-    let freeCount = 0;
-    let otherCount = 0;
-
-    list.forEach(p => {
-        const isPrem = isPremium(p);
-        const isFree = isFreePick(p);
-
-        let targetGrid;
-        let cardType = "OTHER";
-
-        if (isPrem) {
-            targetGrid = premiumGrid;
-            premiumCount++;
-            cardType = "PREMIUM";
-        } else if (isFree) {
-            targetGrid = freeGrid;
-            freeCount++;
-            cardType = "FREE";
-        } else {
-            targetGrid = otherGrid;
-            otherCount++;
-        }
-
-        const smDiff = calculateSmartMoney(p);
-        const isWhale = p.whale || p.trendKey === "sharp" || smDiff >= 15;
-        
-        // Destacamos candidatos sobresalientes dentro de Free Picks
-        const isStrongFreeCandidate = isFree && (calculateEdge(p) >= 4 || p.score >= 70 || p.ev >= 3);
-        
-        const config = getVisualConfig(p);
-        const timerData = getCountdownText(p.iso);
-
-        // Volumen Unificado (Tickets vs Handle)
-        const totalVol = (p.betsPct || 0) + (p.handlePct || 0) || 1;
-        const betShare = Math.round(((p.betsPct || 0) / totalVol) * 100);
-        const moneyShare = 100 - betShare;
-
-        const card = document.createElement("div");
-        
-        // Configuración de bordes y sombras para destacados
-        let cardClass = "pcard";
-        if (isPrem && isWhale) cardClass += " whale-alert";
-        if (isFree && isStrongFreeCandidate) cardClass += " free-strong-alert";
-        card.className = cardClass;
-
-        if (isFree && isStrongFreeCandidate) {
-            card.style.borderColor = "var(--blue)";
-        } else {
+            const card = document.createElement("div");
+            card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
             card.style.borderColor = config.border;
-        }
 
-        card.innerHTML = `
-            <div>
-                <div class="pcard-header">
-                    <div class="game-title">${p.game}</div>
-                    <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
-                        ${config.label}
-                    </span>
-                </div>
-                <div class="meta-row">
-                    <span>${p.league} · ${p.time || "--:--"}</span>
-                    <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
-                        ${timerData.text}
-                    </span>
-                </div>
-                
-                <div class="pick-details">
-                    <div class="pick-name">${p.pick}</div>
-                    <div class="market-type">${p.market}</div>
+            card.innerHTML = `
+                <div>
+                    <div class="pcard-header">
+                        <div class="game-title">${p.game}</div>
+                        <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
+                            ${config.label}
+                        </span>
+                    </div>
+                    <div class="meta-row">
+                        <span>${p.league} · ${p.time || "--:--"}</span>
+                        <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
+                            ${timerData.text}
+                        </span>
+                    </div>
                     
-                    <div class="grid-metrics">
-                        <div>Modelo: <b class="mono">${p.modelProb}%</b></div>
-                        <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
-                        <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
+                    <div class="pick-details">
+                        <div class="pick-name">${p.pick}</div>
+                        <div class="market-type">${p.market}</div>
+                        
+                        <div class="grid-metrics">
+                            <div>Modelo: <b class="mono">${p.modelProb}%</b></div>
+                            <div>Cuota: <b class="mono" style="color:var(--amber);">${cuotaDetectada || '—'}</b></div>
+                            <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
+                            <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
+                        </div>
+                    </div>
+
+                    <div class="volume-container">
+                        <div class="volume-labels">
+                            <span>Tickets: ${p.betsPct || 0}%</span>
+                            <span>Dinero: ${p.handlePct || 0}%</span>
+                        </div>
+                        <div class="volume-bar-wrapper">
+                            <div class="v-bets" style="width: ${p.betsPct || 0}%"></div>
+                            <div class="v-handle" style="width: ${p.handlePct || 0}%"></div>
+                        </div>
+                        ${isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
                     </div>
                 </div>
 
-                <div class="volume-container">
-                    <div class="volume-labels">
-                        <span>Tickets: ${p.betsPct}% (Público)</span>
-                        <span>Dinero: ${p.handlePct}% (Whales)</span>
-                    </div>
-                    <div class="volume-bar-unified">
-                        <div class="vol-bets-fill" style="width: ${betShare}%"></div>
-                        <div class="vol-handle-fill ${isWhale ? 'whale-active-bar' : ''}" style="width: ${moneyShare}%"></div>
-                    </div>
-                    ${isPrem && isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
-                    ${isFree && isStrongFreeCandidate ? `<div class="strong-candidate-banner">⭐ CANDIDATO FUERTE: EV +${p.ev}%</div>` : ''}
+                <div class="card-footer-tags">
+                    <span class="badge-tag">🔥 Score: ${p.score || 0}</span>
+                    <span class="badge-tag">EV: <span class="mono">${p.ev || 0}%</span></span>
+                    <span class="badge-tag">Stake: ${p.stake || 0}u</span>
+                    <span class="badge-tag">${p.risk || 'NORMAL'}</span>
                 </div>
-            </div>
-
-            <div class="card-footer-tags">
-                <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                    <span class="badge-tag">🔥 Score: ${p.score}</span>
-                    <span class="badge-tag">EV: <span class="mono">${p.ev}%</span></span>
-                    <span class="badge-tag">Stake: ${p.stake}u</span>
-                </div>
-                
-                <button class="btn-copy-telegram" onclick="event.stopPropagation(); copyTelegramConfig(${JSON.stringify(p).replace(/"/g, '&quot;')}, '${cardType}')">
-                    ✈️ Copiar
-                </button>
-            </div>
-            ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
-        `;
-        targetGrid.appendChild(card);
+                ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
+            `;
+            box.appendChild(card);
+        } catch (err) {
+            console.error(`❌ ERROR de renderizado en tarjeta index ${index}:`, err);
+        }
     });
-
-    // Control dinámico de visibilidad para cada sección
-    if (premiumCount > 0) {
-        document.getElementById("premiumSection").style.display = "block";
-        document.getElementById("countPremium").innerText = premiumCount;
-    }
-    if (freeCount > 0) {
-        document.getElementById("freeSection").style.display = "block";
-        document.getElementById("countFree").innerText = freeCount;
-    }
-    if (otherCount > 0) {
-        document.getElementById("otherSection").style.display = "block";
-        document.getElementById("countOther").innerText = otherCount;
-    }
 }
 
 function drawBoard(list) {
     const tbody = document.getElementById("boardBody");
+    if (!tbody) return;
     tbody.innerHTML = "";
 
     list.forEach(p => {
         const config = getVisualConfig(p);
         const timerData = getCountdownText(p.iso);
         const tr = document.createElement("tr");
+        
         tr.innerHTML = `
             <td>
                 <div class="mono" style="font-weight:700;">${p.time || "--:--"}</div>
@@ -1114,10 +873,11 @@ function drawBoard(list) {
             </td>
             <td>${p.market}</td>
             <td style="font-weight:600;">${p.pick}</td>
+            <td class="mono" style="font-weight:700; color:var(--amber);">${p.odds || p.cuota || '—'}</td>
             <td class="mono">${p.modelProb}%</td>
             <td class="mono" style="color:var(--teal); font-weight:700;">+${calculateEdge(p)}%</td>
             <td class="mono">${calculateSmartMoney(p)}%</td>
-            <td class="mono" style="font-weight:700;">${p.ev}%</td>
+            <td class="mono" style="font-weight:700;">${p.ev || 0}%</td>
             <td><b>${trendTag(p.trendKey)}</b></td>
             <td>
                 <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}; font-size:10px; padding:2px 6px;">
@@ -1131,52 +891,25 @@ function drawBoard(list) {
 
 function drawHistory(list) {
     const tbody = document.getElementById("historyBody");
+    if (!tbody) return;
     tbody.innerHTML = "";
     
-    let totalBets = 0;
-    let wonBets = 0;
-    let totalUnidadesApostadas = 0;
-    let netProfit = 0;
-
     list.forEach(p => {
-        const rawRes = (p.result || "").toUpperCase();
-        const isWon = rawRes === "WON" || rawRes === "WIN";
-        const isLost = rawRes === "LOST" || rawRes === "LOSS";
-        
-        const stake = Number(p.stake || 0);
-        const odds = Number(p.odds || 0);
-        let profitUnits = 0;
-
-        if (isWon) {
-            totalBets++;
-            wonBets++;
-            totalUnidadesApostadas += stake;
-            
-            let parsedOddsMultiplier = 1.0; 
-            if (odds > 0) {
-                parsedOddsMultiplier = (odds / 100);
-            } else if (odds < 0) {
-                parsedOddsMultiplier = (100 / Math.abs(odds));
-            }
-            profitUnits = parsedOddsMultiplier * stake;
-            netProfit += profitUnits;
-        } else if (isLost) {
-            totalBets++;
-            totalUnidadesApostadas += stake;
-            profitUnits = -stake;
-            netProfit += profitUnits;
-        }
-
         const status = (p.status || "").toUpperCase();
         let statusBadge = `<span style="color:var(--muted)">🏁 Finalizado</span>`;
         if (status === "LIVE" || (p.iso && new Date(p.iso) <= new Date() && p.result === "PENDING")) {
-            statusBadge = `<span style="color:var(--teal); font-weight:700;">⏱️ En Vivo</span>`;
+            statusBadge = `<span style="color:var(--teal); font-weight:700;">⏱️ En Vivo / Iniciado</span>`;
         }
 
         let resText = "PENDIENTE"; 
         let resColor = "var(--muted)";
-        if (isWon) { resText = "GANADA ✔"; resColor = "var(--teal)"; }
-        else if (isLost) { resText = "PERDIDA ❌"; resColor = "var(--red)"; }
+        if (p.result === "WON" || p.result === "WIN") { 
+            resText = "GANADA ✔"; 
+            resColor = "var(--teal)"; 
+        } else if (p.result === "LOST" || p.result === "LOSS") { 
+            resText = "PERDIDA ❌"; 
+            resColor = "var(--red)"; 
+        }
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -1190,68 +923,89 @@ function drawHistory(list) {
             </td>
             <td>${statusBadge}</td>
             <td><b style="color:${resColor}">${resText}</b></td>
-            <td class="mono" style="font-weight:700; color: ${profitUnits >= 0 ? 'var(--teal)' : 'var(--red)'}">
-                ${profitUnits !== 0 ? (profitUnits > 0 ? '+' : '') + profitUnits.toFixed(2) + 'u' : '—'}
-            </td>
-            <td style="font-size:12px;">${p.date} ${p.time || ''}</td>
+            <td class="mono" style="font-weight:700;">${p.roi ? p.roi + '%' : '—'}</td>
+            <td style="font-size:12px;">${p.date || ''} ${p.time || ''}</td>
         `;
         tbody.appendChild(tr);
     });
-
-    const yieldRate = totalUnidadesApostadas > 0 ? (netProfit / totalUnidadesApostadas) * 100 : 0;
-    const winRate = totalBets > 0 ? (wonBets / totalBets) * 100 : 0;
-
-    document.getElementById("perfTotal").innerText = totalBets;
-    document.getElementById("perfProfit").innerText = `${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(2)}u`;
-    document.getElementById("perfProfit").style.color = netProfit >= 0 ? 'var(--teal)' : 'var(--red)';
-    document.getElementById("perfWR").innerText = `${winRate.toFixed(1)}%`;
-    document.getElementById("perfYield").innerText = `${yieldRate.toFixed(2)}%`;
-    document.getElementById("perfYield").style.color = yieldRate >= 0 ? 'var(--teal)' : 'var(--red)';
 }
 
+// Función central de filtrado y renderizado
 function render() {
-    const pendingEvents = PICKS.filter(isEventPending);
-    const historyEvents = PICKS.filter(p => !isEventPending(p));
+    // Si PICKS no está inicializado o está vacío
+    if (typeof PICKS === 'undefined' || !Array.isArray(PICKS) || PICKS.length === 0) {
+        document.getElementById("emptyState").style.display = "block";
+        document.getElementById("cardsView").style.display = "none";
+        document.getElementById("boardView").style.display = "none";
+        document.getElementById("historyView").style.display = "none";
+        return;
+    }
 
-    updateMetrics(pendingEvents);
+    // Actualizar las métricas generales en el ticker con los datos en bruto
+    updateMetrics(PICKS);
 
-    const targetList = state.view === "history" ? historyEvents : pendingEvents;
-    const filtered = applyFiltersAndSort(targetList);
+    // Separar registros activos de los finalizados/históricos
+    const activePicks = PICKS.filter(isEventPending);
+    const historyPicks = PICKS.filter(p => !isEventPending(p));
 
-    const empty = document.getElementById("emptyState");
+    // Ocultar todas las vistas principales por defecto
     document.getElementById("cardsView").style.display = "none";
     document.getElementById("boardView").style.display = "none";
     document.getElementById("historyView").style.display = "none";
+    document.getElementById("emptyState").style.display = "none";
 
-    if (filtered.length === 0) {
-        empty.style.display = "block";
-        return;
-    }
-    empty.style.display = "none";
-
-    if (state.view === "cards") {
-        document.getElementById("cardsView").style.display = "block";
-        drawCards(filtered);
-    } else if (state.view === "board") {
-        document.getElementById("boardView").style.display = "block";
-        drawBoard(filtered);
-    } else {
+    if (state.view === "history") {
         document.getElementById("historyView").style.display = "block";
-        drawHistory(filtered);
+        const filteredHistory = applyFiltersAndSort(historyPicks);
+        if (filteredHistory.length === 0) {
+            document.getElementById("emptyState").style.display = "block";
+        } else {
+            drawHistory(filteredHistory);
+        }
+    } else {
+        const filteredActive = applyFiltersAndSort(activePicks);
+        if (filteredActive.length === 0) {
+            document.getElementById("emptyState").style.display = "block";
+        } else {
+            if (state.view === "cards") {
+                document.getElementById("cardsView").style.display = "grid";
+                drawCards(filteredActive);
+            } else if (state.view === "board") {
+                document.getElementById("boardView").style.display = "block";
+                drawBoard(filteredActive);
+            }
+        }
     }
 }
 
 function setupFilters() {
-    const dates = new Set(), leagues = new Set(), trends = new Set(), actions = new Set();
-    PICKS.forEach(p => {
-        if (p.date) dates.add(p.date);
-        if (p.league) leagues.add(p.league);
-        if (p.trendKey) trends.add(p.trendKey);
-        if (p.actionKey) actions.add(p.actionKey);
-    });
+    console.group("=== DEBUGGER: CARGA DE DATOS ===");
+    console.log("1. ¿PICKS está definido?:", typeof PICKS !== 'undefined' ? "SÍ" : "NO");
+    
+    let dates = new Set();
+    let leagues = new Set();
+    let trends = new Set();
+    let actions = new Set();
+
+    if (typeof PICKS !== 'undefined' && Array.isArray(PICKS)) {
+        console.log(`2. Cantidad de registros cargados en PICKS: ${PICKS.length}`);
+        PICKS.forEach(p => {
+            if (p.date) dates.add(p.date);
+            if (p.league) leagues.add(p.league);
+            if (p.trendKey) trends.add(p.trendKey);
+            if (p.actionKey) actions.add(p.actionKey);
+        });
+        if (PICKS.length > 0) {
+            console.log("3. Estructura del primer registro de prueba:", PICKS[0]);
+        }
+    } else {
+        console.error("❌ ERROR CRÍTICO: La constante PICKS es undefined o inválida.");
+    }
+    console.groupEnd();
 
     function buildSelector(id, placeholder, set, textMapper) {
         const el = document.getElementById(id);
+        if (!el) return;
         el.innerHTML = `<option value="">${placeholder}</option>`;
         [...set].sort().forEach(v => {
             el.innerHTML += `<option value="${v}">${textMapper ? textMapper(v) : v}</option>`;
@@ -1266,30 +1020,47 @@ function setupFilters() {
     buildSelector("fDate", "📆 Todas las fechas", dates);
     buildSelector("fLeague", "🏆 Todas las ligas", leagues);
     buildSelector("fTrend", "📊 Todas las señales", trends, k => trendTag(k));
-    buildSelector("fAction", "🎯 Todas las acciones", actions, k => k === "bet" ? "APOSTAR" : "PASS");
+    buildSelector("fAction", "🎯 Todas las acciones", actions, k => k === "bet" ? "APOSTAR" : "PASAR");
 
-    document.getElementById("fSort").addEventListener("change", e => {
-        state.sort = e.target.value;
-        render();
-    });
+    const sortEl = document.getElementById("fSort");
+    if (sortEl) {
+        sortEl.addEventListener("change", e => {
+            state.sort = e.target.value;
+            render();
+        });
+    }
 
-    document.getElementById("search").addEventListener("input", e => { state.search = e.target.value; render(); });
+    const searchEl = document.getElementById("search");
+    if (searchEl) {
+        searchEl.addEventListener("input", e => { 
+            state.search = e.target.value; 
+            render(); 
+        });
+    }
 
     const whaleBtn = document.getElementById("whaleOnly");
-    whaleBtn.addEventListener("click", () => {
-        state.whaleOnly = !state.whaleOnly;
-        whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
-        render();
-    });
+    if (whaleBtn) {
+        whaleBtn.addEventListener("click", () => {
+            state.whaleOnly = !state.whaleOnly;
+            whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
+            render();
+        });
+    }
 
-    document.getElementById("clearBtn").addEventListener("click", () => {
-        state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.action = ""; state.whaleOnly = false; state.sort = "time";
-        document.getElementById("search").value = "";
-        document.getElementById("fSort").value = "time";
-        ["fDate", "fLeague", "fTrend", "fAction"].forEach(id => document.getElementById(id).value = "");
-        whaleBtn.setAttribute("aria-pressed", false);
-        render();
-    });
+    const clearBtn = document.getElementById("clearBtn");
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.action = ""; state.whaleOnly = false; state.sort = "time";
+            if (searchEl) searchEl.value = "";
+            if (sortEl) sortEl.value = "time";
+            ["fDate", "fLeague", "fTrend", "fAction"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = "";
+            });
+            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", false);
+            render();
+        });
+    }
 
     document.getElementById("viewCards").onclick = () => { state.view = "cards"; toggleTabs("viewCards"); render(); };
     document.getElementById("viewBoard").onclick = () => { state.view = "board"; toggleTabs("viewBoard"); render(); };
@@ -1297,7 +1068,8 @@ function setupFilters() {
 
     function toggleTabs(activeId) {
         ["viewCards", "viewBoard", "viewHistory"].forEach(id => {
-            document.getElementById(id).setAttribute("aria-pressed", id === activeId);
+            const el = document.getElementById(id);
+            if (el) el.setAttribute("aria-pressed", id === activeId);
         });
     }
 }
@@ -1308,7 +1080,7 @@ function initEngine() {
     updateThemeByTime();
 
     setInterval(() => {
-        clock.innerText = new Date().toTimeString().split(" ")[0];
+        if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];
         
         updateThemeByTime();
 
@@ -1326,6 +1098,7 @@ function initEngine() {
     }, 1000);
 }
 
+// Inicialización de la UI
 setupFilters();
 initEngine();
 render();
