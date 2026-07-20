@@ -1,52 +1,37 @@
-def calculate_stake(score, pattern):
+def calculate_stake(score, pattern, odds):
     """
-    Calcula unidades recomendadas.
-
-    Retorna:
-    stake: unidades
+    Calcula unidades basadas en Kelly con escala granular completa:
+    0.25, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 5.0
     """
-
-    # Sharp Divergence
-
-    if "Sharp Divergence" in pattern:
-
-        if score >= 95:
-            return 5.0
-
-        elif score >= 90:
-            return 4.0
-
-        elif score >= 85:
-            return 3.0
-
-
-
-    # Sharp Lean
-
-    if "Sharp Lean" in pattern:
-
-        if score >= 85:
-            return 3.0
-
-        elif score >= 75:
-            return 2.0
-
-
-
-    # Consenso
-
-    if "Consenso" in pattern:
-
+    if any(p in pattern for p in ["Consenso", "Público"]):
         return 0.0
 
-
-
-    # Público
-
-    if "Público" in pattern:
-
+    # Cálculo de Kelly
+    p = score / 100.0
+    b = odds - 1
+    q = 1 - p
+    
+    if (b * p - q) <= 0:
         return 0.0
+    
+    kelly_pct = (b * p - q) / b
 
+    # Tabla de rangos: (Umbral_Kelly_Minimo, Stake_Asignado)
+    # Ordenado de mayor a menor para capturar primero el stake más alto
+    escalas = [
+        (0.12, 5.0),
+        (0.09, 3.5),
+        (0.07, 3.0),
+        (0.05, 2.5),
+        (0.04, 2.0),
+        (0.03, 1.5),
+        (0.02, 1.0),
+        (0.01, 0.5),
+        (0.005, 0.25)
+    ]
 
+    for umbral, stake in escalas:
+        if kelly_pct >= umbral:
+            return stake
 
     return 0.0

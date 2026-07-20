@@ -47,7 +47,7 @@ def main():
 
     events_data = build_picks(raw_data)
 
-    generate_dashboard(events_data)
+    generate_dashboard()
 
 
 if __name__ == "__main__":

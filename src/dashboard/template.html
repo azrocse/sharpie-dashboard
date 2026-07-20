@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Librería Chart.js para visualización robusta de gráficos de rendimiento y distribución -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root[data-theme="light"] {
@@ -181,6 +184,40 @@
             font-size: 24px;
             font-weight: 700;
             font-family: "JetBrains Mono", monospace;
+        }
+
+        /* SECCIÓN DE GRÁFICOS ANALÍTICOS (NUEVO BLOQUE ROBUSTO) */
+        .analytics-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .chart-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
         }
 
         /* TOOLBAR FILTROS Y ORDENAMIENTO */
@@ -413,6 +450,47 @@
             border: 1px solid var(--border);
         }
 
+        .badge-tag.good {
+            background: var(--teal-soft);
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .badge-tag.warn {
+            background: var(--amber-soft);
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        .badge-tag.bad {
+            background: var(--red-soft);
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .badge-tag.neutral {
+            color: var(--muted);
+        }
+
+        .estimated-marker {
+            opacity: 0.7;
+            font-style: italic;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .free-pick-banner {
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: var(--teal-soft);
+            border: 1px dashed var(--teal);
+            color: var(--teal);
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+        }
+
         .reasoning-text {
             margin-top: 12px;
             font-size: 12px;
@@ -494,6 +572,7 @@
 
         @media(max-width: 950px) {
             .ticker { grid-template-columns: repeat(3, 1fr); }
+            .analytics-section { grid-template-columns: 1fr; }
         }
         @media(max-width: 640px) {
             .ticker { grid-template-columns: repeat(2, 1fr); }
@@ -545,6 +624,28 @@
     </div>
 </div>
 
+<!-- SECCIÓN ANALÍTICA DE CHARTS INTEGRADA SIN PERDER NADA -->
+<div class="analytics-section">
+    <div class="chart-card">
+        <div class="chart-header">
+            <span>📈 Distribución de Edge por Encuentro</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">Edge vs Score del Modelo</span>
+        </div>
+        <div class="chart-container">
+            <canvas id="edgeScatterChart"></canvas>
+        </div>
+    </div>
+    <div class="chart-card">
+        <div class="chart-header">
+            <span>🎯 Tendencias de Mercado</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">Smart vs Público</span>
+        </div>
+        <div class="chart-container">
+            <canvas id="marketDoughnutChart"></canvas>
+        </div>
+    </div>
+</div>
+
 <div class="toolbar">
     <div class="search-box">
         <input id="search" placeholder="Buscar por equipo, liga, mercado...">
@@ -561,6 +662,7 @@
     <select id="fAction"><option value="">🎯 Todas las acciones</option></select>
 
     <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
+    <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks (redes)</button>
     <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
 
     <div style="flex:1"></div>
@@ -631,12 +733,113 @@ const state = {
     trend: "",
     action: "",
     whaleOnly: false,
+    freePickOnly: false,
     sort: "time",
     view: "cards",
     autoThemeEnabled: true 
 };
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
+
+// ============================================================
+// INSTANCIAS DE GRÁFICOS (CHART.JS)
+// ============================================================
+let edgeChartInstance = null;
+let marketChartInstance = null;
+
+function initCharts() {
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    const textColor = isDark ? "#94a3b8" : "#64748b";
+    const gridColor = isDark ? "#243572" : "#e2e8f0";
+
+    // 1. Gráfico de dispersión (Edge vs Score)
+    const ctxScatter = document.getElementById("edgeScatterChart");
+    if (ctxScatter) {
+        edgeChartInstance = new Chart(ctxScatter, {
+            type: 'scatter',
+            data: { datasets: [{ label: 'Picks Activos', data: [], backgroundColor: '#2dd4bf', pointRadius: 6 }] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Score del Modelo', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Edge (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    // 2. Gráfico de dona (Tendencias de mercado)
+    const ctxDoughnut = document.getElementById("marketDoughnutChart");
+    if (ctxDoughnut) {
+        marketChartInstance = new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Smart Money', 'Mixto / Consenso', 'Público'],
+                datasets: [{ data: [0, 0, 0], backgroundColor: ['#2dd4bf', '#fbbf24', '#fb7185'], borderWidth: 0 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10 } } } },
+                cutout: '70%'
+            }
+        });
+    }
+}
+
+function updateChartsData(activeList) {
+    if (edgeChartInstance) {
+        edgeChartInstance.data.datasets[0].data = activeList.map(p => ({ x: p.score || 0, y: calculateEdge(p) }));
+        edgeChartInstance.update();
+    }
+
+    if (marketChartInstance) {
+        let sharpCount = 0, mixedCount = 0, publicCount = 0;
+        activeList.forEach(p => {
+            if (p.trendKey === 'sharp' || p.whale) sharpCount++;
+            else if (p.trendKey === 'mixed' || p.trendKey === 'consensus') mixedCount++;
+            else publicCount++;
+        });
+        marketChartInstance.data.datasets[0].data = [sharpCount, mixedCount, publicCount];
+        marketChartInstance.update();
+    }
+}
+
+// ============================================================
+// CLASIFICACIÓN DE BADGES POR RANGO DE VALOR
+// ============================================================
+function scoreBadgeClass(score) {
+    const s = Number(score || 0);
+    if (s >= 80) return "good";
+    if (s >= 55) return "warn";
+    return "bad";
+}
+
+function evBadgeClass(ev, isEstimated) {
+    const v = Number(ev || 0);
+    if (isEstimated) return "neutral";
+    if (v >= 10) return "good";
+    if (v > 0) return "warn";
+    return "neutral";
+}
+
+function stakeBadgeClass(stake) {
+    const s = Number(stake || 0);
+    if (s <= 0) return "neutral";
+    if (s >= 4) return "good";
+    if (s >= 2) return "warn";
+    return "neutral";
+}
+
+function riskBadgeClass(risk) {
+    const r = (risk || "").toUpperCase();
+    if (r === "LOW") return "good";
+    if (r === "MEDIUM") return "warn";
+    if (r === "HIGH") return "bad";
+    return "neutral";
+}
 const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "🚨", other: "⚙️" };
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
@@ -664,13 +867,17 @@ themeToggle.addEventListener("click", () => {
     const doc = document.documentElement;
     const currentTheme = doc.getAttribute("data-theme");
     doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
+    // Actualizar colores de gráficas al cambiar tema
+    if (edgeChartInstance && marketChartInstance) {
+        initCharts();
+        render();
+    }
 });
 
 function isEventPending(p) {
     const status = (p.status || "").toUpperCase();
     if (status === "LIVE" || status === "FINISHED" || status === "WON" || status === "LOST") return false;
-    if (p.iso && new Date(p.iso) - new Date() <= 0) return false; 
-    return status === "UPCOMING" || status === "PENDING";
+    return status === "UPCOMING" || status === "PENDING" || !status;
 }
 
 function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
@@ -684,7 +891,7 @@ function getVisualConfig(p) {
     const ev = Number(p.ev || 0);
 
     if (p.actionKey === "pass" && edge < 5) {
-        return { bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ PASAR" };
+        return { bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ SIN VENTAJA" };
     }
 
     if (key === "mixed" || key === "public" || key === "consensus") {
@@ -700,7 +907,7 @@ function getVisualConfig(p) {
                 bg: "var(--red-soft)", 
                 border: "var(--red)", 
                 text: "var(--red)", 
-                label: "⚠️ FILTRADO / PASAR" 
+                label: "⚠️ SIN EDGE / FILTRADO" 
             };
         }
     }
@@ -736,7 +943,7 @@ function updateMetrics(allPicks) {
     const edges = active.map(calculateEdge);
     document.getElementById("mEdge").innerText = `${edges.length ? (edges.reduce((a, b) => a + b, 0) / edges.length).toFixed(1) : 0}%`;
     document.getElementById("mSharp").innerText = active.filter(p => p.whale || calculateSmartMoney(p) >= 15).length;
-    document.getElementById("mEV").innerText = active.filter(p => Number(p.ev || 0) > 0).length;
+    document.getElementById("mEV").innerText = active.filter(p => !p.evEstimated && Number(p.ev || 0) > 0).length;
     
     document.getElementById("mSoon").innerText = active.filter(p => {
         if (!p.iso) return false;
@@ -754,6 +961,7 @@ function applyFiltersAndSort(list) {
         if (state.trend && p.trendKey !== state.trend) return false;
         if (state.action && p.actionKey !== state.action) return false;
         if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
+        if (state.freePickOnly && !p.freePick) return false;
 
         if (text) {
             const blob = `${p.game} ${p.pick} ${p.market} ${p.reason || ''}`.toLowerCase();
@@ -815,7 +1023,7 @@ function drawCards(list) {
                         <div class="market-type">${p.market}</div>
                         
                         <div class="grid-metrics">
-                            <div>Modelo: <b class="mono">${p.modelProb}%</b></div>
+                            <div>Modelo: <b class="mono">${p.modelProb}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
                             <div>Cuota: <b class="mono" style="color:var(--amber);">${cuotaDetectada || '—'}</b></div>
                             <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
                             <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
@@ -836,11 +1044,12 @@ function drawCards(list) {
                 </div>
 
                 <div class="card-footer-tags">
-                    <span class="badge-tag">🔥 Score: ${p.score || 0}</span>
-                    <span class="badge-tag">EV: <span class="mono">${p.ev || 0}%</span></span>
-                    <span class="badge-tag">Stake: ${p.stake || 0}u</span>
-                    <span class="badge-tag">${p.risk || 'NORMAL'}</span>
+                    <span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score: ${p.score || 0}</span>
+                    <span class="badge-tag ${evBadgeClass(p.ev, p.evEstimated)}">EV: <span class="mono">${p.evEstimated ? '~' : ''}${p.ev || 0}%</span>${p.evEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</span>
+                    <span class="badge-tag ${stakeBadgeClass(p.stake)}">Stake: ${p.stake || 0}u</span>
+                    <span class="badge-tag ${riskBadgeClass(p.risk)}">${p.risk || 'NORMAL'}</span>
                 </div>
+                ${p.freePick ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
                 ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
             `;
             box.appendChild(card);
@@ -932,7 +1141,6 @@ function drawHistory(list) {
 
 // Función central de filtrado y renderizado
 function render() {
-    // Si PICKS no está inicializado o está vacío
     if (typeof PICKS === 'undefined' || !Array.isArray(PICKS) || PICKS.length === 0) {
         document.getElementById("emptyState").style.display = "block";
         document.getElementById("cardsView").style.display = "none";
@@ -941,14 +1149,15 @@ function render() {
         return;
     }
 
-    // Actualizar las métricas generales en el ticker con los datos en bruto
     updateMetrics(PICKS);
 
-    // Separar registros activos de los finalizados/históricos
     const activePicks = PICKS.filter(isEventPending);
     const historyPicks = PICKS.filter(p => !isEventPending(p));
 
-    // Ocultar todas las vistas principales por defecto
+    // Actualizar gráficos analíticos con el conjunto activo filtrado
+    const filteredActiveForCharts = applyFiltersAndSort(activePicks);
+    updateChartsData(filteredActiveForCharts);
+
     document.getElementById("cardsView").style.display = "none";
     document.getElementById("boardView").style.display = "none";
     document.getElementById("historyView").style.display = "none";
@@ -963,45 +1172,34 @@ function render() {
             drawHistory(filteredHistory);
         }
     } else {
-        const filteredActive = applyFiltersAndSort(activePicks);
-        if (filteredActive.length === 0) {
+        if (filteredActiveForCharts.length === 0) {
             document.getElementById("emptyState").style.display = "block";
         } else {
             if (state.view === "cards") {
                 document.getElementById("cardsView").style.display = "grid";
-                drawCards(filteredActive);
+                drawCards(filteredActiveForCharts);
             } else if (state.view === "board") {
                 document.getElementById("boardView").style.display = "block";
-                drawBoard(filteredActive);
+                drawBoard(filteredActiveForCharts);
             }
         }
     }
 }
 
 function setupFilters() {
-    console.group("=== DEBUGGER: CARGA DE DATOS ===");
-    console.log("1. ¿PICKS está definido?:", typeof PICKS !== 'undefined' ? "SÍ" : "NO");
-    
     let dates = new Set();
     let leagues = new Set();
     let trends = new Set();
     let actions = new Set();
 
     if (typeof PICKS !== 'undefined' && Array.isArray(PICKS)) {
-        console.log(`2. Cantidad de registros cargados en PICKS: ${PICKS.length}`);
         PICKS.forEach(p => {
             if (p.date) dates.add(p.date);
             if (p.league) leagues.add(p.league);
             if (p.trendKey) trends.add(p.trendKey);
             if (p.actionKey) actions.add(p.actionKey);
         });
-        if (PICKS.length > 0) {
-            console.log("3. Estructura del primer registro de prueba:", PICKS[0]);
-        }
-    } else {
-        console.error("❌ ERROR CRÍTICO: La constante PICKS es undefined o inválida.");
     }
-    console.groupEnd();
 
     function buildSelector(id, placeholder, set, textMapper) {
         const el = document.getElementById(id);
@@ -1047,10 +1245,20 @@ function setupFilters() {
         });
     }
 
+    const freePickBtn = document.getElementById("freePickOnly");
+    if (freePickBtn) {
+        freePickBtn.addEventListener("click", () => {
+            state.freePickOnly = !state.freePickOnly;
+            freePickBtn.setAttribute("aria-pressed", state.freePickOnly);
+            render();
+        });
+    }
+
     const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
-            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.action = ""; state.whaleOnly = false; state.sort = "time";
+            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.action = ""; state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
+            if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
             if (searchEl) searchEl.value = "";
             if (sortEl) sortEl.value = "time";
             ["fDate", "fLeague", "fTrend", "fAction"].forEach(id => {
@@ -1078,6 +1286,7 @@ function initEngine() {
     const clock = document.getElementById("clock");
     
     updateThemeByTime();
+    initCharts();
 
     setInterval(() => {
         if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];

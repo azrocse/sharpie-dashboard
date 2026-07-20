@@ -1,3 +1,9 @@
+"""
+generate_dashboard.py -- Generador del panel HTML interactivo Sharpie
+Toma el archivo unificado sharpie.json generado por analyze.py y construye index.html
+sin clasificaciones de estado (live/finished), unificando todo en un flujo limpio.
+"""
+
 import json
 import os
 from datetime import datetime, timedelta
@@ -67,7 +73,6 @@ def parse_match_datetime(raw):
             year = now.year
             full = f"{date_part}/{year} {time_part}"
             dt = datetime.strptime(full, "%m/%d/%Y %I:%M%p")
-            # ET -> CDMX
             dt = dt - timedelta(hours=2)
             return (
                 dt.strftime("%Y-%m-%d"),
@@ -83,39 +88,24 @@ def parse_match_datetime(raw):
         now.strftime("%Y-%m-%dT00:00:00")
     )
 
-def classify_event_status(iso):
-    try:
-        event_time = datetime.fromisoformat(iso)
-    except:
-        return "finished"
-
-    now = datetime.now()
-    diff = (event_time - now).total_seconds()
-
-    if diff > 0:
-        return "upcoming"
-    if diff > -18000:
-        return "live"
-    return "finished"
-
 # ============================================================
 # CLASIFICADORES
 # ============================================================
 def classify_action(text):
     text = (text or "").upper()
-    if "APOSTAR" in text:
+    if "APOSTAR" in text or "INCLINACIÓN" in text:
         return "bet"
     return "pass"
 
 def classify_trend(text):
     t = (text or "").lower()
-    if "sharp" in t or "🔥" in t:
+    if "sharp" in t or "🔥" in t or "alcista" in t or "entrando" in t:
         return "sharp"
-    if "mixto" in t:
+    if "mixto" in t or "cambio" in t or "estable" in t:
         return "mixed"
     if "consenso" in t:
         return "consensus"
-    if "public" in t or "público" in t:
+    if "público" in t or "public" in t or "bajista" in t or "perdiendo" in t:
         return "public"
     return "other"
 
@@ -180,8 +170,8 @@ def detect_whale(market):
     if market.get("whale"):
         return True
 
-    handle = safe_pct(market.get("handle_pct"))
-    bets = safe_pct(market.get("bets_pct"))
+    handle = safe_pct(market.get("handle_pct", market.get("handle")))
+    bets = safe_pct(market.get("bets_pct", market.get("bets")))
 
     if handle is not None and bets is not None:
         if handle - bets >= 15:
@@ -189,22 +179,17 @@ def detect_whale(market):
 
     blob = " ".join(
         str(market.get(k, ""))
-        for k in ["priority", "action", "reason", "market_trend"]
+        for k in ["priority", "action", "reason", "market_trend", "trend"]
     ).lower()
 
-    return "whale" in blob or "🐋" in blob
+    return "whale" in blob or "🐋" in blob or "divergence" in blob
 
 # ============================================================
-# BUILD PICKS
+# BUILD PICKS (Aplanador de Estructura Jerárquica)
 # ============================================================
 def build_picks(raw_data):
-    print("\n[DEBUG] Iniciando análisis universal de mercados...")
-    events = {
-        "upcoming": [],
-        "live": [],
-        "finished": []
-    }
-
+    print("\n[DEBUG] Iniciando procesamiento de mercados para dashboard...")
+    
     def extract_markets(node):
         found = []
         if isinstance(node, list):
@@ -223,6 +208,7 @@ def build_picks(raw_data):
     markets = extract_markets(raw_data)
     print(f"[DEBUG] Mercados encontrados: {len(markets)}")
 
+    all_items = []
     counter = 0
     seen_picks = set()
 
@@ -242,82 +228,78 @@ def build_picks(raw_data):
 
         counter += 1
 
-        # Fechas y estatus
         date, time, iso = parse_match_datetime(market.get("time", ""))
-        status = classify_event_status(iso)
 
-        # 1. Extracción segura de volumen de dinero (BETS y HANDLE)
-        raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets")))
-        raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle")))
+        raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets", 50)))
+        raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle", 50)))
 
-        bets = int(safe_float(raw_bets)) if safe_float(raw_bets) is not None else 50
-        handle = int(safe_float(raw_handle)) if safe_float(raw_handle) is not None else 50
+        bets = int(safe_float(raw_bets))
+        handle = int(safe_float(raw_handle))
         divergence = abs(handle - bets)
 
-        # 2. Score y Confianza
         market_score = safe_score(market.get("market_score", 0))
         confidence = safe_score(market.get("confidence", market_score))
         edge = safe_score(market.get("edge", 0))
 
-        # Cálculo dinámico del Score Combinado utilizando la divergencia real calculada
         sharp_score = round(
             (market_score * .45 + confidence * .35 + max(divergence, 0) * .20),
             1
         )
 
-        # Determinar Riesgo en base al Score
         risk = "MEDIUM"
         if sharp_score >= 80:
             risk = "LOW"
         elif sharp_score < 55:
             risk = "HIGH"
 
-        # 3. Extracción de Modelo
-        raw_model = market.get("model_prob", market.get("model_pct", market.get("modelProb")))
+        raw_model = market.get("model_prob", market.get("model_pct", market.get("modelProb", market.get("modelIsReal"))))
         model_val = safe_pct(raw_model)
+        model_is_real = bool(market.get("modelIsReal", model_val and model_val > 0))
 
-        if model_val and model_val > 0:
+        if model_is_real and model_val:
             model_prob = int(model_val)
         else:
             estimated_prob = 50 + int(edge / 2)
             model_prob = int(min(99, max(50, estimated_prob)))
 
-        # 4. Cálculo exacto de EV usando cuotas de DraftKings
-        raw_odds = market.get("draftkings_odds", market.get("dk_odds", market.get("odds", market.get("price"))))
+        raw_odds = market.get("odds", market.get("cuota", "—"))
         decimal_odds = None
 
-        if raw_odds is not None:
+        if raw_odds is not None and raw_odds != "—":
             val_odds = safe_float(raw_odds)
             if 1.01 < val_odds < 50.0:
                 decimal_odds = val_odds
             else:
                 decimal_odds = american_to_decimal(raw_odds)
 
-        # Extraer EV del JSON o calcularlo matemáticamente
         raw_ev = market.get("ev")
         ev_val = safe_float(raw_ev)
+        ev_is_estimated = market.get("evEstimated", False)
 
-        if ev_val is not None and ev_val > 0:
+        if ev_val is not None and ev_val != 0:
             ev = ev_val
-        elif decimal_odds is not None and model_prob > 0:
+        elif decimal_odds is not None and model_is_real:
             p_model_dec = model_prob / 100.0
             calculated_ev = (p_model_dec * decimal_odds) - 1.0
             ev = round(calculated_ev * 100.0, 1)
         else:
             ev = round(edge * 0.8, 1) if edge > 0 else 0.0
+            ev_is_estimated = True
 
-        # Objeto de datos final limpio para JS
+        action_text = market.get("action", "🔴 PASAR")
+        trend_text = market.get("trend", "➡️ ESTABLE")
+
         item = {
             "id": counter,
             "game": game or "Evento desconocido",
             "league": market.get("league", "Otras Ligas"),
             "market": market.get("market", market.get("type", "Línea estándar")),
             "pick": pick or "Sin selección",
-            "odds": market.get("odds", "—"),            
-            "action": market.get("action", "🔴 PASAR"),
-            "actionKey": classify_action(market.get("action", "")),
-            "trend": market.get("market_trend", "🟡 Mixto"),
-            "trendKey": classify_trend(market.get("market_trend", "")),
+            "odds": raw_odds,            
+            "action": action_text,
+            "actionKey": market.get("actionKey", classify_action(action_text)),
+            "trend": trend_text,
+            "trendKey": classify_trend(trend_text),
             "priority": market.get("priority", ""),
             "priorityKey": classify_priority(market.get("priority", "")),
             "stake": safe_float(market.get("stake", 0)),
@@ -326,94 +308,85 @@ def build_picks(raw_data):
             "confidence": confidence,
             "edge": edge,
             "modelProb": model_prob,
+            "modelEstimated": not model_is_real,
             "ev": ev,
+            "evEstimated": ev_is_estimated,
             "risk": risk,
+            "freePick": (
+                classify_action(action_text) == "pass"
+                and sharp_score >= 20
+            ),
             "reason": market.get("reason", ""),
             "date": date,
             "time": time,
             "iso": iso,
-            "status": status,
             "whale": detect_whale(market),
             "handlePct": handle,
             "betsPct": bets,
             "divergence": divergence
         }
         
-        events[status].append(item)
+        all_items.append(item)
 
-    print("[DEBUG] Resultado:")
-    print(f"  Próximos: {len(events['upcoming'])}")
-    print(f"  Live: {len(events['live'])}")
-    print(f"  Finalizados: {len(events['finished'])}")
-
-    return events
+    print(f"[DEBUG] Total de eventos unificados cargados: {len(all_items)}")
+    return all_items
 
 # ============================================================
 # GENERATE DASHBOARD
 # ============================================================
-import os
-import json
-from datetime import datetime, timedelta
-
-def generate_dashboard(events_data):
+def generate_dashboard():
     print("\n--- [DEBUG START: GENERATE DASHBOARD] ---")
 
-    # Obtener la hora actual exacta ajustada a la CDMX (UTC-6 de forma manual y robusta para entornos cloud)
     utc_now = datetime.utcnow()
     cdmx_now = utc_now - timedelta(hours=6)
     now_str = cdmx_now.strftime("%Y-%m-%d %H:%M:%S")
 
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    template_path = os.path.join(current_dir, "template.html")
+    template_path = os.path.join(CURRENT_DIR, "template.html")
+    source_json_path = get_latest_file()
 
     print(f"[DEBUG] Buscando plantilla: {template_path}")
+    print(f"[DEBUG] Archivo fuente de datos: {source_json_path}")
 
     if not os.path.exists(template_path):
         raise FileNotFoundError(f"No existe template.html: {template_path}")
 
+    if not source_json_path or not os.path.exists(source_json_path):
+        raise FileNotFoundError(f"No se encontró sharpie.json en {INPUT_DIR}")
+
     with open(template_path, "r", encoding="utf-8") as file:
         html_template = file.read()
 
-    upcoming = events_data.get("upcoming", [])
-    live = events_data.get("live", [])
-    finished = events_data.get("finished", [])
+    with open(source_json_path, "r", encoding="utf-8") as file:
+        raw_data = json.load(file)
 
-    all_events = upcoming + live + finished
+    all_events = build_picks(raw_data)
 
     stats = {
         "total": len(all_events),
-        "upcoming": len(upcoming),
-        "live": len(live),
-        "finished": len(finished),
         "bets": len([x for x in all_events if x.get("actionKey") == "bet"]),
         "whales": len([x for x in all_events if x.get("whale")]),
         "stake": round(sum(x.get("stake", 0) for x in all_events), 2)
     }
 
-    # SEGURO: Generamos una cadena JSON estándar y limpia.
-    # json.dumps convierte True/False de Python en true/false de JS,
-    # escapa automáticamente todas las comillas dobles internas y caracteres especiales,
-    # y al no usar indent, lo genera en una sola línea súper compacta para que JS lo asigne de golpe.
     json_data = json.dumps(all_events, ensure_ascii=False)
 
-    print("[DEBUG] Datos preparados:")
+    print("[DEBUG] Estadísticas finales del dashboard:")
     print(f"  Total eventos: {stats['total']}")
-    print(f"  Próximos: {stats['upcoming']}")
-    print(f"  Live: {stats['live']}")
-    print(f"  Finalizados: {stats['finished']}")
+    print(f"  Apuestas sugeridas (bets): {stats['bets']}")
+    print(f"  Whales detectados: {stats['whales']}")
 
-    # Inyecciones en el HTML de salida
     html_content = html_template.replace("__GENERATED_AT__", now_str)
     html_content = html_content.replace("__PICKS_JSON__", json_data)
 
-    # Nota: Tu estructura actual asume que index.html va en la raíz del dashboard
-    repo_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
-    output_file = os.path.join(repo_root, "index.html")
-
+    output_file = os.path.join(OUTPUT_DIR, "index.html")
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     with open(output_file, "w", encoding="utf-8") as file:
         file.write(html_content)
 
-    print(f"[DEBUG] Dashboard generado con hora CDMX ({now_str}): {output_file}")
+    print(f"[DEBUG] Dashboard generado con éxito en CDMX ({now_str}): {output_file}")
     print("--- [DEBUG END: GENERATE DASHBOARD ] ---\n")
+    return output_file
+
+if __name__ == "__main__":
+    generate_dashboard()
