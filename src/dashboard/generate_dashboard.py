@@ -14,7 +14,11 @@ from datetime import datetime, timedelta
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
 INPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
+SNAPSHOTS_DIR = os.path.join(BASE_DIR, "data", "snapshots")
 OUTPUT_DIR = BASE_DIR
+
+# Cuántos puntos recientes de evolución mostrar por pick en el dashboard.
+MAX_HISTORY_POINTS = 8
 
 # ============================================================
 # LOCALIZAR ARCHIVO FUENTE
@@ -185,11 +189,121 @@ def detect_whale(market):
     return "whale" in blob or "🐋" in blob or "divergence" in blob
 
 # ============================================================
+# EVOLUCIÓN HISTÓRICA DEL PICK (tickets / dinero / cuota)
+# Reconstruida a partir de los snapshots con timestamp que guarda parse.py
+# en data/snapshots/{liga}/, usando el mismo criterio de identidad de
+# mercado (game + pick + market) que ya se usa como unique_key más abajo.
+# ============================================================
+_snapshot_cache = {}
+
+
+def _league_slug(league_name):
+    return (league_name or "").strip().lower().replace(" ", "_")
+
+
+def _market_unique_key(game, pick, market_name):
+    return f"{game}||{pick}||{market_name}"
+
+
+def _load_league_snapshots(league_slug):
+    """
+    Lee y cachea (por corrida de generate_dashboard) todos los snapshots de
+    una liga, indexados por unique_key de mercado para lookup rápido.
+    Cada entrada del resultado es un dict {unique_key: {time, betsPct, handlePct, odds}}
+    correspondiente a un snapshot, en orden cronológico.
+    """
+    if league_slug in _snapshot_cache:
+        return _snapshot_cache[league_slug]
+
+    league_folder = os.path.join(SNAPSHOTS_DIR, league_slug)
+    indexed = []
+
+    if os.path.isdir(league_folder):
+        files = sorted(f for f in os.listdir(league_folder) if f.endswith(".json"))
+
+        for filename in files:
+            path = os.path.join(league_folder, filename)
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    snap_data = json.load(f)
+            except (json.JSONDecodeError, OSError):
+                continue
+
+            timestamp_raw = filename.replace(".json", "")
+            try:
+                dt = datetime.strptime(timestamp_raw, "%Y%m%d_%H%M%S")
+                time_label = dt.strftime("%H:%M")
+            except ValueError:
+                time_label = timestamp_raw
+
+            market_index = {}
+            for game_entry in snap_data.get("games", []):
+                game_name = game_entry.get("game")
+                for market in game_entry.get("markets", []):
+                    pick = market.get("pick")
+                    market_name = market.get("market", market.get("type"))
+                    if not game_name or not pick:
+                        continue
+
+                    key = _market_unique_key(game_name, pick, market_name)
+
+                    raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets")))
+                    raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle")))
+                    raw_odds = market.get("odds", market.get("cuota"))
+
+                    market_index[key] = {
+                        "time": time_label,
+                        "betsPct": safe_pct(raw_bets),
+                        "handlePct": safe_pct(raw_handle),
+                        "odds": raw_odds if raw_odds not in (None, "—") else None
+                    }
+
+            indexed.append(market_index)
+
+    _snapshot_cache[league_slug] = indexed
+    return indexed
+
+
+def build_pick_history(league_name, game, pick, market_name):
+    """
+    Devuelve la lista lista para el campo "history" del dashboard
+    (tickets/dinero/cuota por horario), a partir de los snapshots guardados
+    por parse.py. Si aún no hay snapshots para esa liga, devuelve [].
+    """
+    league_slug = _league_slug(league_name)
+    key = _market_unique_key(game, pick, market_name)
+
+    snapshots = _load_league_snapshots(league_slug)
+
+    history = []
+    for market_index in snapshots:
+        point = market_index.get(key)
+        if point is None:
+            continue
+        if point["betsPct"] is None and point["handlePct"] is None and point["odds"] is None:
+            continue
+        history.append({
+            "time": point["time"],
+            "betsPct": point["betsPct"],
+            "handlePct": point["handlePct"],
+            "odds": point["odds"]
+        })
+
+    if MAX_HISTORY_POINTS is not None and len(history) > MAX_HISTORY_POINTS:
+        history = history[-MAX_HISTORY_POINTS:]
+
+    return history
+
+# ============================================================
 # BUILD PICKS (Aplanador de Estructura Jerárquica)
 # ============================================================
 def build_picks(raw_data):
     print("\n[DEBUG] Iniciando procesamiento de mercados para dashboard...")
-    
+
+    # Cache de snapshots limpio en cada corrida para no arrastrar datos viejos
+    # si el proceso vive más de una ejecución (ej. modo servidor/loop).
+    _snapshot_cache.clear()
+
     def extract_markets(node):
         found = []
         if isinstance(node, list):
@@ -221,7 +335,9 @@ def build_picks(raw_data):
         if not market.get("market") and not market.get("type"):
             continue
 
-        unique_key = f"{game}||{pick}||{market.get('market', market.get('type'))}"
+        market_name = market.get("market", market.get("type"))
+
+        unique_key = f"{game}||{pick}||{market_name}"
         if unique_key in seen_picks:
             continue
         seen_picks.add(unique_key)
@@ -289,11 +405,13 @@ def build_picks(raw_data):
         action_text = market.get("action", "🔴 PASAR")
         trend_text = market.get("trend", "➡️ ESTABLE")
 
+        league_name = market.get("league", "Otras Ligas")
+
         item = {
             "id": counter,
             "game": game or "Evento desconocido",
-            "league": market.get("league", "Otras Ligas"),
-            "market": market.get("market", market.get("type", "Línea estándar")),
+            "league": league_name,
+            "market": market_name or "Línea estándar",
             "pick": pick or "Sin selección",
             "odds": raw_odds,            
             "action": action_text,
@@ -323,7 +441,8 @@ def build_picks(raw_data):
             "whale": detect_whale(market),
             "handlePct": handle,
             "betsPct": bets,
-            "divergence": divergence
+            "divergence": divergence,
+            "history": build_pick_history(league_name, game, pick, market_name)
         }
         
         all_items.append(item)

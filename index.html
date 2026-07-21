@@ -68,12 +68,18 @@
             transition: background-color 0.2s, border-color 0.2s;
         }
 
+        html {
+            overflow-x: hidden;
+        }
+
         body {
             background-color: var(--bg);
             color: var(--text);
             font-family: "Plus Jakarta Sans", sans-serif;
             padding: 24px;
             min-height: 100vh;
+            overflow-x: hidden;
+            max-width: 100vw;
         }
 
         .mono {
@@ -314,7 +320,7 @@
         /* TARJETAS CARDS */
         #cardsView {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
             gap: 20px;
         }
 
@@ -429,35 +435,66 @@
 
         .history-evolution-box {
             margin-top: 8px;
-            background: var(--panel);
+            background: var(--panel2);
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 8px;
+            padding: 8px 10px;
             font-size: 11px;
+            max-width: 100%;
+            overflow-x: auto;
         }
 
         .history-evolution-title {
             color: var(--muted);
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             text-transform: uppercase;
             font-size: 10px;
             letter-spacing: 0.5px;
         }
 
-        .history-timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .history-timeline-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text);
+        .history-evolution-table {
+            width: 100%;
+            min-width: 0;
+            border-collapse: collapse;
             font-family: "JetBrains Mono", monospace;
         }
+
+        .history-evolution-table th {
+            text-align: left;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 2px 6px 4px 0;
+            white-space: nowrap;
+        }
+
+        .history-evolution-table th:not(:first-child),
+        .history-evolution-table td:not(:first-child) {
+            text-align: right;
+        }
+
+        .history-evolution-table td {
+            padding: 3px 6px 3px 0;
+            color: var(--text);
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .history-evolution-table tbody tr:not(:last-child) td {
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .history-evolution-table tbody tr:last-child td {
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .evo-up { color: var(--teal); }
+        .evo-down { color: var(--red); }
+        .evo-flat { color: var(--muted); }
 
         .whale-banner {
             font-size: 11px;
@@ -607,9 +644,26 @@
             .analytics-section { grid-template-columns: 1fr; }
         }
         @media(max-width: 640px) {
-            .ticker { grid-template-columns: repeat(2, 1fr); }
+            body { padding: 14px; }
+            .ticker { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .header { flex-direction: column; align-items: flex-start; }
             .header-meta { width: 100%; justify-content: space-between; }
+            .brand h1 { font-size: 24px; }
+            .toolbar { padding: 10px; }
+            .search-box { min-width: 100%; }
+            .view-toggle { width: 100%; justify-content: space-between; }
+            .view-toggle button { flex: 1; }
+            #cardsView { gap: 14px; }
+            .pcard { padding: 14px; }
+            .grid-metrics { font-size: 11px; }
+            .history-evolution-table th,
+            .history-evolution-table td { font-size: 10px; padding: 2px 4px 2px 0; }
+        }
+        @media(max-width: 400px) {
+            .ticker { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .chip { padding: 10px; }
+            .value { font-size: 19px; }
+            .card-footer-tags .badge-tag { font-size: 10px; padding: 3px 6px; }
         }
     </style>
 </head>
@@ -623,7 +677,7 @@
     <div class="header-meta">
         <div class="timestamp-badge">
             <div id="clock" class="mono">--:--:--</div>
-            <div class="updated">Generado (CDMX): 2026-07-20 21:37:27</div>
+            <div class="updated">Generado (CDMX): 2026-07-20 22:07:26</div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
     </div>
@@ -772,7 +826,7 @@
 </div>
 
 <script>
-const PICKS = [{"id": 1, "game": "Igor Szymanski vs Pawel Kurek", "league": "SPORTS", "market": "Moneyline", "pick": "Igor Szymanski", "odds": "+390", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 4.0, "score": 82.5, "marketScore": 94.4, "confidence": 94.4, "edge": 35.0, "modelProb": 67, "modelEstimated": true, "ev": -2.0, "evEstimated": true, "risk": "LOW", "freePick": false, "reason": "Concentración de dinero superior al volumen de apuestas", "date": "2026-07-20", "time": "21:00", "iso": "2026-07-20T21:00:00", "whale": true, "handlePct": 90, "betsPct": 55, "divergence": 35}, {"id": 2, "game": "Rafal Stapor vs Kamil Rudomina", "league": "SPORTS", "market": "Moneyline", "pick": "Rafal Stapor", "odds": "—", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 2.0, "score": 63.8, "marketScore": 75.2, "confidence": 75.2, "edge": 18.0, "modelProb": 59, "modelEstimated": true, "ev": 14.4, "evEstimated": true, "risk": "MEDIUM", "freePick": false, "reason": "Concentración de dinero superior al volumen de apuestas", "date": "2026-07-20", "time": "21:00", "iso": "2026-07-20T21:00:00", "whale": true, "handlePct": 79, "betsPct": 61, "divergence": 18}, {"id": 3, "game": "Milosz Cesarz vs Jakub Kaczmarek", "league": "SPORTS", "market": "Moneyline", "pick": "Milosz Cesarz", "odds": "+160", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 25.3, "marketScore": 26.4, "confidence": 26.4, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": -1.2, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:10", "iso": "2026-07-20T21:10:00", "whale": false, "handlePct": 17, "betsPct": 38, "divergence": 21}, {"id": 4, "game": "Waldemar Glanowski vs Wojciech Urban", "league": "SPORTS", "market": "Moneyline", "pick": "Waldemar Glanowski", "odds": "+135", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 27.4, "marketScore": 29.8, "confidence": 29.8, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 1.0, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:25", "iso": "2026-07-20T21:25:00", "whale": false, "handlePct": 27, "betsPct": 45, "divergence": 18}, {"id": 5, "game": "Igor Dabrowski vs Artur Sobel", "league": "SPORTS", "market": "Moneyline", "pick": "Igor Dabrowski", "odds": "+140", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 27.4, "marketScore": 29.8, "confidence": 29.8, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 0.8, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:25", "iso": "2026-07-20T21:25:00", "whale": false, "handlePct": 32, "betsPct": 50, "divergence": 18}, {"id": 6, "game": "Jiri Vrablik vs Szymon Sporek", "league": "SPORTS", "market": "Moneyline", "pick": "Jiri Vrablik", "odds": "+105", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 26.0, "marketScore": 27.5, "confidence": 27.5, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 0.4, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:25", "iso": "2026-07-20T21:25:00", "whale": false, "handlePct": 0, "betsPct": 20, "divergence": 20}, {"id": 7, "game": "Adrian Wiecek vs Martin Olejnik", "league": "SPORTS", "market": "Moneyline", "pick": "Adrian Wiecek", "odds": "+105", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 28.1, "marketScore": 30.9, "confidence": 30.9, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 0.4, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:45", "iso": "2026-07-20T21:45:00", "whale": false, "handlePct": 0, "betsPct": 17, "divergence": 17}, {"id": 8, "game": "Jakub Nowak vs Rafal Idaczyk", "league": "SPORTS", "market": "Moneyline", "pick": "Jakub Nowak", "odds": "+120", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 24.6, "marketScore": 25.2, "confidence": 25.2, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 1.2, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:50", "iso": "2026-07-20T21:50:00", "whale": false, "handlePct": 28, "betsPct": 50, "divergence": 22}];
+const PICKS = [{"id": 1, "game": "Adrian Wiecek vs Martin Olejnik", "league": "SPORTS", "market": "Moneyline", "pick": "Adrian Wiecek", "odds": "+105", "action": "🟡 VIGILAR", "actionKey": "pass", "trend": "📈📈 DINERO ENTRANDO FUERTE", "trendKey": "sharp", "priority": "👀 OBSERVAR", "priorityKey": "watch", "stake": 0.0, "score": 43.3, "marketScore": 53.4, "confidence": 53.4, "edge": 3.0, "modelProb": 51, "modelEstimated": true, "ev": 0.4, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Handle y boletos con distribución simétrica", "date": "2026-07-20", "time": "21:45", "iso": "2026-07-20T21:45:00", "whale": false, "handlePct": 60, "betsPct": 57, "divergence": 3, "history": [{"time": "22:07", "betsPct": 57, "handlePct": 60, "odds": "+105"}]}, {"id": 2, "game": "Jakub Nowak vs Rafal Idaczyk", "league": "SPORTS", "market": "Moneyline", "pick": "Jakub Nowak", "odds": "+120", "action": "🔴 PASAR", "actionKey": "pass", "trend": "📉 PERDIENDO FUERZA", "trendKey": "public", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 17.6, "marketScore": 14.0, "confidence": 14.0, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 1.2, "evEstimated": true, "risk": "HIGH", "freePick": false, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:50", "iso": "2026-07-20T21:50:00", "whale": false, "handlePct": 12, "betsPct": 44, "divergence": 32, "history": [{"time": "22:07", "betsPct": 44, "handlePct": 12, "odds": "+120"}]}];
 
 const state = {
     search: "",
@@ -922,6 +976,58 @@ function isEventPending(p) {
 
 function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
+
+// Flecha de tendencia comparando un valor numérico contra el snapshot anterior
+function trendArrow(curr, prev) {
+    if (curr == null || prev == null || isNaN(curr) || isNaN(prev)) return { arrow: '', cls: '' };
+    const c = parseFloat(curr), pv = parseFloat(prev);
+    if (c > pv) return { arrow: '▲', cls: 'evo-up' };
+    if (c < pv) return { arrow: '▼', cls: 'evo-down' };
+    return { arrow: '—', cls: 'evo-flat' };
+}
+
+// Construye la tabla de evolución del pick: tickets %, dinero % y cuota (si viene disponible), con flechas por fila
+function buildEvolutionHtml(p) {
+    if (!p.history || !Array.isArray(p.history) || p.history.length === 0) return '';
+
+    const hasOdds = p.history.some(h => h.odds != null && h.odds !== '');
+
+    let rows = '';
+    p.history.forEach((h, i) => {
+        const prev = i > 0 ? p.history[i - 1] : null;
+        const betsTrend = prev ? trendArrow(h.betsPct, prev.betsPct) : { arrow: '', cls: '' };
+        const handleTrend = prev ? trendArrow(h.handlePct, prev.handlePct) : { arrow: '', cls: '' };
+        const oddsTrend = (prev && hasOdds) ? trendArrow(h.odds, prev.odds) : { arrow: '', cls: '' };
+
+        rows += `
+            <tr>
+                <td>🕒 ${h.time || '—'}</td>
+                <td>${h.betsPct != null ? h.betsPct + '%' : '—'} <span class="${betsTrend.cls}">${betsTrend.arrow}</span></td>
+                <td style="color:var(--teal)">${h.handlePct != null ? h.handlePct + '%' : '—'} <span class="${handleTrend.cls}">${handleTrend.arrow}</span></td>
+                ${hasOdds ? `<td>${h.odds != null ? h.odds : '—'} <span class="${oddsTrend.cls}">${oddsTrend.arrow}</span></td>` : ''}
+            </tr>
+        `;
+    });
+
+    return `
+        <div class="history-evolution-box">
+            <div class="history-evolution-title">📊 Evolución Histórica (Bets / Handle${hasOdds ? ' / Cuota' : ''})</div>
+            <table class="history-evolution-table">
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Tickets</th>
+                        <th>Dinero</th>
+                        ${hasOdds ? '<th>Cuota</th>' : ''}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
 function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && p.score >= 75; }
 
 function getVisualConfig(p) {
@@ -1043,25 +1149,8 @@ function drawCards(list) {
             const timerData = getCountdownText(p.iso);
             const cuotaDetectada = p.odds || p.cuota || null;
 
-            // Historial de evolución de bets / handle si viene provisto en el objeto
-            let evolutionHtml = '';
-            if (p.history && Array.isArray(p.history) && p.history.length > 0) {
-                evolutionHtml = `
-                    <div class="history-evolution-box">
-                        <div class="history-evolution-title">📊 Evolución Histórica (Bets / Handle)</div>
-                        <div class="history-timeline">
-                `;
-                p.history.forEach(h => {
-                    evolutionHtml += `
-                        <div class="history-timeline-item">
-                            <span>🕒 ${h.time || '—'}</span>
-                            <span>Tickets: <b>${h.betsPct}%</b></span>
-                            <span>Dinero: <b style="color:var(--teal)">${h.handlePct}%</b></span>
-                        </div>
-                    `;
-                });
-                evolutionHtml += `</div></div>`;
-            }
+            // Historial de evolución de bets / handle / cuota si viene provisto en el objeto
+            const evolutionHtml = buildEvolutionHtml(p);
 
             const card = document.createElement("div");
             card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
