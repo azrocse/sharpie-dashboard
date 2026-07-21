@@ -186,7 +186,7 @@
             font-family: "JetBrains Mono", monospace;
         }
 
-        /* SECCIÓN DE GRÁFICOS ANALÍTICOS (NUEVO BLOQUE ROBUSTO) */
+        /* SECCIÓN DE GRÁFICOS ANALÍTICOS */
         .analytics-section {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -427,6 +427,39 @@
         .v-bets { background: #3b82f6; height: 100%; }
         .v-handle { background: #10b981; height: 100%; }
 
+        /* Contenedor individual de la evolución de este pick en específico */
+        .pick-evolution-box {
+            margin-top: 8px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 11px;
+        }
+
+        .pick-evolution-title {
+            color: var(--muted);
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .pick-evolution-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .pick-evolution-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text);
+            font-family: "JetBrains Mono", monospace;
+        }
+
         .whale-banner {
             font-size: 11px;
             color: var(--blue);
@@ -591,7 +624,7 @@
     <div class="header-meta">
         <div class="timestamp-badge">
             <div id="clock" class="mono">--:--:--</div>
-            <div class="updated">Generado (CDMX): __GENERATED_AT__</div>
+            <div class="updated">Generado (CDMX): 2026-07-20 20:50:00</div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
     </div>
@@ -624,7 +657,6 @@
     </div>
 </div>
 
-<!-- SECCIÓN ANALÍTICA DE CHARTS INTEGRADA SIN PERDER NADA -->
 <div class="analytics-section">
     <div class="chart-card">
         <div class="chart-header">
@@ -658,8 +690,23 @@
     </select>
     <select id="fDate"><option value="">📆 Todas las fechas</option></select>
     <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
-    <select id="fTrend"><option value="">📊 Todas las señales</option></select>
-    <select id="fAction"><option value="">🎯 Todas las acciones</option></select>
+    
+    <select id="fTrend">
+        <option value="">📊 Todas las señales</option>
+        <option value="sharp">🐋 Smart Money</option>
+        <option value="mixed">🟡 Flujo Mixto</option>
+        <option value="consensus">⚪ Consenso</option>
+        <option value="public">🚨 Public Heavy</option>
+        <option value="other">⚙️ Normal</option>
+    </select>
+    
+    <select id="fClassification">
+        <option value="">🏷️ Todas las clasificaciones</option>
+        <option value="premium">🟢 Premium</option>
+        <option value="mixed">🟨 Mixto</option>
+        <option value="atento">⚡ Atento</option>
+        <option value="sin_ventaja">⚪ Sin Ventaja</option>
+    </select>
 
     <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
     <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks (redes)</button>
@@ -691,7 +738,7 @@
                     <th class="mono">Smart Diff</th>
                     <th class="mono">EV Real</th>
                     <th>Señal</th>
-                    <th>Acción</th>
+                    <th>Clasificación</th>
                 </tr>
             </thead>
             <tbody id="boardBody"></tbody>
@@ -724,14 +771,98 @@
 </div>
 
 <script>
-const PICKS = __PICKS_JSON__;
+// DATOS SIMULADOS PARA PRUEBAS
+const PICKS = [
+    {
+        game: "Lakers vs Celtics",
+        league: "NBA",
+        time: "21:30",
+        iso: new Date(Date.now() + 3600000 * 2).toISOString(),
+        date: "2026-07-20",
+        pick: "Celtics -4.5",
+        market: "Handicap Principal",
+        odds: "1.90",
+        modelProb: 58.5,
+        edge: 5.8,
+        score: 84,
+        trendKey: "sharp",
+        whale: true,
+        betsPct: 35,
+        handlePct: 62,
+        ev: 10.5,
+        stake: 3.5,
+        risk: "LOW",
+        actionKey: "bet",
+        freePick: false,
+        reason: "Fuerte divergencia de dinero profesional (Smart Money) sobre la línea de Boston a pesar de la carga pública en contra.",
+        history: [
+            { time: "18:00", betsPct: 38, handlePct: 55 },
+            { time: "19:30", betsPct: 35, handlePct: 62 }
+        ],
+        status: "UPCOMING"
+    },
+    {
+        game: "Toluca vs América",
+        league: "Liga MX",
+        time: "19:00",
+        iso: new Date(Date.now() + 3600000 * 0.5).toISOString(),
+        date: "2026-07-20",
+        pick: "Toluca Over 1.5 Goles",
+        market: "Total del Equipo",
+        odds: "2.05",
+        modelProb: 54.0,
+        edge: 5.2,
+        score: 79,
+        trendKey: "mixed",
+        whale: false,
+        betsPct: 48,
+        handlePct: 56,
+        ev: 8.2,
+        stake: 2.0,
+        risk: "MEDIUM",
+        actionKey: "bet",
+        freePick: true,
+        reason: "Excelente opción analítica para compartir en contenidos públicos debido al volumen ofensivo reciente.",
+        history: [
+            { time: "17:00", betsPct: 50, handlePct: 52 },
+            { time: "18:30", betsPct: 48, handlePct: 56 }
+        ],
+        status: "UPCOMING"
+    },
+    {
+        game: "Real Madrid vs Barcelona",
+        league: "LaLiga",
+        time: "15:00",
+        iso: new Date(Date.now() - 3600000 * 4).toISOString(),
+        date: "2026-07-20",
+        pick: "Ambos Anotan",
+        market: "BTTS",
+        odds: "1.75",
+        modelProb: 62.0,
+        edge: 4.8,
+        score: 72,
+        trendKey: "consensus",
+        whale: false,
+        betsPct: 70,
+        handlePct: 73,
+        ev: 4.0,
+        stake: 1.5,
+        risk: "LOW",
+        actionKey: "bet",
+        freePick: false,
+        reason: "Encuentro con alto índice de conversiones cruzadas en los últimos 5 enfrentamientos directos.",
+        status: "FINISHED",
+        result: "WON",
+        roi: "15.0"
+    }
+];
 
 const state = {
     search: "",
     date: "",
     league: "",
     trend: "",
-    action: "",
+    classification: "",
     whaleOnly: false,
     freePickOnly: false,
     sort: "time",
@@ -741,9 +872,6 @@ const state = {
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
 
-// ============================================================
-// INSTANCIAS DE GRÁFICOS (CHART.JS)
-// ============================================================
 let edgeChartInstance = null;
 let marketChartInstance = null;
 
@@ -752,7 +880,6 @@ function initCharts() {
     const textColor = isDark ? "#94a3b8" : "#64748b";
     const gridColor = isDark ? "#243572" : "#e2e8f0";
 
-    // 1. Gráfico de dispersión (Edge vs Score)
     const ctxScatter = document.getElementById("edgeScatterChart");
     if (ctxScatter) {
         edgeChartInstance = new Chart(ctxScatter, {
@@ -770,7 +897,6 @@ function initCharts() {
         });
     }
 
-    // 2. Gráfico de dona (Tendencias de mercado)
     const ctxDoughnut = document.getElementById("marketDoughnutChart");
     if (ctxDoughnut) {
         marketChartInstance = new Chart(ctxDoughnut, {
@@ -807,9 +933,6 @@ function updateChartsData(activeList) {
     }
 }
 
-// ============================================================
-// CLASIFICACIÓN DE BADGES POR RANGO DE VALOR
-// ============================================================
 function scoreBadgeClass(score) {
     const s = Number(score || 0);
     if (s >= 80) return "good";
@@ -840,6 +963,7 @@ function riskBadgeClass(risk) {
     if (r === "HIGH") return "bad";
     return "neutral";
 }
+
 const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "🚨", other: "⚙️" };
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
@@ -867,7 +991,6 @@ themeToggle.addEventListener("click", () => {
     const doc = document.documentElement;
     const currentTheme = doc.getAttribute("data-theme");
     doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
-    // Actualizar colores de gráficas al cambiar tema
     if (edgeChartInstance && marketChartInstance) {
         initCharts();
         render();
@@ -891,12 +1014,13 @@ function getVisualConfig(p) {
     const ev = Number(p.ev || 0);
 
     if (p.actionKey === "pass" && edge < 5) {
-        return { bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ SIN VENTAJA" };
+        return { key: "sin_ventaja", bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ SIN VENTAJA" };
     }
 
     if (key === "mixed" || key === "public" || key === "consensus") {
         if (edge >= 8 || ev >= 5 || score >= 70) {
             return { 
+                key: "mixed",
                 bg: "var(--amber-soft)", 
                 border: "var(--amber)", 
                 text: "var(--amber)", 
@@ -904,6 +1028,7 @@ function getVisualConfig(p) {
             };
         } else {
             return { 
+                key: "sin_ventaja",
                 bg: "var(--red-soft)", 
                 border: "var(--red)", 
                 text: "var(--red)", 
@@ -913,10 +1038,10 @@ function getVisualConfig(p) {
     }
 
     if (key === "sharp" || score >= 80) {
-        return { bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
+        return { key: "premium", bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
     }
 
-    return { bg: "var(--panel2)", border: "var(--border)", text: "var(--text)", label: "⚡ ATENTO" };
+    return { key: "atento", bg: "var(--panel2)", border: "var(--border)", text: "var(--text)", label: "⚡ ATENTO" };
 }
 
 function getCountdownText(isoString) {
@@ -959,7 +1084,12 @@ function applyFiltersAndSort(list) {
         if (state.league && p.league !== state.league) return false;
         if (state.date && p.date !== state.date) return false;
         if (state.trend && p.trendKey !== state.trend) return false;
-        if (state.action && p.actionKey !== state.action) return false;
+        
+        if (state.classification) {
+            const config = getVisualConfig(p);
+            if (config.key !== state.classification) return false;
+        }
+
         if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
         if (state.freePickOnly && !p.freePick) return false;
 
@@ -985,10 +1115,7 @@ function applyFiltersAndSort(list) {
 
 function drawCards(list) {
     const box = document.getElementById("cardsView");
-    if (!box) {
-        console.error("❌ ERROR: No se encontró el contenedor del DOM '#cardsView'.");
-        return;
-    }
+    if (!box) return;
     box.innerHTML = "";
 
     list.forEach((p, index) => {
@@ -998,6 +1125,25 @@ function drawCards(list) {
             const config = getVisualConfig(p);
             const timerData = getCountdownText(p.iso);
             const cuotaDetectada = p.odds || p.cuota || null;
+
+            let pickEvolutionHtml = '';
+            if (p.history && Array.isArray(p.history) && p.history.length > 0) {
+                pickEvolutionHtml = `
+                    <div class="pick-evolution-box">
+                        <div class="pick-evolution-title">📊 Evolución del Pick (Bets / Handle)</div>
+                        <div class="pick-evolution-list">
+                `;
+                p.history.forEach(h => {
+                    pickEvolutionHtml += `
+                        <div class="pick-evolution-row">
+                            <span>🕒 ${h.time || '—'}</span>
+                            <span>Tickets: <b>${h.betsPct}%</b></span>
+                            <span>Dinero: <b style="color:var(--teal)">${h.handlePct}%</b></span>
+                        </div>
+                    `;
+                });
+                pickEvolutionHtml += `</div></div>`;
+            }
 
             const card = document.createElement("div");
             card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
@@ -1039,6 +1185,7 @@ function drawCards(list) {
                             <div class="v-bets" style="width: ${p.betsPct || 0}%"></div>
                             <div class="v-handle" style="width: ${p.handlePct || 0}%"></div>
                         </div>
+                        ${pickEvolutionHtml}
                         ${isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
                     </div>
                 </div>
@@ -1139,7 +1286,6 @@ function drawHistory(list) {
     });
 }
 
-// Función central de filtrado y renderizado
 function render() {
     if (typeof PICKS === 'undefined' || !Array.isArray(PICKS) || PICKS.length === 0) {
         document.getElementById("emptyState").style.display = "block";
@@ -1154,7 +1300,6 @@ function render() {
     const activePicks = PICKS.filter(isEventPending);
     const historyPicks = PICKS.filter(p => !isEventPending(p));
 
-    // Actualizar gráficos analíticos con el conjunto activo filtrado
     const filteredActiveForCharts = applyFiltersAndSort(activePicks);
     updateChartsData(filteredActiveForCharts);
 
@@ -1189,15 +1334,11 @@ function render() {
 function setupFilters() {
     let dates = new Set();
     let leagues = new Set();
-    let trends = new Set();
-    let actions = new Set();
 
     if (typeof PICKS !== 'undefined' && Array.isArray(PICKS)) {
         PICKS.forEach(p => {
             if (p.date) dates.add(p.date);
             if (p.league) leagues.add(p.league);
-            if (p.trendKey) trends.add(p.trendKey);
-            if (p.actionKey) actions.add(p.actionKey);
         });
     }
 
@@ -1209,7 +1350,7 @@ function setupFilters() {
             el.innerHTML += `<option value="${v}">${textMapper ? textMapper(v) : v}</option>`;
         });
         el.addEventListener("change", e => {
-            const field = id.replace("f", "").toLowerCase();
+            const field = id === "fClassification" ? "classification" : id.replace("f", "").toLowerCase();
             state[field] = e.target.value;
             render();
         });
@@ -1217,8 +1358,22 @@ function setupFilters() {
 
     buildSelector("fDate", "📆 Todas las fechas", dates);
     buildSelector("fLeague", "🏆 Todas las ligas", leagues);
-    buildSelector("fTrend", "📊 Todas las señales", trends, k => trendTag(k));
-    buildSelector("fAction", "🎯 Todas las acciones", actions, k => k === "bet" ? "APOSTAR" : "PASAR");
+
+    const trendEl = document.getElementById("fTrend");
+    if (trendEl) {
+        trendEl.addEventListener("change", e => {
+            state.trend = e.target.value;
+            render();
+        });
+    }
+
+    const classificationEl = document.getElementById("fClassification");
+    if (classificationEl) {
+        classificationEl.addEventListener("change", e => {
+            state.classification = e.target.value;
+            render();
+        });
+    }
 
     const sortEl = document.getElementById("fSort");
     if (sortEl) {
@@ -1257,11 +1412,11 @@ function setupFilters() {
     const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
-            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.action = ""; state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
+            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
             if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
             if (searchEl) searchEl.value = "";
             if (sortEl) sortEl.value = "time";
-            ["fDate", "fLeague", "fTrend", "fAction"].forEach(id => {
+            ["fDate", "fLeague", "fTrend", "fClassification"].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = "";
             });
@@ -1307,7 +1462,6 @@ function initEngine() {
     }, 1000);
 }
 
-// Inicialización de la UI
 setupFilters();
 initEngine();
 render();
