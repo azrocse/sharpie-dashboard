@@ -427,8 +427,7 @@
         .v-bets { background: #3b82f6; height: 100%; }
         .v-handle { background: #10b981; height: 100%; }
 
-        /* Contenedor individual de la evolución de este pick en específico */
-        .pick-evolution-box {
+        .history-evolution-box {
             margin-top: 8px;
             background: var(--panel);
             border: 1px solid var(--border);
@@ -437,7 +436,7 @@
             font-size: 11px;
         }
 
-        .pick-evolution-title {
+        .history-evolution-title {
             color: var(--muted);
             font-weight: 700;
             margin-bottom: 4px;
@@ -446,13 +445,13 @@
             letter-spacing: 0.5px;
         }
 
-        .pick-evolution-list {
+        .history-timeline {
             display: flex;
             flex-direction: column;
             gap: 3px;
         }
 
-        .pick-evolution-row {
+        .history-timeline-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -624,7 +623,7 @@
     <div class="header-meta">
         <div class="timestamp-badge">
             <div id="clock" class="mono">--:--:--</div>
-            <div class="updated">Generado (CDMX): 2026-07-20 20:50:00</div>
+            <div class="updated">Generado (CDMX): 2026-07-20 21:37:27</div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
     </div>
@@ -691,6 +690,7 @@
     <select id="fDate"><option value="">📆 Todas las fechas</option></select>
     <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
     
+    <!-- Filtro de señales restaurado por completo con todas sus opciones originales -->
     <select id="fTrend">
         <option value="">📊 Todas las señales</option>
         <option value="sharp">🐋 Smart Money</option>
@@ -700,6 +700,7 @@
         <option value="other">⚙️ Normal</option>
     </select>
     
+    <!-- Filtro de clasificación actualizado con los valores solicitados (mixto, premium, atento, sin ventaja) -->
     <select id="fClassification">
         <option value="">🏷️ Todas las clasificaciones</option>
         <option value="premium">🟢 Premium</option>
@@ -771,91 +772,7 @@
 </div>
 
 <script>
-// DATOS SIMULADOS PARA PRUEBAS
-const PICKS = [
-    {
-        game: "Lakers vs Celtics",
-        league: "NBA",
-        time: "21:30",
-        iso: new Date(Date.now() + 3600000 * 2).toISOString(),
-        date: "2026-07-20",
-        pick: "Celtics -4.5",
-        market: "Handicap Principal",
-        odds: "1.90",
-        modelProb: 58.5,
-        edge: 5.8,
-        score: 84,
-        trendKey: "sharp",
-        whale: true,
-        betsPct: 35,
-        handlePct: 62,
-        ev: 10.5,
-        stake: 3.5,
-        risk: "LOW",
-        actionKey: "bet",
-        freePick: false,
-        reason: "Fuerte divergencia de dinero profesional (Smart Money) sobre la línea de Boston a pesar de la carga pública en contra.",
-        history: [
-            { time: "18:00", betsPct: 38, handlePct: 55 },
-            { time: "19:30", betsPct: 35, handlePct: 62 }
-        ],
-        status: "UPCOMING"
-    },
-    {
-        game: "Toluca vs América",
-        league: "Liga MX",
-        time: "19:00",
-        iso: new Date(Date.now() + 3600000 * 0.5).toISOString(),
-        date: "2026-07-20",
-        pick: "Toluca Over 1.5 Goles",
-        market: "Total del Equipo",
-        odds: "2.05",
-        modelProb: 54.0,
-        edge: 5.2,
-        score: 79,
-        trendKey: "mixed",
-        whale: false,
-        betsPct: 48,
-        handlePct: 56,
-        ev: 8.2,
-        stake: 2.0,
-        risk: "MEDIUM",
-        actionKey: "bet",
-        freePick: true,
-        reason: "Excelente opción analítica para compartir en contenidos públicos debido al volumen ofensivo reciente.",
-        history: [
-            { time: "17:00", betsPct: 50, handlePct: 52 },
-            { time: "18:30", betsPct: 48, handlePct: 56 }
-        ],
-        status: "UPCOMING"
-    },
-    {
-        game: "Real Madrid vs Barcelona",
-        league: "LaLiga",
-        time: "15:00",
-        iso: new Date(Date.now() - 3600000 * 4).toISOString(),
-        date: "2026-07-20",
-        pick: "Ambos Anotan",
-        market: "BTTS",
-        odds: "1.75",
-        modelProb: 62.0,
-        edge: 4.8,
-        score: 72,
-        trendKey: "consensus",
-        whale: false,
-        betsPct: 70,
-        handlePct: 73,
-        ev: 4.0,
-        stake: 1.5,
-        risk: "LOW",
-        actionKey: "bet",
-        freePick: false,
-        reason: "Encuentro con alto índice de conversiones cruzadas en los últimos 5 enfrentamientos directos.",
-        status: "FINISHED",
-        result: "WON",
-        roi: "15.0"
-    }
-];
+const PICKS = [{"id": 1, "game": "Igor Szymanski vs Pawel Kurek", "league": "SPORTS", "market": "Moneyline", "pick": "Igor Szymanski", "odds": "+390", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 4.0, "score": 82.5, "marketScore": 94.4, "confidence": 94.4, "edge": 35.0, "modelProb": 67, "modelEstimated": true, "ev": -2.0, "evEstimated": true, "risk": "LOW", "freePick": false, "reason": "Concentración de dinero superior al volumen de apuestas", "date": "2026-07-20", "time": "21:00", "iso": "2026-07-20T21:00:00", "whale": true, "handlePct": 90, "betsPct": 55, "divergence": 35}, {"id": 2, "game": "Rafal Stapor vs Kamil Rudomina", "league": "SPORTS", "market": "Moneyline", "pick": "Rafal Stapor", "odds": "—", "action": "🔵 INCLINACIÓN", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "⚡ PRONTO", "priorityKey": "soon", "stake": 2.0, "score": 63.8, "marketScore": 75.2, "confidence": 75.2, "edge": 18.0, "modelProb": 59, "modelEstimated": true, "ev": 14.4, "evEstimated": true, "risk": "MEDIUM", "freePick": false, "reason": "Concentración de dinero superior al volumen de apuestas", "date": "2026-07-20", "time": "21:00", "iso": "2026-07-20T21:00:00", "whale": true, "handlePct": 79, "betsPct": 61, "divergence": 18}, {"id": 3, "game": "Milosz Cesarz vs Jakub Kaczmarek", "league": "SPORTS", "market": "Moneyline", "pick": "Milosz Cesarz", "odds": "+160", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 25.3, "marketScore": 26.4, "confidence": 26.4, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": -1.2, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:10", "iso": "2026-07-20T21:10:00", "whale": false, "handlePct": 17, "betsPct": 38, "divergence": 21}, {"id": 4, "game": "Waldemar Glanowski vs Wojciech Urban", "league": "SPORTS", "market": "Moneyline", "pick": "Waldemar Glanowski", "odds": "+135", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 27.4, "marketScore": 29.8, "confidence": 29.8, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 1.0, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:25", "iso": "2026-07-20T21:25:00", "whale": false, "handlePct": 27, "betsPct": 45, "divergence": 18}, {"id": 5, "game": "Igor Dabrowski vs Artur Sobel", "league": "SPORTS", "market": "Moneyline", "pick": "Igor Dabrowski", "odds": "+140", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 27.4, "marketScore": 29.8, "confidence": 29.8, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 0.8, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:25", "iso": "2026-07-20T21:25:00", "whale": false, "handlePct": 32, "betsPct": 50, "divergence": 18}, {"id": 6, "game": "Jiri Vrablik vs Szymon Sporek", "league": "SPORTS", "market": "Moneyline", "pick": "Jiri Vrablik", "odds": "+105", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 26.0, "marketScore": 27.5, "confidence": 27.5, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 0.4, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:25", "iso": "2026-07-20T21:25:00", "whale": false, "handlePct": 0, "betsPct": 20, "divergence": 20}, {"id": 7, "game": "Adrian Wiecek vs Martin Olejnik", "league": "SPORTS", "market": "Moneyline", "pick": "Adrian Wiecek", "odds": "+105", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 28.1, "marketScore": 30.9, "confidence": 30.9, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 0.4, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:45", "iso": "2026-07-20T21:45:00", "whale": false, "handlePct": 0, "betsPct": 17, "divergence": 17}, {"id": 8, "game": "Jakub Nowak vs Rafal Idaczyk", "league": "SPORTS", "market": "Moneyline", "pick": "Jakub Nowak", "odds": "+120", "action": "🔴 PASAR", "actionKey": "pass", "trend": "➡️ ESTABLE", "trendKey": "mixed", "priority": "❌ DESCARTAR", "priorityKey": "watch", "stake": 0.0, "score": 24.6, "marketScore": 25.2, "confidence": 25.2, "edge": 0, "modelProb": 50, "modelEstimated": true, "ev": 1.2, "evEstimated": true, "risk": "HIGH", "freePick": true, "reason": "Mayor porcentaje de boletos sin respaldo proporcional de dinero", "date": "2026-07-20", "time": "21:50", "iso": "2026-07-20T21:50:00", "whale": false, "handlePct": 28, "betsPct": 50, "divergence": 22}];
 
 const state = {
     search: "",
@@ -1126,23 +1043,24 @@ function drawCards(list) {
             const timerData = getCountdownText(p.iso);
             const cuotaDetectada = p.odds || p.cuota || null;
 
-            let pickEvolutionHtml = '';
+            // Historial de evolución de bets / handle si viene provisto en el objeto
+            let evolutionHtml = '';
             if (p.history && Array.isArray(p.history) && p.history.length > 0) {
-                pickEvolutionHtml = `
-                    <div class="pick-evolution-box">
-                        <div class="pick-evolution-title">📊 Evolución del Pick (Bets / Handle)</div>
-                        <div class="pick-evolution-list">
+                evolutionHtml = `
+                    <div class="history-evolution-box">
+                        <div class="history-evolution-title">📊 Evolución Histórica (Bets / Handle)</div>
+                        <div class="history-timeline">
                 `;
                 p.history.forEach(h => {
-                    pickEvolutionHtml += `
-                        <div class="pick-evolution-row">
+                    evolutionHtml += `
+                        <div class="history-timeline-item">
                             <span>🕒 ${h.time || '—'}</span>
                             <span>Tickets: <b>${h.betsPct}%</b></span>
                             <span>Dinero: <b style="color:var(--teal)">${h.handlePct}%</b></span>
                         </div>
                     `;
                 });
-                pickEvolutionHtml += `</div></div>`;
+                evolutionHtml += `</div></div>`;
             }
 
             const card = document.createElement("div");
@@ -1185,7 +1103,7 @@ function drawCards(list) {
                             <div class="v-bets" style="width: ${p.betsPct || 0}%"></div>
                             <div class="v-handle" style="width: ${p.handlePct || 0}%"></div>
                         </div>
-                        ${pickEvolutionHtml}
+                        ${evolutionHtml}
                         ${isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
                     </div>
                 </div>
