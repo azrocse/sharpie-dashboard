@@ -354,6 +354,7 @@ def build_picks(raw_data):
     seen_picks = set()
 
     for market in markets:
+        print(f"[DEBUG_MARKET] Juego: {market.get('game')} | Pick: {market.get('pick')} | Keys disponibles: {list(market.keys())} | Raw Odds: {market.get('odds')} | Raw Cuota: {market.get('cuota')}")
         game = market.get("game")
         pick = market.get("pick")
 
@@ -405,15 +406,64 @@ def build_picks(raw_data):
             estimated_prob = 50 + int(edge / 2)
             model_prob = int(min(99, max(50, estimated_prob)))
 
+# Capturamos la cuota y la línea por separado si vienen en campos distintos, 
+        # o interpretamos el formato americano nativo de DraftKings.
         raw_odds = market.get("odds", market.get("cuota", "—"))
+        market_line = market.get("line", market.get("linea", None)) # Si tu JSON trae la línea separada
         decimal_odds = None
 
         if raw_odds is not None and raw_odds != "—":
-            val_odds = safe_float(raw_odds)
-            if 1.01 < val_odds < 50.0:
-                decimal_odds = val_odds
-            else:
-                decimal_odds = american_to_decimal(raw_odds)
+            # Convertimos a string para analizar si tiene formato americano explícito (+ o -)
+            odds_str = str(raw_odds).strip()
+            
+            # Si es un número puro pequeño (ej. 1.5, 2.5), eso es una LÍNEA de mercado, no una cuota.
+            # Lo filtramos para que no contamine las cuotas decimales.
+            try:
+                val_num = float(odds_str.replace("+", ""))
+                # Si está en rango típico de hándicap/spreads y NO tiene pinta de cuota americana estricta (ej. +/- 100 o más)
+                if abs(val_num) < 50.0 and not (odds_str.startswith("+") or odds_str.startswith("-") or (val_num >= 100)):
+                    # Esto es una línea de mercado colándose en las odds. La guardamos como línea y dejamos la cuota estándar (-110) o nula.
+                    if not market_line:
+                        market_line = odds_str
+                    raw_odds = "-110" # Default estándar para spreads si no viene precio explícito
+                    odds_str = "-110"
+            except ValueError:
+                pass
+
+        # Capturamos los campos de forma independiente
+        raw_odds = market.get("odds", market.get("cuota", "—"))
+        market_line = market.get("line", market.get("linea", None))
+        decimal_odds = None
+
+        if raw_odds is not None and raw_odds != "—":
+            odds_str = str(raw_odds).strip()
+            
+            # Identificamos si lo que llegó en "odds" es en realidad una línea de hándicap o totales 
+            # (ej: -1, +1.5, 215.5, etc., que no tienen formato de precio americano como -110 o +100)
+            is_pure_line = False
+            try:
+                # Quitamos signos para evaluar si es un número de línea típico
+                val_check = float(odds_str.replace("+", "").replace("-", ""))
+                # Las líneas de mercado suelen ser números cerrados o decimales pequeños/medios 
+                # (ej. 0.5, 1, 1.5, 3.5, 5.5, 215.5) sin valor de precio de dinero (-110)
+                if val_check < 100 and not (odds_str.startswith("+") or odds_str.startswith("-") and val_check >= 100):
+                    # Ojo: si empieza con -1 pero es un hándicap (como IFK Goteborg -1), es una línea.
+                    # Los precios americanos válidos siempre son 100 o más en valor absoluto (ej -110, +100)
+                    if val_check < 50: 
+                        is_pure_line = True
+            except ValueError:
+                pass
+
+            if is_pure_line:
+                # Es una línea pura colada en las odds, la salvamos como línea de mercado
+                if not market_line:
+                    market_line = odds_str
+                # Y asignamos el precio estándar de mercado americano (-110) para los cálculos
+                raw_odds = "-110"
+                odds_str = "-110"
+
+            # Conversión estricta a formato americano
+            decimal_odds = american_to_decimal(odds_str)
 
         raw_ev = market.get("ev")
         ev_val = safe_float(raw_ev)
