@@ -71,15 +71,21 @@ class DraftKingsParser:
 
                     text = row.get_text(" ", strip=True)
 
-# --- NUEVA EXTRACCIÓN SEPARADA DE LÍNEA Y CUOTA ---
+                    # --- NUEVA EXTRACCIÓN SEPARADA DE LÍNEA Y CUOTA ---
                     odds_val = "—"
                     line_val = None
                     
-                    # 1. Extraemos la CUOTA REAL (American Odds)
-                    # Acepta signos +/- seguidos de 2 a 4 dígitos (ej: -110, -106, +50, +150), o la palabra EVEN
-                    odds_match = re.search(r'([+-]\d{2,4}|EVEN)', text)
+                    # 1. Extraemos la CUOTA REAL (American Odds ampliada a 1-4 dígitos y EVEN)
+                    odds_match = re.search(r'([+-]\d{1,4}|EVEN)', text)
                     if odds_match:
                         odds_val = odds_match.group(1)
+                        
+                    # 2. Extraemos la LÍNEA (Spreads/Totals)
+                    text_without_odds = text.replace(odds_val, "") if odds_val != "—" else text
+                    
+                    line_match = re.search(r'([+-]\d+(?:\.\d+)?|\d+\.\d+)', text_without_odds)
+                    if line_match:
+                        line_val = line_match.group(1)
                         
                     # 2. Extraemos la LÍNEA (Spreads/Totals)
                     # Primero borramos temporalmente la cuota del texto para que no confunda al regex

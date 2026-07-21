@@ -1,3 +1,86 @@
+
+def _should_drop_absolute(market):
+    if not isinstance(market, dict):
+        return False
+        
+    odds = str(market.get("odds", "")).strip()
+    tickets = str(market.get("tickets", "")).strip()
+    handle = str(market.get("handle", "")).strip()
+    
+    # REGLA DEFINITIVA: Si CUALQUIERA de estos tres valores es '—', '', '0%', '0', o '-0', se descarta por completo.
+    invalid_values = ["—", "", "0%", "0", "-0"]
+    
+    if odds in invalid_values or tickets in invalid_values or handle in invalid_values:
+        return True
+        
+    return False
+
+
+def _should_drop_market_strictly(market):
+    if not isinstance(market, dict):
+        return False
+        
+    odds = str(market.get("odds", "")).strip()
+    tickets = str(market.get("tickets", "0%")).strip()
+    handle = str(market.get("handle", "0%")).strip()
+    
+    # NUEVA REGLA ESTRICTA:
+    # Si la cuota principal está muerta ('—', vacía, ceros) O SI tickets y handle están en 0%, se va por completo.
+    is_dead_odds = odds in ["—", "", "0", "-0"]
+    is_zero_activity = (tickets in ["0%", "0", "—", ""] and handle in ["0%", "0", "—", ""])
+    
+    if is_dead_odds or is_zero_activity:
+        return True
+        
+    return False
+
+
+def _should_drop_market(market):
+    if not isinstance(market, dict):
+        return False
+    
+    # Criterio: Si la cuota principal es '—' y los tickets/dinero están en 0% o vacíos
+    odds = str(market.get("odds", "")).strip()
+    tickets = str(market.get("tickets", "0%")).strip()
+    handle = str(market.get("handle", "0%")).strip()
+    
+    is_dead_odds = odds in ["—", "", "0", "-0"]
+    is_zero_activity = tickets in ["0%", "0", "—"] and handle in ["0%", "0", "—"]
+    
+    if is_dead_odds and is_zero_activity:
+        return True
+        
+    # Validar historial: si todas las filas del historial están muertas o la última corrida tiene 0%/0%/'—'
+    history = market.get("history", [])
+    if history and isinstance(history, list):
+        # Filtramos filas vacías del historial de golpe
+        cleaned_history = []
+        for h in history:
+            h_odds = str(h.get("odds", "")).strip()
+            h_t = str(h.get("tickets", "0%")).strip()
+            h_h = str(h.get("handle", "0%")).strip()
+            # Si la fila no tiene datos reales (0% tickets, 0% handle, cuota muerta), la omitimos del historial
+            if h_odds in ["—", "", "0", "-0"] and h_t in ["0%", "0", "—"] and h_h in ["0%", "0", "—"]:
+                continue
+            cleaned_history.append(h)
+        market["history"] = cleaned_history
+        
+        # Si el historial se quedó sin registros válidos y la cuota actual es muerta, descartamos el mercado completo
+        if not cleaned_history and is_dead_odds:
+            return True
+            
+    return False
+
+
+def _sanitize_market(market):
+    if not isinstance(market, dict):
+        return market
+    if market.get("odds") in ["—", "", None, "-0", "0"]:
+        return None
+    if "history" in market and isinstance(market["history"], list):
+        market["history"] = [r for r in market["history"] if isinstance(r, dict) and r.get("odds") not in ["—", "", None, "-0", "0"]]
+    return market
+
 """
 generate_dashboard.py -- Generador del panel HTML interactivo Sharpie
 Toma el archivo unificado sharpie.json generado por analyze.py y construye index.html
