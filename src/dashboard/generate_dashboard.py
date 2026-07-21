@@ -491,7 +491,17 @@ def build_picks(raw_data):
 
 # Capturamos la cuota y la línea por separado si vienen en campos distintos, 
         # o interpretamos el formato americano nativo de DraftKings.
+        
+    # Lógica corregida: Extraer la cuota real priorizando siempre la última corrida del historial
+    raw_odds = "—"
+    if market.get("history") and isinstance(market["history"], list) and len(market["history"]) > 0:
+        for hist_item in reversed(market["history"]):
+            if isinstance(hist_item, dict) and hist_item.get("odds") not in ["—", "", None, "-0", "0", "-1"]:
+                raw_odds = hist_item.get("odds")
+                break
+    if raw_odds == "—":
         raw_odds = market.get("odds", market.get("cuota", "—"))
+    
         market_line = market.get("line", market.get("linea", None)) # Si tu JSON trae la línea separada
         decimal_odds = None
 
@@ -514,7 +524,17 @@ def build_picks(raw_data):
                 pass
 
         # Capturamos los campos crudos de la fuente
+        
+    # Lógica corregida: Extraer la cuota real priorizando siempre la última corrida del historial
+    raw_odds = "—"
+    if market.get("history") and isinstance(market["history"], list) and len(market["history"]) > 0:
+        for hist_item in reversed(market["history"]):
+            if isinstance(hist_item, dict) and hist_item.get("odds") not in ["—", "", None, "-0", "0", "-1"]:
+                raw_odds = hist_item.get("odds")
+                break
+    if raw_odds == "—":
         raw_odds = market.get("odds", market.get("cuota", "—"))
+    
         market_line = market.get("line", market.get("linea", None))
         is_price_flag = market.get("is_price", None)
         
