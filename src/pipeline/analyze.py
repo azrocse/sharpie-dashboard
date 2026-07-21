@@ -353,6 +353,25 @@ def analyze_all(parsed_files=None):
             for market in game.get("markets", []):
                 handle = market.get("handle")
                 bets = market.get("bets")
+                raw_odds = market.get("odds", "—")
+
+                # --- FILTRO TAJANTE DE RAÍZ ---
+                odds_str = str(raw_odds).strip()
+                handle_str = str(handle).strip() if handle is not None else ""
+                bets_str = str(bets).strip() if bets is not None else ""
+
+                invalid_tokens = ["—", "", "0", "-0", "-1", "None", "0%", "NaN"]
+
+                if (odds_str in invalid_tokens or 
+                    handle_str in invalid_tokens or 
+                    bets_str in invalid_tokens or 
+                    handle is None or 
+                    bets is None):
+                    total_noise += 1
+                    continue
+                # -----------------------------
+                handle = market.get("handle")
+                bets = market.get("bets")
 
                 if handle is None or bets is None:
                     continue
