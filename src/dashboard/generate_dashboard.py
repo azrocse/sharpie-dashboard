@@ -430,40 +430,41 @@ def build_picks(raw_data):
             except ValueError:
                 pass
 
-        # Capturamos los campos de forma independiente
+        # Capturamos los campos crudos de la fuente
         raw_odds = market.get("odds", market.get("cuota", "—"))
         market_line = market.get("line", market.get("linea", None))
+        is_price_flag = market.get("is_price", None)
+        
+        odds_str = str(raw_odds).strip() if raw_odds is not None else "—"
         decimal_odds = None
 
-        if raw_odds is not None and raw_odds != "—":
-            odds_str = str(raw_odds).strip()
-            
-            # Identificamos si lo que llegó en "odds" es en realidad una línea de hándicap o totales 
-            # (ej: -1, +1.5, 215.5, etc., que no tienen formato de precio americano como -110 o +100)
-            is_pure_line = False
+        # Evaluamos si el valor en 'odds' es realmente un precio monetario o una línea disfrazada
+        is_actual_price = False
+        
+        if is_price_flag is not None:
+            is_actual_price = bool(is_price_flag)
+        else:
+            # Un precio americano real suele tener signo explícito (+/-) o un valor absoluto >= 100
             try:
-                # Quitamos signos para evaluar si es un número de línea típico
-                val_check = float(odds_str.replace("+", "").replace("-", ""))
-                # Las líneas de mercado suelen ser números cerrados o decimales pequeños/medios 
-                # (ej. 0.5, 1, 1.5, 3.5, 5.5, 215.5) sin valor de precio de dinero (-110)
-                if val_check < 100 and not (odds_str.startswith("+") or odds_str.startswith("-") and val_check >= 100):
-                    # Ojo: si empieza con -1 pero es un hándicap (como IFK Goteborg -1), es una línea.
-                    # Los precios americanos válidos siempre son 100 o más en valor absoluto (ej -110, +100)
-                    if val_check < 50: 
-                        is_pure_line = True
+                clean_val = float(odds_str.replace("+", "").replace("-", ""))
+                if odds_str.startswith("+") or odds_str.startswith("-") or clean_val >= 100:
+                    is_actual_price = True
             except ValueError:
                 pass
 
-            if is_pure_line:
-                # Es una línea pura colada en las odds, la salvamos como línea de mercado
-                if not market_line:
-                    market_line = odds_str
-                # Y asignamos el precio estándar de mercado americano (-110) para los cálculos
-                raw_odds = "-110"
-                odds_str = "-110"
+        if not is_actual_price and odds_str != "—":
+            # Si no es un precio real, lo que venía en 'odds' era en realidad una línea de hándicap o total
+            if not market_line:
+                market_line = odds_str
+            # No inventamos precios falsos (-110); si no hay cuota real provista, se marca como no disponible
+            odds_str = "—"
 
-            # Conversión estricta a formato americano
+        # Si tenemos un precio americano válido, calculamos su equivalente decimal
+        if odds_str != "—":
             decimal_odds = american_to_decimal(odds_str)
+            raw_odds = odds_str
+        else:
+            raw_odds = "—"
 
         raw_ev = market.get("ev")
         ev_val = safe_float(raw_ev)

@@ -71,18 +71,25 @@ class DraftKingsParser:
 
                     text = row.get_text(" ", strip=True)
 
-                    # --- NUEVA EXTRACCIÓN DE CUOTA (ODDS) ---
+# --- NUEVA EXTRACCIÓN SEPARADA DE LÍNEA Y CUOTA ---
                     odds_val = "—"
+                    line_val = None
                     
-                    # 1. Intentamos buscar por clase CSS de cuota
-                    odds_el = row.select_one(".tb-se-odds, .tb-odds, .odds")
-                    if odds_el:
-                        odds_val = odds_el.get_text(strip=True)
-                    else:
-                        # 2. Si no, lo extraemos del texto mediante Regex
-                        odds_match = re.search(r'([+-]\d+|EVEN|\d+\.\d+)', text)
-                        if odds_match:
-                            odds_val = odds_match.group(1)
+                    # 1. Extraemos la CUOTA REAL (American Odds)
+                    # Busca un signo +/- seguido de al menos 3 dígitos (ej: -110, +150), o la palabra EVEN
+                    odds_match = re.search(r'([+-]\d{3,}|EVEN)', text)
+                    if odds_match:
+                        odds_val = odds_match.group(1)
+                        
+                    # 2. Extraemos la LÍNEA (Spreads/Totals)
+                    # Primero borramos temporalmente la cuota del texto para que no confunda al regex
+                    text_without_odds = text.replace(odds_val, "") if odds_val != "—" else text
+                    
+                    # Busca números con decimales (ej. 9.5) o enteros con signo (ej. -7, +3)
+                    # Esto evita atrapar por error los números enteros de los porcentajes (60%, 40%)
+                    line_match = re.search(r'([+-]\d+(?:\.\d+)?|\d+\.\d+)', text_without_odds)
+                    if line_match:
+                        line_val = line_match.group(1)
 
                     percentages = re.findall(r"(\d+)%", text)
 
@@ -93,12 +100,13 @@ class DraftKingsParser:
                         game["markets"].append({
                             "market": market_name,
                             "pick": pick.get_text(" ", strip=True),
-                            "odds": odds_val,  # <--- Inyectamos la cuota
+                            "line": line_val,  # <--- Agregamos la línea separada de forma limpia
+                            "odds": odds_val,  # <--- Momio real purificado (-110, +150, EVEN)
                             "handle": handle,
                             "bets": bets,
                             "edge": handle - bets
                         })
-
+                        
             games.append(game)
 
         return {
