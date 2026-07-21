@@ -76,8 +76,8 @@ class DraftKingsParser:
                     line_val = None
                     
                     # 1. Extraemos la CUOTA REAL (American Odds)
-                    # Busca un signo +/- seguido de al menos 3 dígitos (ej: -110, +150), o la palabra EVEN
-                    odds_match = re.search(r'([+-]\d{3,}|EVEN)', text)
+                    # Acepta signos +/- seguidos de 2 a 4 dígitos (ej: -110, -106, +50, +150), o la palabra EVEN
+                    odds_match = re.search(r'([+-]\d{2,4}|EVEN)', text)
                     if odds_match:
                         odds_val = odds_match.group(1)
                         
@@ -106,7 +106,7 @@ class DraftKingsParser:
                             "bets": bets,
                             "edge": handle - bets
                         })
-                        
+
             games.append(game)
 
         return {
