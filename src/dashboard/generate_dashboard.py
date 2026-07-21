@@ -121,6 +121,33 @@ def classify_priority(text):
         return "soon"
     return "watch"
 
+def classify_status(market, iso_str):
+    """
+    Determina el status que usa el frontend (isEventPending / drawHistory)
+    para decidir si un pick sigue activo o pasa a la pestaña "Historial".
+    Si algún día se agrega un tracker de resultados que ya mande "status"
+    (ej. WON/LOST) en el market, se respeta tal cual (pass-through).
+    A falta de eso, se infiere UPCOMING/LIVE solo por el horario del evento;
+    el resultado real (WON/LOST/roi) queda pendiente de esa pieza futura.
+    """
+    explicit = market.get("status")
+    if explicit:
+        return explicit
+
+    if not iso_str:
+        return "UPCOMING"
+
+    try:
+        event_dt = datetime.strptime(iso_str, "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        return "UPCOMING"
+
+    if event_dt > datetime.now():
+        return "UPCOMING"
+
+    # Ya inició pero todavía no hay dato de resultado en el pipeline
+    return "LIVE"
+
 # ============================================================
 # CONVERSORES Y VALIDACIONES SEGURAS
 # ============================================================
@@ -442,7 +469,10 @@ def build_picks(raw_data):
             "handlePct": handle,
             "betsPct": bets,
             "divergence": divergence,
-            "history": build_pick_history(league_name, game, pick, market_name)
+            "history": build_pick_history(league_name, game, pick, market_name),
+            "status": classify_status(market, iso),
+            "result": market.get("result", "PENDING"),
+            "roi": market.get("roi")
         }
         
         all_items.append(item)
