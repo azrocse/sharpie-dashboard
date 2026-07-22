@@ -362,25 +362,6 @@ def analyze_all(parsed_files=None):
                             raw_odds = hist_run.get("odds")
                             market["odds"] = raw_odds
                             break
-                # Si el mercado contiene un historial de corridas, extraemos el último estado registrado (el más reciente)
-                if "history" in market and isinstance(market["history"], list) and len(market["history"]) > 0:
-                    latest_run = market["history"][-1]
-                    if isinstance(latest_run, dict):
-                        market["odds"] = latest_run.get("odds", market.get("odds"))
-                        market["handle"] = latest_run.get("handle", market.get("handle"))
-                        market["bets"] = latest_run.get("bets", market.get("bets"))
-                handle = market.get("handle")
-                bets = market.get("bets")
-                
-                # --- RECUPERACIÓN INTELIGENTE DEL ÚLTIMO MOMIO VÁLIDO ---
-                if (str(raw_odds).strip() in ["—", "", "0", "-0", "-1", "None"] or raw_odds is None) and "history" in market:
-                    for hist_run in reversed(market["history"]):
-                        if isinstance(hist_run, dict) and str(hist_run.get("odds", "")).strip() not in ["—", "", "0", "-0", "-1", "None"]:
-                            raw_odds = hist_run.get("odds")
-                            market["odds"] = raw_odds
-                            break
-    
-                raw_odds = market.get("odds", "—")
 
                 # --- FILTRO TAJANTE DE RAÍZ ---
                 odds_str = str(raw_odds).strip()
@@ -397,8 +378,6 @@ def analyze_all(parsed_files=None):
                     total_noise += 1
                     continue
                 # -----------------------------
-                handle = market.get("handle")
-                bets = market.get("bets")
 
                 if handle is None or bets is None:
                     continue
