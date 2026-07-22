@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 # ============================================================
 # RUTAS
@@ -11,6 +11,7 @@ INPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
 SNAPSHOTS_DIR = os.path.join(BASE_DIR, "data", "snapshots")
 OUTPUT_DIR = BASE_DIR
 
+# Cuántos puntos recientes de evolución mostrar por pick en el dashboard.
 MAX_HISTORY_POINTS = 8
 
 # ============================================================
@@ -64,6 +65,21 @@ def parse_match_datetime(raw):
         except:
             pass
 
+    try:
+        if "," in raw:
+            date_part, time_part = [x.strip() for x in raw.split(",", 1)]
+            year = now.year
+            full = f"{date_part}/{year} {time_part}"
+            dt = datetime.strptime(full, "%m/%d/%Y %I:%M%p")
+            dt = dt - timedelta(hours=2)
+            return (
+                dt.strftime("%Y-%m-%d"),
+                dt.strftime("%H:%M"),
+                dt.strftime("%Y-%m-%dT%H:%M:%S")
+            )
+    except:
+        pass
+
     return (
         now.strftime("%Y-%m-%d"),
         raw,
@@ -73,19 +89,10 @@ def parse_match_datetime(raw):
 # ============================================================
 # CLASIFICADORES
 # ============================================================
-def classify_action(market, sharp_score, is_whale, edge):
-    explicit_action = str(market.get("action", "")).upper()
-    if "APOSTAR" in explicit_action or "INCLINACIÓN" in explicit_action:
+def classify_action(text):
+    text = (text or "").upper()
+    if "APOSTAR" in text or "INCLINACIÓN" in text:
         return "bet"
-    if "PASAR" in explicit_action or "EVITAR" in explicit_action:
-        return "pass"
-
-    if is_whale or sharp_score >= 70:
-        return "bet"
-        
-    if edge >= 2.5 and sharp_score >= 58:
-        return "bet"
-
     return "pass"
 
 def classify_trend(text):
@@ -124,10 +131,11 @@ def classify_status(market, iso_str):
     if event_dt > datetime.now():
         return "UPCOMING"
 
+    # Ya inició pero todavía no hay dato de resultado en el pipeline
     return "LIVE"
 
 # ============================================================
-# CONVERSORES Y VALIDACIONES
+# CONVERSORES Y VALIDACIONES SEGURAS
 # ============================================================
 def safe_float(val):
     if val is None:
@@ -160,6 +168,7 @@ def safe_pct(val):
         return None
 
 def american_to_decimal(american_odds):
+    """Convierte momios americanos (ej: -110, +150) a decimal de forma segura."""
     try:
         odds = float(american_odds)
         if odds == 0:
@@ -171,6 +180,9 @@ def american_to_decimal(american_odds):
     except (ValueError, TypeError):
         return None
 
+# ============================================================
+# DETECCIÓN WHALE
+# ============================================================
 def detect_whale(market):
     if market.get("whale"):
         return True
@@ -190,9 +202,10 @@ def detect_whale(market):
     return "whale" in blob or "🐋" in blob or "divergence" in blob
 
 # ============================================================
-# HISTÓRICO
+# EVOLUCIÓN HISTÓRICA DEL PICK (tickets / dinero / cuota)
 # ============================================================
 _snapshot_cache = {}
+
 
 def _league_slug(league_name):
     return (league_name or "").strip().lower().replace(" ", "_")
@@ -235,6 +248,7 @@ def _load_league_snapshots(league_slug):
                         continue
 
                     key = _market_unique_key(game_name, pick, market_name)
+
                     raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets")))
                     raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle")))
                     raw_odds = market.get("odds", market.get("cuota"))
@@ -254,6 +268,7 @@ def _load_league_snapshots(league_slug):
 def build_pick_history(league_name, game, pick, market_name):
     league_slug = _league_slug(league_name)
     key = _market_unique_key(game, pick, market_name)
+
     snapshots = _load_league_snapshots(league_slug)
 
     history = []
@@ -276,10 +291,13 @@ def build_pick_history(league_name, game, pick, market_name):
     return history
 
 # ============================================================
-# BUILD PICKS
+# BUILD PICKS (Aplanador de Estructura Jerárquica)
 # ============================================================
 def build_picks(raw_data):
-    print("\n[DEBUG] Iniciando procesamiento de mercados...")
+    print("\n[DEBUG] Iniciando procesamiento de mercados para dashboard...")
+
+    # Cache de snapshots limpio en cada corrida para no arrastrar datos viejos
+    # si el proceso vive más de una ejecución (ej. modo servidor/loop).
     _snapshot_cache.clear()
 
     def extract_markets(node):
@@ -298,11 +316,14 @@ def build_picks(raw_data):
         return found
 
     markets = extract_markets(raw_data)
+    print(f"[DEBUG] Mercados encontrados: {len(markets)}")
+
     all_items = []
     counter = 0
     seen_picks = set()
 
     for market in markets:
+        #print(f"[DEBUG_MARKET] Juego: {market.get('game')} | Pick: {market.get('pick')} | Keys disponibles: {list(market.keys())} | Raw Odds: {market.get('odds')} | Raw Cuota: {market.get('cuota')}")
         game = market.get("game")
         pick = market.get("pick")
 
@@ -312,12 +333,14 @@ def build_picks(raw_data):
             continue
 
         market_name = market.get("market", market.get("type"))
+
         unique_key = f"{game}||{pick}||{market_name}"
         if unique_key in seen_picks:
             continue
         seen_picks.add(unique_key)
 
         counter += 1
+
         date, time, iso = parse_match_datetime(market.get("time", ""))
 
         raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets", 50)))
@@ -328,16 +351,21 @@ def build_picks(raw_data):
         divergence = abs(handle - bets)
 
         def safe_edge(value):
+            """Igual que safe_score pero preserva el signo (edge puede ser negativo)."""
             try:
-                return max(-100.0, min(100.0, float(value)))
+                value = float(value)
             except Exception:
                 return 0.0
+            return max(-100.0, min(100.0, value))
 
         market_score = safe_score(market.get("market_score", 0))
         confidence = safe_score(market.get("confidence", market_score))
         edge = safe_edge(market.get("edge", 0))
 
-        sharp_score = round((market_score * .45 + confidence * .35 + max(divergence, 0) * .20), 1)
+        sharp_score = round(
+            (market_score * .45 + confidence * .35 + max(divergence, 0) * .20),
+            1
+        )
 
         risk = "MEDIUM"
         if sharp_score >= 80:
@@ -352,19 +380,48 @@ def build_picks(raw_data):
         if model_is_real and model_val:
             model_prob = int(model_val)
         else:
-            model_prob = int(min(99, max(50, 50 + int(edge / 2))))
+            estimated_prob = 50 + int(edge / 2)
+            model_prob = int(min(99, max(50, estimated_prob)))
 
+        # Capturamos la cuota y la línea por separado si vienen en campos distintos, 
+        # o interpretamos el formato americano nativo de DraftKings.
+        raw_odds = market.get("odds", market.get("cuota", "—"))
+        market_line = market.get("line", market.get("linea", None)) # Si tu JSON trae la línea separada
+        decimal_odds = None
+
+        if raw_odds is not None and raw_odds != "—":
+            # Convertimos a string para analizar si tiene formato americano explícito (+ o -)
+            odds_str = str(raw_odds).strip()
+            
+            # Si es un número puro pequeño (ej. 1.5, 2.5), eso es una LÍNEA de mercado, no una cuota.
+            # Lo filtramos para que no contamine las cuotas decimales.
+            try:
+                val_num = float(odds_str.replace("+", ""))
+                # Si está en rango típico de hándicap/spreads y NO tiene pinta de cuota americana estricta (ej. +/- 100 o más)
+                if abs(val_num) < 50.0 and not (odds_str.startswith("+") or odds_str.startswith("-") or (val_num >= 100)):
+                    # Esto es una línea de mercado colándose en las odds. La guardamos como línea y dejamos la cuota estándar (-110) o nula.
+                    if not market_line:
+                        market_line = odds_str
+                    raw_odds = "-110" # Default estándar para spreads si no viene precio explícito
+                    odds_str = "-110"
+            except ValueError:
+                pass
+
+    # Capturamos los campos crudos de la fuente
         raw_odds = market.get("odds", market.get("cuota", "—"))
         market_line = market.get("line", market.get("linea", None))
         is_price_flag = market.get("is_price", None)
         
         odds_str = str(raw_odds).strip() if raw_odds is not None else "—"
         decimal_odds = None
-        is_actual_price = False
 
+        # Evaluamos si el valor en 'odds' es realmente un precio monetario o una línea disfrazada
+        is_actual_price = False
+        
         if is_price_flag is not None:
             is_actual_price = bool(is_price_flag)
         else:
+            # Un precio americano real suele tener signo explícito (+/-) o un valor absoluto >= 100
             try:
                 clean_val = float(odds_str.replace("+", "").replace("-", ""))
                 if odds_str.startswith("+") or odds_str.startswith("-") or clean_val >= 100:
@@ -373,10 +430,13 @@ def build_picks(raw_data):
                 pass
 
         if not is_actual_price and odds_str != "—":
+            # Si no es un precio real, lo que venía en 'odds' era en realidad una línea de hándicap o total
             if not market_line:
                 market_line = odds_str
+            # No inventamos precios falsos (-110); si no hay cuota real provista, se marca como no disponible
             odds_str = "—"
 
+        # Si tenemos un precio americano válido, calculamos su equivalente decimal
         if odds_str != "—":
             decimal_odds = american_to_decimal(odds_str)
             raw_odds = odds_str
@@ -390,16 +450,16 @@ def build_picks(raw_data):
         if ev_val is not None and ev_val != 0:
             ev = ev_val
         elif decimal_odds is not None and model_is_real:
-            ev = round(((model_prob / 100.0) * decimal_odds - 1.0) * 100.0, 1)
+            p_model_dec = model_prob / 100.0
+            calculated_ev = (p_model_dec * decimal_odds) - 1.0
+            ev = round(calculated_ev * 100.0, 1)
         else:
             ev = round(edge * 0.8, 1) if edge > 0 else 0.0
             ev_is_estimated = True
 
-        is_whale = detect_whale(market)
-        action_key = classify_action(market, sharp_score, is_whale, edge)
-        action_text = "🟢 APOSTAR" if action_key == "bet" else "🔴 PASAR"
-        
+        action_text = market.get("action", "🔴 PASAR")
         trend_text = market.get("trend", "➡️ ESTABLE")
+
         league_name = market.get("league", "Otras Ligas")
 
         item = {
@@ -410,7 +470,7 @@ def build_picks(raw_data):
             "pick": pick or "Sin selección",
             "odds": raw_odds,            
             "action": action_text,
-            "actionKey": action_key,
+            "actionKey": market.get("actionKey", classify_action(action_text)),
             "trend": trend_text,
             "trendKey": classify_trend(trend_text),
             "priority": market.get("priority", ""),
@@ -425,12 +485,15 @@ def build_picks(raw_data):
             "ev": ev,
             "evEstimated": ev_is_estimated,
             "risk": risk,
-            "freePick": (action_key == "pass" and sharp_score >= 20),
+            "freePick": (
+                classify_action(action_text) == "pass"
+                and sharp_score >= 20
+            ),
             "reason": market.get("reason", ""),
             "date": date,
             "time": time,
             "iso": iso,
-            "whale": is_whale,
+            "whale": detect_whale(market),
             "handlePct": handle,
             "betsPct": bets,
             "divergence": divergence,
@@ -439,8 +502,10 @@ def build_picks(raw_data):
             "result": market.get("result", "PENDING"),
             "roi": market.get("roi")
         }
+        
         all_items.append(item)
 
+    print(f"[DEBUG] Total de eventos unificados cargados: {len(all_items)}")
     return all_items
 
 # ============================================================
@@ -449,12 +514,15 @@ def build_picks(raw_data):
 def generate_dashboard():
     print("\n--- [DEBUG START: GENERATE DASHBOARD] ---")
 
-    utc_now = datetime.now(timezone.utc)
+    utc_now = datetime.utcnow()
     cdmx_now = utc_now - timedelta(hours=6)
     now_str = cdmx_now.strftime("%Y-%m-%d %H:%M:%S")
 
     template_path = os.path.join(CURRENT_DIR, "template.html")
     source_json_path = get_latest_file()
+
+    print(f"[DEBUG] Buscando plantilla: {template_path}")
+    print(f"[DEBUG] Archivo fuente de datos: {source_json_path}")
 
     if not os.path.exists(template_path):
         raise FileNotFoundError(f"No existe template.html: {template_path}")
@@ -469,7 +537,20 @@ def generate_dashboard():
         raw_data = json.load(file)
 
     all_events = build_picks(raw_data)
+
+    stats = {
+        "total": len(all_events),
+        "bets": len([x for x in all_events if x.get("actionKey") == "bet"]),
+        "whales": len([x for x in all_events if x.get("whale")]),
+        "stake": round(sum(x.get("stake", 0) for x in all_events), 2)
+    }
+
     json_data = json.dumps(all_events, ensure_ascii=False)
+
+    print("[DEBUG] Estadísticas finales del dashboard:")
+    print(f"  Total eventos: {stats['total']}")
+    print(f"  Apuestas sugeridas (bets): {stats['bets']}")
+    print(f"  Whales detectados: {stats['whales']}")
 
     html_content = html_template.replace("__GENERATED_AT__", now_str)
     html_content = html_content.replace("__PICKS_JSON__", json_data)
@@ -480,7 +561,8 @@ def generate_dashboard():
     with open(output_file, "w", encoding="utf-8") as file:
         file.write(html_content)
 
-    print(f"[DEBUG] Dashboard generado con éxito: {output_file}")
+    print(f"[DEBUG] Dashboard generado con éxito en CDMX ({now_str}): {output_file}")
+    #print("--- [DEBUG END: GENERATE DASHBOARD ] ---\n")
     return output_file
 
 if __name__ == "__main__":
