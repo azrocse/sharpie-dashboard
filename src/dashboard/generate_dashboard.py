@@ -61,7 +61,7 @@ def parse_match_datetime(raw):
                 dt.strftime("%H:%M"),
                 dt.strftime("%Y-%m-%dT%H:%M:%S")
             )
-        except:
+        except Exception:
             pass
 
     try:
@@ -76,7 +76,7 @@ def parse_match_datetime(raw):
                 dt.strftime("%H:%M"),
                 dt.strftime("%Y-%m-%dT%H:%M:%S")
             )
-    except:
+    except Exception:
         pass
 
     return (
@@ -140,7 +140,7 @@ def safe_float(val):
         return 0.0
     try:
         if isinstance(val, str):
-            val = val.replace('%', '').strip()
+            val = val.replace('%', '').replace('$', '').strip()
         return float(val)
     except Exception:
         return 0.0
@@ -148,7 +148,7 @@ def safe_float(val):
 def safe_score(value):
     try:
         value = float(value)
-    except:
+    except Exception:
         return 0
     return max(0, min(100, value))
 
@@ -341,7 +341,7 @@ def build_picks(raw_data):
 
         date, time, iso = parse_match_datetime(market.get("time", ""))
 
-        # 1. Extraer métricas numéricas primero
+        # 1. Extraer métricas numéricas
         raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets", 50)))
         raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle", 50)))
 
@@ -513,6 +513,7 @@ def generate_dashboard():
     with open(output_file, "w", encoding="utf-8") as file:
         file.write(html_content)
 
+    print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file
 
 if __name__ == "__main__":
