@@ -62,49 +62,51 @@ class DraftKingsParser:
                     continue
 
                 market_name = head.get_text(" ", strip=True)
-                rows = block.select(".tb-sm")
 
-                for row in rows:
-                    pick = row.select_one(".tb-slipline")
-                    if not pick:
-                        continue
+                # .tb-sm es el CONTENEDOR de ambos lados del mercado, no una fila.
+                # Cada lado real vive en .tb-sodd, un nivel mas adentro.
+                sm_containers = block.select(".tb-sm")
 
-                    text = row.get_text(" ", strip=True)
+                for container in sm_containers:
+                    rows = container.select(".tb-sodd")
 
-                    # 1. Extraemos la LINEA primero (spread/total): siempre
-                    # trae decimales (.5) o es un total entero solo, y NUNCA
-                    # es la cuota americana (que rara vez es .5)
-                    odds_val = "—"
-                    line_val = None
+                    for row in rows:
+                        pick = row.select_one(".tb-slipline")
+                        if not pick:
+                            continue
 
-                    line_match = re.search(r'([+-]?\d+\.5|\b\d+\.5\b)', text)
-                    if line_match:
-                        line_val = line_match.group(1)
-                        text_remainder = text.replace(line_val, "", 1)
-                    else:
-                        text_remainder = text
+                        text = row.get_text(" ", strip=True)
+                        text = text.replace("\u2212", "-")  # DK usa el signo menos unicode (U+2212), no el guion ascii
 
-                    # 2. Ahora sí, la CUOTA real sobre el texto sin la linea
-                    odds_match = re.search(r'([+-]\d{2,4}|EVEN)', text_remainder)
-                    if odds_match:
-                        odds_val = odds_match.group(1)
+                        odds_val = "—"
+                        line_val = None
 
-                    percentages = re.findall(r"(\d+)%", text)
+                        line_match = re.search(r'([+-]?\d+\.5|\b\d+\.5\b)', text)
+                        if line_match:
+                            line_val = line_match.group(1)
+                            text_remainder = text.replace(line_val, "", 1)
+                        else:
+                            text_remainder = text
 
-                    if len(percentages) >= 2:
-                        handle = int(percentages[0])
-                        bets = int(percentages[1])
+                        odds_match = re.search(r'([+-]\d{2,4}|EVEN)', text_remainder)
+                        if odds_match:
+                            odds_val = odds_match.group(1)
 
-                        game["markets"].append({
-                            "market": market_name,
-                            "pick": pick.get_text(" ", strip=True),
-                            "line": line_val,  # <--- Agregamos la línea separada de forma limpia
-                            "odds": odds_val,  # <--- Momio real purificado (-110, +150, EVEN)
-                            "handle": handle,
-                            "bets": bets,
-                            "edge": handle - bets
-                        })
+                        percentages = re.findall(r"(\d+)%", text)
 
+                        if len(percentages) >= 2:
+                            handle = int(percentages[0])
+                            bets = int(percentages[1])
+
+                            game["markets"].append({
+                                "market": market_name,
+                                "pick": pick.get_text(" ", strip=True),
+                                "line": line_val,
+                                "odds": odds_val,
+                                "handle": handle,
+                                "bets": bets,
+                                "edge": handle - bets
+                            })
             games.append(game)
 
         return {

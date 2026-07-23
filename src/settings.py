@@ -1,10 +1,10 @@
 TIMEZONE = "America/Mexico_City"
 
 
-DEFAULT_DATE_RANGE = "today"
+DEFAULT_DATE_RANGE = "n7days"
 
 
-MAX_PAGES = 5
+MAX_PAGES = 10
 
 
 

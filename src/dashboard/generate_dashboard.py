@@ -509,9 +509,10 @@ def build_picks(raw_data):
             "result": market.get("result", "PENDING"),
             "roi": market.get("roi")
         }
-        
-        all_items.reverse()
 
+        all_items.append(item)
+
+    all_items.reverse()  # restaura el orden cronologico original tras deduplicar desde el mas reciente
     print(f"[DEBUG] Total de eventos unificados cargados: {len(all_items)}")
     return all_items
 
