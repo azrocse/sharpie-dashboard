@@ -13,6 +13,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* SELECCIÓN Y COPIADO LIBRE DE TEXTO */
+        *, *::before, *::after {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
         :root[data-theme="light"] {
             --bg: #f8fafc;
             --panel: #ffffff;
@@ -59,13 +71,6 @@
             --shadow: 0 10px 25px rgba(0,0,0,.3);
             --shadow-premium: 0 10px 30px -5px rgba(45, 212, 191, 0.2);
             --radius: 12px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.2s, border-color 0.2s;
         }
 
         html {
@@ -157,7 +162,7 @@
             box-shadow: var(--shadow);
         }
 
-        /* COMPACT KPI GRID FOR INDICATORS */
+        /* KPI GRID */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -245,7 +250,6 @@
 
         .stat-card.open .stat-chevron { transform: rotate(180deg); }
 
-        /* POPUP TOOLTIP FLOATING FOR DETAILS */
         .stat-popup {
             display: none;
             position: absolute;
@@ -312,7 +316,7 @@
             text-align: center;
         }
 
-        /* SECCIÓN DE GRÁFICOS ANALÍTICOS */
+        /* GRÁFICOS */
         .analytics-section {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -346,7 +350,7 @@
             height: 220px;
         }
 
-        /* TOOLBAR FILTROS Y ORDENAMIENTO */
+        /* TOOLBAR */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -378,7 +382,7 @@
             font-size: 14px;
         }
 
-        select, .btn-chip, .clear-btn {
+        select, input[type="number"], .btn-chip, .btn-adv-toggle, .clear-btn {
             background: var(--panel2);
             border: 1px solid var(--border);
             color: var(--text);
@@ -390,11 +394,15 @@
             outline: none;
         }
 
-        select:focus {
+        input[type="number"] {
+            cursor: text;
+        }
+
+        select:focus, input[type="number"]:focus {
             border-color: var(--teal);
         }
 
-        .btn-chip[aria-pressed="true"] {
+        .btn-chip[aria-pressed="true"], .btn-adv-toggle[aria-pressed="true"] {
             background: rgba(251, 191, 36, 0.15);
             border-color: var(--gold);
             color: var(--gold);
@@ -437,7 +445,54 @@
             box-shadow: var(--shadow);
         }
 
-        /* TARJETAS CARDS */
+        /* FILTROS AVANZADOS NUMÉRICOS */
+        .adv-filters-panel {
+            width: 100%;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-top: -12px;
+            margin-bottom: 25px;
+            display: none;
+            box-shadow: var(--shadow);
+        }
+
+        .adv-filters-panel.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .adv-filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .adv-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .adv-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .adv-inputs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .adv-inputs input {
+            width: 100%;
+        }
+
+        /* CARDS */
         #cardsView {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
@@ -689,7 +744,7 @@
             padding-top: 8px;
         }
 
-        /* ESTILOS PARA EXPORTAR COPY A X & TOAST */
+        /* EXPORTAR COPY A X & TOAST */
         .btn-copy-x {
             background: linear-gradient(135deg, #1da1f2 0%, #0d8ecf 100%);
             color: #fff;
@@ -804,7 +859,7 @@
             box-shadow: var(--shadow);
         }
 
-        /* BADGES DINÁMICOS */
+        /* BADGES */
         .badge-action {
             padding: 4px 8px;
             border-radius: 6px;
@@ -857,7 +912,6 @@
 </div>
 
 <div class="stats-grid">
-    <!-- Métricas Numéricas Compactas -->
     <div class="stat-card" id="cardAnalizados" style="border-left-color: var(--teal);">
         <div class="stat-header">
             <span class="stat-icon">🎯</span>
@@ -919,7 +973,6 @@
         </div>
     </div>
 
-    <!-- Tarjetas Destacadas -->
     <div class="stat-card expandable card-featured" id="cardMercado" data-target="detailMercado" style="border-left-color: var(--teal);">
         <div class="stat-header">
             <span class="stat-icon">📊</span>
@@ -968,7 +1021,6 @@
     </div>
 </div>
 
-<!-- TOOLBAR PRINCIPAL DE FILTROS -->
 <div class="toolbar">
     <div class="search-box">
         <input id="search" placeholder="Buscar por equipo, liga, mercado...">
@@ -1002,13 +1054,14 @@
     <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
     <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks</button>
 
-    <!-- FILTRO DE RIESGO COLOCADO ENTRE FREE PICKS Y FILTROS AVANZADOS -->
     <select id="fRisk">
         <option value="">🛡️ Todos los Riesgos</option>
         <option value="LOW">🟢 Riesgo Bajo (Low)</option>
         <option value="MEDIUM">🟡 Riesgo Medio (Medium)</option>
         <option value="HIGH">🔴 Riesgo Alto (High)</option>
     </select>
+
+    <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
 
     <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
 
@@ -1018,6 +1071,35 @@
         <button id="viewCards" aria-pressed="true">🎯 Tarjetas</button>
         <button id="viewBoard" aria-pressed="false">📊 Tablero Pro</button>
         <button id="viewHistory" aria-pressed="false">📚 Historial</button>
+    </div>
+</div>
+
+<div class="adv-filters-panel" id="advFiltersPanel">
+    <div class="adv-filters-grid">
+        <div class="adv-group">
+            <label class="adv-label">Prob. Implícita Min / Max (%)</label>
+            <div class="adv-inputs">
+                <input type="number" id="fProbMin" placeholder="0" min="0" max="100" step="1">
+                <span style="color:var(--muted);">-</span>
+                <input type="number" id="fProbMax" placeholder="100" min="0" max="100" step="1">
+            </div>
+        </div>
+        
+        <div class="adv-group">
+            <label class="adv-label">Edge / Ventaja Mínima (%)</label>
+            <div class="adv-inputs">
+                <input type="number" id="fEdgeMin" placeholder="Mínimo %" step="0.1">
+            </div>
+        </div>
+
+        <div class="adv-group">
+            <label class="adv-label">Score / EV Mínimo</label>
+            <div class="adv-inputs">
+                <input type="number" id="fScoreMin" placeholder="Score Min" step="1">
+                <span style="color:var(--muted);">-</span>
+                <input type="number" id="fEvMin" placeholder="EV Min %" step="0.1">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1070,14 +1152,19 @@
     <p>No se encontraron registros activos operables bajo estos parámetros.</p>
 </div>
 
-<!-- Toast Notificación -->
 <div id="toast-x">
   <span>✨</span>
   <span>¡Copy formateado para X copiado al portapapeles!</span>
 </div>
 
 <script>
-const PICKS = __PICKS_JSON__;
+// Manejo seguro del Injected JSON
+let PICKS = [];
+if (typeof __PICKS_JSON__ !== "undefined" && Array.isArray(__PICKS_JSON__)) {
+    PICKS = __PICKS_JSON__;
+} else if (typeof window.picksData !== "undefined" && Array.isArray(window.picksData)) {
+    PICKS = window.picksData;
+}
 
 const state = {
     search: "",
@@ -1090,10 +1177,16 @@ const state = {
     freePickOnly: false,
     sort: "time",
     view: "cards",
-    autoThemeEnabled: true 
+    autoThemeEnabled: true,
+    probMin: null,
+    probMax: null,
+    edgeMin: null,
+    scoreMin: null,
+    evMin: null
 };
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
+const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "🚨", other: "⚙️" };
 
 let edgeChartInstance = null;
 let marketChartInstance = null;
@@ -1105,6 +1198,7 @@ function initCharts() {
 
     const ctxScatter = document.getElementById("edgeScatterChart");
     if (ctxScatter) {
+        if (edgeChartInstance) edgeChartInstance.destroy();
         edgeChartInstance = new Chart(ctxScatter, {
             type: 'scatter',
             data: { datasets: [{ label: 'Picks Activos', data: [], backgroundColor: '#2dd4bf', pointRadius: 6 }] },
@@ -1122,6 +1216,7 @@ function initCharts() {
 
     const ctxDoughnut = document.getElementById("marketDoughnutChart");
     if (ctxDoughnut) {
+        if (marketChartInstance) marketChartInstance.destroy();
         marketChartInstance = new Chart(ctxDoughnut, {
             type: 'doughnut',
             data: {
@@ -1187,8 +1282,6 @@ function riskBadgeClass(risk) {
     return "neutral";
 }
 
-const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "🚨", other: "⚙️" };
-
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
 
 function updateThemeByTime() {
@@ -1215,10 +1308,8 @@ if (themeToggle) {
         const doc = document.documentElement;
         const currentTheme = doc.getAttribute("data-theme");
         doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
-        if (edgeChartInstance && marketChartInstance) {
-            initCharts();
-            render();
-        }
+        initCharts();
+        render();
     });
 }
 
@@ -1281,7 +1372,7 @@ function buildEvolutionHtml(p) {
     `;
 }
 
-function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && p.score >= 75; }
+function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && (p.score || 0) >= 75; }
 
 function getVisualConfig(p) {
     const score = p.score || 0;
@@ -1345,67 +1436,6 @@ const statState = {
     mejor: []
 };
 
-function updateMetrics(filteredPicks) {
-    const active = filteredPicks.filter(isEventPending);
-
-    // 1. Picks Analizados
-    const elAnalizados = document.getElementById("statAnalizados");
-    if(elAnalizados) elAnalizados.innerText = active.length;
-
-    // 2. Picks Whale
-    const whalePicks = active.filter(p => p.whale || p.trendKey === "sharp" || calculateSmartMoney(p) >= 15);
-    const elWhale = document.getElementById("statWhale");
-    if(elWhale) elWhale.innerText = whalePicks.length;
-    statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
-
-    // 3. Picks Free
-    const freePicks = active.filter(p => p.freePick);
-    const elFree = document.getElementById("statFree");
-    if(elFree) elFree.innerText = freePicks.length;
-    statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
-
-    // 4. Próximos 30 minutos
-    const soonPicks = active.filter(p => {
-        if (!p.iso) return false;
-        const d = (new Date(p.iso) - new Date()) / 60000;
-        return d >= 0 && d <= 30;
-    }).sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
-    const elProximos = document.getElementById("statProximos");
-    if(elProximos) elProximos.innerText = soonPicks.length;
-    statState.proximos = soonPicks;
-
-    // 5. Análisis de Mercado
-    const buckets = { fade: [], sharp: [], consenso: [] };
-    active.forEach(p => buckets[classifyMarketBucket(p)].push(p));
-    statState.mercado = buckets;
-    
-    const elMercado = document.getElementById("statMercado");
-    if (elMercado) {
-        elMercado.innerText = `🚨 Fade the public (${buckets.fade.length}) • 🐋 Sharp (${buckets.sharp.length}) • ⚪ Consensus ${buckets.consenso.length}`;
-    }
-
-    // 6. Confianza del Dinero
-    const conf = computeConfianzaDelDinero(buckets.fade.length, buckets.sharp.length);
-    const elConfianza = document.getElementById("statConfianza");
-    if(elConfianza) elConfianza.innerText = conf.text;
-    const cardConf = document.getElementById("cardConfianza");
-    if(cardConf) cardConf.style.borderLeftColor = conf.color;
-
-    // 7. Mejor Oportunidad
-    const bestBet = [...active].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
-    const best = bestBet || [...active].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
-    statState.mejor = best ? [best] : [];
-    
-    const elMejor = document.getElementById("statMejor");
-    if (elMejor) {
-        if (best) {
-            elMejor.innerText = `${best.pick} (${best.game || 'Partido'})`;
-        } else {
-            elMejor.innerText = "Sin datos";
-        }
-    }
-}
-
 function classifyMarketBucket(p) {
     const e = calculateEdge(p);
     if (e <= -15) return "fade";
@@ -1418,6 +1448,56 @@ function computeConfianzaDelDinero(fadeN, sharpN) {
     if (sharpN === 0 || fadeN / sharpN >= 2) return { text: "Alerta 🚨", color: "var(--red)" };
     if (fadeN === 0 || sharpN / fadeN >= 2) return { text: "Consenso ⚡", color: "var(--teal)" };
     return { text: "Dividido", color: "var(--amber)" };
+}
+
+function updateMetrics(filteredPicks) {
+    const active = filteredPicks.filter(isEventPending);
+
+    const elAnalizados = document.getElementById("statAnalizados");
+    if(elAnalizados) elAnalizados.innerText = active.length;
+
+    const whalePicks = active.filter(p => p.whale || p.trendKey === "sharp" || calculateSmartMoney(p) >= 15);
+    const elWhale = document.getElementById("statWhale");
+    if(elWhale) elWhale.innerText = whalePicks.length;
+    statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+
+    const freePicks = active.filter(p => p.freePick);
+    const elFree = document.getElementById("statFree");
+    if(elFree) elFree.innerText = freePicks.length;
+    statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+
+    const soonPicks = active.filter(p => {
+        if (!p.iso) return false;
+        const d = (new Date(p.iso) - new Date()) / 60000;
+        return d >= 0 && d <= 30;
+    }).sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+    const elProximos = document.getElementById("statProximos");
+    if(elProximos) elProximos.innerText = soonPicks.length;
+    statState.proximos = soonPicks;
+
+    const buckets = { fade: [], sharp: [], consenso: [] };
+    active.forEach(p => buckets[classifyMarketBucket(p)].push(p));
+    statState.mercado = buckets;
+    
+    const elMercado = document.getElementById("statMercado");
+    if (elMercado) {
+        elMercado.innerText = `🚨 Fade (${buckets.fade.length}) · 🐋 Sharp (${buckets.sharp.length}) · ⚪ Cons. (${buckets.consenso.length})`;
+    }
+
+    const conf = computeConfianzaDelDinero(buckets.fade.length, buckets.sharp.length);
+    const elConfianza = document.getElementById("statConfianza");
+    if(elConfianza) elConfianza.innerText = conf.text;
+    const cardConf = document.getElementById("cardConfianza");
+    if(cardConf) cardConf.style.borderLeftColor = conf.color;
+
+    const bestBet = [...active].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+    const best = bestBet || [...active].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+    statState.mejor = best ? [best] : [];
+    
+    const elMejor = document.getElementById("statMejor");
+    if (elMejor) {
+        elMejor.innerText = best ? `${best.pick} (${best.game || 'Partido'})` : "Sin datos";
+    }
 }
 
 function renderStatRows(items) {
@@ -1448,7 +1528,6 @@ function renderStatRows(items) {
     }).join("");
 }
 
-// LÓGICA DE POPUP TOOLTIP FLOATING
 document.querySelectorAll(".stat-card.expandable").forEach(card => {
     card.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -1496,6 +1575,7 @@ document.addEventListener("click", () => {
 function applyFiltersAndSort(list) {
     if (!Array.isArray(list)) return [];
     const text = state.search.toLowerCase().trim();
+
     let result = list.filter(p => {
         if (state.league && p.league !== state.league) return false;
         if (state.date && p.date !== state.date) return false;
@@ -1506,11 +1586,16 @@ function applyFiltersAndSort(list) {
             if (config.key !== state.classification) return false;
         }
 
-        // EVALUACIÓN DEL FILTRO DE RIESGO
         if (state.risk) {
             const pRisk = (p.risk || "").toUpperCase();
             if (pRisk !== state.risk) return false;
         }
+
+        if (state.probMin !== null && !isNaN(state.probMin) && (p.modelProb || 0) < state.probMin) return false;
+        if (state.probMax !== null && !isNaN(state.probMax) && (p.modelProb || 0) > state.probMax) return false;
+        if (state.edgeMin !== null && !isNaN(state.edgeMin) && calculateEdge(p) < state.edgeMin) return false;
+        if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
+        if (state.evMin !== null && !isNaN(state.evMin) && Number(p.ev || 0) < state.evMin) return false;
 
         if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
         if (state.freePickOnly && !p.freePick) return false;
@@ -1535,7 +1620,6 @@ function applyFiltersAndSort(list) {
     });
 }
 
-// LÓGICA DE EXPORTACIÓN Y TOAST PARA X
 function copyPickForX(p) {
     const dateStr = p.date || "Fecha TBD";
     const timeStr = p.time || "Hora TBD";
@@ -1590,6 +1674,9 @@ function drawCards(list) {
             card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
             card.style.borderColor = config.border;
 
+            // Escapar JSON para el atributo onclick
+            const jsonStr = JSON.stringify(p).replace(/'/g, "&#39;");
+
             card.innerHTML = `
                 <div>
                     <div class="pcard-header">
@@ -1640,7 +1727,7 @@ function drawCards(list) {
                 ${p.freePick ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
                 ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
 
-                <button class="btn-copy-x" onclick='copyPickForX(${JSON.stringify(p)})'>
+                <button class="btn-copy-x" onclick='copyPickForX(${jsonStr})'>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
@@ -1735,7 +1822,7 @@ function drawHistory(list) {
 }
 
 function render() {
-    if (typeof PICKS === 'undefined' || !Array.isArray(PICKS) || PICKS.length === 0) {
+    if (!Array.isArray(PICKS) || PICKS.length === 0) {
         document.getElementById("emptyState").style.display = "block";
         document.getElementById("cardsView").style.display = "none";
         document.getElementById("boardView").style.display = "none";
@@ -1783,7 +1870,7 @@ function setupFilters() {
     let dates = new Set();
     let leagues = new Set();
 
-    if (typeof PICKS !== 'undefined' && Array.isArray(PICKS)) {
+    if (Array.isArray(PICKS)) {
         PICKS.forEach(p => {
             if (p.date) dates.add(p.date);
             if (p.league) leagues.add(p.league);
@@ -1831,6 +1918,38 @@ function setupFilters() {
         });
     }
 
+    const bindNumInput = (id, stateKey) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", e => {
+                const val = parseFloat(e.target.value);
+                state[stateKey] = isNaN(val) ? null : val;
+                render();
+            });
+        }
+    };
+
+    bindNumInput("fProbMin", "probMin");
+    bindNumInput("fProbMax", "probMax");
+    bindNumInput("fEdgeMin", "edgeMin");
+    bindNumInput("fScoreMin", "scoreMin");
+    bindNumInput("fEvMin", "evMin");
+
+    const btnAdv = document.getElementById("btnAdvToggle");
+    const advPanel = document.getElementById("advFiltersPanel");
+    if (btnAdv && advPanel) {
+        btnAdv.addEventListener("click", () => {
+            const isOpen = advPanel.classList.contains("show");
+            if (isOpen) {
+                advPanel.classList.remove("show");
+                btnAdv.setAttribute("aria-pressed", "false");
+            } else {
+                advPanel.classList.add("show");
+                btnAdv.setAttribute("aria-pressed", "true");
+            }
+        });
+    }
+
     const sortEl = document.getElementById("fSort");
     if (sortEl) {
         sortEl.addEventListener("change", e => {
@@ -1868,11 +1987,18 @@ function setupFilters() {
     const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
-            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
+            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; 
+            state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
+            state.probMin = null; state.probMax = null; state.edgeMin = null; state.scoreMin = null; state.evMin = null;
+
             if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
             if (searchEl) searchEl.value = "";
             if (sortEl) sortEl.value = "time";
             ["fDate", "fLeague", "fTrend", "fClassification", "fRisk"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = "";
+            });
+            ["fProbMin", "fProbMax", "fEdgeMin", "fScoreMin", "fEvMin"].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = "";
             });
@@ -1923,9 +2049,11 @@ function initEngine() {
     }, 1000);
 }
 
-setupFilters();
-initEngine();
-render();
+document.addEventListener("DOMContentLoaded", () => {
+    setupFilters();
+    initEngine();
+    render();
+});
 </script>
 </body>
 </html>
