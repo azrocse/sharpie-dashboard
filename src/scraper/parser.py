@@ -71,31 +71,23 @@ class DraftKingsParser:
 
                     text = row.get_text(" ", strip=True)
 
-                    # --- NUEVA EXTRACCIÓN SEPARADA DE LÍNEA Y CUOTA ---
+                    # 1. Extraemos la LINEA primero (spread/total): siempre
+                    # trae decimales (.5) o es un total entero solo, y NUNCA
+                    # es la cuota americana (que rara vez es .5)
                     odds_val = "—"
                     line_val = None
-                    
-                    # 1. Extraemos la CUOTA REAL (American Odds ampliada a 1-4 dígitos y EVEN)
-                    odds_match = re.search(r'([+-]\d{1,4}|EVEN)', text)
+
+                    line_match = re.search(r'([+-]?\d+\.5|\b\d+\.5\b)', text)
+                    if line_match:
+                        line_val = line_match.group(1)
+                        text_remainder = text.replace(line_val, "", 1)
+                    else:
+                        text_remainder = text
+
+                    # 2. Ahora sí, la CUOTA real sobre el texto sin la linea
+                    odds_match = re.search(r'([+-]\d{2,4}|EVEN)', text_remainder)
                     if odds_match:
                         odds_val = odds_match.group(1)
-                        
-                    # 2. Extraemos la LÍNEA (Spreads/Totals)
-                    text_without_odds = text.replace(odds_val, "") if odds_val != "—" else text
-                    
-                    line_match = re.search(r'([+-]\d+(?:\.\d+)?|\d+\.\d+)', text_without_odds)
-                    if line_match:
-                        line_val = line_match.group(1)
-                        
-                    # 2. Extraemos la LÍNEA (Spreads/Totals)
-                    # Primero borramos temporalmente la cuota del texto para que no confunda al regex
-                    text_without_odds = text.replace(odds_val, "") if odds_val != "—" else text
-                    
-                    # Busca números con decimales (ej. 9.5) o enteros con signo (ej. -7, +3)
-                    # Esto evita atrapar por error los números enteros de los porcentajes (60%, 40%)
-                    line_match = re.search(r'([+-]\d+(?:\.\d+)?|\d+\.\d+)', text_without_odds)
-                    if line_match:
-                        line_val = line_match.group(1)
 
                     percentages = re.findall(r"(\d+)%", text)
 

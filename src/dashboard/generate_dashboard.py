@@ -154,6 +154,13 @@ def safe_score(value):
         return 0
     return max(0, min(100, value))
 
+def safe_edge(value):
+    try:
+        value = float(value)
+    except Exception:
+        return 0.0
+    return max(-100.0, min(100.0, value))
+
 def safe_pct(val):
     if val is None:
         return None
@@ -322,7 +329,7 @@ def build_picks(raw_data):
     counter = 0
     seen_picks = set()
 
-    for market in markets:
+    for market in reversed(markets):
         #print(f"[DEBUG_MARKET] Juego: {market.get('game')} | Pick: {market.get('pick')} | Keys disponibles: {list(market.keys())} | Raw Odds: {market.get('odds')} | Raw Cuota: {market.get('cuota')}")
         game = market.get("game")
         pick = market.get("pick")
@@ -381,7 +388,7 @@ def build_picks(raw_data):
             model_prob = int(model_val)
         else:
             estimated_prob = 50 + int(edge / 2)
-            model_prob = int(min(99, max(50, estimated_prob)))
+            model_prob = int(min(99, max(1, estimated_prob)))
 
         # Capturamos la cuota y la línea por separado si vienen en campos distintos, 
         # o interpretamos el formato americano nativo de DraftKings.
@@ -503,7 +510,7 @@ def build_picks(raw_data):
             "roi": market.get("roi")
         }
         
-        all_items.append(item)
+        all_items.reverse()
 
     print(f"[DEBUG] Total de eventos unificados cargados: {len(all_items)}")
     return all_items
