@@ -258,7 +258,6 @@
             box-shadow: 0 12px 28px rgba(0,0,0,0.4);
             padding: 12px;
             z-index: 99;
-            display: none;
             animation: fadeIn 0.15s ease-out;
         }
 
@@ -690,6 +689,66 @@
             padding-top: 8px;
         }
 
+        /* ESTILOS PARA EXPORTAR COPY A X & TOAST */
+        .btn-copy-x {
+            background: linear-gradient(135deg, #1da1f2 0%, #0d8ecf 100%);
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(29, 161, 242, 0.25);
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-copy-x:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(29, 161, 242, 0.4);
+            background: linear-gradient(135deg, #33abf4 0%, #1199de 100%);
+        }
+
+        .btn-copy-x:active {
+            transform: translateY(0);
+        }
+
+        #toast-x {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(15, 23, 42, 0.95);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 4px solid #1da1f2;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        #toast-x.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
         /* TABLERO PRO */
         #boardView {
             background: var(--panel);
@@ -1001,6 +1060,12 @@
     <p>No se encontraron registros activos operables bajo estos parámetros.</p>
 </div>
 
+<!-- Toast Notificación -->
+<div id="toast-x">
+  <span>✨</span>
+  <span>¡Copiado al portapapeles para X!</span>
+</div>
+
 <script>
 const PICKS = __PICKS_JSON__;
 
@@ -1305,7 +1370,6 @@ function updateMetrics(filteredPicks) {
     
     const elMercado = document.getElementById("statMercado");
     if (elMercado) {
-        // Mostramos texto claro con emojis e intenciones
         elMercado.innerText = `🚨 Fade the public (${buckets.fade.length}) • 🐋 Sharp (${buckets.sharp.length}) • ⚪ Consensus ${buckets.consenso.length}`;
     }
 
@@ -1454,6 +1518,42 @@ function applyFiltersAndSort(list) {
     });
 }
 
+// LÓGICA DE EXPORTACIÓN Y TOAST PARA X
+function copyPickForX(p) {
+    const dateStr = p.date || "Fecha TBD";
+    const timeStr = p.time || "Hora TBD";
+    const league = p.league || "General";
+    const game = p.game || "Evento";
+    const pickName = p.pick || "N/A";
+    const market = p.market ? ` (${p.market})` : "";
+    const odds = p.odds || p.cuota || "EV";
+    const stake = p.stake ? `${p.stake}u` : "1u";
+
+    const copyText = 
+`🔥 FREE PICK
+📅 ${dateStr} | ⏰ ${timeStr}
+🏟️ ${league}
+⚔️ ${game}
+🎯 Pick: ${pickName}${market}
+💵 Cuota: ${odds}
+💰 Stake: ${stake}`;
+
+    navigator.clipboard.writeText(copyText).then(() => {
+        showToastX();
+    }).catch(err => {
+        console.error('Error al copiar al portapapeles:', err);
+    });
+}
+
+function showToastX() {
+    const toast = document.getElementById('toast-x');
+    if (!toast) return;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
 function drawCards(list) {
     const box = document.getElementById("cardsView");
     if (!box) return;
@@ -1522,6 +1622,12 @@ function drawCards(list) {
                 </div>
                 ${p.freePick ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
                 ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
+
+                <button class="btn-copy-x" onclick='copyPickForX(${JSON.stringify(p)})'>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </button>
             `;
             box.appendChild(card);
         } catch (err) {
@@ -1795,3 +1901,5 @@ setupFilters();
 initEngine();
 render();
 </script>
+</body>
+</html>
