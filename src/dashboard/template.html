@@ -186,6 +186,11 @@
             border-color: var(--teal);
         }
 
+        /* Regla clave: Hace que las tarjetas marcadas ocupen 2 columnas */
+        .stat-card.card-featured {
+            grid-column: span 2;
+        }
+
         .stat-header {
             display: flex;
             align-items: center;
@@ -242,10 +247,11 @@
 
         /* POPUP TOOLTIP FLOATING FOR DETAILS */
         .stat-popup {
+            display: none;
             position: absolute;
-            top: calc(100% + 8px);
+            top: calc(100% + 6px);
             left: 0;
-            width: 320px;
+            width: 100%;
             background: var(--panel-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -779,8 +785,8 @@
 
 <div class="header">
     <div class="brand">
-        <h1>Sharp<span>ie</span></h1>
-        <div class="tagline">Inteligencia Avanzada de Mercados · Smart Money · Tracker Probabilístico</div>
+        <h1>Sharp<span>IE</span></h1>
+        <div class="tagline">Donde el dinero inteligente toma la ventaja.</div>
     </div>
     <div class="header-meta">
         <div class="timestamp-badge">
@@ -874,7 +880,7 @@
             <div class="stat-body">
                 <div class="label">TOP PICK DESTACADO</div>
                 <div class="stat-value textline" id="statMejor">Sin datos</div>
-                <div class="stat-sub">Señal con mayor ventaja de la jornada</div>
+                <div class="stat-sub">Señal con mayor ventaja al momento</div>
             </div>
             <span class="stat-chevron">▾</span>
         </div>
@@ -1300,7 +1306,7 @@ function updateMetrics(filteredPicks) {
     const elMercado = document.getElementById("statMercado");
     if (elMercado) {
         // Mostramos texto claro con emojis e intenciones
-        elMercado.innerText = `🚨 ${buckets.fade.length} 🐋 ${buckets.sharp.length} ⚪ ${buckets.consenso.length}`;
+        elMercado.innerText = `🚨 Fade the public (${buckets.fade.length}) • 🐋 Sharp (${buckets.sharp.length}) • ⚪ Consensus ${buckets.consenso.length}`;
     }
 
     // 6. Confianza del Dinero
