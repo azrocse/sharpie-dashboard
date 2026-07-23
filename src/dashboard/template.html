@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Librería Chart.js para visualización robusta de gráficos de rendimiento y distribución -->
+    <!-- Librería Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -157,256 +157,154 @@
             box-shadow: var(--shadow);
         }
 
-        /* TICKER METRICAS */
-        .ticker {
+        /* COMPACT KPI GRID FOR INDICATORS */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 16px;
-            margin-bottom: 25px;
-        }
-
-        .chip {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
-            box-shadow: var(--shadow);
-        }
-
-        .chip.amber { border-left: 3px solid var(--amber); }
-        .chip.teal { border-left: 3px solid var(--teal); }
-        .chip.gold { border-left: 3px solid var(--gold); }
-
-        .label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: .5px;
-        }
-
-        .value {
-            margin-top: 6px;
-            font-size: 24px;
-            font-weight: 700;
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        /* TARJETA INTEGRADA: PICKS ANALIZADOS + CONFIANZA DEL DINERO */
-        .market-analysis-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 25px;
-        }
-
-        .ma-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .ma-title {
-            display: flex;
-            align-items: center;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
             gap: 12px;
-        }
-
-        .ma-icon { font-size: 28px; line-height: 1; }
-
-        .ma-sub {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .ma-breakdown {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .ma-bucket {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            padding: 8px 14px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text);
-            transition: all .15s ease;
-        }
-
-        .ma-bucket:hover { border-color: var(--muted); }
-
-        .ma-bucket-count {
-            font-family: "JetBrains Mono", monospace;
-            font-weight: 700;
-        }
-
-        .ma-fade.active { background: var(--red-soft); border-color: var(--red); color: var(--red); }
-        .ma-sharp.active { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); }
-        .ma-mixed.active { background: var(--panel2); border-color: var(--muted); color: var(--muted); }
-
-        .ma-detail {
-            margin-top: 14px;
-            border-top: 1px solid var(--border);
-            padding-top: 12px;
-            display: grid;
-            gap: 8px;
-        }
-
-        .ma-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 10px;
-            background: var(--panel2);
-            border-radius: 8px;
-            font-size: 13px;
-            flex-wrap: wrap;
-        }
-
-        .ma-row-main { display: flex; flex-direction: column; gap: 2px; }
-        .ma-row-game { font-weight: 600; }
-        .ma-row-pick { color: var(--muted); font-size: 12px; }
-
-        .ma-row-nums {
-            display: flex;
-            gap: 14px;
-            font-family: "JetBrains Mono", monospace;
-            font-size: 12px;
-            text-align: right;
-        }
-
-        .ma-empty {
-            color: var(--muted);
-            font-size: 13px;
-            padding: 10px 0;
-            text-align: center;
-        }
-
-        @media (max-width: 720px) {
-            .ma-header { flex-direction: column; align-items: flex-start; }
-            .ma-row { flex-direction: column; align-items: flex-start; }
-            .ma-row-nums { text-align: left; }
-        }
-
-        /* TARJETAS DE RESUMEN INDIVIDUALES */
-        .stats-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
             margin-bottom: 25px;
         }
 
         .stat-card {
             background: var(--panel);
             border: 1px solid var(--border);
-            border-left: 3px solid var(--teal);
+            border-left: 4px solid var(--teal);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: 16px 18px;
+            padding: 12px 14px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stat-card.expandable {
+            cursor: pointer;
+        }
+
+        .stat-card.expandable:hover {
+            border-color: var(--teal);
         }
 
         .stat-header {
             display: flex;
-            align-items: flex-start;
-            gap: 14px;
+            align-items: center;
+            gap: 10px;
         }
 
-        .stat-card.expandable .stat-header { cursor: pointer; }
-
-        .stat-icon { font-size: 24px; line-height: 1; margin-top: 2px; }
+        .stat-icon { font-size: 20px; line-height: 1; }
 
         .stat-body { flex: 1; min-width: 0; }
 
-        .stat-value {
-            margin-top: 6px;
-            font-size: 24px;
-            font-weight: 700;
-            font-family: "JetBrains Mono", monospace;
+        .label {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
         }
 
-        .stat-value.breakdown {
-            font-size: 15px;
-            font-family: inherit;
-            font-weight: 700;
+        .stat-value {
+            margin-top: 2px;
+            font-size: 20px;
+            font-weight: 800;
+            font-family: "JetBrains Mono", monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .stat-value.textline {
-            font-size: 18px;
+            font-size: 12px;
             font-family: inherit;
             font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
-
         .stat-sub {
-            font-size: 12px;
+            font-size: 10px;
             color: var(--muted);
-            margin-top: 4px;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .stat-chevron {
             color: var(--muted);
-            font-size: 14px;
-            align-self: center;
+            font-size: 11px;
             transition: transform .15s ease;
         }
 
         .stat-card.open .stat-chevron { transform: rotate(180deg); }
 
-        .stat-detail {
-            margin-top: 14px;
-            border-top: 1px solid var(--border);
-            padding-top: 12px;
-            display: grid;
-            gap: 8px;
+        /* POPUP TOOLTIP FLOATING FOR DETAILS */
+        .stat-popup {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 320px;
+            background: var(--panel-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+            padding: 12px;
+            z-index: 99;
+            display: none;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        .stat-popup-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            padding: 8px 10px;
+            gap: 8px;
+            padding: 6px 8px;
             background: var(--panel2);
-            border-radius: 8px;
-            font-size: 13px;
-            flex-wrap: wrap;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 6px;
         }
 
-        .stat-row-main { display: flex; flex-direction: column; gap: 2px; }
-        .stat-row-game { font-weight: 600; }
-        .stat-row-pick { color: var(--muted); font-size: 12px; }
+        .stat-row:last-child { margin-bottom: 0; }
+
+        .stat-row-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+        .stat-row-game { font-weight: 700; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .stat-row-pick { color: var(--muted); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .stat-row-nums {
             display: flex;
-            gap: 14px;
+            gap: 8px;
             font-family: "JetBrains Mono", monospace;
-            font-size: 12px;
+            font-size: 11px;
             text-align: right;
+            white-space: nowrap;
         }
 
         .stat-empty {
             color: var(--muted);
-            font-size: 13px;
-            padding: 10px 0;
+            font-size: 11px;
+            padding: 6px 0;
             text-align: center;
-        }
-
-        @media (max-width: 720px) {
-            .stat-row { flex-direction: column; align-items: flex-start; }
-            .stat-row-nums { text-align: left; }
         }
 
         /* SECCIÓN DE GRÁFICOS ANALÍTICOS */
@@ -857,12 +755,10 @@
         }
 
         @media(max-width: 950px) {
-            .ticker { grid-template-columns: repeat(3, 1fr); }
             .analytics-section { grid-template-columns: 1fr; }
         }
         @media(max-width: 640px) {
             body { padding: 14px; }
-            .ticker { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .header { flex-direction: column; align-items: flex-start; }
             .header-meta { width: 100%; justify-content: space-between; }
             .brand h1 { font-size: 24px; }
@@ -875,12 +771,7 @@
             .grid-metrics { font-size: 11px; }
             .history-evolution-table th,
             .history-evolution-table td { font-size: 10px; padding: 2px 4px 2px 0; }
-        }
-        @media(max-width: 400px) {
-            .ticker { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .chip { padding: 10px; }
-            .value { font-size: 19px; }
-            .card-footer-tags .badge-tag { font-size: 10px; padding: 3px 6px; }
+            .stat-popup { width: 280px; }
         }
     </style>
 </head>
@@ -900,14 +791,15 @@
     </div>
 </div>
 
-<div class="stats-stack">
+<div class="stats-grid">
+    <!-- Métricas Numéricas Compactas -->
     <div class="stat-card" id="cardAnalizados" style="border-left-color: var(--teal);">
         <div class="stat-header">
             <span class="stat-icon">🎯</span>
             <div class="stat-body">
-                <div class="label">PICKS ANALIZADOS</div>
+                <div class="label">ANALIZADOS</div>
                 <div class="stat-value" id="statAnalizados">0</div>
-                <div class="stat-sub">¿Cuántas oportunidades hay hoy?</div>
+                <div class="stat-sub">Filtrados activos</div>
             </div>
         </div>
     </div>
@@ -916,76 +808,77 @@
         <div class="stat-header">
             <span class="stat-icon">🐋</span>
             <div class="stat-body">
-                <div class="label">PICKS WHALE</div>
+                <div class="label">WHALE PICKS</div>
                 <div class="stat-value" id="statWhale">0</div>
-                <div class="stat-sub">Movimientos de dinero institucional</div>
+                <div class="stat-sub">Dinero institucional</div>
             </div>
             <span class="stat-chevron">▾</span>
         </div>
-        <div class="stat-detail" id="detailWhale" style="display:none;"></div>
+        <div class="stat-popup" id="detailWhale"></div>
     </div>
 
     <div class="stat-card expandable" id="cardFree" data-target="detailFree" style="border-left-color: var(--blue);">
         <div class="stat-header">
             <span class="stat-icon">🔓</span>
             <div class="stat-body">
-                <div class="label">PICKS FREE</div>
+                <div class="label">FREE PICKS</div>
                 <div class="stat-value" id="statFree">0</div>
-                <div class="stat-sub">Listos para compartir en redes</div>
+                <div class="stat-sub">Para redes</div>
             </div>
             <span class="stat-chevron">▾</span>
         </div>
-        <div class="stat-detail" id="detailFree" style="display:none;"></div>
+        <div class="stat-popup" id="detailFree"></div>
     </div>
 
     <div class="stat-card expandable" id="cardProximos" data-target="detailProximos" style="border-left-color: var(--amber);">
         <div class="stat-header">
             <span class="stat-icon">⏳</span>
             <div class="stat-body">
-                <div class="label">PRÓXIMOS 30 MINUTOS</div>
+                <div class="label">PRÓX. 30 MIN</div>
                 <div class="stat-value" id="statProximos">0</div>
-                <div class="stat-sub">Eventos por cerrar ventana de decisión</div>
+                <div class="stat-sub">Cierre de ventana</div>
             </div>
             <span class="stat-chevron">▾</span>
         </div>
-        <div class="stat-detail" id="detailProximos" style="display:none;"></div>
-    </div>
-
-    <div class="stat-card expandable" id="cardMercado" data-target="detailMercado" style="border-left-color: var(--teal);">
-        <div class="stat-header">
-            <span class="stat-icon">📊</span>
-            <div class="stat-body">
-                <div class="label">ANÁLISIS DE MERCADO</div>
-                <div class="stat-value breakdown" id="statMercado">Fade (0) · Sharps (0) · Consenso (0)</div>
-                <div class="stat-sub">Handle vs. Bets — hacia dónde se inclina la noche</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-detail" id="detailMercado" style="display:none;"></div>
+        <div class="stat-popup" id="detailProximos"></div>
     </div>
 
     <div class="stat-card" id="cardConfianza" style="border-left-color: var(--muted);">
         <div class="stat-header">
             <span class="stat-icon">💰</span>
             <div class="stat-body">
-                <div class="label">CONFIANZA DEL DINERO</div>
+                <div class="label">CONFIANZA</div>
                 <div class="stat-value textline" id="statConfianza">—</div>
-                <div class="stat-sub">¿El dinero respalda o está dividido?</div>
+                <div class="stat-sub">Respaldo dinero</div>
             </div>
         </div>
     </div>
 
-    <div class="stat-card expandable" id="cardMejor" data-target="detailMejor" style="border-left-color: var(--gold);">
+    <!-- Tarjetas Destacadas (Ocupan 2 columnas en desktop) -->
+    <div class="stat-card expandable card-featured" id="cardMercado" data-target="detailMercado" style="border-left-color: var(--teal);">
         <div class="stat-header">
-            <span class="stat-icon">🔥</span>
+            <span class="stat-icon">📊</span>
             <div class="stat-body">
-                <div class="label">MEJOR OPORTUNIDAD</div>
-                <div class="stat-value textline" id="statMejor">Sin datos aún</div>
-                <div class="stat-sub">El pick con la señal más fuerte</div>
+                <div class="label">ANÁLISIS DE MERCADO</div>
+                <div class="stat-value textline" id="statMercado">🚨 0 Fade · 🐋 0 Sharp · ⚪ 0 Cons.</div>
+                <div class="stat-sub">Distribución de flujos</div>
             </div>
             <span class="stat-chevron">▾</span>
         </div>
-        <div class="stat-detail" id="detailMejor" style="display:none;"></div>
+        <div class="stat-popup" id="detailMercado"></div>
+    </div>
+
+    <div class="stat-card expandable card-featured" id="cardMejor" data-target="detailMejor" style="border-left-color: var(--gold);">
+        <div class="stat-header">
+            <span class="stat-icon">🔥</span>
+            <div class="stat-body">
+                <div class="label">TOP PICK DESTACADO</div>
+                <div class="stat-value textline" id="statMejor">Sin datos</div>
+                <div class="stat-sub">Señal con mayor ventaja de la jornada</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-popup" id="detailMejor"></div>
     </div>
 </div>
 
@@ -1023,7 +916,6 @@
     <select id="fDate"><option value="">📆 Todas las fechas</option></select>
     <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
     
-    <!-- Filtro de señales restaurado por completo con todas sus opciones originales -->
     <select id="fTrend">
         <option value="">📊 Todas las señales</option>
         <option value="sharp">🐋 Smart Money</option>
@@ -1033,7 +925,6 @@
         <option value="other">⚙️ Normal</option>
     </select>
     
-    <!-- Filtro de clasificación actualizado con los valores solicitados (mixto, premium, atento, sin ventaja) -->
     <select id="fClassification">
         <option value="">🏷️ Todas las clasificaciones</option>
         <option value="premium">🟢 Premium</option>
@@ -1043,7 +934,7 @@
     </select>
 
     <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
-    <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks (redes)</button>
+    <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks</button>
     <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
 
     <div style="flex:1"></div>
@@ -1236,16 +1127,18 @@ function updateThemeByTime() {
 }
 
 const themeToggle = document.getElementById("themeToggle");
-themeToggle.addEventListener("click", () => {
-    state.autoThemeEnabled = false; 
-    const doc = document.documentElement;
-    const currentTheme = doc.getAttribute("data-theme");
-    doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
-    if (edgeChartInstance && marketChartInstance) {
-        initCharts();
-        render();
-    }
-});
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+        state.autoThemeEnabled = false; 
+        const doc = document.documentElement;
+        const currentTheme = doc.getAttribute("data-theme");
+        doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
+        if (edgeChartInstance && marketChartInstance) {
+            initCharts();
+            render();
+        }
+    });
+}
 
 function isEventPending(p) {
     const status = (p.status || "").toUpperCase();
@@ -1256,7 +1149,6 @@ function isEventPending(p) {
 function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
 
-// Flecha de tendencia comparando un valor numérico contra el snapshot anterior
 function trendArrow(curr, prev) {
     if (curr == null || prev == null || isNaN(curr) || isNaN(prev)) return { arrow: '', cls: '' };
     const c = parseFloat(curr), pv = parseFloat(prev);
@@ -1265,7 +1157,6 @@ function trendArrow(curr, prev) {
     return { arrow: '—', cls: 'evo-flat' };
 }
 
-// Construye la tabla de evolución del pick: tickets %, dinero % y cuota (si viene disponible), con flechas por fila
 function buildEvolutionHtml(p) {
     if (!p.history || !Array.isArray(p.history) || p.history.length === 0) return '';
 
@@ -1307,6 +1198,7 @@ function buildEvolutionHtml(p) {
         </div>
     `;
 }
+
 function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && p.score >= 75; }
 
 function getVisualConfig(p) {
@@ -1371,51 +1263,68 @@ const statState = {
     mejor: []
 };
 
-function updateMetrics(allPicks) {
-    const active = allPicks.filter(isEventPending);
+function updateMetrics(filteredPicks) {
+    const active = filteredPicks.filter(isEventPending);
 
     // 1. Picks Analizados
-    document.getElementById("statAnalizados").innerText = active.length;
+    const elAnalizados = document.getElementById("statAnalizados");
+    if(elAnalizados) elAnalizados.innerText = active.length;
 
     // 2. Picks Whale
     const whalePicks = active.filter(p => p.whale || p.trendKey === "sharp" || calculateSmartMoney(p) >= 15);
-    document.getElementById("statWhale").innerText = whalePicks.length;
-    statState.whale = whalePicks.sort((a, b) => calculateSmartMoney(b) - calculateSmartMoney(a));
+    const elWhale = document.getElementById("statWhale");
+    if(elWhale) elWhale.innerText = whalePicks.length;
+    statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
 
     // 3. Picks Free
     const freePicks = active.filter(p => p.freePick);
-    document.getElementById("statFree").innerText = freePicks.length;
-    statState.free = freePicks.sort((a, b) => (b.score || 0) - (a.score || 0));
+    const elFree = document.getElementById("statFree");
+    if(elFree) elFree.innerText = freePicks.length;
+    statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
 
     // 4. Próximos 30 minutos
     const soonPicks = active.filter(p => {
         if (!p.iso) return false;
         const d = (new Date(p.iso) - new Date()) / 60000;
         return d >= 0 && d <= 30;
-    }).sort((a, b) => new Date(a.iso) - new Date(b.iso));
-    document.getElementById("statProximos").innerText = soonPicks.length;
+    }).sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+    const elProximos = document.getElementById("statProximos");
+    if(elProximos) elProximos.innerText = soonPicks.length;
     statState.proximos = soonPicks;
 
-    // 5. Análisis de Mercado: Fade the Public / Sharps / Consenso, segun tus umbrales de divergencia (Δ<15 sin senal)
+    // 5. Análisis de Mercado (Formato Legible)
     const buckets = { fade: [], sharp: [], consenso: [] };
     active.forEach(p => buckets[classifyMarketBucket(p)].push(p));
     statState.mercado = buckets;
-    document.getElementById("statMercado").innerText =
-        `Fade (${buckets.fade.length}) · Sharps (${buckets.sharp.length}) · Consenso (${buckets.consenso.length})`;
+    
+    const elMercado = document.getElementById("statMercado");
+    if (elMercado) {
+        // Mostramos texto claro con emojis e intenciones
+        elMercado.innerText = `🚨 ${buckets.fade.length} 🐋 ${buckets.sharp.length} ⚪ ${buckets.consenso.length}`;
+    }
 
-    // 6. Confianza del Dinero: lectura conjunta de Fade vs Sharps
+    // 6. Confianza del Dinero
     const conf = computeConfianzaDelDinero(buckets.fade.length, buckets.sharp.length);
-    document.getElementById("statConfianza").innerText = conf.text;
-    document.getElementById("cardConfianza").style.borderLeftColor = conf.color;
+    const elConfianza = document.getElementById("statConfianza");
+    if(elConfianza) elConfianza.innerText = conf.text;
+    const cardConf = document.getElementById("cardConfianza");
+    if(cardConf) cardConf.style.borderLeftColor = conf.color;
 
-    // 7. Mejor Oportunidad: mayor score entre los picks accionables, o el mayor score general si no hay ninguno
+    // 7. Mejor Oportunidad (TOP PICK DETALLADO)
     const bestBet = [...active].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
     const best = bestBet || [...active].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
     statState.mejor = best ? [best] : [];
-    document.getElementById("statMejor").innerText = best ? `${best.game} (${best.pick} · ${best.market})` : "Sin datos aún";
+    
+    const elMejor = document.getElementById("statMejor");
+    if (elMejor) {
+        if (best) {
+            elMejor.innerText = `${best.pick} (${best.game || 'Partido'})`;
+        } else {
+            elMejor.innerText = "Sin datos";
+        }
+    }
 }
 
-// Clasificacion Fade the Public / Sharps / Consenso, usando tus umbrales de divergencia (Δ<15 sin senal)
 function classifyMarketBucket(p) {
     const e = calculateEdge(p);
     if (e <= -15) return "fade";
@@ -1423,32 +1332,34 @@ function classifyMarketBucket(p) {
     return "consenso";
 }
 
-// "Dividido / Alerta Publica" cuando el publico esta cargado en varios juegos sin respaldo sharp proporcional;
-// "Consenso Sharp" cuando el dinero inteligente domina la noche; "Mercado Tranquilo" si no hay senales relevantes.
 function computeConfianzaDelDinero(fadeN, sharpN) {
-    if (fadeN === 0 && sharpN === 0) return { text: "Mercado Tranquilo", color: "var(--muted)" };
-    if (sharpN === 0 || fadeN / sharpN >= 2) return { text: "Dividido / Alerta Pública 🚨", color: "var(--red)" };
-    if (fadeN === 0 || sharpN / fadeN >= 2) return { text: "Consenso Sharp ⚡", color: "var(--teal)" };
+    if (fadeN === 0 && sharpN === 0) return { text: "Tranquilo", color: "var(--muted)" };
+    if (sharpN === 0 || fadeN / sharpN >= 2) return { text: "Alerta 🚨", color: "var(--red)" };
+    if (fadeN === 0 || sharpN / fadeN >= 2) return { text: "Consenso ⚡", color: "var(--teal)" };
     return { text: "Dividido", color: "var(--amber)" };
 }
 
 function renderStatRows(items) {
-    if (!items.length) {
-        return `<div class="stat-empty">Sin picks en esta categoría por ahora.</div>`;
+    if (!items || !items.length) {
+        return `<div class="stat-empty">Sin picks en esta categoría.</div>`;
     }
-    return items.map(p => {
+    
+    const sortedUpcoming = [...items]
+        .sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0))
+        .slice(0, 3);
+
+    return sortedUpcoming.map(p => {
         const e = calculateEdge(p);
         const cuota = p.odds || p.cuota || "—";
+        const timeStr = p.time || "--:--";
         return `
             <div class="stat-row">
                 <div class="stat-row-main">
-                    <div class="stat-row-game">${p.game}</div>
-                    <div class="stat-row-pick">${p.pick} · ${p.market}</div>
+                    <div class="stat-row-game">🕒 ${timeStr} · ${p.game || 'Evento'}</div>
+                    <div class="stat-row-pick"><b>${p.pick}</b> (${p.market || 'Mercado'}) · ${p.league || ''}</div>
                 </div>
                 <div class="stat-row-nums">
-                    <span title="Tickets">🎫 ${p.betsPct != null ? p.betsPct + '%' : '—'}</span>
-                    <span title="Dinero">💰 ${p.handlePct != null ? p.handlePct + '%' : '—'}</span>
-                    <span style="color:${e >= 0 ? 'var(--teal)' : 'var(--red)'}">Δ ${e >= 0 ? '+' : ''}${e}%</span>
+                    <span style="color:${e >= 0 ? 'var(--teal)' : 'var(--red)'}">+${e}%</span>
                     <span style="color:var(--amber)">${cuota}</span>
                 </div>
             </div>
@@ -1456,33 +1367,53 @@ function renderStatRows(items) {
     }).join("");
 }
 
+// LÓGICA DE POPUP TOOLTIP FLOATING
 document.querySelectorAll(".stat-card.expandable").forEach(card => {
-    card.querySelector(".stat-header").addEventListener("click", () => {
+    card.addEventListener("click", (e) => {
+        e.stopPropagation();
         const targetId = card.dataset.target;
         const box = document.getElementById(targetId);
-        const isOpen = card.classList.toggle("open");
+        if(!box) return;
+        
+        const isCurrentlyOpen = card.classList.contains("open");
+        
+        document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
+        document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
 
-        if (!isOpen) {
-            box.style.display = "none";
-            return;
+        if (!isCurrentlyOpen) {
+            card.classList.add("open");
+
+            let items = [];
+            let popupTitle = "Detalle de Eventos";
+            
+            if (targetId === "detailWhale") { items = statState.whale; popupTitle = "Top Whale Picks"; }
+            else if (targetId === "detailFree") { items = statState.free; popupTitle = "Top Free Picks"; }
+            else if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
+            else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
+            else if (targetId === "detailMercado") {
+                items = [...statState.mercado.fade, ...statState.mercado.sharp, ...statState.mercado.consenso];
+                popupTitle = "Picks de Mercado";
+            }
+
+            box.innerHTML = `
+                <div class="stat-popup-title">
+                    <span>${popupTitle}</span>
+                    <span>Total: ${items.length}</span>
+                </div>
+                ${renderStatRows(items)}
+            `;
+            box.style.display = "block";
         }
-
-        let items = [];
-        if (targetId === "detailWhale") items = statState.whale;
-        else if (targetId === "detailFree") items = statState.free;
-        else if (targetId === "detailProximos") items = statState.proximos;
-        else if (targetId === "detailMejor") items = statState.mejor;
-        else if (targetId === "detailMercado") {
-            items = [...statState.mercado.fade, ...statState.mercado.sharp, ...statState.mercado.consenso]
-                .sort((a, b) => Math.abs(calculateEdge(b)) - Math.abs(calculateEdge(a)));
-        }
-
-        box.innerHTML = renderStatRows(items);
-        box.style.display = "block";
     });
 });
 
+document.addEventListener("click", () => {
+    document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
+    document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
+});
+
 function applyFiltersAndSort(list) {
+    if (!Array.isArray(list)) return [];
     const text = state.search.toLowerCase().trim();
     let result = list.filter(p => {
         if (state.league && p.league !== state.league) return false;
@@ -1498,7 +1429,7 @@ function applyFiltersAndSort(list) {
         if (state.freePickOnly && !p.freePick) return false;
 
         if (text) {
-            const blob = `${p.game} ${p.pick} ${p.market} ${p.reason || ''}`.toLowerCase();
+            const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
             if (!blob.includes(text)) return false;
         }
         return true;
@@ -1530,7 +1461,6 @@ function drawCards(list) {
             const timerData = getCountdownText(p.iso);
             const cuotaDetectada = p.odds || p.cuota || null;
 
-            // Historial de evolución de bets / handle / cuota si viene provisto en el objeto
             const evolutionHtml = buildEvolutionHtml(p);
 
             const card = document.createElement("div");
@@ -1540,24 +1470,24 @@ function drawCards(list) {
             card.innerHTML = `
                 <div>
                     <div class="pcard-header">
-                        <div class="game-title">${p.game}</div>
+                        <div class="game-title">${p.game || 'Evento'}</div>
                         <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
                             ${config.label}
                         </span>
                     </div>
                     <div class="meta-row">
-                        <span>${p.league} · ${p.time || "--:--"}</span>
+                        <span>${p.league || ''} · ${p.time || "--:--"}</span>
                         <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
                             ${timerData.text}
                         </span>
                     </div>
                     
                     <div class="pick-details">
-                        <div class="pick-name">${p.pick}</div>
-                        <div class="market-type">${p.market}</div>
+                        <div class="pick-name">${p.pick || ''}</div>
+                        <div class="market-type">${p.market || ''}</div>
                         
                         <div class="grid-metrics">
-                            <div>Modelo: <b class="mono">${p.modelProb}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
+                            <div>Modelo: <b class="mono">${p.modelProb || 0}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
                             <div>Cuota: <b class="mono" style="color:var(--amber);">${cuotaDetectada || '—'}</b></div>
                             <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
                             <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
@@ -1589,7 +1519,7 @@ function drawCards(list) {
             `;
             box.appendChild(card);
         } catch (err) {
-            console.error(`❌ ERROR de renderizado en tarjeta index ${index}:`, err);
+            console.error(`❌ ERROR en tarjeta index ${index}:`, err);
         }
     });
 }
@@ -1612,13 +1542,13 @@ function drawBoard(list) {
                 </div>
             </td>
             <td>
-                <div style="font-weight:700;">${p.game}</div>
-                <div style="color:var(--muted); font-size:11px;">${p.league}</div>
+                <div style="font-weight:700;">${p.game || ''}</div>
+                <div style="color:var(--muted); font-size:11px;">${p.league || ''}</div>
             </td>
-            <td>${p.market}</td>
-            <td style="font-weight:600;">${p.pick}</td>
+            <td>${p.market || ''}</td>
+            <td style="font-weight:600;">${p.pick || ''}</td>
             <td class="mono" style="font-weight:700; color:var(--amber);">${p.odds || p.cuota || '—'}</td>
-            <td class="mono">${p.modelProb}%</td>
+            <td class="mono">${p.modelProb || 0}%</td>
             <td class="mono" style="color:var(--teal); font-weight:700;">+${calculateEdge(p)}%</td>
             <td class="mono">${calculateSmartMoney(p)}%</td>
             <td class="mono" style="font-weight:700;">${p.ev || 0}%</td>
@@ -1658,12 +1588,12 @@ function drawHistory(list) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>
-                <div style="font-weight:700;">${p.game}</div>
-                <div style="color:var(--muted); font-size:11px;">${p.league}</div>
+                <div style="font-weight:700;">${p.game || ''}</div>
+                <div style="color:var(--muted); font-size:11px;">${p.league || ''}</div>
             </td>
             <td>
-                <div style="font-weight:600;">${p.pick}</div>
-                <div style="color:var(--muted); font-size:11px;">${p.market}</div>
+                <div style="font-weight:600;">${p.pick || ''}</div>
+                <div style="color:var(--muted); font-size:11px;">${p.market || ''}</div>
             </td>
             <td>${statusBadge}</td>
             <td><b style="color:${resColor}">${resText}</b></td>
@@ -1683,13 +1613,14 @@ function render() {
         return;
     }
 
-    updateMetrics(PICKS);
+    const filteredPicks = applyFiltersAndSort(PICKS);
 
-    const activePicks = PICKS.filter(isEventPending);
-    const historyPicks = PICKS.filter(p => !isEventPending(p));
+    updateMetrics(filteredPicks);
 
-    const filteredActiveForCharts = applyFiltersAndSort(activePicks);
-    updateChartsData(filteredActiveForCharts);
+    const activePicks = filteredPicks.filter(isEventPending);
+    const historyPicks = filteredPicks.filter(p => !isEventPending(p));
+
+    updateChartsData(activePicks);
 
     document.getElementById("cardsView").style.display = "none";
     document.getElementById("boardView").style.display = "none";
@@ -1698,22 +1629,21 @@ function render() {
 
     if (state.view === "history") {
         document.getElementById("historyView").style.display = "block";
-        const filteredHistory = applyFiltersAndSort(historyPicks);
-        if (filteredHistory.length === 0) {
+        if (historyPicks.length === 0) {
             document.getElementById("emptyState").style.display = "block";
         } else {
-            drawHistory(filteredHistory);
+            drawHistory(historyPicks);
         }
     } else {
-        if (filteredActiveForCharts.length === 0) {
+        if (activePicks.length === 0) {
             document.getElementById("emptyState").style.display = "block";
         } else {
             if (state.view === "cards") {
                 document.getElementById("cardsView").style.display = "grid";
-                drawCards(filteredActiveForCharts);
+                drawCards(activePicks);
             } else if (state.view === "board") {
                 document.getElementById("boardView").style.display = "block";
-                drawBoard(filteredActiveForCharts);
+                drawBoard(activePicks);
             }
         }
     }
@@ -1730,12 +1660,12 @@ function setupFilters() {
         });
     }
 
-    function buildSelector(id, placeholder, set, textMapper) {
+    function buildSelector(id, placeholder, set) {
         const el = document.getElementById(id);
         if (!el) return;
         el.innerHTML = `<option value="">${placeholder}</option>`;
         [...set].sort().forEach(v => {
-            el.innerHTML += `<option value="${v}">${textMapper ? textMapper(v) : v}</option>`;
+            el.innerHTML += `<option value="${v}">${v}</option>`;
         });
         el.addEventListener("change", e => {
             const field = id === "fClassification" ? "classification" : id.replace("f", "").toLowerCase();
@@ -1813,9 +1743,14 @@ function setupFilters() {
         });
     }
 
-    document.getElementById("viewCards").onclick = () => { state.view = "cards"; toggleTabs("viewCards"); render(); };
-    document.getElementById("viewBoard").onclick = () => { state.view = "board"; toggleTabs("viewBoard"); render(); };
-    document.getElementById("viewHistory").onclick = () => { state.view = "history"; toggleTabs("viewHistory"); render(); };
+    const vCards = document.getElementById("viewCards");
+    if (vCards) vCards.onclick = () => { state.view = "cards"; toggleTabs("viewCards"); render(); };
+    
+    const vBoard = document.getElementById("viewBoard");
+    if (vBoard) vBoard.onclick = () => { state.view = "board"; toggleTabs("viewBoard"); render(); };
+
+    const vHist = document.getElementById("viewHistory");
+    if (vHist) vHist.onclick = () => { state.view = "history"; toggleTabs("viewHistory"); render(); };
 
     function toggleTabs(activeId) {
         ["viewCards", "viewBoard", "viewHistory"].forEach(id => {
@@ -1854,5 +1789,3 @@ setupFilters();
 initEngine();
 render();
 </script>
-</body>
-</html>
