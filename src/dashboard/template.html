@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
@@ -191,6 +190,223 @@
             font-size: 24px;
             font-weight: 700;
             font-family: "JetBrains Mono", monospace;
+        }
+
+        /* TARJETA INTEGRADA: PICKS ANALIZADOS + CONFIANZA DEL DINERO */
+        .market-analysis-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .ma-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .ma-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ma-icon { font-size: 28px; line-height: 1; }
+
+        .ma-sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .ma-breakdown {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ma-bucket {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            transition: all .15s ease;
+        }
+
+        .ma-bucket:hover { border-color: var(--muted); }
+
+        .ma-bucket-count {
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 700;
+        }
+
+        .ma-fade.active { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+        .ma-sharp.active { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); }
+        .ma-mixed.active { background: var(--panel2); border-color: var(--muted); color: var(--muted); }
+
+        .ma-detail {
+            margin-top: 14px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .ma-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px;
+            background: var(--panel2);
+            border-radius: 8px;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .ma-row-main { display: flex; flex-direction: column; gap: 2px; }
+        .ma-row-game { font-weight: 600; }
+        .ma-row-pick { color: var(--muted); font-size: 12px; }
+
+        .ma-row-nums {
+            display: flex;
+            gap: 14px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .ma-empty {
+            color: var(--muted);
+            font-size: 13px;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 720px) {
+            .ma-header { flex-direction: column; align-items: flex-start; }
+            .ma-row { flex-direction: column; align-items: flex-start; }
+            .ma-row-nums { text-align: left; }
+        }
+
+        /* TARJETAS DE RESUMEN INDIVIDUALES */
+        .stats-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--teal);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 16px 18px;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .stat-card.expandable .stat-header { cursor: pointer; }
+
+        .stat-icon { font-size: 24px; line-height: 1; margin-top: 2px; }
+
+        .stat-body { flex: 1; min-width: 0; }
+
+        .stat-value {
+            margin-top: 6px;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        .stat-value.breakdown {
+            font-size: 15px;
+            font-family: inherit;
+            font-weight: 700;
+        }
+
+        .stat-value.textline {
+            font-size: 18px;
+            font-family: inherit;
+            font-weight: 700;
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .stat-chevron {
+            color: var(--muted);
+            font-size: 14px;
+            align-self: center;
+            transition: transform .15s ease;
+        }
+
+        .stat-card.open .stat-chevron { transform: rotate(180deg); }
+
+        .stat-detail {
+            margin-top: 14px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px;
+            background: var(--panel2);
+            border-radius: 8px;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .stat-row-main { display: flex; flex-direction: column; gap: 2px; }
+        .stat-row-game { font-weight: 600; }
+        .stat-row-pick { color: var(--muted); font-size: 12px; }
+
+        .stat-row-nums {
+            display: flex;
+            gap: 14px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .stat-empty {
+            color: var(--muted);
+            font-size: 13px;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 720px) {
+            .stat-row { flex-direction: column; align-items: flex-start; }
+            .stat-row-nums { text-align: left; }
         }
 
         /* SECCIÓN DE GRÁFICOS ANALÍTICOS */
@@ -684,30 +900,92 @@
     </div>
 </div>
 
-<div class="ticker">
-    <div class="chip amber">
-        <div class="label">🎯 Picks Premium</div>
-        <div class="value" id="mPremium">0</div>
+<div class="stats-stack">
+    <div class="stat-card" id="cardAnalizados" style="border-left-color: var(--teal);">
+        <div class="stat-header">
+            <span class="stat-icon">🎯</span>
+            <div class="stat-body">
+                <div class="label">PICKS ANALIZADOS</div>
+                <div class="stat-value" id="statAnalizados">0</div>
+                <div class="stat-sub">¿Cuántas oportunidades hay hoy?</div>
+            </div>
+        </div>
     </div>
-    <div class="chip teal">
-        <div class="label">📈 Edge Promedio</div>
-        <div class="value" id="mEdge">0%</div>
+
+    <div class="stat-card expandable" id="cardWhale" data-target="detailWhale" style="border-left-color: var(--gold);">
+        <div class="stat-header">
+            <span class="stat-icon">🐋</span>
+            <div class="stat-body">
+                <div class="label">PICKS WHALE</div>
+                <div class="stat-value" id="statWhale">0</div>
+                <div class="stat-sub">Movimientos de dinero institucional</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-detail" id="detailWhale" style="display:none;"></div>
     </div>
-    <div class="chip gold">
-        <div class="label">🐋 Whale Alerts</div>
-        <div class="value" id="mSharp">0</div>
+
+    <div class="stat-card expandable" id="cardFree" data-target="detailFree" style="border-left-color: var(--blue);">
+        <div class="stat-header">
+            <span class="stat-icon">🔓</span>
+            <div class="stat-body">
+                <div class="label">PICKS FREE</div>
+                <div class="stat-value" id="statFree">0</div>
+                <div class="stat-sub">Listos para compartir en redes</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-detail" id="detailFree" style="display:none;"></div>
     </div>
-    <div class="chip">
-        <div class="label">💰 EV Positivo</div>
-        <div class="value" id="mEV">0</div>
+
+    <div class="stat-card expandable" id="cardProximos" data-target="detailProximos" style="border-left-color: var(--amber);">
+        <div class="stat-header">
+            <span class="stat-icon">⏳</span>
+            <div class="stat-body">
+                <div class="label">PRÓXIMOS 30 MINUTOS</div>
+                <div class="stat-value" id="statProximos">0</div>
+                <div class="stat-sub">Eventos por cerrar ventana de decisión</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-detail" id="detailProximos" style="display:none;"></div>
     </div>
-    <div class="chip teal">
-        <div class="label">⏱️ Próxima Hora</div>
-        <div class="value" id="mSoon">0</div>
+
+    <div class="stat-card expandable" id="cardMercado" data-target="detailMercado" style="border-left-color: var(--teal);">
+        <div class="stat-header">
+            <span class="stat-icon">📊</span>
+            <div class="stat-body">
+                <div class="label">ANÁLISIS DE MERCADO</div>
+                <div class="stat-value breakdown" id="statMercado">Fade (0) · Sharps (0) · Consenso (0)</div>
+                <div class="stat-sub">Handle vs. Bets — hacia dónde se inclina la noche</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-detail" id="detailMercado" style="display:none;"></div>
     </div>
-    <div class="chip">
-        <div class="label">🛡️ Riesgo Bajo</div>
-        <div class="value" id="mRisk">0</div>
+
+    <div class="stat-card" id="cardConfianza" style="border-left-color: var(--muted);">
+        <div class="stat-header">
+            <span class="stat-icon">💰</span>
+            <div class="stat-body">
+                <div class="label">CONFIANZA DEL DINERO</div>
+                <div class="stat-value textline" id="statConfianza">—</div>
+                <div class="stat-sub">¿El dinero respalda o está dividido?</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card expandable" id="cardMejor" data-target="detailMejor" style="border-left-color: var(--gold);">
+        <div class="stat-header">
+            <span class="stat-icon">🔥</span>
+            <div class="stat-body">
+                <div class="label">MEJOR OPORTUNIDAD</div>
+                <div class="stat-value textline" id="statMejor">Sin datos aún</div>
+                <div class="stat-sub">El pick con la señal más fuerte</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-detail" id="detailMejor" style="display:none;"></div>
     </div>
 </div>
 
@@ -1085,22 +1363,124 @@ function getCountdownText(isoString) {
     return { text: `⏳ ${timeStr}`, urgent: diff < 900000, expired: false };
 }
 
+const statState = {
+    whale: [],
+    free: [],
+    proximos: [],
+    mercado: { fade: [], sharp: [], consenso: [] },
+    mejor: []
+};
+
 function updateMetrics(allPicks) {
     const active = allPicks.filter(isEventPending);
-    document.getElementById("mPremium").innerText = active.filter(isPremium).length;
-    
-    const edges = active.map(calculateEdge);
-    document.getElementById("mEdge").innerText = `${edges.length ? (edges.reduce((a, b) => a + b, 0) / edges.length).toFixed(1) : 0}%`;
-    document.getElementById("mSharp").innerText = active.filter(p => p.whale || calculateSmartMoney(p) >= 15).length;
-    document.getElementById("mEV").innerText = active.filter(p => !p.evEstimated && Number(p.ev || 0) > 0).length;
-    
-    document.getElementById("mSoon").innerText = active.filter(p => {
+
+    // 1. Picks Analizados
+    document.getElementById("statAnalizados").innerText = active.length;
+
+    // 2. Picks Whale
+    const whalePicks = active.filter(p => p.whale || p.trendKey === "sharp" || calculateSmartMoney(p) >= 15);
+    document.getElementById("statWhale").innerText = whalePicks.length;
+    statState.whale = whalePicks.sort((a, b) => calculateSmartMoney(b) - calculateSmartMoney(a));
+
+    // 3. Picks Free
+    const freePicks = active.filter(p => p.freePick);
+    document.getElementById("statFree").innerText = freePicks.length;
+    statState.free = freePicks.sort((a, b) => (b.score || 0) - (a.score || 0));
+
+    // 4. Próximos 30 minutos
+    const soonPicks = active.filter(p => {
         if (!p.iso) return false;
         const d = (new Date(p.iso) - new Date()) / 60000;
-        return d >= 0 && d <= 60;
-    }).length;
-    document.getElementById("mRisk").innerText = active.filter(p => (p.risk || '').toUpperCase() === "LOW").length;
+        return d >= 0 && d <= 30;
+    }).sort((a, b) => new Date(a.iso) - new Date(b.iso));
+    document.getElementById("statProximos").innerText = soonPicks.length;
+    statState.proximos = soonPicks;
+
+    // 5. Análisis de Mercado: Fade the Public / Sharps / Consenso, segun tus umbrales de divergencia (Δ<15 sin senal)
+    const buckets = { fade: [], sharp: [], consenso: [] };
+    active.forEach(p => buckets[classifyMarketBucket(p)].push(p));
+    statState.mercado = buckets;
+    document.getElementById("statMercado").innerText =
+        `Fade (${buckets.fade.length}) · Sharps (${buckets.sharp.length}) · Consenso (${buckets.consenso.length})`;
+
+    // 6. Confianza del Dinero: lectura conjunta de Fade vs Sharps
+    const conf = computeConfianzaDelDinero(buckets.fade.length, buckets.sharp.length);
+    document.getElementById("statConfianza").innerText = conf.text;
+    document.getElementById("cardConfianza").style.borderLeftColor = conf.color;
+
+    // 7. Mejor Oportunidad: mayor score entre los picks accionables, o el mayor score general si no hay ninguno
+    const bestBet = [...active].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+    const best = bestBet || [...active].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+    statState.mejor = best ? [best] : [];
+    document.getElementById("statMejor").innerText = best ? `${best.game} (${best.pick} · ${best.market})` : "Sin datos aún";
 }
+
+// Clasificacion Fade the Public / Sharps / Consenso, usando tus umbrales de divergencia (Δ<15 sin senal)
+function classifyMarketBucket(p) {
+    const e = calculateEdge(p);
+    if (e <= -15) return "fade";
+    if (e >= 15) return "sharp";
+    return "consenso";
+}
+
+// "Dividido / Alerta Publica" cuando el publico esta cargado en varios juegos sin respaldo sharp proporcional;
+// "Consenso Sharp" cuando el dinero inteligente domina la noche; "Mercado Tranquilo" si no hay senales relevantes.
+function computeConfianzaDelDinero(fadeN, sharpN) {
+    if (fadeN === 0 && sharpN === 0) return { text: "Mercado Tranquilo", color: "var(--muted)" };
+    if (sharpN === 0 || fadeN / sharpN >= 2) return { text: "Dividido / Alerta Pública 🚨", color: "var(--red)" };
+    if (fadeN === 0 || sharpN / fadeN >= 2) return { text: "Consenso Sharp ⚡", color: "var(--teal)" };
+    return { text: "Dividido", color: "var(--amber)" };
+}
+
+function renderStatRows(items) {
+    if (!items.length) {
+        return `<div class="stat-empty">Sin picks en esta categoría por ahora.</div>`;
+    }
+    return items.map(p => {
+        const e = calculateEdge(p);
+        const cuota = p.odds || p.cuota || "—";
+        return `
+            <div class="stat-row">
+                <div class="stat-row-main">
+                    <div class="stat-row-game">${p.game}</div>
+                    <div class="stat-row-pick">${p.pick} · ${p.market}</div>
+                </div>
+                <div class="stat-row-nums">
+                    <span title="Tickets">🎫 ${p.betsPct != null ? p.betsPct + '%' : '—'}</span>
+                    <span title="Dinero">💰 ${p.handlePct != null ? p.handlePct + '%' : '—'}</span>
+                    <span style="color:${e >= 0 ? 'var(--teal)' : 'var(--red)'}">Δ ${e >= 0 ? '+' : ''}${e}%</span>
+                    <span style="color:var(--amber)">${cuota}</span>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+document.querySelectorAll(".stat-card.expandable").forEach(card => {
+    card.querySelector(".stat-header").addEventListener("click", () => {
+        const targetId = card.dataset.target;
+        const box = document.getElementById(targetId);
+        const isOpen = card.classList.toggle("open");
+
+        if (!isOpen) {
+            box.style.display = "none";
+            return;
+        }
+
+        let items = [];
+        if (targetId === "detailWhale") items = statState.whale;
+        else if (targetId === "detailFree") items = statState.free;
+        else if (targetId === "detailProximos") items = statState.proximos;
+        else if (targetId === "detailMejor") items = statState.mejor;
+        else if (targetId === "detailMercado") {
+            items = [...statState.mercado.fade, ...statState.mercado.sharp, ...statState.mercado.consenso]
+                .sort((a, b) => Math.abs(calculateEdge(b)) - Math.abs(calculateEdge(a)));
+        }
+
+        box.innerHTML = renderStatRows(items);
+        box.style.display = "block";
+    });
+});
 
 function applyFiltersAndSort(list) {
     const text = state.search.toLowerCase().trim();
