@@ -186,7 +186,6 @@
             border-color: var(--teal);
         }
 
-        /* Regla clave: Hace que las tarjetas marcadas ocupen 2 columnas */
         .stat-card.card-featured {
             grid-column: span 2;
         }
@@ -228,6 +227,7 @@
             text-overflow: ellipsis;
             max-width: 100%;
         }
+
         .stat-sub {
             font-size: 10px;
             color: var(--muted);
@@ -409,72 +409,6 @@
 
         .clear-btn:hover {
             color: var(--text);
-        }
-
-        .btn-advanced[aria-pressed="true"] {
-            background: rgba(96, 165, 251, 0.15);
-            border-color: var(--blue);
-            color: var(--blue);
-            font-weight: 700;
-        }
-
-        .advanced-filters {
-            display: none;
-            flex-wrap: wrap;
-            gap: 14px;
-            align-items: flex-end;
-            background: var(--panel);
-            padding: 14px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            margin-top: -13px;
-            margin-bottom: 25px;
-        }
-
-        .advanced-filters.open {
-            display: flex;
-        }
-
-        .range-field {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .range-field label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
-
-        .range-field .range-inputs {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .range-field input[type="number"] {
-            width: 72px;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 7px 8px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-family: 'JetBrains Mono', monospace;
-            outline: none;
-        }
-
-        .range-field input[type="number"]:focus {
-            border-color: var(--teal);
-        }
-
-        .range-field .range-sep {
-            color: var(--muted);
-            font-size: 12px;
         }
 
         .view-toggle {
@@ -985,7 +919,7 @@
         </div>
     </div>
 
-    <!-- Tarjetas Destacadas (Ocupan 2 columnas en desktop) -->
+    <!-- Tarjetas Destacadas -->
     <div class="stat-card expandable card-featured" id="cardMercado" data-target="detailMercado" style="border-left-color: var(--teal);">
         <div class="stat-header">
             <span class="stat-icon">📊</span>
@@ -1034,6 +968,7 @@
     </div>
 </div>
 
+<!-- TOOLBAR PRINCIPAL DE FILTROS -->
 <div class="toolbar">
     <div class="search-box">
         <input id="search" placeholder="Buscar por equipo, liga, mercado...">
@@ -1066,7 +1001,15 @@
 
     <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
     <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks</button>
-    <button class="btn-chip btn-advanced" id="advancedToggle" aria-pressed="false">🎛️ Filtros Avanzados</button>
+
+    <!-- FILTRO DE RIESGO COLOCADO ENTRE FREE PICKS Y FILTROS AVANZADOS -->
+    <select id="fRisk">
+        <option value="">🛡️ Todos los Riesgos</option>
+        <option value="LOW">🟢 Riesgo Bajo (Low)</option>
+        <option value="MEDIUM">🟡 Riesgo Medio (Medium)</option>
+        <option value="HIGH">🔴 Riesgo Alto (High)</option>
+    </select>
+
     <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
 
     <div style="flex:1"></div>
@@ -1075,57 +1018,6 @@
         <button id="viewCards" aria-pressed="true">🎯 Tarjetas</button>
         <button id="viewBoard" aria-pressed="false">📊 Tablero Pro</button>
         <button id="viewHistory" aria-pressed="false">📚 Historial</button>
-    </div>
-</div>
-
-<div class="advanced-filters" id="advancedFilters">
-    <div class="range-field">
-        <label>📐 Modelo %</label>
-        <div class="range-inputs">
-            <input type="number" id="fModelMin" placeholder="Mín" step="0.1">
-            <span class="range-sep">–</span>
-            <input type="number" id="fModelMax" placeholder="Máx" step="0.1">
-        </div>
-    </div>
-    <div class="range-field">
-        <label>📈 Edge %</label>
-        <div class="range-inputs">
-            <input type="number" id="fEdgeMin" placeholder="Mín" step="0.1">
-            <span class="range-sep">–</span>
-            <input type="number" id="fEdgeMax" placeholder="Máx" step="0.1">
-        </div>
-    </div>
-    <div class="range-field">
-        <label>🎲 Cuota</label>
-        <div class="range-inputs">
-            <input type="number" id="fCuotaMin" placeholder="Mín" step="1">
-            <span class="range-sep">–</span>
-            <input type="number" id="fCuotaMax" placeholder="Máx" step="1">
-        </div>
-    </div>
-    <div class="range-field">
-        <label>🔥 Score</label>
-        <div class="range-inputs">
-            <input type="number" id="fScoreMin" placeholder="Mín" step="1">
-            <span class="range-sep">–</span>
-            <input type="number" id="fScoreMax" placeholder="Máx" step="1">
-        </div>
-    </div>
-    <div class="range-field">
-        <label>💵 EV %</label>
-        <div class="range-inputs">
-            <input type="number" id="fEvMin" placeholder="Mín" step="0.1">
-            <span class="range-sep">–</span>
-            <input type="number" id="fEvMax" placeholder="Máx" step="0.1">
-        </div>
-    </div>
-    <div class="range-field">
-        <label>💰 Stake (u)</label>
-        <div class="range-inputs">
-            <input type="number" id="fStakeMin" placeholder="Mín" step="0.1">
-            <span class="range-sep">–</span>
-            <input type="number" id="fStakeMax" placeholder="Máx" step="0.1">
-        </div>
     </div>
 </div>
 
@@ -1181,7 +1073,7 @@
 <!-- Toast Notificación -->
 <div id="toast-x">
   <span>✨</span>
-  <span>¡Copiado al portapapeles para X!</span>
+  <span>¡Copy formateado para X copiado al portapapeles!</span>
 </div>
 
 <script>
@@ -1193,34 +1085,13 @@ const state = {
     league: "",
     trend: "",
     classification: "",
+    risk: "",
     whaleOnly: false,
     freePickOnly: false,
     sort: "time",
     view: "cards",
-    autoThemeEnabled: true,
-    modelMin: null, modelMax: null,
-    edgeMin: null, edgeMax: null,
-    cuotaMin: null, cuotaMax: null,
-    scoreMin: null, scoreMax: null,
-    evMin: null, evMax: null,
-    stakeMin: null, stakeMax: null
+    autoThemeEnabled: true 
 };
-
-// Helper: extrae un número limpio de un valor de cuota (soporta "+150", "-110", "1.85", etc.)
-function parseNumericField(val) {
-    if (val === null || val === undefined || val === "") return null;
-    const n = parseFloat(String(val).replace(",", "."));
-    return isNaN(n) ? null : n;
-}
-
-// Helper genérico: true si `value` cae dentro de [min, max], ignorando límites vacíos
-function inRange(value, min, max) {
-    const v = parseNumericField(value);
-    if (v === null) return min === null && max === null ? true : false;
-    if (min !== null && v < min) return false;
-    if (max !== null && v > max) return false;
-    return true;
-}
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
 
@@ -1503,7 +1374,7 @@ function updateMetrics(filteredPicks) {
     if(elProximos) elProximos.innerText = soonPicks.length;
     statState.proximos = soonPicks;
 
-    // 5. Análisis de Mercado (Formato Legible)
+    // 5. Análisis de Mercado
     const buckets = { fade: [], sharp: [], consenso: [] };
     active.forEach(p => buckets[classifyMarketBucket(p)].push(p));
     statState.mercado = buckets;
@@ -1520,7 +1391,7 @@ function updateMetrics(filteredPicks) {
     const cardConf = document.getElementById("cardConfianza");
     if(cardConf) cardConf.style.borderLeftColor = conf.color;
 
-    // 7. Mejor Oportunidad (TOP PICK DETALLADO)
+    // 7. Mejor Oportunidad
     const bestBet = [...active].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
     const best = bestBet || [...active].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
     statState.mejor = best ? [best] : [];
@@ -1635,15 +1506,14 @@ function applyFiltersAndSort(list) {
             if (config.key !== state.classification) return false;
         }
 
+        // EVALUACIÓN DEL FILTRO DE RIESGO
+        if (state.risk) {
+            const pRisk = (p.risk || "").toUpperCase();
+            if (pRisk !== state.risk) return false;
+        }
+
         if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
         if (state.freePickOnly && !p.freePick) return false;
-
-        if (!inRange(p.modelProb, state.modelMin, state.modelMax)) return false;
-        if (!inRange(calculateEdge(p), state.edgeMin, state.edgeMax)) return false;
-        if (!inRange(p.odds || p.cuota, state.cuotaMin, state.cuotaMax)) return false;
-        if (!inRange(p.score, state.scoreMin, state.scoreMax)) return false;
-        if (!inRange(p.ev, state.evMin, state.evMax)) return false;
-        if (!inRange(p.stake, state.stakeMin, state.stakeMax)) return false;
 
         if (text) {
             const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
@@ -1774,6 +1644,7 @@ function drawCards(list) {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
+                    Copiar para X
                 </button>
             `;
             box.appendChild(card);
@@ -1952,6 +1823,14 @@ function setupFilters() {
         });
     }
 
+    const riskEl = document.getElementById("fRisk");
+    if (riskEl) {
+        riskEl.addEventListener("change", e => {
+            state.risk = e.target.value;
+            render();
+        });
+    }
+
     const sortEl = document.getElementById("fSort");
     if (sortEl) {
         sortEl.addEventListener("change", e => {
@@ -1986,46 +1865,14 @@ function setupFilters() {
         });
     }
 
-    // Filtros de rango numérico: Modelo, Edge, Cuota, Score, EV, Stake
-    const RANGE_FIELDS = [
-        ["fModelMin", "modelMin"], ["fModelMax", "modelMax"],
-        ["fEdgeMin", "edgeMin"], ["fEdgeMax", "edgeMax"],
-        ["fCuotaMin", "cuotaMin"], ["fCuotaMax", "cuotaMax"],
-        ["fScoreMin", "scoreMin"], ["fScoreMax", "scoreMax"],
-        ["fEvMin", "evMin"], ["fEvMax", "evMax"],
-        ["fStakeMin", "stakeMin"], ["fStakeMax", "stakeMax"]
-    ];
-    RANGE_FIELDS.forEach(([id, stateKey]) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener("input", e => {
-            state[stateKey] = parseNumericField(e.target.value);
-            render();
-        });
-    });
-
-    const advancedBtn = document.getElementById("advancedToggle");
-    const advancedPanel = document.getElementById("advancedFilters");
-    if (advancedBtn && advancedPanel) {
-        advancedBtn.addEventListener("click", () => {
-            const isOpen = advancedPanel.classList.toggle("open");
-            advancedBtn.setAttribute("aria-pressed", isOpen);
-        });
-    }
-
     const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
-            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
-            RANGE_FIELDS.forEach(([, stateKey]) => { state[stateKey] = null; });
+            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
             if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
             if (searchEl) searchEl.value = "";
             if (sortEl) sortEl.value = "time";
-            ["fDate", "fLeague", "fTrend", "fClassification"].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = "";
-            });
-            RANGE_FIELDS.forEach(([id]) => {
+            ["fDate", "fLeague", "fTrend", "fClassification", "fRisk"].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = "";
             });
@@ -2051,8 +1898,6 @@ function setupFilters() {
     }
 }
 
-const alreadyExpiredIso = new Set(); // evita re-renderizar cada segundo por eventos que YA sabemos que expiraron
-
 function initEngine() {
     const clock = document.getElementById("clock");
     
@@ -2071,13 +1916,7 @@ function initEngine() {
             const data = getCountdownText(iso);
             el.innerText = data.text;
             if (data.urgent) el.classList.add("urgent"); else el.classList.remove("urgent");
-            // Solo forzamos un re-render la PRIMERA vez que este evento pasa a "iniciado".
-            // Antes esto se disparaba cada segundo mientras el evento siguiera expirado,
-            // reconstruyendo todo el DOM y cancelando cualquier selección de texto en curso.
-            if (data.expired && state.view !== "history" && !alreadyExpiredIso.has(iso)) {
-                alreadyExpiredIso.add(iso);
-                needsReRender = true;
-            }
+            if (data.expired && state.view !== "history") needsReRender = true;
         });
         
         if (needsReRender) render();
