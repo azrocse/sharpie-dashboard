@@ -33,7 +33,7 @@ class DraftKingsParser:
         games = []
         events = soup.select(".tb-se")
 
-        print("Eventos encontrados:", len(events))
+        #print("Eventos encontrados:", len(events))
 
         for event in events:
             title = event.select_one(".tb-se-title h5")

@@ -35,7 +35,7 @@ def main():
     filepath = get_latest_file()
 
     if not filepath:
-        print("[ERROR] No se encontró sharpie.json en data/analyzed")
+        #print("[ERROR] No se encontró sharpie.json en data/analyzed")
         return
 
     with open(filepath, "r", encoding="utf-8") as f:

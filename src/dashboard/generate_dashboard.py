@@ -90,19 +90,19 @@ def parse_match_datetime(raw):
 # ============================================================
 def classify_action(text):
     text = (text or "").upper()
-    if "APOSTAR" in text or "INCLINACIÓN" in text:
+    if any(k in text for k in ["APOSTAR", "INCLINACIÓN", "BET", "SHARP LEAN", "LEAN", "TAKE"]):
         return "bet"
     return "pass"
 
 def classify_trend(text):
     t = (text or "").lower()
-    if "sharp" in t or "🔥" in t or "alcista" in t or "entrando" in t:
+    if any(k in t for k in ["sharp", "🔥", "alcista", "entrando", "divergence", "whale"]):
         return "sharp"
-    if "mixto" in t or "cambio" in t or "estable" in t:
+    if any(k in t for k in ["mixto", "cambio", "estable"]):
         return "mixed"
     if "consenso" in t:
         return "consensus"
-    if "público" in t or "public" in t or "bajista" in t or "perdiendo" in t:
+    if any(k in t for k in ["público", "public", "bajista", "perdiendo", "trap"]):
         return "public"
     return "other"
 
@@ -185,7 +185,7 @@ def american_to_decimal(american_odds):
         return None
 
 # ============================================================
-# DETECCIÓN WHALE
+# DETECCIÓN WHALE / SHARP DIVERGENCE
 # ============================================================
 def detect_whale(market):
     if market.get("whale"):
@@ -195,15 +195,16 @@ def detect_whale(market):
     bets = safe_pct(market.get("bets_pct", market.get("bets")))
 
     if handle is not None and bets is not None:
-        if handle - bets >= 15:
+        diff = handle - bets
+        if diff >= 30 or (diff >= 15 and handle >= 70):
             return True
 
     blob = " ".join(
         str(market.get(k, ""))
-        for k in ["priority", "action", "reason", "market_trend", "trend"]
+        for k in ["priority", "action", "reason", "market_trend", "trend", "pattern"]
     ).lower()
 
-    return "whale" in blob or "🐋" in blob or "divergence" in blob
+    return any(k in blob for k in ["whale", "🐋", "divergence", "sharp lean"])
 
 # ============================================================
 # EVOLUCIÓN HISTÓRICA DEL PICK
@@ -229,8 +230,8 @@ def _load_league_snapshots(league_slug):
         for filename in files:
             path = os.path.join(league_folder, filename)
             try:
-                with open(path, "r", encoding="utf-8") as f:
-                    snap_data = json.load(f)
+                with open(path, "r", encoding="utf-8") as file:
+                    snap_data = json.load(file)
             except (json.JSONDecodeError, OSError):
                 continue
 
@@ -297,7 +298,6 @@ def build_pick_history(league_name, game, pick, market_name):
 # BUILD PICKS
 # ============================================================
 def build_picks(raw_data):
-    print("\n[DEBUG] Iniciando procesamiento de mercados para dashboard...")
     _snapshot_cache.clear()
 
     def extract_markets(node):
@@ -316,7 +316,6 @@ def build_picks(raw_data):
         return found
 
     markets = extract_markets(raw_data)
-    print(f"[DEBUG] Mercados encontrados: {len(markets)}")
 
     all_items = []
     counter = 0
@@ -342,12 +341,35 @@ def build_picks(raw_data):
 
         date, time, iso = parse_match_datetime(market.get("time", ""))
 
+        # 1. Extraer métricas numéricas primero
         raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets", 50)))
         raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle", 50)))
 
         bets = int(safe_float(raw_bets))
         handle = int(safe_float(raw_handle))
         divergence = abs(handle - bets)
+
+        action_text = market.get("action", "🔴 PASAR")
+        trend_text = market.get("trend", "➡️ ESTABLE")
+
+        # 2. Lógica Dinámica de Patrones
+        diff = handle - bets
+        pattern_tag = market.get("pattern", market.get("trend", ""))
+
+        if not pattern_tag or pattern_tag in ["➡️ ESTABLE", "Neutral"]:
+            if diff >= 30 and handle >= 70:
+                pattern_tag = "⚡ Sharp Lean"
+                action_text = "🟢 APOSTAR"
+            elif diff >= 45:
+                pattern_tag = "🔥 Sharp Divergence"
+            elif bets >= 65 and handle <= 40:
+                pattern_tag = "🚨 Public Trap"
+                action_text = "🔴 PASAR"
+            else:
+                pattern_tag = trend_text
+
+        if pattern_tag == "⚡ Sharp Lean" and action_text == "🔴 PASAR":
+            action_text = "🟢 APOSTAR"
 
         market_score = safe_score(market.get("market_score", 0))
         confidence = safe_score(market.get("confidence", market_score))
@@ -358,7 +380,6 @@ def build_picks(raw_data):
             1
         )
 
-        # Parsing seguro de cuotas directamente desde el objeto 'market'
         raw_odds = market.get("odds", market.get("cuota", "—"))
         odds_str = str(raw_odds).strip() if raw_odds is not None else "—"
         
@@ -387,7 +408,6 @@ def build_picks(raw_data):
             estimated_prob = 50 + int(edge / 2)
             model_prob = int(min(99, max(1, estimated_prob)))
 
-        # Conversión a Decimal para EV
         decimal_odds = american_to_decimal(odds_str) if odds_str != "—" else None
 
         raw_ev = market.get("ev")
@@ -404,8 +424,6 @@ def build_picks(raw_data):
             ev = round(edge * 0.8, 1) if edge > 0 else 0.0
             ev_is_estimated = True
 
-        action_text = market.get("action", "🔴 PASAR")
-        trend_text = market.get("trend", "➡️ ESTABLE")
         league_name = market.get("league", "Otras Ligas")
 
         item = {
@@ -416,9 +434,10 @@ def build_picks(raw_data):
             "pick": pick or "Sin selección",
             "odds": odds_str,            
             "action": action_text,
-            "actionKey": market.get("actionKey", classify_action(action_text)),
-            "trend": trend_text,
-            "trendKey": classify_trend(trend_text),
+            "actionKey": classify_action(action_text),
+            "pattern": pattern_tag,
+            "trend": pattern_tag,
+            "trendKey": classify_trend(pattern_tag),
             "priority": market.get("priority", ""),
             "priorityKey": classify_priority(market.get("priority", "")),
             "stake": safe_float(market.get("stake", 0)),
@@ -452,24 +471,18 @@ def build_picks(raw_data):
         all_items.append(item)
 
     all_items.reverse()
-    print(f"[DEBUG] Total de eventos unificados cargados: {len(all_items)}")
     return all_items
 
 # ============================================================
 # GENERATE DASHBOARD
 # ============================================================
 def generate_dashboard():
-    print("\n--- [DEBUG START: GENERATE DASHBOARD] ---")
-
     utc_now = datetime.utcnow()
     cdmx_now = utc_now - timedelta(hours=6)
     now_str = cdmx_now.strftime("%Y-%m-%d %H:%M:%S")
 
     template_path = os.path.join(CURRENT_DIR, "template.html")
     source_json_path = get_latest_file()
-
-    print(f"[DEBUG] Buscando plantilla: {template_path}")
-    print(f"[DEBUG] Archivo fuente de datos: {source_json_path}")
 
     if not os.path.exists(template_path):
         raise FileNotFoundError(f"No existe template.html: {template_path}")
@@ -480,24 +493,16 @@ def generate_dashboard():
     with open(template_path, "r", encoding="utf-8") as file:
         html_template = file.read()
 
-    with open(source_json_path, "r", encoding="utf-8") as file:
-        raw_data = json.load(file)
+    try:
+        with open(source_json_path, "r", encoding="utf-8") as file:
+            raw_data = json.load(file)
+    except json.JSONDecodeError as e:
+        print(f"[ERROR CRÍTICO] El archivo {source_json_path} está corrupto o truncado: {e}")
+        raise SystemExit("Proceso detenido para evitar generar un index.html corrupto.")
 
     all_events = build_picks(raw_data)
 
-    stats = {
-        "total": len(all_events),
-        "bets": len([x for x in all_events if x.get("actionKey") == "bet"]),
-        "whales": len([x for x in all_events if x.get("whale")]),
-        "stake": round(sum(x.get("stake", 0) for x in all_events), 2)
-    }
-
     json_data = json.dumps(all_events, ensure_ascii=False)
-
-    print("[DEBUG] Estadísticas finales del dashboard:")
-    print(f"  Total eventos: {stats['total']}")
-    print(f"  Apuestas sugeridas (bets): {stats['bets']}")
-    print(f"  Whales detectados: {stats['whales']}")
 
     html_content = html_template.replace("__GENERATED_AT__", now_str)
     html_content = html_content.replace("__PICKS_JSON__", json_data)
@@ -508,7 +513,6 @@ def generate_dashboard():
     with open(output_file, "w", encoding="utf-8") as file:
         file.write(html_content)
 
-    print(f"[DEBUG] Dashboard generado con éxito en CDMX ({now_str}): {output_file}")
     return output_file
 
 if __name__ == "__main__":

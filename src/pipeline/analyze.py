@@ -466,8 +466,8 @@ def analyze_all(parsed_files=None):
     with open(SHARPIE_PATH, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=4, ensure_ascii=False)
 
-    print(f"✓ Sharpie generado correctamente: {SHARPIE_PATH}")
-    print(f"  Mercados procesados: {total_markets} | Filtrados como ruido: {total_noise} | Publicados: {total_markets - total_noise}")
+    #print(f"✓ Sharpie generado correctamente: {SHARPIE_PATH}")
+    #print(f"  Mercados procesados: {total_markets} | Filtrados como ruido: {total_noise} | Publicados: {total_markets - total_noise}")
     return SHARPIE_PATH
 
 if __name__ == "__main__":

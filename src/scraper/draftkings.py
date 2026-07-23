@@ -85,19 +85,19 @@ class DraftKingsScraper:
             html = self.fetch_page(league_slug, date_range, page)
             events = self.extract_events(html)
 
-            print("Eventos:", len(events))
+            #print("Eventos:", len(events))
             if not events:
                 break
 
             current = set(events)
             if current == previous:
-                print("Página repetida.")
+                #print("Página repetida.")
                 break
 
             previous = current
             file = self.save_raw(html, league_name, page)
             files.append(file)
-            print("✓", os.path.basename(file))
+            #print("✓", os.path.basename(file))
 
             if len(events) < 5:
                 break
