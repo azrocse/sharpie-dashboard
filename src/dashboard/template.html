@@ -804,15 +804,6 @@
             pointer-events: auto;
         }
 
-        /* TABLERO PRO */
-        #boardView {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -821,7 +812,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1150px;
+            min-width: 800px;
             text-align: left;
         }
 
@@ -857,6 +848,14 @@
             border: 1px solid var(--border);
             padding: 20px;
             box-shadow: var(--shadow);
+        }
+
+        .history-loading {
+            padding: 40px;
+            text-align: center;
+            color: var(--teal);
+            font-weight: 700;
+            font-size: 14px;
         }
 
         /* BADGES */
@@ -1069,7 +1068,6 @@
 
     <div class="view-toggle">
         <button id="viewCards" aria-pressed="true">🎯 Tarjetas</button>
-        <button id="viewBoard" aria-pressed="false">📊 Tablero Pro</button>
         <button id="viewHistory" aria-pressed="false">📚 Historial</button>
     </div>
 </div>
@@ -1142,41 +1140,19 @@
 
 <div id="cardsView"></div>
 
-<div id="boardView" style="display:none;">
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th>Límite / Tiempo</th>
-                    <th>Evento / Liga</th>
-                    <th>Mercado</th>
-                    <th>Selección</th>
-                    <th class="mono">Cuota</th>
-                    <th class="mono">Modelo %</th>
-                    <th class="mono">Edge</th>
-                    <th class="mono">Smart Diff</th>
-                    <th class="mono">EV Real</th>
-                    <th>Señal</th>
-                    <th>Clasificación</th>
-                </tr>
-            </thead>
-            <tbody id="boardBody"></tbody>
-        </table>
-    </div>
-</div>
-
 <div id="historyView" style="display:none;">
     <h3 style="margin-bottom:16px; font-weight:700;">📚 Registro Histórico de Eventos</h3>
     <div class="table-responsive">
         <table>
             <thead>
                 <tr>
-                    <th>Evento / Liga</th>
-                    <th>Selección / Mercado</th>
-                    <th>Estado</th>
+                    <th>Fecha/hora</th>
+                    <th>Evento/tiempo</th>
+                    <th>Seleccion/mercado</th>
+                    <th>Señal</th>
+                    <th>Clasificacion</th>
+                    <th>Riesgo</th>
                     <th>Resultado</th>
-                    <th class="mono">ROI</th>
-                    <th>Fecha / Hora</th>
                 </tr>
             </thead>
             <tbody id="historyBody"></tbody>
@@ -1186,7 +1162,7 @@
 
 <div id="emptyState" style="display:none; text-align:center; padding:60px; color:var(--muted);">
     <h2 style="font-size:32px; margin-bottom:10px;">📭</h2>
-    <p>No se encontraron registros activos operables bajo estos parámetros.</p>
+    <p id="emptyStateMsg">No se encontraron registros activos operables bajo estos parámetros.</p>
 </div>
 
 <div id="toast-x">
@@ -1195,13 +1171,16 @@
 </div>
 
 <script>
-// Manejo seguro del Injected JSON
+// Manejo seguro del Injected JSON para Tarjetas Activas
 let PICKS = [];
 if (typeof __PICKS_JSON__ !== "undefined" && Array.isArray(__PICKS_JSON__)) {
     PICKS = __PICKS_JSON__;
 } else if (typeof window.picksData !== "undefined" && Array.isArray(window.picksData)) {
     PICKS = window.picksData;
 }
+
+// Almacenamiento en Caché para Histórico por Fechas { "YYYY-MM-DD": [...] }
+const historyCache = {};
 
 const state = {
     search: "",
@@ -1617,7 +1596,6 @@ document.addEventListener("click", () => {
     document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
 });
 
-// Helper para convertir cualquier formato (Americano o Decimal) a Decimal para comparar
 function parseOddsToDecimal(odds) {
     if (odds == null || odds === "") return 0;
     
@@ -1625,16 +1603,14 @@ function parseOddsToDecimal(odds) {
     let val = parseFloat(str);
     if (isNaN(val)) return 0;
 
-    // Si es formato Americano (+150, -110)
     if (str.startsWith('+') || str.startsWith('-') || val > 20 || val < -20) {
         if (val > 0) {
-            return (val / 100) + 1; // Ej: +150 -> 2.50
+            return (val / 100) + 1;
         } else if (val < 0) {
-            return (100 / Math.abs(val)) + 1; // Ej: -110 -> 1.909
+            return (100 / Math.abs(val)) + 1;
         }
     }
     
-    // Si ya es formato Decimal (ej: 1.91)
     return val;
 }
 
@@ -1661,7 +1637,7 @@ function applyFiltersAndSort(list) {
         if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
         if (state.modeloMax !== null && !isNaN(state.modeloMax) && (p.modelProb || 0) > state.modeloMax) return false;
 
-// 2. Cuota (Validación universal: Americano <-> Decimal)
+        // 2. Cuota
         const itemOddsDec = parseOddsToDecimal(p.odds || p.cuota);
         
         if (state.cuotaMin !== null) {
@@ -1773,9 +1749,6 @@ function drawCards(list) {
             card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
             card.style.borderColor = config.border;
 
-            // Escapar JSON para el atributo onclick
-            const jsonStr = JSON.stringify(p).replace(/'/g, "&#39;");
-
             card.innerHTML = `
                 <div>
                     <div class="pcard-header">
@@ -1840,56 +1813,13 @@ function drawCards(list) {
     });
 }
 
-function drawBoard(list) {
-    const tbody = document.getElementById("boardBody");
-    if (!tbody) return;
-    tbody.innerHTML = "";
-
-    list.forEach(p => {
-        const config = getVisualConfig(p);
-        const timerData = getCountdownText(p.iso);
-        const tr = document.createElement("tr");
-        
-        tr.innerHTML = `
-            <td>
-                <div class="mono" style="font-weight:700;">${p.time || "--:--"}</div>
-                <div class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}" style="font-size:10px; display:inline-block; margin-top:2px;">
-                    ${timerData.text}
-                </div>
-            </td>
-            <td>
-                <div style="font-weight:700;">${p.game || ''}</div>
-                <div style="color:var(--muted); font-size:11px;">${p.league || ''}</div>
-            </td>
-            <td>${p.market || ''}</td>
-            <td style="font-weight:600;">${p.pick || ''}</td>
-            <td class="mono" style="font-weight:700; color:var(--amber);">${p.odds || p.cuota || '—'}</td>
-            <td class="mono">${p.modelProb || 0}%</td>
-            <td class="mono" style="color:var(--teal); font-weight:700;">+${calculateEdge(p)}%</td>
-            <td class="mono">${calculateSmartMoney(p)}%</td>
-            <td class="mono" style="font-weight:700;">${p.ev || 0}%</td>
-            <td><b>${trendTag(p.trendKey)}</b></td>
-            <td>
-                <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}; font-size:10px; padding:2px 6px;">
-                    ${config.label}
-                </span>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
 function drawHistory(list) {
     const tbody = document.getElementById("historyBody");
     if (!tbody) return;
     tbody.innerHTML = "";
     
     list.forEach(p => {
-        const status = (p.status || "").toUpperCase();
-        let statusBadge = `<span style="color:var(--muted)">🏁 Finalizado</span>`;
-        if (status === "LIVE" || (p.iso && new Date(p.iso) <= new Date() && p.result === "PENDING")) {
-            statusBadge = `<span style="color:var(--teal); font-weight:700;">⏱️ En Vivo / Iniciado</span>`;
-        }
+        const config = getVisualConfig(p);
 
         let resText = "PENDIENTE"; 
         let resColor = "var(--muted)";
@@ -1899,10 +1829,13 @@ function drawHistory(list) {
         } else if (p.result === "LOST" || p.result === "LOSS") { 
             resText = "PERDIDA ❌"; 
             resColor = "var(--red)"; 
+        } else if (p.result) {
+            resText = p.result;
         }
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
+            <td style="font-size:12px;">${p.date || ''} ${p.time || ''}</td>
             <td>
                 <div style="font-weight:700;">${p.game || ''}</div>
                 <div style="color:var(--muted); font-size:11px;">${p.league || ''}</div>
@@ -1911,56 +1844,138 @@ function drawHistory(list) {
                 <div style="font-weight:600;">${p.pick || ''}</div>
                 <div style="color:var(--muted); font-size:11px;">${p.market || ''}</div>
             </td>
-            <td>${statusBadge}</td>
+            <td><b>${trendTag(p.trendKey)}</b></td>
+            <td>
+                <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}; font-size:10px; padding:2px 6px;">
+                    ${config.label}
+                </span>
+            </td>
+            <td><span class="badge-tag ${riskBadgeClass(p.risk)}">${p.risk || 'NORMAL'}</span></td>
             <td><b style="color:${resColor}">${resText}</b></td>
-            <td class="mono" style="font-weight:700;">${p.roi ? p.roi + '%' : '—'}</td>
-            <td style="font-size:12px;">${p.date || ''} ${p.time || ''}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-function render() {
-    if (!Array.isArray(PICKS) || PICKS.length === 0) {
-        document.getElementById("emptyState").style.display = "block";
-        document.getElementById("cardsView").style.display = "none";
-        document.getElementById("boardView").style.display = "none";
-        document.getElementById("historyView").style.display = "none";
-        return;
+// -------------------------------------------------------------
+// MOTOR DINÁMICO DE HISTORIAL (FETCH POR FECHAS & CACHÉ)
+// -------------------------------------------------------------
+async function fetchHistoryForDate(dateStr) {
+    if (!dateStr) return [];
+    if (historyCache[dateStr]) return historyCache[dateStr];
+
+    const path = `src/data/history/${dateStr}/sharpie.json`;
+    try {
+        const res = await fetch(path);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const items = Array.isArray(data) ? data : (data.picks || []);
+        historyCache[dateStr] = items;
+        return items;
+    } catch (err) {
+        console.warn(`⚠️ No se pudo obtener el historial para la fecha ${dateStr} (${path}):`, err.message);
+        historyCache[dateStr] = []; // Guardar vacío en caché para evitar reintento innecesario
+        return [];
+    }
+}
+
+function getRecentDatesList(days = 7) {
+    const dates = [];
+    const today = new Date();
+    for (let i = 0; i < days; i++) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        dates.push(d.toISOString().split("T")[0]);
+    }
+    return dates;
+}
+
+async function loadHistoryDataset() {
+    let rawHistory = [];
+
+    if (state.date) {
+        // Cargar sólo la fecha seleccionada
+        rawHistory = await fetchHistoryForDate(state.date);
+    } else {
+        // Cargar un rango reciente (últimos 7 días) si no hay fecha seleccionada
+        const targetDates = getRecentDatesList(7);
+        const results = await Promise.all(targetDates.map(d => fetchHistoryForDate(d)));
+        rawHistory = results.flat();
     }
 
-    const filteredPicks = applyFiltersAndSort(PICKS);
+    // Combinar también registros históricos presentes en el dataset activo (por si acaso)
+    if (Array.isArray(PICKS)) {
+        rawHistory = [...rawHistory, ...PICKS];
+    }
 
-    updateMetrics(filteredPicks);
-
-    const activePicks = filteredPicks.filter(isEventPending);
-    const historyPicks = filteredPicks.filter(p => !isEventPending(p));
-
-    updateChartsData(activePicks);
-
-    document.getElementById("cardsView").style.display = "none";
-    document.getElementById("boardView").style.display = "none";
-    document.getElementById("historyView").style.display = "none";
-    document.getElementById("emptyState").style.display = "none";
-
-    if (state.view === "history") {
-        document.getElementById("historyView").style.display = "block";
-        if (historyPicks.length === 0) {
-            document.getElementById("emptyState").style.display = "block";
-        } else {
-            drawHistory(historyPicks);
+    // Remover duplicados si un pick tiene id único
+    const seen = new Set();
+    const uniqueHistory = [];
+    rawHistory.forEach(item => {
+        const key = item.id || `${item.date}_${item.game}_${item.pick}_${item.market}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            uniqueHistory.push(item);
         }
-    } else {
+    });
+
+    return uniqueHistory;
+}
+
+async function render() {
+    const emptyState = document.getElementById("emptyState");
+    const emptyMsg = document.getElementById("emptyStateMsg");
+    const cardsView = document.getElementById("cardsView");
+    const historyView = document.getElementById("historyView");
+
+    // 1. VISTA DE TARJETAS (Picks Activos / Pendientes)
+    if (state.view === "cards") {
+        historyView.style.display = "none";
+        
+        if (!Array.isArray(PICKS) || PICKS.length === 0) {
+            emptyState.style.display = "block";
+            emptyMsg.innerText = "No se encontraron registros activos operables bajo estos parámetros.";
+            cardsView.style.display = "none";
+            return;
+        }
+
+        const filteredPicks = applyFiltersAndSort(PICKS);
+        updateMetrics(filteredPicks);
+
+        const activePicks = filteredPicks.filter(isEventPending);
+        updateChartsData(activePicks);
+
         if (activePicks.length === 0) {
-            document.getElementById("emptyState").style.display = "block";
+            emptyState.style.display = "block";
+            emptyMsg.innerText = "No se encontraron eventos activos que coincidan con los filtros.";
+            cardsView.style.display = "none";
         } else {
-            if (state.view === "cards") {
-                document.getElementById("cardsView").style.display = "grid";
-                drawCards(activePicks);
-            } else if (state.view === "board") {
-                document.getElementById("boardView").style.display = "block";
-                drawBoard(activePicks);
-            }
+            emptyState.style.display = "none";
+            cardsView.style.display = "grid";
+            drawCards(activePicks);
+        }
+    } 
+    // 2. VISTA DE HISTORIAL (Carga Dinámica e Independiente)
+    else if (state.view === "history") {
+        cardsView.style.display = "none";
+        historyView.style.display = "block";
+        emptyState.style.display = "none";
+
+        const tbody = document.getElementById("historyBody");
+        if (tbody) {
+            tbody.innerHTML = `<tr><td colspan="7" class="history-loading">⏳ Cargando datos históricos...</td></tr>`;
+        }
+
+        const fullHistoryDataset = await loadHistoryDataset();
+        const filteredHistory = applyFiltersAndSort(fullHistoryDataset);
+
+        if (filteredHistory.length === 0) {
+            if (tbody) tbody.innerHTML = "";
+            emptyState.style.display = "block";
+            emptyMsg.innerText = "No se encontraron registros históricos para los filtros aplicados.";
+        } else {
+            emptyState.style.display = "none";
+            drawHistory(filteredHistory);
         }
     }
 }
@@ -1976,11 +1991,14 @@ function setupFilters() {
         });
     }
 
+    // Agregar fechas recientes a las opciones del filtro de fecha
+    getRecentDatesList(10).forEach(d => dates.add(d));
+
     function buildSelector(id, placeholder, set) {
         const el = document.getElementById(id);
         if (!el) return;
         el.innerHTML = `<option value="">${placeholder}</option>`;
-        [...set].sort().forEach(v => {
+        [...set].sort().reverse().forEach(v => {
             el.innerHTML += `<option value="${v}">${v}</option>`;
         });
         el.addEventListener("change", e => {
@@ -2028,7 +2046,6 @@ function setupFilters() {
         }
     };
 
-    // Helper especial para leer inputs de texto/número como cuota
     const bindOddsInput = (id, stateKey) => {
         const el = document.getElementById(id);
         if (el) {
@@ -2040,7 +2057,6 @@ function setupFilters() {
         }
     };
 
-// Enlace dinámico de los 12 inputs del panel de Filtros Avanzados
     bindNumInput("fModeloMin", "modeloMin");
     bindNumInput("fModeloMax", "modeloMax");
     bindOddsInput("fCuotaMin", "cuotaMin");
@@ -2103,13 +2119,12 @@ function setupFilters() {
         });
     }
 
-const clearBtn = document.getElementById("clearBtn");
+    const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
             state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; 
             state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
             
-            // Limpiar valores numéricos del estado
             state.modeloMin = null; state.modeloMax = null;
             state.cuotaMin = null; state.cuotaMax = null;
             state.edgeMin = null; state.edgeMax = null;
@@ -2125,7 +2140,6 @@ const clearBtn = document.getElementById("clearBtn");
                 if (el) el.value = "";
             });
             
-            // Limpiar los 12 inputs del HTML
             [
                 "fModeloMin", "fModeloMax", "fCuotaMin", "fCuotaMax",
                 "fEdgeMin", "fEdgeMax", "fScoreMin", "fScoreMax",
@@ -2142,15 +2156,12 @@ const clearBtn = document.getElementById("clearBtn");
 
     const vCards = document.getElementById("viewCards");
     if (vCards) vCards.onclick = () => { state.view = "cards"; toggleTabs("viewCards"); render(); };
-    
-    const vBoard = document.getElementById("viewBoard");
-    if (vBoard) vBoard.onclick = () => { state.view = "board"; toggleTabs("viewBoard"); render(); };
 
     const vHist = document.getElementById("viewHistory");
     if (vHist) vHist.onclick = () => { state.view = "history"; toggleTabs("viewHistory"); render(); };
 
     function toggleTabs(activeId) {
-        ["viewCards", "viewBoard", "viewHistory"].forEach(id => {
+        ["viewCards", "viewHistory"].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.setAttribute("aria-pressed", id === activeId);
         });
