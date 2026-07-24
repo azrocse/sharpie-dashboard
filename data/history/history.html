@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Historial de Datos - Sharpie</title>
+
+
+    <style>
+
+        /* =========================================
+           VARIABLES
+        ========================================= */
+
+        :root {
+
+            --bg-color: #0f172a;
+
+            --card-bg: #1e293b;
+
+            --border-color: #334155;
+
+            --text-main: #f8fafc;
+
+            --text-muted: #94a3b8;
+
+            --accent-color: #38bdf8;
+
+            --green: #22c55e;
+
+            --red: #ef4444;
+
+        }
+
+
+        /* =========================================
+           BODY
+        ========================================= */
+
+        body {
+
+            font-family:
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background-color:
+                var(--bg-color);
+
+            color:
+                var(--text-main);
+
+            margin: 0;
+
+            padding: 20px;
+
+        }
+
+
+        /* =========================================
+           CONTAINER
+        ========================================= */
+
+        .container {
+
+            max-width: 1400px;
+
+            margin: 0 auto;
+
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        header {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap: 20px;
+
+            border-bottom:
+                1px solid var(--border-color);
+
+            padding-bottom: 15px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        h1 {
+
+            margin: 0;
+
+            font-size: 1.5rem;
+
+            color:
+                var(--accent-color);
+
+        }
+
+
+        /* =========================================
+           CONTROLES
+        ========================================= */
+
+        .controls {
+
+            display: flex;
+
+            gap: 10px;
+
+            align-items: center;
+
+        }
+
+
+        input[type="date"],
+        select,
+        button {
+
+            background-color:
+                var(--card-bg);
+
+            border:
+                1px solid var(--border-color);
+
+            color:
+                var(--text-main);
+
+            padding:
+                8px 12px;
+
+            border-radius:
+                6px;
+
+            outline: none;
+
+            cursor: pointer;
+
+        }
+
+
+        input[type="date"] {
+
+            color-scheme: dark;
+
+        }
+
+
+        button {
+
+            background-color:
+                #0284c7;
+
+            font-weight:
+                bold;
+
+            border:
+                none;
+
+        }
+
+
+        button:hover {
+
+            background-color:
+                #0369a1;
+
+        }
+
+
+        button:active {
+
+            transform:
+                translateY(1px);
+
+        }
+
+
+        /* =========================================
+           STATUS BAR
+        ========================================= */
+
+        .status-bar {
+
+            background:
+                var(--card-bg);
+
+            padding:
+                10px 15px;
+
+            border-radius:
+                6px;
+
+            margin-bottom:
+                20px;
+
+            font-size:
+                0.9rem;
+
+            color:
+                var(--text-muted);
+
+            border-left:
+                4px solid var(--accent-color);
+
+            overflow-wrap:
+                anywhere;
+
+        }
+
+
+        .status-bar code {
+
+            color:
+                var(--accent-color);
+
+        }
+
+
+        /* =========================================
+           CONTENIDO
+        ========================================= */
+
+        #contentArea {
+
+            width:
+                100%;
+
+        }
+
+
+        /* =========================================
+           TABLA
+        ========================================= */
+
+        .table-wrapper {
+
+            width:
+                100%;
+
+            overflow-x:
+                auto;
+
+            background-color:
+                var(--card-bg);
+
+            border:
+                1px solid var(--border-color);
+
+            border-radius:
+                8px;
+
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.2);
+
+        }
+
+
+        .data-table {
+
+            width:
+                100%;
+
+            border-collapse:
+                collapse;
+
+            font-size:
+                0.85rem;
+
+            min-width:
+                max-content;
+
+        }
+
+
+        .data-table th {
+
+            background-color:
+                #0f172a;
+
+            color:
+                var(--accent-color);
+
+            text-align:
+                left;
+
+            padding:
+                12px;
+
+            border-bottom:
+                2px solid var(--border-color);
+
+            white-space:
+                nowrap;
+
+            position:
+                sticky;
+
+            top:
+                0;
+
+            z-index:
+                2;
+
+        }
+
+
+        .data-table td {
+
+            padding:
+                10px 12px;
+
+            border-bottom:
+                1px solid var(--border-color);
+
+            color:
+                var(--text-main);
+
+            white-space:
+                nowrap;
+
+            vertical-align:
+                middle;
+
+        }
+
+
+        .data-table tbody tr:hover {
+
+            background-color:
+                rgba(56, 189, 248, 0.08);
+
+        }
+
+
+        .data-table tbody tr:last-child td {
+
+            border-bottom:
+                none;
+
+        }
+
+
+        /* =========================================
+           STATUS WIN / LOSS
+        ========================================= */
+
+        .status-win {
+
+            color:
+                var(--green) !important;
+
+            font-weight:
+                bold;
+
+        }
+
+
+        .status-loss {
+
+            color:
+                var(--red) !important;
+
+            font-weight:
+                bold;
+
+        }
+
+
+        /* =========================================
+           BADGES
+        ========================================= */
+
+        .status-badge {
+
+            display:
+                inline-block;
+
+            padding:
+                3px 8px;
+
+            border-radius:
+                5px;
+
+            font-size:
+                0.75rem;
+
+            font-weight:
+                bold;
+
+        }
+
+
+        .badge-win {
+
+            background-color:
+                rgba(34, 197, 94, 0.15);
+
+            color:
+                var(--green);
+
+        }
+
+
+        .badge-loss {
+
+            background-color:
+                rgba(239, 68, 68, 0.15);
+
+            color:
+                var(--red);
+
+        }
+
+
+        /* =========================================
+           MENSAJES
+        ========================================= */
+
+        .message-card {
+
+            background-color:
+                var(--card-bg);
+
+            border:
+                1px solid var(--border-color);
+
+            border-radius:
+                8px;
+
+            padding:
+                30px;
+
+            text-align:
+                center;
+
+        }
+
+
+        .message-card p {
+
+            margin:
+                8px 0;
+
+        }
+
+
+        .message-error {
+
+            color:
+                var(--red);
+
+        }
+
+
+        .message-muted {
+
+            color:
+                var(--text-muted);
+
+            font-size:
+                0.85rem;
+
+        }
+
+
+        /* =========================================
+           JSON INTERNO
+        ========================================= */
+
+        .json-value {
+
+            color:
+                var(--accent-color);
+
+            font-family:
+                monospace;
+
+            font-size:
+                0.8rem;
+
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (
+            max-width: 700px
+        ) {
+
+            body {
+
+                padding:
+                    10px;
+
+            }
+
+
+            header {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    stretch;
+
+            }
+
+
+            .controls {
+
+                width:
+                    100%;
+
+            }
+
+
+            input[type="date"] {
+
+                flex:
+                    1;
+
+            }
+
+
+            button {
+
+                flex:
+                    1;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header>
+
+        <h1>
+            📜 Historial de Registros Sharpie
+        </h1>
+
+
+        <div class="controls">
+
+            <input
+                type="date"
+                id="datePicker"
+            >
+
+
+            <button
+                id="loadButton"
+                onclick="cargarJSON()"
+            >
+                Cargar Fecha
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ========================================
+         STATUS
+    ========================================= -->
+
+    <div
+        class="status-bar"
+        id="status"
+    >
+
+        Esperando carga...
+
+        <strong id="currentPath">
+        </strong>
+
+    </div>
+
+
+    <!-- ========================================
+         CONTENIDO
+    ========================================= -->
+
+    <div id="contentArea">
+
+        <div class="message-card">
+
+            <p>
+                Cargando datos...
+            </p>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    /* =========================================
+       CONFIGURACIÓN
+    ========================================= */
+
+    const CONFIG = {
+
+        // Carpeta donde están las carpetas por fecha
+        basePath: 'history',
+
+        // Nombre del archivo dentro de cada fecha
+        fileName: 'sharpie.json'
+
+    };
+
+
+    /* =========================================
+       OBTENER FECHA ACTUAL
+       
+       Devuelve:
+       YYYY-MM-DD
+       
+       Ejemplo:
+       2026-07-24
+    ========================================= */
+
+    function obtenerFechaActual() {
+
+        const hoy =
+            new Date();
+
+
+        const year =
+            hoy.getFullYear();
+
+
+        const month =
+            String(
+                hoy.getMonth() + 1
+            ).padStart(
+                2,
+                '0'
+            );
+
+
+        const day =
+            String(
+                hoy.getDate()
+            ).padStart(
+                2,
+                '0'
+            );
+
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    /* =========================================
+       CARGAR JSON
+    ========================================= */
+
+    async function cargarJSON() {
+
+
+        const datePicker =
+            document.getElementById(
+                'datePicker'
+            );
+
+
+        const statusEl =
+            document.getElementById(
+                'status'
+            );
+
+
+        const contentArea =
+            document.getElementById(
+                'contentArea'
+            );
+
+
+        const currentPathEl =
+            document.getElementById(
+                'currentPath'
+            );
+
+
+        const loadButton =
+            document.getElementById(
+                'loadButton'
+            );
+
+
+        /* -------------------------------------
+           OBTENER FECHA
+        ------------------------------------- */
+
+        const dateVal =
+            datePicker.value;
+
+
+        if (!dateVal) {
+
+            alert(
+                'Por favor selecciona una fecha.'
+            );
+
+            return;
+
+        }
+
+
+        /* -------------------------------------
+           CONSTRUIR RUTA
+           
+           Ejemplo:
+           
+           data/history/2026-07-24/sharpie.json
+        ------------------------------------- */
+
+        const fileUrl =
+            `./${CONFIG.basePath}/${dateVal}/${CONFIG.fileName}`;
+
+
+        /* -------------------------------------
+           MOSTRAR RUTA
+        ------------------------------------- */
+
+        currentPathEl.innerHTML =
+            `<br><code>${fileUrl}</code>`;
+
+
+        /* -------------------------------------
+           ESTADO: CARGANDO
+        ------------------------------------- */
+
+        statusEl.style.borderLeftColor =
+            '#38bdf8';
+
+
+        statusEl.innerHTML =
+
+            `⏳ Cargando datos de <strong>${dateVal}</strong>...`;
+
+        currentPathEl.innerHTML =
+
+            `<br><code>${fileUrl}</code>`;
+
+
+        /* -------------------------------------
+           DESACTIVAR BOTÓN
+        ------------------------------------- */
+
+        loadButton.disabled =
+            true;
+
+        loadButton.textContent =
+            'Cargando...';
+
+
+        try {
+
+
+            /* ---------------------------------
+               SOLICITAR JSON
+            --------------------------------- */
+
+            const response =
+                await fetch(
+                    fileUrl
+                );
+
+
+            /* ---------------------------------
+               VERIFICAR RESPUESTA
+            --------------------------------- */
+
+            if (!response.ok) {
+
+                throw new Error(
+
+                    `HTTP ${response.status}: ` +
+
+                    `No se encontró el archivo sharpie.json ` +
+
+                    `para la fecha ${dateVal}.`
+
+                );
+
+            }
+
+
+            /* ---------------------------------
+               CONVERTIR A JSON
+            --------------------------------- */
+
+            const data =
+                await response.json();
+
+
+            /* ---------------------------------
+               ESTADO: ÉXITO
+            --------------------------------- */
+
+            statusEl.style.borderLeftColor =
+                '#22c55e';
+
+
+            statusEl.innerHTML =
+
+                `✅ Datos cargados correctamente ` +
+
+                `para <strong>${dateVal}</strong>.`;
+
+
+            currentPathEl.innerHTML =
+
+                `<br><code>${fileUrl}</code>`;
+
+
+            /* ---------------------------------
+               RENDERIZAR TABLA
+            --------------------------------- */
+
+            renderData(
+                data
+            );
+
+
+        } catch (error) {
+
+
+            /* ---------------------------------
+               MOSTRAR ERROR EN CONSOLA
+            --------------------------------- */
+
+            console.error(
+                'Error cargando JSON:',
+                error
+            );
+
+
+            /* ---------------------------------
+               ESTADO: ERROR
+            --------------------------------- */
+
+            statusEl.style.borderLeftColor =
+                '#ef4444';
+
+
+            statusEl.innerHTML =
+
+                `❌ Error al cargar los datos.`;
+
+
+            currentPathEl.innerHTML =
+
+                `<br><code>${fileUrl}</code>`;
+
+
+            /* ---------------------------------
+               MOSTRAR MENSAJE
+            --------------------------------- */
+
+            contentArea.innerHTML = `
+
+                <div class="message-card">
+
+                    <p class="message-error">
+
+                        ❌ No se pudo cargar
+                        <strong>
+                            ${dateVal}
+                        </strong>
+
+                    </p>
+
+
+                    <p class="message-muted">
+
+                        El archivo buscado es:
+
+                    </p>
+
+
+                    <p>
+
+                        <code>
+                            ${fileUrl}
+                        </code>
+
+                    </p>
+
+
+                    <p class="message-muted">
+
+                        Verifica que exista la carpeta
+                        correspondiente a la fecha y
+                        que dentro se encuentre:
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            sharpie.json
+                        </strong>
+
+                    </p>
+
+                </div>
+
+            `;
+
+
+        } finally {
+
+
+            /* ---------------------------------
+               REACTIVAR BOTÓN
+            --------------------------------- */
+
+            loadButton.disabled =
+                false;
+
+
+            loadButton.textContent =
+                'Cargar Fecha';
+
+        }
+
+    }
+
+
+    /* =========================================
+       RENDERIZAR DATOS
+       
+       Convierte el JSON en una tabla
+    ========================================= */
+
+    function renderData(data) {
+
+
+        const contentArea =
+            document.getElementById(
+                'contentArea'
+            );
+
+
+        /* -------------------------------------
+           LIMPIAR CONTENIDO ANTERIOR
+        ------------------------------------- */
+
+        contentArea.innerHTML =
+            '';
+
+
+        /* -------------------------------------
+           NORMALIZAR DATOS
+        ------------------------------------- */
+
+        let registros = [];
+
+
+        /* -------------------------------------
+           CASO 1:
+           JSON ES UN ARRAY
+           
+           [
+             {...},
+             {...}
+           ]
+        ------------------------------------- */
+
+        if (
+            Array.isArray(
+                data
+            )
+        ) {
+
+            registros =
+                data;
+
+        }
+
+
+        /* -------------------------------------
+           CASO 2:
+           JSON ES UN OBJETO
+        ------------------------------------- */
+
+        else if (
+
+            typeof data === 'object' &&
+
+            data !== null
+
+        ) {
+
+
+            /* ---------------------------------
+               BUSCAR ARRAYS DENTRO DEL OBJETO
+            --------------------------------- */
+
+            const posiblesArrays =
+
+                Object.values(
+                    data
+                ).filter(
+
+                    value =>
+                        Array.isArray(
+                            value
+                        )
+
+                );
+
+
+            /* ---------------------------------
+               SI ENCUENTRA UN ARRAY
+            --------------------------------- */
+
+            if (
+                posiblesArrays.length > 0
+            ) {
+
+                registros =
+                    posiblesArrays[0];
+
+            }
+
+
+            /* ---------------------------------
+               SI NO ENCUENTRA ARRAY
+            --------------------------------- */
+
+            else {
+
+                registros =
+                    [data];
+
+            }
+
+        }
+
+
+        /* -------------------------------------
+           VERIFICAR SI HAY DATOS
+        ------------------------------------- */
+
+        if (
+            registros.length === 0
+        ) {
+
+
+            contentArea.innerHTML = `
+
+                <div class="message-card">
+
+                    <p>
+                        No hay registros
+                        para mostrar.
+                    </p>
+
+                </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        /* -------------------------------------
+           OBTENER COLUMNAS
+           
+           Combina todas las propiedades
+           encontradas en los registros.
+        ------------------------------------- */
+
+        const columnas = [
+
+            ...new Set(
+
+                registros.flatMap(
+
+                    registro =>
+
+                        typeof registro === 'object' &&
+
+                        registro !== null
+
+                            ? Object.keys(
+                                registro
+                            )
+
+                            : []
+
+                )
+
+            )
+
+        ];
+
+
+        /* -------------------------------------
+           CREAR CONTENEDOR
+        ------------------------------------- */
+
+        const tableWrapper =
+            document.createElement(
+                'div'
+            );
+
+
+        tableWrapper.className =
+            'table-wrapper';
+
+
+        /* -------------------------------------
+           CREAR TABLA
+        ------------------------------------- */
+
+        const table =
+            document.createElement(
+                'table'
+            );
+
+
+        table.className =
+            'data-table';
+
+
+        /* =====================================
+           CREAR CABECERA
+        ===================================== */
+
+        const thead =
+            document.createElement(
+                'thead'
+            );
+
+
+        const headerRow =
+            document.createElement(
+                'tr'
+            );
+
+
+        columnas.forEach(
+
+            columna => {
+
+
+                const th =
+                    document.createElement(
+                        'th'
+                    );
+
+
+                th.textContent =
+                    columna;
+
+
+                headerRow.appendChild(
+                    th
+                );
+
+
+            }
+
+        );
+
+
+        thead.appendChild(
+            headerRow
+        );
+
+
+        /* =====================================
+           CREAR CUERPO
+        ===================================== */
+
+        const tbody =
+            document.createElement(
+                'tbody'
+            );
+
+
+        /* -------------------------------------
+           RECORRER REGISTROS
+        ------------------------------------- */
+
+        registros.forEach(
+
+            registro => {
+
+
+                const tr =
+                    document.createElement(
+                        'tr'
+                    );
+
+
+                /* ---------------------------------
+                   RECORRER COLUMNAS
+                --------------------------------- */
+
+                columnas.forEach(
+
+                    columna => {
+
+
+                        const td =
+                            document.createElement(
+                                'td'
+                            );
+
+
+                        let valor =
+
+                            registro &&
+                            typeof registro === 'object'
+
+                                ? registro[columna]
+
+                                : '';
+
+
+                        /* -------------------------
+                           VALORES NULOS
+                        ------------------------- */
+
+                        if (
+
+                            valor === undefined ||
+
+                            valor === null ||
+
+                            valor === ''
+
+                        ) {
+
+                            valor =
+                                '—';
+
+                        }
+
+
+                        /* -------------------------
+                           OBJETOS Y ARRAYS
+                        ------------------------- */
+
+                        if (
+
+                            typeof valor === 'object' &&
+
+                            valor !== null
+
+                        ) {
+
+
+                            valor =
+
+                                JSON.stringify(
+                                    valor
+                                );
+
+
+                            td.className =
+                                'json-value';
+
+                        }
+
+
+                        /* -------------------------
+                           MOSTRAR VALOR
+                        ------------------------- */
+
+                        td.textContent =
+                            valor;
+
+
+                        /* -------------------------
+                           STATUS
+                        ------------------------- */
+
+                        if (
+
+                            columna.toLowerCase()
+                                === 'status'
+
+                        ) {
+
+
+                            const status =
+
+                                String(
+                                    valor
+                                ).toUpperCase();
+
+
+                            if (
+
+                                status === 'WIN' ||
+
+                                status === 'WON'
+
+                            ) {
+
+
+                                td.classList.add(
+                                    'status-win'
+                                );
+
+
+                            }
+
+
+                            else if (
+
+                                status === 'LOSS' ||
+
+                                status === 'LOST'
+
+                            ) {
+
+
+                                td.classList.add(
+                                    'status-loss'
+                                );
+
+                            }
+
+                        }
+
+
+                        /* -------------------------
+                           AGREGAR CELDA
+                        ------------------------- */
+
+                        tr.appendChild(
+                            td
+                        );
+
+
+                    }
+
+                );
+
+
+                /* ---------------------------------
+                   AGREGAR FILA
+                --------------------------------- */
+
+                tbody.appendChild(
+                    tr
+                );
+
+
+            }
+
+        );
+
+
+        /* =====================================
+           ARMAR TABLA
+        ===================================== */
+
+        table.appendChild(
+            thead
+        );
+
+
+        table.appendChild(
+            tbody
+        );
+
+
+        tableWrapper.appendChild(
+            table
+        );
+
+
+        /* =====================================
+           MOSTRAR TABLA
+        ===================================== */
+
+        contentArea.appendChild(
+            tableWrapper
+        );
+
+    }
+
+
+    /* =========================================
+       INICIALIZACIÓN AUTOMÁTICA
+    ========================================= */
+
+    window.addEventListener(
+
+        'DOMContentLoaded',
+
+        () => {
+
+
+            /* -------------------------------
+               OBTENER DATEPICKER
+            ------------------------------- */
+
+            const datePicker =
+
+                document.getElementById(
+                    'datePicker'
+                );
+
+
+            /* -------------------------------
+               FECHA ACTUAL
+            ------------------------------- */
+
+            const fechaActual =
+
+                obtenerFechaActual();
+
+
+            /* -------------------------------
+               ASIGNAR FECHA ACTUAL
+            ------------------------------- */
+
+            datePicker.value =
+                fechaActual;
+
+
+            /* -------------------------------
+               CARGAR AUTOMÁTICAMENTE
+            ------------------------------- */
+
+            cargarJSON();
+
+        }
+
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

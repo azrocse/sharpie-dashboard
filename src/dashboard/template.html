@@ -1799,7 +1799,7 @@ function drawCards(list) {
                 ${p.freePick ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
                 ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
 
-                <button class="btn-copy-x" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&apos;")})'>
+                <button class="btn-copy-x" id="btn-copy-${index}">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
@@ -1807,6 +1807,13 @@ function drawCards(list) {
                 </button>
             `;
             box.appendChild(card);
+
+            // Listener directo para evitar romper sintaxis JSON en atributo inline
+            const copyBtn = card.querySelector(`#btn-copy-${index}`);
+            if (copyBtn) {
+                copyBtn.addEventListener("click", () => copyPickForX(p));
+            }
+
         } catch (err) {
             console.error(`❌ ERROR en tarjeta index ${index}:`, err);
         }
