@@ -1,2231 +1,3961 @@
-<!DOCTYPE html>
-<html lang="es" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharpie · Panel de Señales de Alta Precisión</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Librería Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        /* SELECCIÓN Y COPIADO LIBRE DE TEXTO */
-        *, *::before, *::after {
-            -webkit-user-select: text !important;
-            -moz-user-select: text !important;
-            -ms-user-select: text !important;
-            user-select: text !important;
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.2s, border-color 0.2s;
-        }
-
-        :root[data-theme="light"] {
-            --bg: #f8fafc;
-            --panel: #ffffff;
-            --panel-card: #ffffff;
-            --panel2: #f1f5f9;
-            --border: #e2e8f0;
-            --text: #0f172a;
-            --muted: #64748b;
-            
-            --amber: #d97706;
-            --amber-soft: rgba(217, 119, 6, 0.06);
-            --teal: #0d9488;
-            --teal-soft: rgba(13, 148, 136, 0.06);
-            --red: #e11d48;
-            --red-soft: rgba(225, 29, 72, 0.04);
-            --blue: #2563eb;
-            --blue-soft: rgba(37, 99, 235, 0.06);
-            --gold: #d97706;
-            
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-premium: 0 10px 30px -5px rgba(13, 148, 136, 0.15);
-            --radius: 12px;
-        }
-
-        :root[data-theme="dark"] {
-            --bg: #0b1329;
-            --panel: #111c40;
-            --panel-card: #14224c;
-            --panel2: #1e295d;
-            --border: #243572;
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            
-            --amber: #fbbf24;
-            --amber-soft: rgba(251, 191, 36, 0.06);
-            --teal: #2dd4bf;
-            --teal-soft: rgba(45, 212, 191, 0.06);
-            --red: #fb7185;
-            --red-soft: rgba(251, 113, 133, 0.04);
-            --blue: #60a5fa;
-            --blue-soft: rgba(96, 165, 251, 0.08);
-            --gold: #fbbf24;
-            
-            --shadow: 0 10px 25px rgba(0,0,0,.3);
-            --shadow-premium: 0 10px 30px -5px rgba(45, 212, 191, 0.2);
-            --radius: 12px;
-        }
-
-        html {
-            overflow-x: hidden;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: "Plus Jakarta Sans", sans-serif;
-            padding: 24px;
-            min-height: 100vh;
-            overflow-x: hidden;
-            max-width: 100vw;
-        }
-
-        .mono {
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        /* HEADER */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 25px;
-        }
-
-        .brand h1 {
-            font-size: 30px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .brand h1 span {
-            color: var(--teal);
-        }
-
-        .tagline {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 4px;
-        }
-
-        .header-meta {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .timestamp-badge {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 8px 14px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            box-shadow: var(--shadow);
-        }
-
-        #clock {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--teal);
-        }
-
-        .updated {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .theme-toggle {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            color: var(--text);
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            box-shadow: var(--shadow);
-        }
-
-        /* KPI GRID */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--teal);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 12px 14px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .stat-card.expandable {
-            cursor: pointer;
-        }
-
-        .stat-card.expandable:hover {
-            border-color: var(--teal);
-        }
-
-        .stat-card.card-featured {
-            grid-column: span 2;
-        }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .stat-icon { font-size: 20px; line-height: 1; }
-
-        .stat-body { flex: 1; min-width: 0; }
-
-        .label {
-            font-size: 10px;
-            font-weight: 800;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: .5px;
-        }
-
-        .stat-value {
-            margin-top: 2px;
-            font-size: 20px;
-            font-weight: 800;
-            font-family: "JetBrains Mono", monospace;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .stat-value.textline {
-            font-size: 12px;
-            font-family: inherit;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-
-        .stat-sub {
-            font-size: 10px;
-            color: var(--muted);
-            margin-top: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .stat-chevron {
-            color: var(--muted);
-            font-size: 11px;
-            transition: transform .15s ease;
-        }
-
-        .stat-card.open .stat-chevron { transform: rotate(180deg); }
-
-        .stat-popup {
-            display: none;
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            width: 100%;
-            background: var(--panel-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.4);
-            padding: 12px;
-            z-index: 99;
-            animation: fadeIn 0.15s ease-out;
-        }
-
-        .stat-popup-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            border-bottom: 1px dashed var(--border);
-            padding-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 8px;
-            background: var(--panel2);
-            border-radius: 6px;
-            font-size: 12px;
-            margin-bottom: 6px;
-        }
-
-        .stat-row:last-child { margin-bottom: 0; }
-
-        .stat-row-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
-        .stat-row-game { font-weight: 700; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .stat-row-pick { color: var(--muted); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .stat-row-nums {
-            display: flex;
-            gap: 8px;
-            font-family: "JetBrains Mono", monospace;
-            font-size: 11px;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .stat-empty {
-            color: var(--muted);
-            font-size: 11px;
-            padding: 6px 0;
-            text-align: center;
-        }
-
-        /* GRÁFICOS */
-        .analytics-section {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .chart-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chart-header {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 220px;
-        }
-
-        /* TOOLBAR */
-        .toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-            background: var(--panel);
-            padding: 14px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            margin-bottom: 25px;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 12px;
-        }
-
-        .search-box input {
-            width: 100%;
-            background: none;
-            border: none;
-            outline: none;
-            color: var(--text);
-            font-size: 14px;
-        }
-
-        select, input[type="number"], input[type="text"], .btn-chip, .btn-adv-toggle, .clear-btn {
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            outline: none;
-        }
-
-        input[type="number"] {
-            cursor: text;
-        }
-
-        select:focus, input[type="number"]:focus {
-            border-color: var(--teal);
-        }
-
-        .btn-chip[aria-pressed="true"], .btn-adv-toggle[aria-pressed="true"] {
-            background: rgba(251, 191, 36, 0.15);
-            border-color: var(--gold);
-            color: var(--gold);
-            font-weight: 700;
-        }
-
-        .clear-btn {
-            background: transparent;
-            border-color: transparent;
-            color: var(--muted);
-        }
-
-        .clear-btn:hover {
-            color: var(--text);
-        }
-
-        .view-toggle {
-            display: flex;
-            gap: 4px;
-            background: var(--panel2);
-            padding: 4px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .view-toggle button {
-            border: none;
-            background: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .view-toggle button[aria-pressed="true"] {
-            background: var(--panel);
-            color: var(--text);
-            box-shadow: var(--shadow);
-        }
-
-        /* FILTROS AVANZADOS NUMÉRICOS */
-        .adv-filters-panel {
-            width: 100%;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-top: -12px;
-            margin-bottom: 25px;
-            display: none;
-            box-shadow: var(--shadow);
-        }
-
-        .adv-filters-panel.show {
-            display: block;
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        .adv-filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
-
-        .adv-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .adv-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-        }
-
-        .adv-inputs {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .adv-inputs input {
-            width: 100%;
-        }
-
-        /* CARDS */
-        #cardsView {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
-            gap: 20px;
-        }
-
-        .pcard {
-            background: var(--panel-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-        }
-
-        .pcard.whale-alert {
-            box-shadow: var(--shadow), 0 0 0 3px var(--blue) !important;
-            border-color: var(--blue) !important;
-        }
-
-        .pcard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 4px;
-        }
-
-        .game-title {
-            font-size: 15px;
-            font-weight: 700;
-            line-height: 1.4;
-        }
-
-        .meta-row {
-            color: var(--muted);
-            font-size: 12px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .countdown-timer {
-            font-family: "JetBrains Mono", monospace;
-            font-weight: 700;
-            font-size: 12px;
-            background: var(--panel2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid var(--border);
-        }
-        
-        .countdown-timer.urgent {
-            color: var(--red);
-            background: var(--red-soft);
-            border-color: var(--red);
-            animation: pulse 1.5s infinite alternate;
-        }
-
-        .pick-details {
-            background: var(--panel);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            margin-bottom: 12px;
-        }
-
-        .pick-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .market-type {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .grid-metrics {
-            margin-top: 10px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            font-size: 12px;
-        }
-
-        .volume-container {
-            margin: 12px 0;
-        }
-
-        .volume-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 4px;
-        }
-
-        .volume-bar-wrapper {
-            width: 100%;
-            height: 6px;
-            background: var(--panel2);
-            border-radius: 3px;
-            overflow: hidden;
-            display: flex;
-        }
-
-        .v-bets { background: #3b82f6; height: 100%; }
-        .v-handle { background: #10b981; height: 100%; }
-
-        .history-evolution-box {
-            margin-top: 8px;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 8px 10px;
-            font-size: 11px;
-            max-width: 100%;
-            overflow-x: auto;
-        }
-
-        .history-evolution-title {
-            color: var(--muted);
-            font-weight: 700;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            font-size: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        .history-evolution-table {
-            width: 100%;
-            min-width: 0;
-            border-collapse: collapse;
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        .history-evolution-table th {
-            text-align: left;
-            color: var(--muted);
-            font-weight: 600;
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            padding: 2px 6px 4px 0;
-            white-space: nowrap;
-        }
-
-        .history-evolution-table th:not(:first-child),
-        .history-evolution-table td:not(:first-child) {
-            text-align: right;
-        }
-
-        .history-evolution-table td {
-            padding: 3px 6px 3px 0;
-            color: var(--text);
-            font-size: 11px;
-            white-space: nowrap;
-        }
-
-        .history-evolution-table tbody tr:not(:last-child) td {
-            border-bottom: 1px dashed var(--border);
-        }
-
-        .history-evolution-table tbody tr:last-child td {
-            font-weight: 700;
-            color: var(--gold);
-        }
-
-        .evo-up { color: var(--teal); }
-        .evo-down { color: var(--red); }
-        .evo-flat { color: var(--muted); }
-
-        .whale-banner {
-            font-size: 11px;
-            color: var(--blue);
-            margin-top: 6px;
-            font-weight: 700;
-        }
-
-        .card-footer-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: auto;
-        }
-
-        .badge-tag {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            background: var(--panel2);
-            border: 1px solid var(--border);
-        }
-
-        .badge-tag.good {
-            background: var(--teal-soft);
-            border-color: var(--teal);
-            color: var(--teal);
-        }
-
-        .badge-tag.warn {
-            background: var(--amber-soft);
-            border-color: var(--amber);
-            color: var(--amber);
-        }
-
-        .badge-tag.bad {
-            background: var(--red-soft);
-            border-color: var(--red);
-            color: var(--red);
-        }
-
-        .badge-tag.neutral {
-            color: var(--muted);
-        }
-
-        .estimated-marker {
-            opacity: 0.7;
-            font-style: italic;
-            font-size: 10px;
-            color: var(--muted);
-        }
-
-        .free-pick-banner {
-            margin-top: 8px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            background: var(--teal-soft);
-            border: 1px dashed var(--teal);
-            color: var(--teal);
-            font-size: 11px;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .reasoning-text {
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--muted);
-            line-height: 1.4;
-            border-top: 1px dashed var(--border);
-            padding-top: 8px;
-        }
-
-        /* EXPORTAR COPY A X & TOAST */
-        .btn-copy-x {
-            background: linear-gradient(135deg, #1da1f2 0%, #0d8ecf 100%);
-            color: #fff;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            box-shadow: 0 4px 12px rgba(29, 161, 242, 0.25);
-            transition: all 0.2s ease;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .btn-copy-x:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(29, 161, 242, 0.4);
-            background: linear-gradient(135deg, #33abf4 0%, #1199de 100%);
-        }
-
-        .btn-copy-x:active {
-            transform: translateY(0);
-        }
-
-        #toast-x {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: rgba(15, 23, 42, 0.95);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-left: 4px solid #1da1f2;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 9999;
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        #toast-x.show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 800px;
-            text-align: left;
-        }
-
-        th {
-            background: var(--panel2);
-            padding: 12px 16px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--muted);
-            border-bottom: 1px solid var(--border);
-        }
-
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            font-size: 13px;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: var(--panel-card);
-        }
-
-        /* HISTORIAL */
-        #historyView {
-            background: var(--panel);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            padding: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .history-loading {
-            padding: 40px;
-            text-align: center;
-            color: var(--teal);
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        /* BADGES */
-        .badge-action {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 800;
-            border: 1px solid transparent;
-            display: inline-block;
-        }
-
-        @keyframes pulse {
-            from { opacity: 1; }
-            to { opacity: 0.5; }
-        }
-
-        @media(max-width: 950px) {
-            .analytics-section { grid-template-columns: 1fr; }
-        }
-        @media(max-width: 640px) {
-            body { padding: 14px; }
-            .header { flex-direction: column; align-items: flex-start; }
-            .header-meta { width: 100%; justify-content: space-between; }
-            .brand h1 { font-size: 24px; }
-            .toolbar { padding: 10px; }
-            .search-box { min-width: 100%; }
-            .view-toggle { width: 100%; justify-content: space-between; }
-            .view-toggle button { flex: 1; }
-            #cardsView { gap: 14px; }
-            .pcard { padding: 14px; }
-            .grid-metrics { font-size: 11px; }
-            .history-evolution-table th,
-            .history-evolution-table td { font-size: 10px; padding: 2px 4px 2px 0; }
-            .stat-popup { width: 280px; }
-        }
-    </style>
-</head>
-<body>
-
-<div class="header">
-    <div class="brand">
-        <h1>Sharp<span>IE</span></h1>
-        <div class="tagline">Donde el dinero inteligente toma la ventaja.</div>
-    </div>
-    <div class="header-meta">
-        <div class="timestamp-badge">
-            <div id="clock" class="mono">--:--:--</div>
-            <div class="updated">Generado (CDMX): __GENERATED_AT__</div>
-        </div>
-        <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
-    </div>
-</div>
-
-<div class="stats-grid">
-    <div class="stat-card" id="cardAnalizados" style="border-left-color: var(--teal);">
-        <div class="stat-header">
-            <span class="stat-icon">🎯</span>
-            <div class="stat-body">
-                <div class="label">ANALIZADOS</div>
-                <div class="stat-value" id="statAnalizados">0</div>
-                <div class="stat-sub">Filtrados activos</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="stat-card expandable" id="cardWhale" data-target="detailWhale" style="border-left-color: var(--gold);">
-        <div class="stat-header">
-            <span class="stat-icon">🐋</span>
-            <div class="stat-body">
-                <div class="label">WHALE PICKS</div>
-                <div class="stat-value" id="statWhale">0</div>
-                <div class="stat-sub">Dinero institucional</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailWhale"></div>
-    </div>
-
-    <div class="stat-card expandable" id="cardFree" data-target="detailFree" style="border-left-color: var(--blue);">
-        <div class="stat-header">
-            <span class="stat-icon">🔓</span>
-            <div class="stat-body">
-                <div class="label">FREE PICKS</div>
-                <div class="stat-value" id="statFree">0</div>
-                <div class="stat-sub">Para redes</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailFree"></div>
-    </div>
-
-    <div class="stat-card expandable" id="cardProximos" data-target="detailProximos" style="border-left-color: var(--amber);">
-        <div class="stat-header">
-            <span class="stat-icon">⏳</span>
-            <div class="stat-body">
-                <div class="label">PRÓX. 30 MIN</div>
-                <div class="stat-value" id="statProximos">0</div>
-                <div class="stat-sub">Cierre de ventana</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailProximos"></div>
-    </div>
-
-    <div class="stat-card" id="cardConfianza" style="border-left-color: var(--muted);">
-        <div class="stat-header">
-            <span class="stat-icon">💰</span>
-            <div class="stat-body">
-                <div class="label">CONFIANZA</div>
-                <div class="stat-value textline" id="statConfianza">—</div>
-                <div class="stat-sub">Respaldo dinero</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="stat-card expandable card-featured" id="cardMercado" data-target="detailMercado" style="border-left-color: var(--teal);">
-        <div class="stat-header">
-            <span class="stat-icon">📊</span>
-            <div class="stat-body">
-                <div class="label">ANÁLISIS DE MERCADO</div>
-                <div class="stat-value textline" id="statMercado">🚨 0 Fade · 🐋 0 Sharp · ⚪ 0 Cons.</div>
-                <div class="stat-sub">Distribución de flujos</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailMercado"></div>
-    </div>
-
-    <div class="stat-card expandable card-featured" id="cardMejor" data-target="detailMejor" style="border-left-color: var(--gold);">
-        <div class="stat-header">
-            <span class="stat-icon">🔥</span>
-            <div class="stat-body">
-                <div class="label">TOP PICK DESTACADO</div>
-                <div class="stat-value textline" id="statMejor">Sin datos</div>
-                <div class="stat-sub">Señal con mayor ventaja al momento</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailMejor"></div>
-    </div>
-</div>
-
-<div class="analytics-section">
-    <div class="chart-card">
-        <div class="chart-header">
-            <span>📈 Distribución de Edge por Encuentro</span>
-            <span class="mono" style="font-size:11px; color:var(--muted);">Edge vs Score del Modelo</span>
-        </div>
-        <div class="chart-container">
-            <canvas id="edgeScatterChart"></canvas>
-        </div>
-    </div>
-    <div class="chart-card">
-        <div class="chart-header">
-            <span>🎯 Tendencias de Mercado</span>
-            <span class="mono" style="font-size:11px; color:var(--muted);">Smart vs Público</span>
-        </div>
-        <div class="chart-container">
-            <canvas id="marketDoughnutChart"></canvas>
-        </div>
-    </div>
-</div>
-
-<div class="toolbar">
-    <div class="search-box">
-        <input id="search" placeholder="Buscar por equipo, liga, mercado...">
-    </div>
-    <select id="fSort">
-        <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
-        <option value="recommended">⭐ Ordenar por: Recomendados</option>
-        <option value="score">🔥 Ordenar por: Mayor Score</option>
-        <option value="edge">📈 Ordenar por: Mayor Edge</option>
-    </select>
-    <select id="fDate"><option value="">📆 Todas las fechas</option></select>
-    <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
-    
-    <select id="fTrend">
-        <option value="">📊 Todas las señales</option>
-        <option value="sharp">🐋 Smart Money</option>
-        <option value="mixed">🟡 Flujo Mixto</option>
-        <option value="consensus">⚪ Consenso</option>
-        <option value="public">🚨 Public Heavy</option>
-        <option value="other">⚙️ Normal</option>
-    </select>
-    
-    <select id="fClassification">
-        <option value="">🏷️ Todas las clasificaciones</option>
-        <option value="premium">🟢 Premium</option>
-        <option value="mixed">🟨 Mixto</option>
-        <option value="atento">⚡ Atento</option>
-        <option value="sin_ventaja">⚪ Sin Ventaja</option>
-    </select>
-
-    <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
-    <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks</button>
-
-    <select id="fRisk">
-        <option value="">🛡️ Todos los Riesgos</option>
-        <option value="LOW">🟢 Riesgo Bajo (Low)</option>
-        <option value="MEDIUM">🟡 Riesgo Medio (Medium)</option>
-        <option value="HIGH">🔴 Riesgo Alto (High)</option>
-    </select>
-
-    <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
-
-    <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
-
-    <div style="flex:1"></div>
-
-    <div class="view-toggle">
-        <button id="viewCards" aria-pressed="true">🎯 Tarjetas</button>
-        <button id="viewHistory" aria-pressed="false">📚 Historial</button>
-    </div>
-</div>
-
-<div class="adv-filters-panel" id="advFiltersPanel">
-    <div class="adv-filters-grid">
-        
-        <!-- 1. Modelo (%) -->
-        <div class="adv-group">
-            <label class="adv-label">Modelo Min / Max (%)</label>
-            <div class="adv-inputs">
-                <input type="number" id="fModeloMin" placeholder="0" min="0" max="100" step="1">
-                <span style="color:var(--muted);">-</span>
-                <input type="number" id="fModeloMax" placeholder="100" min="0" max="100" step="1">
-            </div>
-        </div>
-
-        <!-- 2. Cuota (Soporta Americano y Decimal) -->
-        <div class="adv-group">
-            <label class="adv-label">Cuota Min / Max (+150, -110)</label>
-            <div class="adv-inputs">
-                <input type="text" id="fCuotaMin" placeholder="-150 ó 1.5">
-                <span style="color:var(--muted);">-</span>
-                <input type="text" id="fCuotaMax" placeholder="+200 ó 3.0">
-            </div>
-        </div>
-
-        <!-- 3. Edge (%) -->
-        <div class="adv-group">
-            <label class="adv-label">Edge / Ventaja Min / Max (%)</label>
-            <div class="adv-inputs">
-                <input type="number" id="fEdgeMin" placeholder="Min %" step="0.1">
-                <span style="color:var(--muted);">-</span>
-                <input type="number" id="fEdgeMax" placeholder="Max %" step="0.1">
-            </div>
-        </div>
-
-        <!-- 4. Score -->
-        <div class="adv-group">
-            <label class="adv-label">Score Min / Max</label>
-            <div class="adv-inputs">
-                <input type="number" id="fScoreMin" placeholder="Min" step="1">
-                <span style="color:var(--muted);">-</span>
-                <input type="number" id="fScoreMax" placeholder="Max" step="1">
-            </div>
-        </div>
-
-        <!-- 5. EV (%) -->
-        <div class="adv-group">
-            <label class="adv-label">EV Min / Max (%)</label>
-            <div class="adv-inputs">
-                <input type="number" id="fEvMin" placeholder="Min %" step="0.1">
-                <span style="color:var(--muted);">-</span>
-                <input type="number" id="fEvMax" placeholder="Max %" step="0.1">
-            </div>
-        </div>
-
-        <!-- 6. Stake -->
-        <div class="adv-group">
-            <label class="adv-label">Stake Min / Max</label>
-            <div class="adv-inputs">
-                <input type="number" id="fStakeMin" placeholder="Min" step="0.25">
-                <span style="color:var(--muted);">-</span>
-                <input type="number" id="fStakeMax" placeholder="Max" step="0.25">
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<div id="cardsView"></div>
-
-<div id="historyView" style="display:none;">
-    <h3 style="margin-bottom:16px; font-weight:700;">📚 Registro Histórico de Eventos</h3>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th>Fecha/hora</th>
-                    <th>Evento/tiempo</th>
-                    <th>Seleccion/mercado</th>
-                    <th>Señal</th>
-                    <th>Clasificacion</th>
-                    <th>Riesgo</th>
-                    <th>Resultado</th>
-                </tr>
-            </thead>
-            <tbody id="historyBody"></tbody>
-        </table>
-    </div>
-</div>
-
-<div id="emptyState" style="display:none; text-align:center; padding:60px; color:var(--muted);">
-    <h2 style="font-size:32px; margin-bottom:10px;">📭</h2>
-    <p id="emptyStateMsg">No se encontraron registros activos operables bajo estos parámetros.</p>
-</div>
-
-<div id="toast-x">
-  <span>✨</span>
-  <span>¡Copy formateado para X copiado al portapapeles!</span>
-</div>
-
 <script>
-// Manejo seguro del Injected JSON para Tarjetas Activas
+
+/* ============================================================
+   DATOS PRINCIPALES
+============================================================ */
+
 let PICKS = [];
-if (typeof __PICKS_JSON__ !== "undefined" && Array.isArray(__PICKS_JSON__)) {
+
+if (
+    typeof __PICKS_JSON__ !== "undefined" &&
+    Array.isArray(__PICKS_JSON__)
+) {
     PICKS = __PICKS_JSON__;
-} else if (typeof window.picksData !== "undefined" && Array.isArray(window.picksData)) {
+}
+
+else if (
+    typeof window.picksData !== "undefined" &&
+    Array.isArray(window.picksData)
+) {
     PICKS = window.picksData;
 }
 
-// Almacenamiento en Caché para Histórico por Fechas { "YYYY-MM-DD": [...] }
+
+/* ============================================================
+   CONFIGURACIÓN DEL HISTORIAL
+
+   IMPORTANTE:
+
+   Este HTML está dentro de:
+
+   data/history/
+
+   Las carpetas están así:
+
+   data/history/
+       template(1).html
+       2026-07-23/
+           sharpie.json
+       2026-07-24/
+           sharpie.json
+
+   Por eso la ruta correcta es:
+
+   ./2026-07-24/sharpie.json
+
+============================================================ */
+
+const HISTORY_FILE_NAME = "sharpie.json";
+
 const historyCache = {};
 
+
+/* ============================================================
+   ESTADO
+============================================================ */
+
 const state = {
+
     search: "",
+
     date: "",
+
     league: "",
+
     trend: "",
+
     classification: "",
+
     risk: "",
+
     whaleOnly: false,
+
     freePickOnly: false,
+
     sort: "time",
+
     view: "cards",
+
     autoThemeEnabled: true,
-    // Filtros numéricos
+
     modeloMin: null,
+
     modeloMax: null,
+
     cuotaMin: null,
+
     cuotaMax: null,
+
     edgeMin: null,
+
     edgeMax: null,
+
     scoreMin: null,
+
     scoreMax: null,
+
     evMin: null,
+
     evMax: null,
+
     stakeMin: null,
+
     stakeMax: null
+
 };
 
-const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
-const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "🚨", other: "⚙️" };
+
+/* ============================================================
+   CONSTANTES
+============================================================ */
+
+const TREND_LABEL = {
+
+    sharp: "Smart Money",
+
+    mixed: "Flujo Mixto",
+
+    consensus: "Consenso",
+
+    public: "Public Heavy",
+
+    other: "Normal"
+
+};
+
+
+const TREND_ICON = {
+
+    sharp: "🐋",
+
+    mixed: "🟡",
+
+    consensus: "⚪",
+
+    public: "🚨",
+
+    other: "⚙️"
+
+};
+
+
+/* ============================================================
+   CHARTS
+============================================================ */
 
 let edgeChartInstance = null;
+
 let marketChartInstance = null;
 
-function initCharts() {
-    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    const textColor = isDark ? "#94a3b8" : "#64748b";
-    const gridColor = isDark ? "#243572" : "#e2e8f0";
 
-    const ctxScatter = document.getElementById("edgeScatterChart");
-    if (ctxScatter) {
-        if (edgeChartInstance) edgeChartInstance.destroy();
-        edgeChartInstance = new Chart(ctxScatter, {
-            type: 'scatter',
-            data: { datasets: [{ label: 'Picks Activos', data: [], backgroundColor: '#2dd4bf', pointRadius: 6 }] },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { title: { display: true, text: 'Score del Modelo', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
-                    y: { title: { display: true, text: 'Edge (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } }
-                },
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
+/* ============================================================
+   FECHA ACTUAL
+============================================================ */
 
-    const ctxDoughnut = document.getElementById("marketDoughnutChart");
-    if (ctxDoughnut) {
-        if (marketChartInstance) marketChartInstance.destroy();
-        marketChartInstance = new Chart(ctxDoughnut, {
-            type: 'doughnut',
-            data: {
-                labels: ['Smart Money', 'Mixto / Consenso', 'Público'],
-                datasets: [{ data: [0, 0, 0], backgroundColor: ['#2dd4bf', '#fbbf24', '#fb7185'], borderWidth: 0 }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10 } } } },
-                cutout: '70%'
-            }
-        });
-    }
-}
+function getTodayDateString() {
 
-function updateChartsData(activeList) {
-    if (edgeChartInstance) {
-        edgeChartInstance.data.datasets[0].data = activeList.map(p => ({ x: p.score || 0, y: calculateEdge(p) }));
-        edgeChartInstance.update();
-    }
-
-    if (marketChartInstance) {
-        let sharpCount = 0, mixedCount = 0, publicCount = 0;
-        activeList.forEach(p => {
-            if (p.trendKey === 'sharp' || p.whale) sharpCount++;
-            else if (p.trendKey === 'mixed' || p.trendKey === 'consensus') mixedCount++;
-            else publicCount++;
-        });
-        marketChartInstance.data.datasets[0].data = [sharpCount, mixedCount, publicCount];
-        marketChartInstance.update();
-    }
-}
-
-function scoreBadgeClass(score) {
-    const s = Number(score || 0);
-    if (s >= 80) return "good";
-    if (s >= 55) return "warn";
-    return "bad";
-}
-
-function evBadgeClass(ev, isEstimated) {
-    const v = Number(ev || 0);
-    if (isEstimated) return "neutral";
-    if (v >= 10) return "good";
-    if (v > 0) return "warn";
-    return "neutral";
-}
-
-function stakeBadgeClass(stake) {
-    const s = Number(stake || 0);
-    if (s <= 0) return "neutral";
-    if (s >= 4) return "good";
-    if (s >= 2) return "warn";
-    return "neutral";
-}
-
-function riskBadgeClass(risk) {
-    const r = (risk || "").toUpperCase();
-    if (r === "LOW") return "good";
-    if (r === "MEDIUM") return "warn";
-    if (r === "HIGH") return "bad";
-    return "neutral";
-}
-
-function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
-
-function updateThemeByTime() {
-    if (!state.autoThemeEnabled) return; 
-
-    const hour = new Date().getHours();
-    const doc = document.documentElement;
-    
-    if (hour >= 6 && hour < 19) {
-        if (doc.getAttribute("data-theme") !== "light") {
-            doc.setAttribute("data-theme", "light");
-        }
-    } else {
-        if (doc.getAttribute("data-theme") !== "dark") {
-            doc.setAttribute("data-theme", "dark");
-        }
-    }
-}
-
-const themeToggle = document.getElementById("themeToggle");
-if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-        state.autoThemeEnabled = false; 
-        const doc = document.documentElement;
-        const currentTheme = doc.getAttribute("data-theme");
-        doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
-        initCharts();
-        render();
-    });
-}
-
-function isEventPending(p) {
-    const status = (p.status || "").toUpperCase();
-    if (status === "LIVE" || status === "FINISHED" || status === "WON" || status === "LOST") return false;
-    return status === "UPCOMING" || status === "PENDING" || !status;
-}
-
-function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
-function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
-
-function trendArrow(curr, prev) {
-    if (curr == null || prev == null || isNaN(curr) || isNaN(prev)) return { arrow: '', cls: '' };
-    const c = parseFloat(curr), pv = parseFloat(prev);
-    if (c > pv) return { arrow: '▲', cls: 'evo-up' };
-    if (c < pv) return { arrow: '▼', cls: 'evo-down' };
-    return { arrow: '—', cls: 'evo-flat' };
-}
-
-function buildEvolutionHtml(p) {
-    if (!p.history || !Array.isArray(p.history) || p.history.length === 0) return '';
-
-    const hasOdds = p.history.some(h => h.odds != null && h.odds !== '');
-
-    let rows = '';
-    p.history.forEach((h, i) => {
-        const prev = i > 0 ? p.history[i - 1] : null;
-        const betsTrend = prev ? trendArrow(h.betsPct, prev.betsPct) : { arrow: '', cls: '' };
-        const handleTrend = prev ? trendArrow(h.handlePct, prev.handlePct) : { arrow: '', cls: '' };
-        const oddsTrend = (prev && hasOdds) ? trendArrow(h.odds, prev.odds) : { arrow: '', cls: '' };
-
-        rows += `
-            <tr>
-                <td>🕒 ${h.time || '—'}</td>
-                <td>${h.betsPct != null ? h.betsPct + '%' : '—'} <span class="${betsTrend.cls}">${betsTrend.arrow}</span></td>
-                <td style="color:var(--teal)">${h.handlePct != null ? h.handlePct + '%' : '—'} <span class="${handleTrend.cls}">${handleTrend.arrow}</span></td>
-                ${hasOdds ? `<td>${h.odds != null ? h.odds : '—'} <span class="${oddsTrend.cls}">${oddsTrend.arrow}</span></td>` : ''}
-            </tr>
-        `;
-    });
-
-    return `
-        <div class="history-evolution-box">
-            <div class="history-evolution-title">📊 Evolución Histórica (Bets / Handle${hasOdds ? ' / Cuota' : ''})</div>
-            <table class="history-evolution-table">
-                <thead>
-                    <tr>
-                        <th>Hora</th>
-                        <th>Tickets</th>
-                        <th>Dinero</th>
-                        ${hasOdds ? '<th>Cuota</th>' : ''}
-                    </tr>
-                </thead>
-                <tbody>
-                    ${rows}
-                </tbody>
-            </table>
-        </div>
-    `;
-}
-
-function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && (p.score || 0) >= 75; }
-
-function getVisualConfig(p) {
-    const score = p.score || 0;
-    const key = p.trendKey;
-    const edge = calculateEdge(p);
-    const ev = Number(p.ev || 0);
-
-    if (p.actionKey === "pass" && edge < 5) {
-        return { key: "sin_ventaja", bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ SIN VENTAJA" };
-    }
-
-    if (key === "mixed" || key === "public" || key === "consensus") {
-        if (edge >= 8 || ev >= 5 || score >= 70) {
-            return { 
-                key: "mixed",
-                bg: "var(--amber-soft)", 
-                border: "var(--amber)", 
-                text: "var(--amber)", 
-                label: `🟨 ${key === "mixed" ? "MIXTO" : key === "public" ? "PUBLIC" : "CONSENSO"}` 
-            };
-        } else {
-            return { 
-                key: "sin_ventaja",
-                bg: "var(--red-soft)", 
-                border: "var(--red)", 
-                text: "var(--red)", 
-                label: "⚠️ SIN EDGE / FILTRADO" 
-            };
-        }
-    }
-
-    if (key === "sharp" || score >= 80) {
-        return { key: "premium", bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
-    }
-
-    return { key: "atento", bg: "var(--panel2)", border: "var(--border)", text: "var(--text)", label: "⚡ ATENTO" };
-}
-
-function getCountdownText(isoString) {
-    if (!isoString) return { text: "--:--:--", urgent: false, expired: true };
-    const diff = new Date(isoString) - new Date();
-    if (diff <= 0) return { text: "¡INICIADO!", urgent: true, expired: true };
-    
-    const hrs = Math.floor(diff / 3600000);
-    const mins = Math.floor((diff % 3600000) / 60000);
-    const secs = Math.floor((diff % 60000) / 1000);
-    const pad = (n) => String(n).padStart(2, '0');
-    
-    let timeStr = "";
-    if (hrs > 0) timeStr += `${pad(hrs)}h `;
-    timeStr += `${pad(mins)}m ${pad(secs)}s`;
-    
-    return { text: `⏳ ${timeStr}`, urgent: diff < 900000, expired: false };
-}
-
-const statState = {
-    whale: [],
-    free: [],
-    proximos: [],
-    mercado: { fade: [], sharp: [], consenso: [] },
-    mejor: []
-};
-
-function classifyMarketBucket(p) {
-    const e = calculateEdge(p);
-    if (e <= -15) return "fade";
-    if (e >= 15) return "sharp";
-    return "consenso";
-}
-
-function computeConfianzaDelDinero(fadeN, sharpN) {
-    if (fadeN === 0 && sharpN === 0) return { text: "Tranquilo", color: "var(--muted)" };
-    if (sharpN === 0 || fadeN / sharpN >= 2) return { text: "Alerta 🚨", color: "var(--red)" };
-    if (fadeN === 0 || sharpN / fadeN >= 2) return { text: "Consenso ⚡", color: "var(--teal)" };
-    return { text: "Dividido", color: "var(--amber)" };
-}
-
-function updateMetrics(filteredPicks) {
-    const active = filteredPicks.filter(isEventPending);
-
-    const elAnalizados = document.getElementById("statAnalizados");
-    if(elAnalizados) elAnalizados.innerText = active.length;
-
-    const whalePicks = active.filter(p => p.whale || p.trendKey === "sharp" || calculateSmartMoney(p) >= 15);
-    const elWhale = document.getElementById("statWhale");
-    if(elWhale) elWhale.innerText = whalePicks.length;
-    statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
-
-    const freePicks = active.filter(p => p.freePick);
-    const elFree = document.getElementById("statFree");
-    if(elFree) elFree.innerText = freePicks.length;
-    statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
-
-    const soonPicks = active.filter(p => {
-        if (!p.iso) return false;
-        const d = (new Date(p.iso) - new Date()) / 60000;
-        return d >= 0 && d <= 30;
-    }).sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
-    const elProximos = document.getElementById("statProximos");
-    if(elProximos) elProximos.innerText = soonPicks.length;
-    statState.proximos = soonPicks;
-
-    const buckets = { fade: [], sharp: [], consenso: [] };
-    active.forEach(p => buckets[classifyMarketBucket(p)].push(p));
-    statState.mercado = buckets;
-    
-    const elMercado = document.getElementById("statMercado");
-    if (elMercado) {
-        elMercado.innerText = `🚨 Fade (${buckets.fade.length}) · 🐋 Sharp (${buckets.sharp.length}) · ⚪ Cons. (${buckets.consenso.length})`;
-    }
-
-    const conf = computeConfianzaDelDinero(buckets.fade.length, buckets.sharp.length);
-    const elConfianza = document.getElementById("statConfianza");
-    if(elConfianza) elConfianza.innerText = conf.text;
-    const cardConf = document.getElementById("cardConfianza");
-    if(cardConf) cardConf.style.borderLeftColor = conf.color;
-
-    const bestBet = [...active].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
-    const best = bestBet || [...active].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
-    statState.mejor = best ? [best] : [];
-    
-    const elMejor = document.getElementById("statMejor");
-    if (elMejor) {
-        elMejor.innerText = best ? `${best.pick} (${best.game || 'Partido'})` : "Sin datos";
-    }
-}
-
-function renderStatRows(items) {
-    if (!items || !items.length) {
-        return `<div class="stat-empty">Sin picks en esta categoría.</div>`;
-    }
-    
-    const sortedUpcoming = [...items]
-        .sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0))
-        .slice(0, 3);
-
-    return sortedUpcoming.map(p => {
-        const e = calculateEdge(p);
-        const cuota = p.odds || p.cuota || "—";
-        const timeStr = p.time || "--:--";
-        return `
-            <div class="stat-row">
-                <div class="stat-row-main">
-                    <div class="stat-row-game">🕒 ${timeStr} · ${p.game || 'Evento'}</div>
-                    <div class="stat-row-pick"><b>${p.pick}</b> (${p.market || 'Mercado'}) · ${p.league || ''}</div>
-                </div>
-                <div class="stat-row-nums">
-                    <span style="color:${e >= 0 ? 'var(--teal)' : 'var(--red)'}">+${e}%</span>
-                    <span style="color:var(--amber)">${cuota}</span>
-                </div>
-            </div>
-        `;
-    }).join("");
-}
-
-document.querySelectorAll(".stat-card.expandable").forEach(card => {
-    card.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const targetId = card.dataset.target;
-        const box = document.getElementById(targetId);
-        if(!box) return;
-        
-        const isCurrentlyOpen = card.classList.contains("open");
-        
-        document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
-        document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
-
-        if (!isCurrentlyOpen) {
-            card.classList.add("open");
-
-            let items = [];
-            let popupTitle = "Detalle de Eventos";
-            
-            if (targetId === "detailWhale") { items = statState.whale; popupTitle = "Top Whale Picks"; }
-            else if (targetId === "detailFree") { items = statState.free; popupTitle = "Top Free Picks"; }
-            else if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
-            else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
-            else if (targetId === "detailMercado") {
-                items = [...statState.mercado.fade, ...statState.mercado.sharp, ...statState.mercado.consenso];
-                popupTitle = "Picks de Mercado";
-            }
-
-            box.innerHTML = `
-                <div class="stat-popup-title">
-                    <span>${popupTitle}</span>
-                    <span>Total: ${items.length}</span>
-                </div>
-                ${renderStatRows(items)}
-            `;
-            box.style.display = "block";
-        }
-    });
-});
-
-document.addEventListener("click", () => {
-    document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
-    document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
-});
-
-function parseOddsToDecimal(odds) {
-    if (odds == null || odds === "") return 0;
-    
-    let str = String(odds).trim();
-    let val = parseFloat(str);
-    if (isNaN(val)) return 0;
-
-    if (str.startsWith('+') || str.startsWith('-') || val > 20 || val < -20) {
-        if (val > 0) {
-            return (val / 100) + 1;
-        } else if (val < 0) {
-            return (100 / Math.abs(val)) + 1;
-        }
-    }
-    
-    return val;
-}
-
-function applyFiltersAndSort(list) {
-    if (!Array.isArray(list)) return [];
-    const text = state.search.toLowerCase().trim();
-
-    let result = list.filter(p => {
-        if (state.league && p.league !== state.league) return false;
-        if (state.date && p.date !== state.date) return false;
-        if (state.trend && p.trendKey !== state.trend) return false;
-        
-        if (state.classification) {
-            const config = getVisualConfig(p);
-            if (config.key !== state.classification) return false;
-        }
-
-        if (state.risk) {
-            const pRisk = (p.risk || "").toUpperCase();
-            if (pRisk !== state.risk) return false;
-        }
-
-        // 1. Modelo (%)
-        if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
-        if (state.modeloMax !== null && !isNaN(state.modeloMax) && (p.modelProb || 0) > state.modeloMax) return false;
-
-        // 2. Cuota
-        const itemOddsDec = parseOddsToDecimal(p.odds || p.cuota);
-        
-        if (state.cuotaMin !== null) {
-            const minDec = parseOddsToDecimal(state.cuotaMin);
-            if (minDec > 0 && itemOddsDec < minDec) return false;
-        }
-        
-        if (state.cuotaMax !== null) {
-            const maxDec = parseOddsToDecimal(state.cuotaMax);
-            if (maxDec > 0 && itemOddsDec > maxDec) return false;
-        }
-
-        // 3. Edge (%)
-        const edgeVal = calculateEdge(p);
-        if (state.edgeMin !== null && !isNaN(state.edgeMin) && edgeVal < state.edgeMin) return false;
-        if (state.edgeMax !== null && !isNaN(state.edgeMax) && edgeVal > state.edgeMax) return false;
-
-        // 4. Score
-        if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
-        if (state.scoreMax !== null && !isNaN(state.scoreMax) && (p.score || 0) > state.scoreMax) return false;
-
-        // 5. EV (%)
-        const evVal = Number(p.ev || 0);
-        if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
-        if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
-
-        // 6. Stake
-        const stakeVal = Number(p.stake || 0);
-        if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
-        if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
-        if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
-        if (state.freePickOnly && !p.freePick) return false;
-
-        if (text) {
-            const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
-            if (!blob.includes(text)) return false;
-        }
-        return true;
-    });
-
-    return result.sort((a, b) => {
-        if (state.sort === "time") return new Date(a.iso || 0) - new Date(b.iso || 0);
-        if (state.sort === "score") return (b.score || 0) - (a.score || 0);
-        if (state.sort === "edge") return calculateEdge(b) - calculateEdge(a);
-        if (state.sort === "recommended") {
-            const scoreA = (isPremium(a) ? 1000 : 0) + (a.score || 0);
-            const scoreB = (isPremium(b) ? 1000 : 0) + (b.score || 0);
-            return scoreB - scoreA;
-        }
-        return 0;
-    });
-}
-
-function copyPickForX(p) {
-    const dateStr = p.date || new Date().toLocaleDateString('es-MX');
-    const timeStr = p.time || "--:--";
-    const league = p.league ? `🏆 ${p.league}` : "";
-    const game = p.game || "Evento";
-    const pickName = p.pick || "Selección";
-    const market = p.market ? ` (${p.market})` : "";
-    const odds = p.odds || p.cuota || "Mkt";
-    const stake = p.stake ? `${p.stake}u` : "1u";
-
-    const copyText = 
-`🔥 FREE PICK
-
-📅 ${dateStr} | ⏰ ${timeStr}
-${league}
-⚔️ ${game}
-
-🎯 Pick: ${pickName}${market}
-💵 Cuota: ${odds}
-💰 Stake: ${stake}
-
-#ApuestasDeportivas #Picks`;
-
-    navigator.clipboard.writeText(copyText).then(() => {
-        showToastX();
-    }).catch(err => {
-        console.error('Error al copiar al portapapeles:', err);
-    });
-}
-
-function showToastX() {
-    const toast = document.getElementById('toast-x');
-    if (!toast) return;
-    toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-function drawCards(list) {
-    const box = document.getElementById("cardsView");
-    if (!box) return;
-    box.innerHTML = "";
-
-    list.forEach((p, index) => {
-        try {
-            const smDiff = calculateSmartMoney(p);
-            const isWhale = p.whale || p.trendKey === "sharp" || smDiff >= 15;
-            const config = getVisualConfig(p);
-            const timerData = getCountdownText(p.iso);
-            const cuotaDetectada = p.odds || p.cuota || null;
-
-            const evolutionHtml = buildEvolutionHtml(p);
-
-            const card = document.createElement("div");
-            card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
-            card.style.borderColor = config.border;
-
-            card.innerHTML = `
-                <div>
-                    <div class="pcard-header">
-                        <div class="game-title">${p.game || 'Evento'}</div>
-                        <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
-                            ${config.label}
-                        </span>
-                    </div>
-                    <div class="meta-row">
-                        <span>${p.league || ''} · ${p.time || "--:--"}</span>
-                        <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
-                            ${timerData.text}
-                        </span>
-                    </div>
-                    
-                    <div class="pick-details">
-                        <div class="pick-name">${p.pick || ''}</div>
-                        <div class="market-type">${p.market || ''}</div>
-                        
-                        <div class="grid-metrics">
-                            <div>Modelo: <b class="mono">${p.modelProb || 0}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
-                            <div>Cuota: <b class="mono" style="color:var(--amber);">${cuotaDetectada || '—'}</b></div>
-                            <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
-                            <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
-                        </div>
-                    </div>
-
-                    <div class="volume-container">
-                        <div class="volume-labels">
-                            <span>Tickets: ${p.betsPct || 0}%</span>
-                            <span>Dinero: ${p.handlePct || 0}%</span>
-                        </div>
-                        <div class="volume-bar-wrapper">
-                            <div class="v-bets" style="width: ${p.betsPct || 0}%"></div>
-                            <div class="v-handle" style="width: ${p.handlePct || 0}%"></div>
-                        </div>
-                        ${evolutionHtml}
-                        ${isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
-                    </div>
-                </div>
-
-                <div class="card-footer-tags">
-                    <span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score: ${p.score || 0}</span>
-                    <span class="badge-tag ${evBadgeClass(p.ev, p.evEstimated)}">EV: <span class="mono">${p.evEstimated ? '~' : ''}${p.ev || 0}%</span>${p.evEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</span>
-                    <span class="badge-tag ${stakeBadgeClass(p.stake)}">Stake: ${p.stake || 0}u</span>
-                    <span class="badge-tag ${riskBadgeClass(p.risk)}">${p.risk || 'NORMAL'}</span>
-                </div>
-                ${p.freePick ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
-                ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
-
-                <button class="btn-copy-x" id="btn-copy-${index}">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                    </svg>
-                    Copiar para X
-                </button>
-            `;
-            box.appendChild(card);
-
-            // Listener directo para evitar romper sintaxis JSON en atributo inline
-            const copyBtn = card.querySelector(`#btn-copy-${index}`);
-            if (copyBtn) {
-                copyBtn.addEventListener("click", () => copyPickForX(p));
-            }
-
-        } catch (err) {
-            console.error(`❌ ERROR en tarjeta index ${index}:`, err);
-        }
-    });
-}
-
-function drawHistory(list) {
-    const tbody = document.getElementById("historyBody");
-    if (!tbody) return;
-    tbody.innerHTML = "";
-    
-    list.forEach(p => {
-        const config = getVisualConfig(p);
-
-        let resText = "PENDIENTE"; 
-        let resColor = "var(--muted)";
-        if (p.result === "WON" || p.result === "WIN") { 
-            resText = "GANADA ✔"; 
-            resColor = "var(--teal)"; 
-        } else if (p.result === "LOST" || p.result === "LOSS") { 
-            resText = "PERDIDA ❌"; 
-            resColor = "var(--red)"; 
-        } else if (p.result) {
-            resText = p.result;
-        }
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td style="font-size:12px;">${p.date || ''} ${p.time || ''}</td>
-            <td>
-                <div style="font-weight:700;">${p.game || ''}</div>
-                <div style="color:var(--muted); font-size:11px;">${p.league || ''}</div>
-            </td>
-            <td>
-                <div style="font-weight:600;">${p.pick || ''}</div>
-                <div style="color:var(--muted); font-size:11px;">${p.market || ''}</div>
-            </td>
-            <td><b>${trendTag(p.trendKey)}</b></td>
-            <td>
-                <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}; font-size:10px; padding:2px 6px;">
-                    ${config.label}
-                </span>
-            </td>
-            <td><span class="badge-tag ${riskBadgeClass(p.risk)}">${p.risk || 'NORMAL'}</span></td>
-            <td><b style="color:${resColor}">${resText}</b></td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-// -------------------------------------------------------------
-// MOTOR DINÁMICO DE HISTORIAL (FETCH POR FECHAS & CACHÉ)
-// -------------------------------------------------------------
-async function fetchHistoryForDate(dateStr) {
-    if (!dateStr) return [];
-    if (historyCache[dateStr]) return historyCache[dateStr];
-
-    const path = `src/data/history/${dateStr}/sharpie.json`;
-    
-    try {
-        const res = await fetch(path);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        
-        const items = Array.isArray(data) ? data : (data.picks || data.data || []);
-        const itemsWithDate = items.map(item => ({
-            ...item,
-            date: item.date || dateStr
-        }));
-
-        historyCache[dateStr] = itemsWithDate;
-        return itemsWithDate;
-    } catch (err) {
-        // Fallback por si la estructura cambia a src/data/history/YYYY-MM-DD.json
-        try {
-            const fallbackPath = `src/data/history/${dateStr}.json`;
-            const resFallback = await fetch(fallbackPath);
-            if (resFallback.ok) {
-                const dataFallback = await resFallback.json();
-                const itemsFallback = Array.isArray(dataFallback) ? dataFallback : (dataFallback.picks || dataFallback.data || []);
-                const itemsWithDate = itemsFallback.map(item => ({
-                    ...item,
-                    date: item.date || dateStr
-                }));
-                historyCache[dateStr] = itemsWithDate;
-                return itemsWithDate;
-            }
-        } catch (fErr) {
-            // Ignorar error fallback
-        }
-
-        console.warn(`⚠️ No se pudo obtener el historial para la fecha ${dateStr} (${path}):`, err.message);
-        historyCache[dateStr] = []; // Evita reintentos innecesarios
-        return [];
-    }
-}
-
-function getRecentDatesList(days = 15) {
-    const dates = [];
     const today = new Date();
-    for (let i = 0; i < days; i++) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        dates.push(d.toISOString().split("T")[0]);
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* ============================================================
+   RUTA HISTORIAL
+============================================================ */
+
+function getHistoryPath(
+    dateStr
+) {
+
+    return `./${dateStr}/${HISTORY_FILE_NAME}`;
+
+}
+
+
+/* ============================================================
+   LISTA DE FECHAS RECIENTES
+============================================================ */
+
+function getRecentDatesList(
+    days = 15
+) {
+
+    const dates = [];
+
+    const today =
+        new Date();
+
+
+    for (
+        let i = 0;
+        i < days;
+        i++
+    ) {
+
+        const d =
+            new Date(
+                today
+            );
+
+
+        d.setDate(
+            d.getDate() - i
+        );
+
+
+        const year =
+            d.getFullYear();
+
+
+        const month =
+            String(
+                d.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const day =
+            String(
+                d.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        dates.push(
+            `${year}-${month}-${day}`
+        );
+
     }
+
+
     return dates;
+
 }
 
-async function loadHistoryDataset() {
-    let rawHistory = [];
 
-    if (state.date) {
-        rawHistory = await fetchHistoryForDate(state.date);
-    } else {
-        const targetDates = getRecentDatesList(15);
-        const results = await Promise.all(targetDates.map(d => fetchHistoryForDate(d)));
-        rawHistory = results.flat();
+/* ============================================================
+   CARGAR JSON DE UNA FECHA
+============================================================ */
+
+async function fetchHistoryForDate(
+    dateStr,
+    forceReload = false
+) {
+
+    if (
+        !dateStr
+    ) {
+
+        return [];
+
     }
 
-    if (Array.isArray(PICKS) && PICKS.length > 0) {
-        rawHistory = [...rawHistory, ...PICKS];
+
+    /* ========================================================
+       CACHÉ
+    ======================================================== */
+
+    if (
+
+        !forceReload &&
+
+        Object.prototype.hasOwnProperty.call(
+            historyCache,
+            dateStr
+        )
+
+    ) {
+
+        console.log(
+            "📦 Historial desde caché:",
+            dateStr
+        );
+
+
+        return historyCache[
+            dateStr
+        ];
+
     }
 
-    const seen = new Set();
-    const uniqueHistory = [];
-    
-    rawHistory.forEach(item => {
-        const key = item.id || `${item.date}_${item.game}_${item.pick}_${item.market}`;
-        if (!seen.has(key)) {
-            seen.add(key);
-            uniqueHistory.push(item);
+
+    /* ========================================================
+       RUTA
+    ======================================================== */
+
+    const path =
+        getHistoryPath(
+            dateStr
+        );
+
+
+    console.log(
+        "📂 Buscando:",
+        path
+    );
+
+
+    try {
+
+
+        /* ====================================================
+           FETCH
+
+           Date.now evita caché
+        ==================================================== */
+
+        const response =
+            await fetch(
+                path +
+                "?t=" +
+                Date.now()
+            );
+
+
+        console.log(
+            "📡 HTTP:",
+            response.status
+        );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+
+                `HTTP ${response.status}`
+
+            );
+
         }
-    });
 
-    return uniqueHistory;
+
+        /* ====================================================
+           JSON
+        ==================================================== */
+
+        const data =
+            await response.json();
+
+
+        /* ====================================================
+           NORMALIZAR
+        ==================================================== */
+
+        let items = [];
+
+
+        if (
+            Array.isArray(
+                data
+            )
+        ) {
+
+            items =
+                data;
+
+        }
+
+        else if (
+            data &&
+            Array.isArray(
+                data.picks
+            )
+        ) {
+
+            items =
+                data.picks;
+
+        }
+
+        else if (
+            data &&
+            Array.isArray(
+                data.data
+            )
+        ) {
+
+            items =
+                data.data;
+
+        }
+
+        else if (
+            data &&
+            Array.isArray(
+                data.records
+            )
+        ) {
+
+            items =
+                data.records;
+
+        }
+
+        else if (
+            data &&
+            typeof data === "object"
+        ) {
+
+            items =
+                [data];
+
+        }
+
+
+        /* ====================================================
+           AÑADIR FECHA
+        ==================================================== */
+
+        const normalized =
+            items.map(
+                item => ({
+
+                    ...item,
+
+                    date:
+                        item.date ||
+                        dateStr
+
+                })
+            );
+
+
+        /* ====================================================
+           CACHÉ
+        ==================================================== */
+
+        historyCache[
+            dateStr
+        ] =
+            normalized;
+
+
+        console.log(
+
+            `✅ ${normalized.length} registros cargados para ${dateStr}`
+
+        );
+
+
+        return normalized;
+
+    }
+
+    catch (
+        error
+    ) {
+
+
+        console.error(
+
+            `❌ Error cargando ${path}:`,
+
+            error
+
+        );
+
+
+        /*
+         * IMPORTANTE:
+         *
+         * No guardamos [] en caché
+         * cuando hay error.
+         *
+         * Así se puede volver
+         * a intentar cargar.
+         */
+
+
+        return [];
+
+    }
+
 }
+
+
+/* ============================================================
+   CARGAR FECHA SELECCIONADA
+============================================================ */
+
+async function loadSelectedHistoryDate() {
+
+    const datePicker =
+        document.getElementById(
+            "historyDatePicker"
+        );
+
+
+    const loadButton =
+        document.getElementById(
+            "historyLoadButton"
+        );
+
+
+    const tbody =
+        document.getElementById(
+            "historyBody"
+        );
+
+
+    if (
+        !datePicker
+    ) {
+
+        console.error(
+
+            "❌ No existe historyDatePicker"
+
+        );
+
+
+        return;
+
+    }
+
+
+    const dateStr =
+        datePicker.value;
+
+
+    console.log(
+        "🖱️ BOTÓN CARGAR FECHA PRESIONADO"
+    );
+
+
+    console.log(
+        "📅 Fecha:",
+        dateStr
+    );
+
+
+    if (
+        !dateStr
+    ) {
+
+        updateHistoryStatus(
+
+            "❌ Selecciona una fecha.",
+
+            "error"
+
+        );
+
+
+        return;
+
+    }
+
+
+    /* ========================================================
+       BOTÓN
+    ======================================================== */
+
+    if (
+        loadButton
+    ) {
+
+        loadButton.disabled =
+            true;
+
+        loadButton.textContent =
+            "⏳ Cargando...";
+
+    }
+
+
+    /* ========================================================
+       ESTADO
+    ======================================================== */
+
+    updateHistoryStatus(
+
+        `⏳ Cargando datos históricos de <strong>${dateStr}</strong>...`,
+
+        "info"
+
+    );
+
+
+    if (
+        tbody
+    ) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="history-loading"
+                >
+
+                    ⏳ Cargando
+                    ${dateStr}...
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    try {
+
+
+        /* ====================================================
+           FETCH
+        ==================================================== */
+
+        const history =
+            await fetchHistoryForDate(
+                dateStr,
+                true
+            );
+
+
+        /* ====================================================
+           SIN REGISTROS
+        ==================================================== */
+
+        if (
+            history.length === 0
+        ) {
+
+
+            updateHistoryStatus(
+
+                `⚠️ No se encontraron registros para <strong>${dateStr}</strong>.`,
+
+                "error"
+
+            );
+
+
+            if (
+                tbody
+            ) {
+
+                tbody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--muted);
+                            "
+                        >
+
+                            📭 No hay registros
+                            para esta fecha.
+
+                            <br><br>
+
+                            <code>
+                                ./${dateStr}/sharpie.json
+                            </code>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+
+            return;
+
+        }
+
+
+        /* ====================================================
+           GUARDAR EN EL ESTADO
+        ==================================================== */
+
+        state.historyData =
+            history;
+
+
+        /* ====================================================
+           FILTRAR
+        ==================================================== */
+
+        const filteredHistory =
+            applyFiltersAndSort(
+                history
+            );
+
+
+        /* ====================================================
+           MOSTRAR
+        ==================================================== */
+
+        if (
+            filteredHistory.length === 0
+        ) {
+
+
+            updateHistoryStatus(
+
+                `⚠️ Se cargaron ${history.length} registros para <strong>${dateStr}</strong>, pero ninguno coincide con los filtros actuales.`,
+
+                "info"
+
+            );
+
+
+            if (
+                tbody
+            ) {
+
+                tbody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--muted);
+                            "
+                        >
+
+                            🔎 Ningún registro
+                            coincide con los filtros.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+        else {
+
+
+            updateHistoryStatus(
+
+                `✅ ${filteredHistory.length} registros cargados para <strong>${dateStr}</strong>`,
+
+                "success"
+
+            );
+
+
+            drawHistory(
+                filteredHistory
+            );
+
+        }
+
+    }
+
+    catch (
+        error
+    ) {
+
+
+        console.error(
+            "❌ Error:",
+            error
+        );
+
+
+        updateHistoryStatus(
+
+            `❌ Error al cargar <strong>${dateStr}</strong>.`,
+
+            "error"
+
+        );
+
+    }
+
+    finally {
+
+
+        if (
+            loadButton
+        ) {
+
+            loadButton.disabled =
+                false;
+
+            loadButton.textContent =
+                "📅 Cargar Fecha";
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   ESTADO DEL HISTORIAL
+============================================================ */
+
+function updateHistoryStatus(
+    message,
+    type = "info"
+) {
+
+    const status =
+        document.getElementById(
+            "historyStatus"
+        );
+
+
+    if (
+        !status
+    ) {
+
+        return;
+
+    }
+
+
+    status.innerHTML =
+        message;
+
+
+    if (
+        type === "success"
+    ) {
+
+        status.style.borderLeftColor =
+            "var(--teal)";
+
+    }
+
+    else if (
+        type === "error"
+    ) {
+
+        status.style.borderLeftColor =
+            "var(--red)";
+
+    }
+
+    else {
+
+        status.style.borderLeftColor =
+            "var(--amber)";
+
+    }
+
+}
+
+
+/* ============================================================
+   CHARTS
+============================================================ */
+
+function initCharts() {
+
+    const isDark =
+        document.documentElement
+            .getAttribute(
+                "data-theme"
+            ) === "dark";
+
+
+    const textColor =
+        isDark
+            ? "#94a3b8"
+            : "#64748b";
+
+
+    const gridColor =
+        isDark
+            ? "#243572"
+            : "#e2e8f0";
+
+
+    const ctxScatter =
+        document.getElementById(
+            "edgeScatterChart"
+        );
+
+
+    if (
+        ctxScatter
+    ) {
+
+
+        if (
+            edgeChartInstance
+        ) {
+
+            edgeChartInstance.destroy();
+
+        }
+
+
+        edgeChartInstance =
+            new Chart(
+                ctxScatter,
+                {
+
+                    type:
+                        "scatter",
+
+                    data: {
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Picks Activos",
+
+                                data:
+                                    [],
+
+                                backgroundColor:
+                                    "#2dd4bf",
+
+                                pointRadius:
+                                    6
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive:
+                            true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        scales: {
+
+                            x: {
+
+                                title: {
+
+                                    display:
+                                        true,
+
+                                    text:
+                                        "Score del Modelo",
+
+                                    color:
+                                        textColor
+
+                                },
+
+                                ticks: {
+
+                                    color:
+                                        textColor
+
+                                },
+
+                                grid: {
+
+                                    color:
+                                        gridColor
+
+                                }
+
+                            },
+
+                            y: {
+
+                                title: {
+
+                                    display:
+                                        true,
+
+                                    text:
+                                        "Edge (%)",
+
+                                    color:
+                                        textColor
+
+                                },
+
+                                ticks: {
+
+                                    color:
+                                        textColor
+
+                                },
+
+                                grid: {
+
+                                    color:
+                                        gridColor
+
+                                }
+
+                            }
+
+                        },
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    false
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+    }
+
+
+    const ctxDoughnut =
+        document.getElementById(
+            "marketDoughnutChart"
+        );
+
+
+    if (
+        ctxDoughnut
+    ) {
+
+
+        if (
+            marketChartInstance
+        ) {
+
+            marketChartInstance.destroy();
+
+        }
+
+
+        marketChartInstance =
+            new Chart(
+                ctxDoughnut,
+                {
+
+                    type:
+                        "doughnut",
+
+                    data: {
+
+                        labels: [
+
+                            "Smart Money",
+
+                            "Mixto / Consenso",
+
+                            "Público"
+
+                        ],
+
+                        datasets: [
+
+                            {
+
+                                data:
+                                    [0, 0, 0],
+
+                                backgroundColor: [
+
+                                    "#2dd4bf",
+
+                                    "#fbbf24",
+
+                                    "#fb7185"
+
+                                ],
+
+                                borderWidth:
+                                    0
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive:
+                            true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        plugins: {
+
+                            legend: {
+
+                                position:
+                                    "bottom",
+
+                                labels: {
+
+                                    boxWidth:
+                                        10,
+
+                                    color:
+                                        textColor,
+
+                                    font: {
+
+                                        size:
+                                            10
+
+                                    }
+
+                                }
+
+                            }
+
+                        },
+
+                        cutout:
+                            "70%"
+
+                    }
+
+                }
+
+            );
+
+    }
+
+}
+
+
+/* ============================================================
+   UPDATE CHARTS
+============================================================ */
+
+function updateChartsData(
+    activeList
+) {
+
+    if (
+        edgeChartInstance
+    ) {
+
+        edgeChartInstance
+            .data
+            .datasets[0]
+            .data =
+
+            activeList.map(
+
+                p => ({
+
+                    x:
+                        p.score || 0,
+
+                    y:
+                        calculateEdge(
+                            p
+                        )
+
+                })
+
+            );
+
+
+        edgeChartInstance.update();
+
+    }
+
+
+    if (
+        marketChartInstance
+    ) {
+
+        let sharpCount =
+            0;
+
+        let mixedCount =
+            0;
+
+        let publicCount =
+            0;
+
+
+        activeList.forEach(
+
+            p => {
+
+                if (
+                    p.trendKey === "sharp" ||
+                    p.whale
+                ) {
+
+                    sharpCount++;
+
+                }
+
+                else if (
+                    p.trendKey === "mixed" ||
+                    p.trendKey === "consensus"
+                ) {
+
+                    mixedCount++;
+
+                }
+
+                else {
+
+                    publicCount++;
+
+                }
+
+            }
+
+        );
+
+
+        marketChartInstance
+            .data
+            .datasets[0]
+            .data = [
+
+                sharpCount,
+
+                mixedCount,
+
+                publicCount
+
+            ];
+
+
+        marketChartInstance.update();
+
+    }
+
+}
+
+
+/* ============================================================
+   FUNCIONES EXISTENTES DEL DASHBOARD
+============================================================ */
+
+function scoreBadgeClass(
+    score
+) {
+
+    const s =
+        Number(
+            score || 0
+        );
+
+
+    if (
+        s >= 80
+    ) {
+
+        return "good";
+
+    }
+
+
+    if (
+        s >= 55
+    ) {
+
+        return "warn";
+
+    }
+
+
+    return "bad";
+
+}
+
+
+function evBadgeClass(
+    ev,
+    isEstimated
+) {
+
+    const v =
+        Number(
+            ev || 0
+        );
+
+
+    if (
+        isEstimated
+    ) {
+
+        return "neutral";
+
+    }
+
+
+    if (
+        v >= 10
+    ) {
+
+        return "good";
+
+    }
+
+
+    if (
+        v > 0
+    ) {
+
+        return "warn";
+
+    }
+
+
+    return "neutral";
+
+}
+
+
+function stakeBadgeClass(
+    stake
+) {
+
+    const s =
+        Number(
+            stake || 0
+        );
+
+
+    if (
+        s <= 0
+    ) {
+
+        return "neutral";
+
+    }
+
+
+    if (
+        s >= 4
+    ) {
+
+        return "good";
+
+    }
+
+
+    if (
+        s >= 2
+    ) {
+
+        return "warn";
+
+    }
+
+
+    return "neutral";
+
+}
+
+
+function riskBadgeClass(
+    risk
+) {
+
+    const r =
+        (
+            risk ||
+            ""
+        ).toUpperCase();
+
+
+    if (
+        r === "LOW"
+    ) {
+
+        return "good";
+
+    }
+
+
+    if (
+        r === "MEDIUM"
+    ) {
+
+        return "warn";
+
+    }
+
+
+    if (
+        r === "HIGH"
+    ) {
+
+        return "bad";
+
+    }
+
+
+    return "neutral";
+
+}
+
+
+function trendTag(
+    key
+) {
+
+    return `${
+
+        TREND_ICON[
+            key
+        ] || "⚙️"
+
+    } ${
+
+        TREND_LABEL[
+            key
+        ] || "Normal"
+
+    }`;
+
+}
+
+
+function isEventPending(
+    p
+) {
+
+    const status =
+        (
+            p.status ||
+            ""
+        ).toUpperCase();
+
+
+    if (
+
+        status === "LIVE" ||
+
+        status === "FINISHED" ||
+
+        status === "WON" ||
+
+        status === "LOST"
+
+    ) {
+
+        return false;
+
+    }
+
+
+    return (
+
+        status === "UPCOMING" ||
+
+        status === "PENDING" ||
+
+        !status
+
+    );
+
+}
+
+
+function calculateEdge(
+    p
+) {
+
+    return (
+
+        p.edge !== undefined
+
+            ?
+
+        Number(
+            p.edge
+        )
+
+            :
+
+        0
+
+    );
+
+}
+
+
+function calculateSmartMoney(
+    p
+) {
+
+    return (
+
+        p.handlePct != null &&
+
+        p.betsPct != null
+
+    )
+
+        ?
+
+        (
+            p.handlePct -
+            p.betsPct
+        )
+
+        :
+
+        0;
+
+}
+
+
+function parseOddsToDecimal(
+    odds
+) {
+
+    if (
+        odds == null ||
+        odds === ""
+    ) {
+
+        return 0;
+
+    }
+
+
+    let str =
+        String(
+            odds
+        ).trim();
+
+
+    let val =
+        parseFloat(
+            str
+        );
+
+
+    if (
+        isNaN(
+            val
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    if (
+
+        str.startsWith("+") ||
+
+        str.startsWith("-") ||
+
+        val > 20 ||
+
+        val < -20
+
+    ) {
+
+        if (
+            val > 0
+        ) {
+
+            return (
+                val / 100
+            ) + 1;
+
+        }
+
+        else if (
+            val < 0
+        ) {
+
+            return (
+
+                100 /
+                Math.abs(
+                    val
+                )
+
+            ) + 1;
+
+        }
+
+    }
+
+
+    return val;
+
+}
+
+
+function isPremium(
+    p
+) {
+
+    return (
+
+        p.actionKey === "bet" &&
+
+        calculateEdge(
+            p
+        ) >= 5 &&
+
+        (
+            p.score || 0
+        ) >= 75
+
+    );
+
+}
+
+
+function getVisualConfig(
+    p
+) {
+
+    const score =
+        p.score || 0;
+
+
+    const key =
+        p.trendKey;
+
+
+    const edge =
+        calculateEdge(
+            p
+        );
+
+
+    const ev =
+        Number(
+            p.ev || 0
+        );
+
+
+    if (
+
+        p.actionKey === "pass" &&
+
+        edge < 5
+
+    ) {
+
+        return {
+
+            key:
+                "sin_ventaja",
+
+            bg:
+                "var(--red-soft)",
+
+            border:
+                "var(--border)",
+
+            text:
+                "var(--muted)",
+
+            label:
+                "⚪ SIN VENTAJA"
+
+        };
+
+    }
+
+
+    if (
+
+        key === "mixed" ||
+
+        key === "public" ||
+
+        key === "consensus"
+
+    ) {
+
+
+        if (
+
+            edge >= 8 ||
+
+            ev >= 5 ||
+
+            score >= 70
+
+        ) {
+
+            return {
+
+                key:
+                    "mixed",
+
+                bg:
+                    "var(--amber-soft)",
+
+                border:
+                    "var(--amber)",
+
+                text:
+                    "var(--amber)",
+
+                label:
+
+                    `🟨 ${
+
+                        key === "mixed"
+
+                            ?
+
+                        "MIXTO"
+
+                            :
+
+                        key === "public"
+
+                            ?
+
+                        "PUBLIC"
+
+                            :
+
+                        "CONSENSO"
+
+                    }`
+
+            };
+
+        }
+
+
+        return {
+
+            key:
+                "sin_ventaja",
+
+            bg:
+                "var(--red-soft)",
+
+            border:
+                "var(--red)",
+
+            text:
+                "var(--red)",
+
+            label:
+                "⚠️ SIN EDGE / FILTRADO"
+
+        };
+
+    }
+
+
+    if (
+
+        key === "sharp" ||
+
+        score >= 80
+
+    ) {
+
+        return {
+
+            key:
+                "premium",
+
+            bg:
+                "var(--teal-soft)",
+
+            border:
+                "var(--teal)",
+
+            text:
+                "var(--teal)",
+
+            label:
+                "🟢 PREMIUM"
+
+        };
+
+    }
+
+
+    return {
+
+        key:
+            "atento",
+
+        bg:
+            "var(--panel2)",
+
+        border:
+            "var(--border)",
+
+        text:
+            "var(--text)",
+
+        label:
+            "⚡ ATENTO"
+
+    };
+
+}
+
+
+/* ============================================================
+   FILTROS
+============================================================ */
+
+function applyFiltersAndSort(
+    list
+) {
+
+    if (
+        !Array.isArray(
+            list
+        )
+    ) {
+
+        return [];
+
+    }
+
+
+    const text =
+        state.search
+            .toLowerCase()
+            .trim();
+
+
+    let result =
+        list.filter(
+
+            p => {
+
+
+                if (
+
+                    state.league &&
+
+                    p.league !==
+                    state.league
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.date &&
+
+                    p.date !==
+                    state.date
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.trend &&
+
+                    p.trendKey !==
+                    state.trend
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+                    state.classification
+                ) {
+
+                    const config =
+                        getVisualConfig(
+                            p
+                        );
+
+
+                    if (
+
+                        config.key !==
+                        state.classification
+
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                if (
+                    state.risk
+                ) {
+
+                    const pRisk =
+                        (
+                            p.risk ||
+                            ""
+                        ).toUpperCase();
+
+
+                    if (
+
+                        pRisk !==
+                        state.risk
+
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                if (
+
+                    state.modeloMin !== null &&
+
+                    (
+                        p.modelProb ||
+                        0
+                    ) <
+                    state.modeloMin
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.modeloMax !== null &&
+
+                    (
+                        p.modelProb ||
+                        0
+                    ) >
+                    state.modeloMax
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                const itemOddsDec =
+                    parseOddsToDecimal(
+
+                        p.odds ||
+                        p.cuota
+
+                    );
+
+
+                if (
+                    state.cuotaMin !== null
+                ) {
+
+                    const minDec =
+                        parseOddsToDecimal(
+                            state.cuotaMin
+                        );
+
+
+                    if (
+
+                        minDec > 0 &&
+
+                        itemOddsDec <
+                        minDec
+
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                if (
+                    state.cuotaMax !== null
+                ) {
+
+                    const maxDec =
+                        parseOddsToDecimal(
+                            state.cuotaMax
+                        );
+
+
+                    if (
+
+                        maxDec > 0 &&
+
+                        itemOddsDec >
+                        maxDec
+
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                const edgeVal =
+                    calculateEdge(
+                        p
+                    );
+
+
+                if (
+
+                    state.edgeMin !== null &&
+
+                    edgeVal <
+                    state.edgeMin
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.edgeMax !== null &&
+
+                    edgeVal >
+                    state.edgeMax
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.scoreMin !== null &&
+
+                    (
+                        p.score ||
+                        0
+                    ) <
+                    state.scoreMin
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.scoreMax !== null &&
+
+                    (
+                        p.score ||
+                        0
+                    ) >
+                    state.scoreMax
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                const evVal =
+                    Number(
+                        p.ev ||
+                        0
+                    );
+
+
+                if (
+
+                    state.evMin !== null &&
+
+                    evVal <
+                    state.evMin
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.evMax !== null &&
+
+                    evVal >
+                    state.evMax
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                const stakeVal =
+                    Number(
+                        p.stake ||
+                        0
+                    );
+
+
+                if (
+
+                    state.stakeMin !== null &&
+
+                    stakeVal <
+                    state.stakeMin
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.stakeMax !== null &&
+
+                    stakeVal >
+                    state.stakeMax
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.whaleOnly &&
+
+                    !p.whale &&
+
+                    p.trendKey !==
+                    "sharp" &&
+
+                    calculateSmartMoney(
+                        p
+                    ) < 15
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+
+                    state.freePickOnly &&
+
+                    !p.freePick
+
+                ) {
+
+                    return false;
+
+                }
+
+
+                if (
+                    text
+                ) {
+
+                    const blob = `
+
+                        ${p.game || ""}
+
+                        ${p.pick || ""}
+
+                        ${p.market || ""}
+
+                        ${p.reason || ""}
+
+                    `.toLowerCase();
+
+
+                    if (
+
+                        !blob.includes(
+                            text
+                        )
+
+                    ) {
+
+                        return false;
+
+                    }
+
+                }
+
+
+                return true;
+
+            }
+
+        );
+
+
+    return result.sort(
+
+        (a, b) => {
+
+
+            if (
+                state.sort === "time"
+            ) {
+
+                return (
+
+                    new Date(
+                        a.iso || 0
+                    ) -
+
+                    new Date(
+                        b.iso || 0
+                    )
+
+                );
+
+            }
+
+
+            if (
+                state.sort === "score"
+            ) {
+
+                return (
+
+                    (
+                        b.score ||
+                        0
+                    ) -
+
+                    (
+                        a.score ||
+                        0
+                    )
+
+                );
+
+            }
+
+
+            if (
+                state.sort === "edge"
+            ) {
+
+                return (
+
+                    calculateEdge(
+                        b
+                    ) -
+
+                    calculateEdge(
+                        a
+                    )
+
+                );
+
+            }
+
+
+            if (
+                state.sort ===
+                "recommended"
+            ) {
+
+                const scoreA =
+
+                    (
+                        isPremium(
+                            a
+                        )
+                            ?
+
+                        1000
+
+                            :
+
+                        0
+
+                    ) +
+
+                    (
+                        a.score ||
+                        0
+                    );
+
+
+                const scoreB =
+
+                    (
+                        isPremium(
+                            b
+                        )
+                            ?
+
+                        1000
+
+                            :
+
+                        0
+
+                    ) +
+
+                    (
+                        b.score ||
+                        0
+                    );
+
+
+                return (
+                    scoreB -
+                    scoreA
+                );
+
+            }
+
+
+            return 0;
+
+        }
+
+    );
+
+}
+
+
+/* ============================================================
+   DRAW HISTORY
+============================================================ */
+
+function drawHistory(
+    list
+) {
+
+    const tbody =
+        document.getElementById(
+            "historyBody"
+        );
+
+
+    if (
+        !tbody
+    ) {
+
+        return;
+
+    }
+
+
+    tbody.innerHTML =
+        "";
+
+
+    list.forEach(
+
+        p => {
+
+
+            const config =
+                getVisualConfig(
+                    p
+                );
+
+
+            let resText =
+                "PENDIENTE";
+
+
+            let resColor =
+                "var(--muted)";
+
+
+            if (
+
+                p.result === "WON" ||
+
+                p.result === "WIN"
+
+            ) {
+
+                resText =
+                    "GANADA ✔";
+
+
+                resColor =
+                    "var(--teal)";
+
+            }
+
+
+            else if (
+
+                p.result === "LOST" ||
+
+                p.result === "LOSS"
+
+            ) {
+
+                resText =
+                    "PERDIDA ❌";
+
+
+                resColor =
+                    "var(--red)";
+
+            }
+
+
+            else if (
+                p.result
+            ) {
+
+                resText =
+                    p.result;
+
+            }
+
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            tr.innerHTML = `
+
+                <td
+                    style="font-size:12px;"
+                >
+
+                    ${p.date || ""}
+
+                    ${p.time || ""}
+
+                </td>
+
+
+                <td>
+
+                    <div
+                        style="font-weight:700;"
+                    >
+
+                        ${p.game || ""}
+
+                    </div>
+
+
+                    <div
+                        style="
+                            color:var(--muted);
+                            font-size:11px;
+                        "
+                    >
+
+                        ${p.league || ""}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div
+                        style="font-weight:600;"
+                    >
+
+                        ${p.pick || ""}
+
+                    </div>
+
+
+                    <div
+                        style="
+                            color:var(--muted);
+                            font-size:11px;
+                        "
+                    >
+
+                        ${p.market || ""}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <b>
+                        ${trendTag(
+                            p.trendKey
+                        )}
+                    </b>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="badge-action"
+
+                        style="
+                            background:
+                                ${config.bg};
+
+                            color:
+                                ${config.text};
+
+                            border-color:
+                                ${config.border};
+
+                            font-size:
+                                10px;
+
+                            padding:
+                                2px 6px;
+                        "
+                    >
+
+                        ${config.label}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="
+                            badge-tag
+                            ${riskBadgeClass(
+                                p.risk
+                            )}
+                        "
+                    >
+
+                        ${p.risk || "NORMAL"}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <b
+                        style="
+                            color:${resColor}
+                        "
+                    >
+
+                        ${resText}
+
+                    </b>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                tr
+            );
+
+        }
+
+    );
+
+}
+
+
+/* ============================================================
+   DRAW CARDS
+
+   Mantén aquí tu drawCards() original.
+   Esta función no necesita cambios para
+   la carga histórica.
+============================================================ */
+
+
+/* ============================================================
+   RENDER
+============================================================ */
 
 async function render() {
-    const emptyState = document.getElementById("emptyState");
-    const emptyMsg = document.getElementById("emptyStateMsg");
-    const cardsView = document.getElementById("cardsView");
-    const historyView = document.getElementById("historyView");
 
-    // 1. VISTA DE TARJETAS (Picks Activos / Pendientes)
-    if (state.view === "cards") {
-        historyView.style.display = "none";
-        
-        if (!Array.isArray(PICKS) || PICKS.length === 0) {
-            emptyState.style.display = "block";
-            emptyMsg.innerText = "No se encontraron registros activos operables bajo estos parámetros.";
-            cardsView.style.display = "none";
+    const emptyState =
+        document.getElementById(
+            "emptyState"
+        );
+
+
+    const emptyMsg =
+        document.getElementById(
+            "emptyStateMsg"
+        );
+
+
+    const cardsView =
+        document.getElementById(
+            "cardsView"
+        );
+
+
+    const historyView =
+        document.getElementById(
+            "historyView"
+        );
+
+
+    /* ========================================================
+       CARDS
+    ======================================================== */
+
+    if (
+        state.view === "cards"
+    ) {
+
+        historyView.style.display =
+            "none";
+
+
+        if (
+
+            !Array.isArray(
+                PICKS
+            ) ||
+
+            PICKS.length === 0
+
+        ) {
+
+            emptyState.style.display =
+                "block";
+
+
+            emptyMsg.innerText =
+
+                "No se encontraron registros activos operables bajo estos parámetros.";
+
+
+            cardsView.style.display =
+                "none";
+
+
             return;
+
         }
 
-        const filteredPicks = applyFiltersAndSort(PICKS);
-        updateMetrics(filteredPicks);
 
-        const activePicks = filteredPicks.filter(isEventPending);
-        updateChartsData(activePicks);
+        const filteredPicks =
+            applyFiltersAndSort(
+                PICKS
+            );
 
-        if (activePicks.length === 0) {
-            emptyState.style.display = "block";
-            emptyMsg.innerText = "No se encontraron eventos activos que coincidan con los filtros.";
-            cardsView.style.display = "none";
-        } else {
-            emptyState.style.display = "none";
-            cardsView.style.display = "grid";
-            drawCards(activePicks);
+
+        const activePicks =
+            filteredPicks.filter(
+                isEventPending
+            );
+
+
+        updateChartsData(
+            activePicks
+        );
+
+
+        if (
+            activePicks.length === 0
+        ) {
+
+            emptyState.style.display =
+                "block";
+
+
+            emptyMsg.innerText =
+
+                "No se encontraron eventos activos que coincidan con los filtros.";
+
+
+            cardsView.style.display =
+                "none";
+
         }
-    } 
-    // 2. VISTA DE HISTORIAL (Carga Dinámica de los JSONs históricos)
-    else if (state.view === "history") {
-        cardsView.style.display = "none";
-        historyView.style.display = "block";
-        emptyState.style.display = "none";
 
-        const tbody = document.getElementById("historyBody");
-        if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="7" class="history-loading">⏳ Cargando datos históricos de Sharpie...</td></tr>`;
+        else {
+
+            emptyState.style.display =
+                "none";
+
+
+            cardsView.style.display =
+                "grid";
+
+
+            drawCards(
+                activePicks
+            );
+
         }
 
-        const fullHistoryDataset = await loadHistoryDataset();
-        const filteredHistory = applyFiltersAndSort(fullHistoryDataset);
 
-        if (filteredHistory.length === 0) {
-            if (tbody) tbody.innerHTML = "";
-            emptyState.style.display = "block";
-            emptyMsg.innerText = "No se encontraron registros históricos para las fechas y filtros seleccionados.";
-        } else {
-            emptyState.style.display = "none";
-            drawHistory(filteredHistory);
-        }
+        return;
+
     }
+
+
+    /* ========================================================
+       HISTORIAL
+
+       IMPORTANTE:
+
+       Aquí NO hacemos fetch.
+
+       El fetch solo se ejecuta
+       al presionar Cargar Fecha.
+    ======================================================== */
+
+    if (
+        state.view === "history"
+    ) {
+
+        cardsView.style.display =
+            "none";
+
+
+        historyView.style.display =
+            "block";
+
+
+        emptyState.style.display =
+            "none";
+
+
+        return;
+
+    }
+
 }
+
+
+/* ============================================================
+   SETUP FILTERS
+============================================================ */
 
 function setupFilters() {
-    let dates = new Set();
-    let leagues = new Set();
 
-    if (Array.isArray(PICKS)) {
-        PICKS.forEach(p => {
-            if (p.date) dates.add(p.date);
-            if (p.league) leagues.add(p.league);
-        });
+
+    /* ========================================================
+       DATEPICKER DEL HISTORIAL
+    ======================================================== */
+
+    const historyDatePicker =
+        document.getElementById(
+            "historyDatePicker"
+        );
+
+
+    const historyLoadButton =
+        document.getElementById(
+            "historyLoadButton"
+        );
+
+
+    if (
+        historyDatePicker
+    ) {
+
+        historyDatePicker.value =
+            getTodayDateString();
+
     }
 
-    getRecentDatesList(15).forEach(d => dates.add(d));
 
-    function buildSelector(id, placeholder, set) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.innerHTML = `<option value="">${placeholder}</option>`;
-        [...set].sort().reverse().forEach(v => {
-            el.innerHTML += `<option value="${v}">${v}</option>`;
-        });
-        el.addEventListener("change", e => {
-            const field = id === "fClassification" ? "classification" : id.replace("f", "").toLowerCase();
-            state[field] = e.target.value;
-            render();
-        });
-    }
+    if (
+        historyLoadButton
+    ) {
 
-    buildSelector("fDate", "📆 Todas las fechas", dates);
-    buildSelector("fLeague", "🏆 Todas las ligas", leagues);
+        historyLoadButton.addEventListener(
 
-    const trendEl = document.getElementById("fTrend");
-    if (trendEl) {
-        trendEl.addEventListener("change", e => {
-            state.trend = e.target.value;
-            render();
-        });
-    }
+            "click",
 
-    const classificationEl = document.getElementById("fClassification");
-    if (classificationEl) {
-        classificationEl.addEventListener("change", e => {
-            state.classification = e.target.value;
-            render();
-        });
-    }
+            function () {
 
-    const riskEl = document.getElementById("fRisk");
-    if (riskEl) {
-        riskEl.addEventListener("change", e => {
-            state.risk = e.target.value;
-            render();
-        });
-    }
+                loadSelectedHistoryDate();
 
-    const bindNumInput = (id, stateKey) => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener("input", e => {
-                const val = parseFloat(e.target.value);
-                state[stateKey] = isNaN(val) ? null : val;
-                render();
-            });
-        }
-    };
-
-    const bindOddsInput = (id, stateKey) => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener("input", e => {
-                const val = e.target.value.trim();
-                state[stateKey] = val === "" ? null : val;
-                render();
-            });
-        }
-    };
-
-    bindNumInput("fModeloMin", "modeloMin");
-    bindNumInput("fModeloMax", "modeloMax");
-    bindOddsInput("fCuotaMin", "cuotaMin");
-    bindOddsInput("fCuotaMax", "cuotaMax");
-    bindNumInput("fEdgeMin", "edgeMin");
-    bindNumInput("fEdgeMax", "edgeMax");
-    bindNumInput("fScoreMin", "scoreMin");
-    bindNumInput("fScoreMax", "scoreMax");
-    bindNumInput("fEvMin", "evMin");
-    bindNumInput("fEvMax", "evMax");
-    bindNumInput("fStakeMin", "stakeMin");
-    bindNumInput("fStakeMax", "stakeMax");
-
-    const btnAdv = document.getElementById("btnAdvToggle");
-    const advPanel = document.getElementById("advFiltersPanel");
-    if (btnAdv && advPanel) {
-        btnAdv.addEventListener("click", () => {
-            const isOpen = advPanel.classList.contains("show");
-            if (isOpen) {
-                advPanel.classList.remove("show");
-                btnAdv.setAttribute("aria-pressed", "false");
-            } else {
-                advPanel.classList.add("show");
-                btnAdv.setAttribute("aria-pressed", "true");
             }
-        });
+
+        );
+
     }
 
-    const sortEl = document.getElementById("fSort");
-    if (sortEl) {
-        sortEl.addEventListener("change", e => {
-            state.sort = e.target.value;
+
+    /* ========================================================
+       SELECTORES
+    ======================================================== */
+
+    let dates =
+        new Set();
+
+
+    let leagues =
+        new Set();
+
+
+    if (
+        Array.isArray(
+            PICKS
+        )
+    ) {
+
+        PICKS.forEach(
+
+            p => {
+
+                if (
+                    p.date
+                ) {
+
+                    dates.add(
+                        p.date
+                    );
+
+                }
+
+
+                if (
+                    p.league
+                ) {
+
+                    leagues.add(
+                        p.league
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+
+    getRecentDatesList(
+        15
+    ).forEach(
+
+        d => dates.add(
+            d
+        )
+
+    );
+
+
+    function buildSelector(
+        id,
+        placeholder,
+        set
+    ) {
+
+        const el =
+            document.getElementById(
+                id
+            );
+
+
+        if (
+            !el
+        ) {
+
+            return;
+
+        }
+
+
+        el.innerHTML =
+
+            `<option value="">${placeholder}</option>`;
+
+
+        [...set]
+            .sort()
+            .reverse()
+            .forEach(
+
+                v => {
+
+                    el.innerHTML +=
+
+                        `<option value="${v}">${v}</option>`;
+
+                }
+
+            );
+
+
+        el.addEventListener(
+
+            "change",
+
+            e => {
+
+
+                const field =
+
+                    id ===
+                    "fClassification"
+
+                        ?
+
+                    "classification"
+
+                        :
+
+                    id
+                        .replace(
+                            "f",
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                state[
+                    field
+                ] =
+
+                    e.target.value;
+
+
+                render();
+
+            }
+
+        );
+
+    }
+
+
+    buildSelector(
+
+        "fDate",
+
+        "📆 Todas las fechas",
+
+        dates
+
+    );
+
+
+    buildSelector(
+
+        "fLeague",
+
+        "🏆 Todas las ligas",
+
+        leagues
+
+    );
+
+
+    /* ========================================================
+       TRENDS
+    ======================================================== */
+
+    const trendEl =
+        document.getElementById(
+            "fTrend"
+        );
+
+
+    if (
+        trendEl
+    ) {
+
+        trendEl.addEventListener(
+
+            "change",
+
+            e => {
+
+                state.trend =
+                    e.target.value;
+
+
+                render();
+
+            }
+
+        );
+
+    }
+
+
+    /* ========================================================
+       CLASIFICACIÓN
+    ======================================================== */
+
+    const classificationEl =
+        document.getElementById(
+            "fClassification"
+        );
+
+
+    if (
+        classificationEl
+    ) {
+
+        classificationEl.addEventListener(
+
+            "change",
+
+            e => {
+
+                state.classification =
+                    e.target.value;
+
+
+                render();
+
+            }
+
+        );
+
+    }
+
+
+    /* ========================================================
+       RIESGO
+    ======================================================== */
+
+    const riskEl =
+        document.getElementById(
+            "fRisk"
+        );
+
+
+    if (
+        riskEl
+    ) {
+
+        riskEl.addEventListener(
+
+            "change",
+
+            e => {
+
+                state.risk =
+                    e.target.value;
+
+
+                render();
+
+            }
+
+        );
+
+    }
+
+
+    /* ========================================================
+       INPUTS NUMÉRICOS
+    ======================================================== */
+
+    const bindNumInput = (
+
+        id,
+
+        stateKey
+
+    ) => {
+
+
+        const el =
+            document.getElementById(
+                id
+            );
+
+
+        if (
+            el
+        ) {
+
+            el.addEventListener(
+
+                "input",
+
+                e => {
+
+
+                    const val =
+                        parseFloat(
+                            e.target.value
+                        );
+
+
+                    state[
+                        stateKey
+                    ] =
+
+                        isNaN(
+                            val
+                        )
+
+                            ?
+
+                        null
+
+                            :
+
+                        val;
+
+
+                    render();
+
+                }
+
+            );
+
+        }
+
+    };
+
+
+    bindNumInput(
+        "fModeloMin",
+        "modeloMin"
+    );
+
+
+    bindNumInput(
+        "fModeloMax",
+        "modeloMax"
+    );
+
+
+    bindNumInput(
+        "fEdgeMin",
+        "edgeMin"
+    );
+
+
+    bindNumInput(
+        "fEdgeMax",
+        "edgeMax"
+    );
+
+
+    bindNumInput(
+        "fScoreMin",
+        "scoreMin"
+    );
+
+
+    bindNumInput(
+        "fScoreMax",
+        "scoreMax"
+    );
+
+
+    bindNumInput(
+        "fEvMin",
+        "evMin"
+    );
+
+
+    bindNumInput(
+        "fEvMax",
+        "evMax"
+    );
+
+
+    bindNumInput(
+        "fStakeMin",
+        "stakeMin"
+    );
+
+
+    bindNumInput(
+        "fStakeMax",
+        "stakeMax"
+    );
+
+
+    /* ========================================================
+       CUOTAS
+    ======================================================== */
+
+    const bindOddsInput = (
+
+        id,
+
+        stateKey
+
+    ) => {
+
+
+        const el =
+            document.getElementById(
+                id
+            );
+
+
+        if (
+            el
+        ) {
+
+            el.addEventListener(
+
+                "input",
+
+                e => {
+
+
+                    const val =
+                        e.target.value.trim();
+
+
+                    state[
+                        stateKey
+                    ] =
+
+                        val === ""
+
+                            ?
+
+                        null
+
+                            :
+
+                        val;
+
+
+                    render();
+
+                }
+
+            );
+
+        }
+
+    };
+
+
+    bindOddsInput(
+        "fCuotaMin",
+        "cuotaMin"
+    );
+
+
+    bindOddsInput(
+        "fCuotaMax",
+        "cuotaMax"
+    );
+
+
+    /* ========================================================
+       ORDENAR
+    ======================================================== */
+
+    const sortEl =
+        document.getElementById(
+            "fSort"
+        );
+
+
+    if (
+        sortEl
+    ) {
+
+        sortEl.addEventListener(
+
+            "change",
+
+            e => {
+
+                state.sort =
+                    e.target.value;
+
+
+                render();
+
+            }
+
+        );
+
+    }
+
+
+    /* ========================================================
+       BUSCAR
+    ======================================================== */
+
+    const searchEl =
+        document.getElementById(
+            "search"
+        );
+
+
+    if (
+        searchEl
+    ) {
+
+        searchEl.addEventListener(
+
+            "input",
+
+            e => {
+
+                state.search =
+                    e.target.value;
+
+
+                render();
+
+            }
+
+        );
+
+    }
+
+
+    /* ========================================================
+       WHALE
+    ======================================================== */
+
+    const whaleBtn =
+        document.getElementById(
+            "whaleOnly"
+        );
+
+
+    if (
+        whaleBtn
+    ) {
+
+        whaleBtn.addEventListener(
+
+            "click",
+
+            () => {
+
+
+                state.whaleOnly =
+                    !state.whaleOnly;
+
+
+                whaleBtn.setAttribute(
+
+                    "aria-pressed",
+
+                    state.whaleOnly
+
+                );
+
+
+                render();
+
+            }
+
+        );
+
+    }
+
+
+    /* ========================================================
+       FREE PICKS
+    ======================================================== */
+
+    const freePickBtn =
+        document.getElementById(
+            "freePickOnly"
+        );
+
+
+    if (
+        freePickBtn
+    ) {
+
+        freePickBtn.addEventListener(
+
+            "click",
+
+            () => {
+
+
+                state.freePickOnly =
+                    !state.freePickOnly;
+
+
+                freePickBtn.setAttribute(
+
+                    "aria-pressed",
+
+                    state.freePickOnly
+
+                );
+
+
+                render();
+
+            }
+
+        );
+
+    }
+
+
+    /* ========================================================
+       VISTAS
+    ======================================================== */
+
+    const vCards =
+        document.getElementById(
+            "viewCards"
+        );
+
+
+    const vHist =
+        document.getElementById(
+            "viewHistory"
+        );
+
+
+    if (
+        vCards
+    ) {
+
+        vCards.onclick = () => {
+
+
+            state.view =
+                "cards";
+
+
+            toggleTabs(
+                "viewCards"
+            );
+
+
             render();
-        });
+
+        };
+
     }
 
-    const searchEl = document.getElementById("search");
-    if (searchEl) {
-        searchEl.addEventListener("input", e => { 
-            state.search = e.target.value; 
-            render(); 
-        });
-    }
 
-    const whaleBtn = document.getElementById("whaleOnly");
-    if (whaleBtn) {
-        whaleBtn.addEventListener("click", () => {
-            state.whaleOnly = !state.whaleOnly;
-            whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
+    if (
+        vHist
+    ) {
+
+        vHist.onclick = () => {
+
+
+            state.view =
+                "history";
+
+
+            toggleTabs(
+                "viewHistory"
+            );
+
+
             render();
-        });
+
+        };
+
     }
 
-    const freePickBtn = document.getElementById("freePickOnly");
-    if (freePickBtn) {
-        freePickBtn.addEventListener("click", () => {
-            state.freePickOnly = !state.freePickOnly;
-            freePickBtn.setAttribute("aria-pressed", state.freePickOnly);
-            render();
-        });
+
+    function toggleTabs(
+        activeId
+    ) {
+
+        [
+
+            "viewCards",
+
+            "viewHistory"
+
+        ].forEach(
+
+            id => {
+
+
+                const el =
+                    document.getElementById(
+                        id
+                    );
+
+
+                if (
+                    el
+                ) {
+
+                    el.setAttribute(
+
+                        "aria-pressed",
+
+                        id === activeId
+
+                    );
+
+                }
+
+            }
+
+        );
+
     }
 
-    const clearBtn = document.getElementById("clearBtn");
-    if (clearBtn) {
-        clearBtn.addEventListener("click", () => {
-            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; 
-            state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
-            
-            state.modeloMin = null; state.modeloMax = null;
-            state.cuotaMin = null; state.cuotaMax = null;
-            state.edgeMin = null; state.edgeMax = null;
-            state.scoreMin = null; state.scoreMax = null;
-            state.evMin = null; state.evMax = null;
-            state.stakeMin = null; state.stakeMax = null;
 
-            if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
-            if (searchEl) searchEl.value = "";
-            if (sortEl) sortEl.value = "time";
-            ["fDate", "fLeague", "fTrend", "fClassification", "fRisk"].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = "";
-            });
-            
-            [
-                "fModeloMin", "fModeloMax", "fCuotaMin", "fCuotaMax",
-                "fEdgeMin", "fEdgeMax", "fScoreMin", "fScoreMax",
-                "fEvMin", "fEvMax", "fStakeMin", "fStakeMax"
-            ].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = "";
-            });
-            
-            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", false);
-            render();
-        });
+    /* ========================================================
+       LIMPIAR FILTROS
+    ======================================================== */
+
+    const clearBtn =
+        document.getElementById(
+            "clearBtn"
+        );
+
+
+    if (
+        clearBtn
+    ) {
+
+        clearBtn.addEventListener(
+
+            "click",
+
+            () => {
+
+
+                state.search =
+                    "";
+
+                state.date =
+                    "";
+
+                state.league =
+                    "";
+
+                state.trend =
+                    "";
+
+                state.classification =
+                    "";
+
+                state.risk =
+                    "";
+
+                state.whaleOnly =
+                    false;
+
+                state.freePickOnly =
+                    false;
+
+                state.sort =
+                    "time";
+
+
+                if (
+                    searchEl
+                ) {
+
+                    searchEl.value =
+                        "";
+
+                }
+
+
+                if (
+                    sortEl
+                ) {
+
+                    sortEl.value =
+                        "time";
+
+                }
+
+
+                [
+
+                    "fDate",
+
+                    "fLeague",
+
+                    "fTrend",
+
+                    "fClassification",
+
+                    "fRisk"
+
+                ].forEach(
+
+                    id => {
+
+
+                        const el =
+                            document.getElementById(
+                                id
+                            );
+
+
+                        if (
+                            el
+                        ) {
+
+                            el.value =
+                                "";
+
+                        }
+
+                    }
+
+                );
+
+
+                if (
+                    whaleBtn
+                ) {
+
+                    whaleBtn.setAttribute(
+
+                        "aria-pressed",
+
+                        false
+
+                    );
+
+                }
+
+
+                if (
+                    freePickBtn
+                ) {
+
+                    freePickBtn.setAttribute(
+
+                        "aria-pressed",
+
+                        false
+
+                    );
+
+                }
+
+
+                render();
+
+            }
+
+        );
+
     }
 
-    const vCards = document.getElementById("viewCards");
-    if (vCards) vCards.onclick = () => { state.view = "cards"; toggleTabs("viewCards"); render(); };
-
-    const vHist = document.getElementById("viewHistory");
-    if (vHist) vHist.onclick = () => { state.view = "history"; toggleTabs("viewHistory"); render(); };
-
-    function toggleTabs(activeId) {
-        ["viewCards", "viewHistory"].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.setAttribute("aria-pressed", id === activeId);
-        });
-    }
 }
+
+
+/* ============================================================
+   TEMA
+============================================================ */
+
+const themeToggle =
+    document.getElementById(
+        "themeToggle"
+    );
+
+
+if (
+    themeToggle
+) {
+
+    themeToggle.addEventListener(
+
+        "click",
+
+        () => {
+
+
+            state.autoThemeEnabled =
+                false;
+
+
+            const doc =
+                document.documentElement;
+
+
+            const currentTheme =
+                doc.getAttribute(
+                    "data-theme"
+                );
+
+
+            doc.setAttribute(
+
+                "data-theme",
+
+                currentTheme === "dark"
+
+                    ?
+
+                "light"
+
+                    :
+
+                "dark"
+
+            );
+
+
+            initCharts();
+
+
+            render();
+
+        }
+
+    );
+
+}
+
+
+/* ============================================================
+   TEMA AUTOMÁTICO
+============================================================ */
+
+function updateThemeByTime() {
+
+    if (
+        !state.autoThemeEnabled
+    ) {
+
+        return;
+
+    }
+
+
+    const hour =
+        new Date().getHours();
+
+
+    const doc =
+        document.documentElement;
+
+
+    if (
+
+        hour >= 6 &&
+
+        hour < 19
+
+    ) {
+
+        doc.setAttribute(
+
+            "data-theme",
+
+            "light"
+
+        );
+
+    }
+
+    else {
+
+        doc.setAttribute(
+
+            "data-theme",
+
+            "dark"
+
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   MOTOR
+============================================================ */
 
 function initEngine() {
-    const clock = document.getElementById("clock");
-    
+
+
+    const clock =
+        document.getElementById(
+            "clock"
+        );
+
+
     updateThemeByTime();
+
+
     initCharts();
 
-    setInterval(() => {
-        if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];
-        
-        updateThemeByTime();
 
-        let needsReRender = false;
-        document.querySelectorAll(".countdown-timer").forEach(el => {
-            const iso = el.getAttribute("data-iso");
-            if (!iso) return;
-            const data = getCountdownText(iso);
-            el.innerText = data.text;
-            if (data.urgent) el.classList.add("urgent"); else el.classList.remove("urgent");
-            if (data.expired && state.view !== "history") needsReRender = true;
-        });
-        
-        if (needsReRender) render();
-    }, 1000);
+    setInterval(
+
+        () => {
+
+
+            if (
+                clock
+            ) {
+
+                clock.innerText =
+
+                    new Date()
+
+                        .toTimeString()
+
+                        .split(
+                            " "
+                        )[0];
+
+            }
+
+
+            updateThemeByTime();
+
+
+        },
+
+        1000
+
+    );
+
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    setupFilters();
-    initEngine();
-    render();
-});
+
+/* ============================================================
+   INICIALIZACIÓN
+
+   ÚNICO DOMContentLoaded
+============================================================ */
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+
+        console.log(
+
+            "✅ Sharpie Dashboard iniciado"
+
+        );
+
+
+        /* ====================================================
+           CONFIGURAR FILTROS
+        ==================================================== */
+
+        setupFilters();
+
+
+        /* ====================================================
+           MOTOR
+        ==================================================== */
+
+        initEngine();
+
+
+        /* ====================================================
+           RENDER INICIAL
+        ==================================================== */
+
+        render();
+
+
+    }
+
+);
+
 </script>
-</body>
-</html>
