@@ -382,7 +382,7 @@
             font-size: 14px;
         }
 
-        select, input[type="number"], .btn-chip, .btn-adv-toggle, .clear-btn {
+        select, input[type="number"], input[type="text"], .btn-chip, .btn-adv-toggle, .clear-btn {
             background: var(--panel2);
             border: 1px solid var(--border);
             color: var(--text);
@@ -1673,7 +1673,7 @@ function applyFiltersAndSort(list) {
             const maxDec = parseOddsToDecimal(state.cuotaMax);
             if (maxDec > 0 && itemOddsDec > maxDec) return false;
         }
-        
+
         // 3. Edge (%)
         const edgeVal = calculateEdge(p);
         if (state.edgeMin !== null && !isNaN(state.edgeMin) && edgeVal < state.edgeMin) return false;
