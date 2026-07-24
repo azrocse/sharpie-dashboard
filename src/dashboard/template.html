@@ -1076,30 +1076,67 @@
 
 <div class="adv-filters-panel" id="advFiltersPanel">
     <div class="adv-filters-grid">
-        <div class="adv-group">
-            <label class="adv-label">Prob. Implícita Min / Max (%)</label>
-            <div class="adv-inputs">
-                <input type="number" id="fProbMin" placeholder="0" min="0" max="100" step="1">
-                <span style="color:var(--muted);">-</span>
-                <input type="number" id="fProbMax" placeholder="100" min="0" max="100" step="1">
-            </div>
-        </div>
         
+        <!-- 1. Modelo (%) -->
         <div class="adv-group">
-            <label class="adv-label">Edge / Ventaja Mínima (%)</label>
+            <label class="adv-label">Modelo Min / Max (%)</label>
             <div class="adv-inputs">
-                <input type="number" id="fEdgeMin" placeholder="Mínimo %" step="0.1">
+                <input type="number" id="fModeloMin" placeholder="0" min="0" max="100" step="1">
+                <span style="color:var(--muted);">-</span>
+                <input type="number" id="fModeloMax" placeholder="100" min="0" max="100" step="1">
             </div>
         </div>
 
+        <!-- 2. Cuota (Soporta Americano y Decimal) -->
         <div class="adv-group">
-            <label class="adv-label">Score / EV Mínimo</label>
+            <label class="adv-label">Cuota Min / Max (+150, -110)</label>
             <div class="adv-inputs">
-                <input type="number" id="fScoreMin" placeholder="Score Min" step="1">
+                <input type="text" id="fCuotaMin" placeholder="-150 ó 1.5">
                 <span style="color:var(--muted);">-</span>
-                <input type="number" id="fEvMin" placeholder="EV Min %" step="0.1">
+                <input type="text" id="fCuotaMax" placeholder="+200 ó 3.0">
             </div>
         </div>
+
+        <!-- 3. Edge (%) -->
+        <div class="adv-group">
+            <label class="adv-label">Edge / Ventaja Min / Max (%)</label>
+            <div class="adv-inputs">
+                <input type="number" id="fEdgeMin" placeholder="Min %" step="0.1">
+                <span style="color:var(--muted);">-</span>
+                <input type="number" id="fEdgeMax" placeholder="Max %" step="0.1">
+            </div>
+        </div>
+
+        <!-- 4. Score -->
+        <div class="adv-group">
+            <label class="adv-label">Score Min / Max</label>
+            <div class="adv-inputs">
+                <input type="number" id="fScoreMin" placeholder="Min" step="1">
+                <span style="color:var(--muted);">-</span>
+                <input type="number" id="fScoreMax" placeholder="Max" step="1">
+            </div>
+        </div>
+
+        <!-- 5. EV (%) -->
+        <div class="adv-group">
+            <label class="adv-label">EV Min / Max (%)</label>
+            <div class="adv-inputs">
+                <input type="number" id="fEvMin" placeholder="Min %" step="0.1">
+                <span style="color:var(--muted);">-</span>
+                <input type="number" id="fEvMax" placeholder="Max %" step="0.1">
+            </div>
+        </div>
+
+        <!-- 6. Stake -->
+        <div class="adv-group">
+            <label class="adv-label">Stake Min / Max</label>
+            <div class="adv-inputs">
+                <input type="number" id="fStakeMin" placeholder="Min" step="0.25">
+                <span style="color:var(--muted);">-</span>
+                <input type="number" id="fStakeMax" placeholder="Max" step="0.25">
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -1178,11 +1215,19 @@ const state = {
     sort: "time",
     view: "cards",
     autoThemeEnabled: true,
-    probMin: null,
-    probMax: null,
+    // Filtros numéricos
+    modeloMin: null,
+    modeloMax: null,
+    cuotaMin: null,
+    cuotaMax: null,
     edgeMin: null,
+    edgeMax: null,
     scoreMin: null,
-    evMin: null
+    scoreMax: null,
+    evMin: null,
+    evMax: null,
+    stakeMin: null,
+    stakeMax: null
 };
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
@@ -1572,6 +1617,27 @@ document.addEventListener("click", () => {
     document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
 });
 
+// Helper para convertir cualquier formato (Americano o Decimal) a Decimal para comparar
+function parseOddsToDecimal(odds) {
+    if (odds == null || odds === "") return 0;
+    
+    let str = String(odds).trim();
+    let val = parseFloat(str);
+    if (isNaN(val)) return 0;
+
+    // Si es formato Americano (+150, -110)
+    if (str.startsWith('+') || str.startsWith('-') || val > 20 || val < -20) {
+        if (val > 0) {
+            return (val / 100) + 1; // Ej: +150 -> 2.50
+        } else if (val < 0) {
+            return (100 / Math.abs(val)) + 1; // Ej: -110 -> 1.909
+        }
+    }
+    
+    // Si ya es formato Decimal (ej: 1.91)
+    return val;
+}
+
 function applyFiltersAndSort(list) {
     if (!Array.isArray(list)) return [];
     const text = state.search.toLowerCase().trim();
@@ -1591,12 +1657,41 @@ function applyFiltersAndSort(list) {
             if (pRisk !== state.risk) return false;
         }
 
-        if (state.probMin !== null && !isNaN(state.probMin) && (p.modelProb || 0) < state.probMin) return false;
-        if (state.probMax !== null && !isNaN(state.probMax) && (p.modelProb || 0) > state.probMax) return false;
-        if (state.edgeMin !== null && !isNaN(state.edgeMin) && calculateEdge(p) < state.edgeMin) return false;
-        if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
-        if (state.evMin !== null && !isNaN(state.evMin) && Number(p.ev || 0) < state.evMin) return false;
+        // 1. Modelo (%)
+        if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
+        if (state.modeloMax !== null && !isNaN(state.modeloMax) && (p.modelProb || 0) > state.modeloMax) return false;
 
+// 2. Cuota (Validación universal: Americano <-> Decimal)
+        const itemOddsDec = parseOddsToDecimal(p.odds || p.cuota);
+        
+        if (state.cuotaMin !== null) {
+            const minDec = parseOddsToDecimal(state.cuotaMin);
+            if (minDec > 0 && itemOddsDec < minDec) return false;
+        }
+        
+        if (state.cuotaMax !== null) {
+            const maxDec = parseOddsToDecimal(state.cuotaMax);
+            if (maxDec > 0 && itemOddsDec > maxDec) return false;
+        }
+        
+        // 3. Edge (%)
+        const edgeVal = calculateEdge(p);
+        if (state.edgeMin !== null && !isNaN(state.edgeMin) && edgeVal < state.edgeMin) return false;
+        if (state.edgeMax !== null && !isNaN(state.edgeMax) && edgeVal > state.edgeMax) return false;
+
+        // 4. Score
+        if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
+        if (state.scoreMax !== null && !isNaN(state.scoreMax) && (p.score || 0) > state.scoreMax) return false;
+
+        // 5. EV (%)
+        const evVal = Number(p.ev || 0);
+        if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
+        if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
+
+        // 6. Stake
+        const stakeVal = Number(p.stake || 0);
+        if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
+        if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
         if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
         if (state.freePickOnly && !p.freePick) return false;
 
@@ -1621,23 +1716,27 @@ function applyFiltersAndSort(list) {
 }
 
 function copyPickForX(p) {
-    const dateStr = p.date || "Fecha TBD";
-    const timeStr = p.time || "Hora TBD";
-    const league = p.league || "General";
+    const dateStr = p.date || new Date().toLocaleDateString('es-MX');
+    const timeStr = p.time || "--:--";
+    const league = p.league ? `🏆 ${p.league}` : "";
     const game = p.game || "Evento";
-    const pickName = p.pick || "N/A";
+    const pickName = p.pick || "Selección";
     const market = p.market ? ` (${p.market})` : "";
-    const odds = p.odds || p.cuota || "EV";
+    const odds = p.odds || p.cuota || "Mkt";
     const stake = p.stake ? `${p.stake}u` : "1u";
 
     const copyText = 
 `🔥 FREE PICK
+
 📅 ${dateStr} | ⏰ ${timeStr}
-🏟️ ${league}
+${league}
 ⚔️ ${game}
+
 🎯 Pick: ${pickName}${market}
 💵 Cuota: ${odds}
-💰 Stake: ${stake}`;
+💰 Stake: ${stake}
+
+#ApuestasDeportivas #Picks`;
 
     navigator.clipboard.writeText(copyText).then(() => {
         showToastX();
@@ -1727,7 +1826,7 @@ function drawCards(list) {
                 ${p.freePick ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
                 ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
 
-                <button class="btn-copy-x" onclick='copyPickForX(${jsonStr})'>
+                <button class="btn-copy-x" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&apos;")})'>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
@@ -1929,11 +2028,31 @@ function setupFilters() {
         }
     };
 
-    bindNumInput("fProbMin", "probMin");
-    bindNumInput("fProbMax", "probMax");
+    // Helper especial para leer inputs de texto/número como cuota
+    const bindOddsInput = (id, stateKey) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", e => {
+                const val = e.target.value.trim();
+                state[stateKey] = val === "" ? null : val;
+                render();
+            });
+        }
+    };
+
+// Enlace dinámico de los 12 inputs del panel de Filtros Avanzados
+    bindNumInput("fModeloMin", "modeloMin");
+    bindNumInput("fModeloMax", "modeloMax");
+    bindOddsInput("fCuotaMin", "cuotaMin");
+    bindOddsInput("fCuotaMax", "cuotaMax");
     bindNumInput("fEdgeMin", "edgeMin");
+    bindNumInput("fEdgeMax", "edgeMax");
     bindNumInput("fScoreMin", "scoreMin");
+    bindNumInput("fScoreMax", "scoreMax");
     bindNumInput("fEvMin", "evMin");
+    bindNumInput("fEvMax", "evMax");
+    bindNumInput("fStakeMin", "stakeMin");
+    bindNumInput("fStakeMax", "stakeMax");
 
     const btnAdv = document.getElementById("btnAdvToggle");
     const advPanel = document.getElementById("advFiltersPanel");
@@ -1984,12 +2103,19 @@ function setupFilters() {
         });
     }
 
-    const clearBtn = document.getElementById("clearBtn");
+const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
             state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; 
             state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
-            state.probMin = null; state.probMax = null; state.edgeMin = null; state.scoreMin = null; state.evMin = null;
+            
+            // Limpiar valores numéricos del estado
+            state.modeloMin = null; state.modeloMax = null;
+            state.cuotaMin = null; state.cuotaMax = null;
+            state.edgeMin = null; state.edgeMax = null;
+            state.scoreMin = null; state.scoreMax = null;
+            state.evMin = null; state.evMax = null;
+            state.stakeMin = null; state.stakeMax = null;
 
             if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
             if (searchEl) searchEl.value = "";
@@ -1998,10 +2124,17 @@ function setupFilters() {
                 const el = document.getElementById(id);
                 if (el) el.value = "";
             });
-            ["fProbMin", "fProbMax", "fEdgeMin", "fScoreMin", "fEvMin"].forEach(id => {
+            
+            // Limpiar los 12 inputs del HTML
+            [
+                "fModeloMin", "fModeloMax", "fCuotaMin", "fCuotaMax",
+                "fEdgeMin", "fEdgeMax", "fScoreMin", "fScoreMax",
+                "fEvMin", "fEvMax", "fStakeMin", "fStakeMax"
+            ].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = "";
             });
+            
             if (whaleBtn) whaleBtn.setAttribute("aria-pressed", false);
             render();
         });
