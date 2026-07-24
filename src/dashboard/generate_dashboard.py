@@ -9,6 +9,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
 INPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
 SNAPSHOTS_DIR = os.path.join(BASE_DIR, "data", "snapshots")
+HISTORY_DIR = os.path.join(BASE_DIR, "data", "history")
 OUTPUT_DIR = BASE_DIR
 
 MAX_HISTORY_POINTS = 8
@@ -474,6 +475,26 @@ def build_picks(raw_data):
     return all_items
 
 # ============================================================
+# GUARDAR HISTORIAL DIARIO
+# ============================================================
+def save_daily_history(all_events, cdmx_now):
+    date_str = cdmx_now.strftime("%Y-%m-%d")
+    day_folder = os.path.join(HISTORY_DIR, date_str)
+    os.makedirs(day_folder, exist_ok=True)
+
+    history_file = os.path.join(day_folder, "sharpie.json")
+    payload = {
+        "generated_at": cdmx_now.strftime("%Y-%m-%d %H:%M:%S"),
+        "count": len(all_events),
+        "picks": all_events
+    }
+
+    with open(history_file, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    print(f"[OK] Historial del día guardado en: {history_file}")
+
+# ============================================================
 # GENERATE DASHBOARD
 # ============================================================
 def generate_dashboard():
@@ -502,6 +523,10 @@ def generate_dashboard():
 
     all_events = build_picks(raw_data)
 
+    # 1. Guardar copia procesada en data/history/YYYY-MM-DD/sharpie.json
+    save_daily_history(all_events, cdmx_now)
+
+    # 2. Inyectar datos en template
     json_data = json.dumps(all_events, ensure_ascii=False)
 
     html_content = html_template.replace("__GENERATED_AT__", now_str)
