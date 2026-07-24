@@ -1598,17 +1598,13 @@ function copyPickForX(p) {
     const stake = p.stake ? `${p.stake}u` : "1u";
 
     const copyText = 
-`🔥 FREE PICK
-
-📅 ${dateStr} | ⏰ ${timeStr}
-${league}
-⚔️ ${game}
-
-🎯 Pick: ${pickName}${market}
-💵 Cuota: ${odds}
-💰 Stake: ${stake}
-
-#ApuestasDeportivas #Picks`;
+        `🔥 FREE PICK
+        📅 ${dateStr} | ⏰ ${timeStr}
+        ${league}
+        🏟️ ${game}
+        🎯 Pick: ${pickName}${market}
+        💵 Cuota: ${odds}
+        💰 Stake: ${stake}`;
 
     navigator.clipboard.writeText(copyText).then(() => {
         showToastX();
