@@ -1865,21 +1865,46 @@ async function fetchHistoryForDate(dateStr) {
     if (historyCache[dateStr]) return historyCache[dateStr];
 
     const path = `src/data/history/${dateStr}/sharpie.json`;
+    
     try {
         const res = await fetch(path);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        const items = Array.isArray(data) ? data : (data.picks || []);
-        historyCache[dateStr] = items;
-        return items;
+        
+        const items = Array.isArray(data) ? data : (data.picks || data.data || []);
+        const itemsWithDate = items.map(item => ({
+            ...item,
+            date: item.date || dateStr
+        }));
+
+        historyCache[dateStr] = itemsWithDate;
+        return itemsWithDate;
     } catch (err) {
+        // Fallback por si la estructura cambia a src/data/history/YYYY-MM-DD.json
+        try {
+            const fallbackPath = `src/data/history/${dateStr}.json`;
+            const resFallback = await fetch(fallbackPath);
+            if (resFallback.ok) {
+                const dataFallback = await resFallback.json();
+                const itemsFallback = Array.isArray(dataFallback) ? dataFallback : (dataFallback.picks || dataFallback.data || []);
+                const itemsWithDate = itemsFallback.map(item => ({
+                    ...item,
+                    date: item.date || dateStr
+                }));
+                historyCache[dateStr] = itemsWithDate;
+                return itemsWithDate;
+            }
+        } catch (fErr) {
+            // Ignorar error fallback
+        }
+
         console.warn(`⚠️ No se pudo obtener el historial para la fecha ${dateStr} (${path}):`, err.message);
-        historyCache[dateStr] = []; // Guardar vacío en caché para evitar reintento innecesario
+        historyCache[dateStr] = []; // Evita reintentos innecesarios
         return [];
     }
 }
 
-function getRecentDatesList(days = 7) {
+function getRecentDatesList(days = 15) {
     const dates = [];
     const today = new Date();
     for (let i = 0; i < days; i++) {
@@ -1894,23 +1919,20 @@ async function loadHistoryDataset() {
     let rawHistory = [];
 
     if (state.date) {
-        // Cargar sólo la fecha seleccionada
         rawHistory = await fetchHistoryForDate(state.date);
     } else {
-        // Cargar un rango reciente (últimos 7 días) si no hay fecha seleccionada
-        const targetDates = getRecentDatesList(7);
+        const targetDates = getRecentDatesList(15);
         const results = await Promise.all(targetDates.map(d => fetchHistoryForDate(d)));
         rawHistory = results.flat();
     }
 
-    // Combinar también registros históricos presentes en el dataset activo (por si acaso)
-    if (Array.isArray(PICKS)) {
+    if (Array.isArray(PICKS) && PICKS.length > 0) {
         rawHistory = [...rawHistory, ...PICKS];
     }
 
-    // Remover duplicados si un pick tiene id único
     const seen = new Set();
     const uniqueHistory = [];
+    
     rawHistory.forEach(item => {
         const key = item.id || `${item.date}_${item.game}_${item.pick}_${item.market}`;
         if (!seen.has(key)) {
@@ -1955,7 +1977,7 @@ async function render() {
             drawCards(activePicks);
         }
     } 
-    // 2. VISTA DE HISTORIAL (Carga Dinámica e Independiente)
+    // 2. VISTA DE HISTORIAL (Carga Dinámica de los JSONs históricos)
     else if (state.view === "history") {
         cardsView.style.display = "none";
         historyView.style.display = "block";
@@ -1963,7 +1985,7 @@ async function render() {
 
         const tbody = document.getElementById("historyBody");
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="7" class="history-loading">⏳ Cargando datos históricos...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="history-loading">⏳ Cargando datos históricos de Sharpie...</td></tr>`;
         }
 
         const fullHistoryDataset = await loadHistoryDataset();
@@ -1972,7 +1994,7 @@ async function render() {
         if (filteredHistory.length === 0) {
             if (tbody) tbody.innerHTML = "";
             emptyState.style.display = "block";
-            emptyMsg.innerText = "No se encontraron registros históricos para los filtros aplicados.";
+            emptyMsg.innerText = "No se encontraron registros históricos para las fechas y filtros seleccionados.";
         } else {
             emptyState.style.display = "none";
             drawHistory(filteredHistory);
@@ -1991,8 +2013,7 @@ function setupFilters() {
         });
     }
 
-    // Agregar fechas recientes a las opciones del filtro de fecha
-    getRecentDatesList(10).forEach(d => dates.add(d));
+    getRecentDatesList(15).forEach(d => dates.add(d));
 
     function buildSelector(id, placeholder, set) {
         const el = document.getElementById(id);
