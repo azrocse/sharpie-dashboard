@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharpie · Panel de Señales de Alta Precisión</title>
+    <title>Sharp · Panel de Señales de Alta Precisión</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1275,7 +1275,6 @@ function isEventPending(p) {
     return true;
 }
 
-// CORREGIDO: Lee modelEdge primero, fallback a edge
 function calculateEdge(p) { 
     if (p.modelEdge !== undefined && p.modelEdge !== null) return Number(p.modelEdge);
     if (p.edge !== undefined && p.edge !== null) return Number(p.edge);
@@ -1350,17 +1349,14 @@ function getVisualConfig(p) {
     const action = (p.action || "").toUpperCase();
     const hasWhale = p.whale || (p.text && p.text.includes("WHALE"));
 
-    // 1. Si hay ballena detectada o el score real cruza el umbral alto (> 30)
     if (hasWhale || score >= 30 || action.includes("PREMIUM")) {
         return { key: "premium", bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
     }
     
-    // 2. Rango medio operativo (Scores entre 15 y 29 o etiquetas de valor)
     if (score >= 15 || action.includes("VALOR") || action.includes("NORMAL")) {
         return { key: "mixed", bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "🟨 VALOR OPERATIVO" };
     }
     
-    // 3. Scores muy bajos o descartables (< 15)
     if (score < 15) {
         return { key: "sin_ventaja", bg: "var(--red-soft)", border: "var(--red)", text: "var(--red)", label: "🔴 DESCARTAR" };
     }
@@ -1568,11 +1564,9 @@ function applyFiltersAndSort(list) {
             if (pRisk !== state.risk) return false;
         }
 
-        // 1. Modelo (%)
         if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
         if (state.modeloMax !== null && !isNaN(state.modeloMax) && (p.modelProb || 0) > state.modeloMax) return false;
 
-        // 2. Cuota
         const itemOddsDec = parseOddsToDecimal(p.odds || p.cuota);
         
         if (state.cuotaMin !== null) {
@@ -1585,27 +1579,22 @@ function applyFiltersAndSort(list) {
             if (maxDec > 0 && itemOddsDec > maxDec) return false;
         }
 
-        // 3. Edge (%)
         const edgeVal = calculateEdge(p);
         if (state.edgeMin !== null && !isNaN(state.edgeMin) && edgeVal < state.edgeMin) return false;
         if (state.edgeMax !== null && !isNaN(state.edgeMax) && edgeVal > state.edgeMax) return false;
 
-        // 4. Score
         if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
         if (state.scoreMax !== null && !isNaN(state.scoreMax) && (p.score || 0) > state.scoreMax) return false;
 
-        // 5. EV (%)
         const evVal = Number(p.ev || 0);
         if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
         if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
 
-        // 6. Stake
         const stakeVal = Number(p.stake || 0);
         if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
         if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
         if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
         
-        // CORREGIDO: Filtro de Free Pick verificado correctamente
         if (state.freePickOnly && !p.freePick) return false;
 
         if (text) {
@@ -1677,11 +1666,9 @@ function drawCards(list) {
 
             const evolutionHtml = buildEvolutionHtml(p);
 
-            // SEPARACIÓN DE FECHA Y HORA
             const fechaStr = p.date || '—';
             const horaStr = p.time || '--:--';
 
-            // LECTURA DE MÉTRICAS CON COLOR SEGÚN VALOR
             const edgeVal = calculateEdge(p);
             const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
             const edgeColor = edgeColorClass(edgeVal);
@@ -1765,7 +1752,10 @@ function drawCards(list) {
 
             const copyBtn = card.querySelector(`#btn-copy-${index}`);
             if (copyBtn) {
-                copyBtn.addEventListener("click", () => copyPickForX(p));
+                copyBtn.addEventListener("click", (e) => {
+                    e.stopPropagation(); // Evita interferencias de eventos
+                    copyPickForX(p);
+                });
             }
 
         } catch (err) {
@@ -1988,28 +1978,56 @@ function setupFilters() {
     }
 }
 
+function configurarRefrescoLocal() {
+    if (window.location.protocol === 'file:') {
+        console.log("Modo archivo local detectado: Activando autorrefresco de picks.");
+        setInterval(() => {
+            const selectorActivo = document.getElementById('fLeague')?.value;
+            if (selectorActivo) {
+                sessionStorage.setItem('temp_filtro', selectorActivo);
+            }
+            location.reload();
+        }, 60000); 
+    } else {
+        console.log("Modo servidor detectado: Comportamiento estático normal.");
+    }
+}
+
 function initEngine() {
     const clock = document.getElementById("clock");
     
     initCharts();
+    configurarRefrescoLocal();
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const filtroGuardado = sessionStorage.getItem('temp_filtro');
+        if (filtroGuardado && document.getElementById('fLeague')) {
+            document.getElementById('fLeague').value = filtroGuardado;
+            state.league = filtroGuardado;
+            sessionStorage.removeItem('temp_filtro');
+            render();
+        }
+    });
 
     setInterval(() => {
         if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];
         
         updateThemeByTime();
 
-        let needsReRender = false;
-        
         document.querySelectorAll(".countdown-timer").forEach(el => {
             const iso = el.getAttribute("data-iso");
             if (!iso) return;
             const data = getCountdownText(iso);
-            el.innerText = data.text;
-            if (data.urgent) el.classList.add("urgent"); else el.classList.remove("urgent");
-            if (data.expired) needsReRender = true;
+            if (el.innerText !== data.text) {
+                el.innerText = data.text;
+            }
+            if (data.urgent) {
+                el.classList.add("urgent");
+            } else {
+                el.classList.remove("urgent");
+            }
         });
         
-        if (needsReRender) render();
     }, 1000);
 }
 
