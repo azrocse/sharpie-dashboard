@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharp · Panel de Señales de Alta Precisión</title>
+    <title>Sharpie · Panel de Señales de Alta Precisión</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1978,42 +1978,17 @@ function setupFilters() {
     }
 }
 
-function configurarRefrescoLocal() {
-    if (window.location.protocol === 'file:') {
-        console.log("Modo archivo local detectado: Activando autorrefresco de picks.");
-        setInterval(() => {
-            const selectorActivo = document.getElementById('fLeague')?.value;
-            if (selectorActivo) {
-                sessionStorage.setItem('temp_filtro', selectorActivo);
-            }
-            location.reload();
-        }, 60000); 
-    } else {
-        console.log("Modo servidor detectado: Comportamiento estático normal.");
-    }
-}
-
 function initEngine() {
     const clock = document.getElementById("clock");
     
     initCharts();
-    configurarRefrescoLocal();
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const filtroGuardado = sessionStorage.getItem('temp_filtro');
-        if (filtroGuardado && document.getElementById('fLeague')) {
-            document.getElementById('fLeague').value = filtroGuardado;
-            state.league = filtroGuardado;
-            sessionStorage.removeItem('temp_filtro');
-            render();
-        }
-    });
 
     setInterval(() => {
         if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];
         
         updateThemeByTime();
 
+        // Actualiza el texto de los contadores en tiempo real sin destruir el DOM
         document.querySelectorAll(".countdown-timer").forEach(el => {
             const iso = el.getAttribute("data-iso");
             if (!iso) return;
