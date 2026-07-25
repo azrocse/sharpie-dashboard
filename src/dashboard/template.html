@@ -815,7 +815,6 @@
     <script>
         (function() {
             const hour = new Date().getHours();
-            // Si es de día (6am - 7pm) asignamos 'light', de lo contrario 'dark'
             const theme = (hour >= 6 && hour < 19) ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', theme);
         })();
@@ -1233,14 +1232,19 @@ if (themeToggle) {
     });
 }
 
-// CORREGIDO: Muestra todos los partidos disponibles de la jornada y solo oculta únicamente los explícitamente finalizados/resueltos
 function isEventPending(p) {
     const status = (p.status || "").toUpperCase();
     if (status === "FINISHED" || status === "WON" || status === "LOST" || status === "CANCELLED") return false;
     return true;
 }
 
-function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
+// CORREGIDO: Lee modelEdge primero, fallback a edge
+function calculateEdge(p) { 
+    if (p.modelEdge !== undefined && p.modelEdge !== null) return Number(p.modelEdge);
+    if (p.edge !== undefined && p.edge !== null) return Number(p.edge);
+    return 0; 
+}
+
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
 
 function trendArrow(curr, prev) {
@@ -1251,7 +1255,6 @@ function trendArrow(curr, prev) {
     return { arrow: '—', cls: 'evo-flat' };
 }
 
-// OPTIMIZADO: Filtra filas duplicadas y solo muestra cambios reales en Tickets, Dinero o Cuota
 function buildEvolutionHtml(p) {
     if (!p.history || !Array.isArray(p.history) || p.history.length === 0) return '';
 
@@ -1345,7 +1348,7 @@ function getVisualConfig(p) {
 function getCountdownText(isoString) {
     if (!isoString) return { text: "--:--:--", urgent: false, expired: false };
     const diff = new Date(isoString) - new Date();
-    if (diff <= 0) return { text: "⚽ EN JUEGO / INICIADO", urgent: true, expired: false };
+    if (diff <= 0) return { text: "⚽ EN JUEGO / INICIADO", urgent: true, expired: true };
     
     const hrs = Math.floor(diff / 3600000);
     const mins = Math.floor((diff % 3600000) / 60000);
@@ -1512,7 +1515,7 @@ function parseOddsToDecimal(odds) {
     let val = parseFloat(str);
     if (isNaN(val)) return 0;
 
-    if (str.startsWith('+') || str.startsWith('-') || val > 20 || val < -20) {
+    if (str.startsWith('+') || str.startsWith('-')) {
         if (val > 0) {
             return (val / 100) + 1;
         } else if (val < 0) {
@@ -1610,14 +1613,13 @@ function copyPickForX(p) {
     const odds = p.odds || p.cuota || "Mkt";
     const stake = p.stake ? `${p.stake}u` : "1u";
 
-    const copyText = 
-        `🔥 FREE PICK
-        📅 ${dateStr} | ⏰ ${timeStr}
-        ${league}
-        🏟️ ${game}
-        🎯 Pick: ${pickName}${market}
-        💵 Cuota: ${odds}
-        💰 Stake: ${stake}`;
+    const copyText = `🔥 FREE PICK
+📅 ${dateStr} | ⏰ ${timeStr}
+${league}
+🏟️ ${game}
+🎯 Pick: ${pickName}${market}
+💵 Cuota: ${odds}
+💰 Stake: ${stake}`;
 
     navigator.clipboard.writeText(copyText).then(() => {
         showToastX();
@@ -1652,9 +1654,14 @@ function drawCards(list) {
 
             const fechaHora = `${p.date ? p.date + ' ' : ''}${p.time || "--:--"}`;
 
+            // LECTURA DIRECTA DE MODEL EDGE
             const edgeVal = calculateEdge(p);
             const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
             const edgeColor = edgeVal >= 0 ? 'var(--teal)' : 'var(--red)';
+
+            // LECTURA DE MONEY EDGE (Opcional si viene de python)
+            const moneyEdgeVal = p.moneyEdge !== undefined ? Number(p.moneyEdge) : calculateSmartMoney(p);
+            const formattedMoneyEdge = moneyEdgeVal > 0 ? `+${moneyEdgeVal}%` : `${moneyEdgeVal}%`;
 
             const card = document.createElement("div");
             card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
@@ -1682,7 +1689,8 @@ function drawCards(list) {
                         <div class="grid-metrics">
                             <div>Modelo: <b class="mono">${p.modelProb || 0}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
                             <div>Cuota: <b class="mono" style="color:var(--amber);">${cuotaDetectada || '—'}</b></div>
-                            <div>Edge: <b class="mono" style="color:${edgeColor}">${formattedEdge}</b></div>
+                            <div>Edge Modelo: <b class="mono" style="color:${edgeColor}">${formattedEdge}</b></div>
+                            <div>Edge Dinero: <b class="mono">${formattedMoneyEdge}</b></div>
                             <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
                         </div>
                     </div>

@@ -1055,9 +1055,8 @@ def build_pick_history(
 
     return history
 
-
 # ============================================================
-# BUILD PICKS (RENDER DIRECTO DE EDGE DESDE JSON)
+# BUILD PICKS (CÓDIGO COMPLETO Y CORREGIDO FINAL)
 # ============================================================
 def build_picks(raw_data):
     _snapshot_cache.clear()
@@ -1103,84 +1102,53 @@ def build_picks(raw_data):
 
         date, time, iso = parse_match_datetime(market.get("time", ""))
 
-        # ====================================================
-        # HANDLE / BETS
-        # ====================================================
-        raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets", 50)))
-        raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle", 50)))
+        # ----------------------------------------------------
+        # 1. METRICAS DE VOLUMEN (HANDLE / BETS / MONEY EDGE)
+        # ----------------------------------------------------
+        raw_bets = market.get("bets", 50.0)
+        raw_handle = market.get("handle", 50.0)
 
         bets = safe_pct(raw_bets) if safe_pct(raw_bets) is not None else 50.0
         handle = safe_pct(raw_handle) if safe_pct(raw_handle) is not None else 50.0
+        
+        # El 3.0 de tu JSON (Diferencia de Handle vs Bets)
+        json_money_edge = float(market.get("edge", handle - bets))
 
-        # ====================================================
-        # ACTION / TREND / PATTERN
-        # ====================================================
-        action_text = market.get("action", "🔴 PASAR")
-        trend_text = market.get("trend", "➡️ ESTABLE")
-        diff = handle - bets
-        pattern_tag = market.get("pattern", market.get("trend", ""))
-
-        if not pattern_tag or pattern_tag in ["➡️ ESTABLE", "Neutral"]:
-            if diff >= 30 and handle >= 70:
-                pattern_tag = "⚡ Sharp Lean"
-            elif diff >= 45:
-                pattern_tag = "🔥 Sharp Divergence"
-            elif bets >= 65 and handle <= 40:
-                pattern_tag = "🚨 Public Trap"
-                action_text = "🔴 PASAR"
-            else:
-                pattern_tag = trend_text
-
-        # ====================================================
-        # SCORES & CUOTA
-        # ====================================================
-        market_score = safe_score(market.get("market_score", 0))
-        confidence = safe_score(market.get("confidence", market_score))
-        raw_odds = market.get("odds", market.get("cuota", "—"))
+        # ----------------------------------------------------
+        # 2. CUOTA Y PROBABILIDAD IMPLÍCITA
+        # ----------------------------------------------------
+        raw_odds = market.get("odds", "—")
         odds_str = str(raw_odds).strip() if raw_odds is not None else "—"
+        implied_prob = american_implied_probability(odds_str) if odds_str != "—" else None
 
-        # ====================================================
-        # PROBABILIDAD DEL MODELO
-        # ====================================================
-        raw_model = market.get("modelProb", market.get("model_prob", market.get("probability")))
+        # ----------------------------------------------------
+        # 3. PROBABILIDAD DEL MODELO Y MODEL EDGE REAL
+        # ----------------------------------------------------
+        raw_model = market.get("modelProb")
         model_prob = None
+
         if raw_model is not None:
             try:
-                val = float(str(raw_model).replace("%", "").strip())
+                val = float(raw_model)
                 model_prob = val * 100.0 if 0 < val <= 1.0 else val
             except (ValueError, TypeError):
                 model_prob = None
 
-        model_is_real = bool(market.get("modelIsReal", True))
-
-        # ====================================================
-        # PROBABILIDAD IMPLÍCITA
-        # ====================================================
-        implied_prob = american_implied_probability(odds_str) if odds_str != "—" else None
-
-        # ====================================================
-        # MODEL EDGE (EXTRACCIÓN DIRECTA DEL JSON)
-        # ====================================================
-        raw_edge = market.get("edge") if market.get("edge") is not None else market.get("model_edge")
-        
-        if raw_edge is not None:
-            try:
-                # Limpia caracteres como "%" o "+" y convierte a float
-                model_edge = float(str(raw_edge).replace("%", "").replace("+", "").strip())
-            except (ValueError, TypeError):
-                model_edge = 0.0
-        elif model_prob is not None and implied_prob is not None:
+        # Cálculo preciso del Model Edge: Modelo - Cuota Implícita
+        if model_prob is not None and implied_prob is not None:
             model_edge = model_prob - implied_prob
         else:
             model_edge = 0.0
 
-        # ====================================================
-        # EV
-        # ====================================================
+        model_is_real = bool(market.get("modelIsReal", False))
+
+        # ----------------------------------------------------
+        # 4. EV Y ESTRUCTURA DE SCORE
+        # ----------------------------------------------------
         raw_ev = market.get("ev")
         if raw_ev is not None and safe_float(raw_ev) != 0:
             ev = round(safe_float(raw_ev), 2)
-            ev_estimated = False
+            ev_estimated = bool(market.get("evEstimated", False))
         else:
             decimal_odds = american_to_decimal(odds_str) if odds_str != "—" else None
             if model_prob is not None and decimal_odds is not None:
@@ -1190,44 +1158,22 @@ def build_picks(raw_data):
                 ev = 0.0
                 ev_estimated = True
 
-        # ====================================================
-        # METRICAS Y SCORES
-        # ====================================================
+        action_text = market.get("action", "🔴 PASAR")
+        pattern_tag = market.get("pattern", market.get("trend", "⚪ Neutral"))
+
+        market_score = safe_score(market.get("market_score", 0))
+        confidence = safe_score(market.get("confidence", market_score))
         sharp_money = calculate_sharp_money_score(handle, bets)
         sharp_money_score = sharp_money["score"]
-        divergence = sharp_money["divergence"]
-        signed_divergence = sharp_money["signedDivergence"]
 
         model_edge_score = calculate_model_edge_score(model_edge)
         ev_score = calculate_ev_score(ev)
         value_score = calculate_value_score(model_edge_score, ev_score)
+        final_score = calculate_final_score(value_score, sharp_money_score, market_score, confidence)
 
-        final_score = calculate_final_score(
-            value_score, sharp_money_score, market_score, confidence
-        )
-
-        evaluation = classify_evaluation(
-            final_score, value_score, sharp_money_score, model_edge, ev
-        )
-
-        risk = calculate_risk(final_score, value_score, ev, model_edge, odds_str)
-        whale = detect_whale(market)
-
-        # ====================================================
-        # ACTION FINAL
-        # ====================================================
-        if bets >= 65 and handle <= 40:
-            action_text = "🔴 PASAR"
-        elif model_is_real and ev > 0 and model_edge > 0 and final_score >= 60:
-            action_text = "🟢 APOSTAR"
-        elif model_is_real and ev > 0 and model_edge > 0 and final_score >= 50:
-            action_text = "🟡 LEAN"
-        else:
-            action_text = "🔴 PASAR"
-
-        # ====================================================
-        # ITEM FINAL A RENDERIZAR
-        # ====================================================
+        # ----------------------------------------------------
+        # 5. OBJETO FINAL PARA EL DASHBOARD
+        # ----------------------------------------------------
         item = {
             "id": counter,
             "game": game or "Evento desconocido",
@@ -1240,7 +1186,7 @@ def build_picks(raw_data):
             "pattern": pattern_tag,
             "trend": pattern_tag,
             "trendKey": classify_trend(pattern_tag),
-            "priority": market.get("priority", ""),
+            "priority": market.get("priority", "👀 OBSERVAR"),
             "priorityKey": classify_priority(market.get("priority", "")),
             "stake": safe_float(market.get("stake", 0)),
             "score": final_score,
@@ -1251,29 +1197,28 @@ def build_picks(raw_data):
             "evScore": ev_score,
             "marketScore": market_score,
             "confidence": confidence,
+            
+            # PROBABILIDADES Y VENTAJAS
             "modelProb": round(model_prob, 2) if model_prob is not None else None,
             "modelEstimated": not model_is_real,
             "impliedProb": round(implied_prob, 2) if implied_prob is not None else None,
-            
-            # AHORA MODEL EDGE REFLEJA EXACTAMENTE LO QUE VENÍA EN EL JSON
-            "modelEdge": round(model_edge, 2),
+            "modelEdge": round(model_edge, 2),        # Ej: 0.5% (Modelo vs Cuota)
+            "moneyEdge": round(json_money_edge, 2),   # Ej: 3.0% (Handle vs Bets)
             
             "ev": ev,
             "evEstimated": ev_estimated,
-            "evaluation": evaluation,
-            "risk": risk,
+            "evaluation": classify_evaluation(final_score, value_score, sharp_money_score, model_edge, ev),
+            "risk": calculate_risk(final_score, value_score, ev, model_edge, odds_str),
+            "whale": detect_whale(market),
             "handlePct": round(handle, 2),
             "betsPct": round(bets, 2),
-            "divergence": round(divergence, 2),
-            "signedDivergence": round(signed_divergence, 2),
-            "whale": whale,
+            "divergence": round(sharp_money["divergence"], 2),
+            "signedDivergence": round(sharp_money["signedDivergence"], 2),
             "reason": market.get("reason", ""),
             "date": date,
             "time": time,
             "iso": iso,
-            "history": build_pick_history(
-                market.get("league", "Otras Ligas"), game, pick, market_name
-            ),
+            "history": build_pick_history(market.get("league", "Otras Ligas"), game, pick, market_name),
             "status": classify_status(market, iso),
             "result": market.get("result", "PENDING"),
             "roi": market.get("roi"),
