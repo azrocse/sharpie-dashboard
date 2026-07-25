@@ -449,148 +449,48 @@ def calculate_reliability_multiplier(
 # ============================================================
 # SCORE DE MODEL EDGE
 # ============================================================
-def calculate_model_edge_score(
-    model_edge
-):
-    if model_edge is None:
+def calculate_model_edge_score(model_edge):
+    if model_edge is None or model_edge <= 0:
         return 0.0
 
-    if model_edge <= 0:
-        return 0.0
-
-    if model_edge < 2:
-        score = (
-            model_edge /
-            2.0
-        ) * 20.0
-
-    elif model_edge < 4:
-        score = 20.0 + (
-            (
-                model_edge - 2.0
-            ) /
-            2.0
-        ) * 20.0
-
-    elif model_edge < 6:
-        score = 40.0 + (
-            (
-                model_edge - 4.0
-            ) /
-            2.0
-        ) * 20.0
-
-    elif model_edge < 8:
-        score = 60.0 + (
-            (
-                model_edge - 6.0
-            ) /
-            2.0
-        ) * 15.0
-
-    elif model_edge < 10:
-        score = 75.0 + (
-            (
-                model_edge - 8.0
-            ) /
-            2.0
-        ) * 10.0
-
-    elif model_edge < 12:
-        score = 85.0 + (
-            (
-                model_edge - 10.0
-            ) /
-            2.0
-        ) * 15.0
-
+    # Amplificación para rangos reales de 0% a 5%
+    if model_edge < 0.5:
+        score = (model_edge / 0.5) * 35.0
+    elif model_edge < 1.0:
+        score = 35.0 + ((model_edge - 0.5) / 0.5) * 20.0
+    elif model_edge < 2.0:
+        score = 55.0 + ((model_edge - 1.0) / 1.0) * 15.0
+    elif model_edge < 4.0:
+        score = 70.0 + ((model_edge - 2.0) / 2.0) * 15.0
+    elif model_edge < 6.0:
+        score = 85.0 + ((model_edge - 4.0) / 2.0) * 15.0
     else:
         score = 100.0
 
-    return round(
-        max(
-            0.0,
-            min(
-                100.0,
-                score
-            )
-        ),
-        1
-    )
-
+    return round(max(0.0, min(100.0, score)), 1)
 
 # ============================================================
 # SCORE DE EV
 # ============================================================
-def calculate_ev_score(
-    ev
-):
-    if ev is None:
+def calculate_ev_score(ev):
+    if ev is None or ev <= 0:
         return 0.0
 
-    if ev <= 0:
-        return 0.0
-
-    if ev < 2:
-        score = (
-            ev /
-            2.0
-        ) * 25.0
-
-    elif ev < 4:
-        score = 25.0 + (
-            (
-                ev - 2.0
-            ) /
-            2.0
-        ) * 20.0
-
-    elif ev < 6:
-        score = 45.0 + (
-            (
-                ev - 4.0
-            ) /
-            2.0
-        ) * 15.0
-
-    elif ev < 8:
-        score = 60.0 + (
-            (
-                ev - 6.0
-            ) /
-            2.0
-        ) * 15.0
-
-    elif ev < 10:
-        score = 75.0 + (
-            (
-                ev - 8.0
-            ) /
-            2.0
-        ) * 10.0
-
-    elif ev < 12:
-        score = 85.0 + (
-            (
-                ev - 10.0
-            ) /
-            2.0
-        ) * 15.0
-
+    # Amplificación para rangos de EV habituales
+    if ev < 0.5:
+        score = (ev / 0.5) * 40.0
+    elif ev < 1.0:
+        score = 40.0 + ((ev - 0.5) / 0.5) * 20.0
+    elif ev < 2.0:
+        score = 60.0 + ((ev - 1.0) / 1.0) * 15.0
+    elif ev < 4.0:
+        score = 75.0 + ((ev - 2.0) / 2.0) * 15.0
+    elif ev < 6.0:
+        score = 90.0 + ((ev - 4.0) / 2.0) * 10.0
     else:
         score = 100.0
 
-    return round(
-        max(
-            0.0,
-            min(
-                100.0,
-                score
-            )
-        ),
-        1
-    )
-
+    return round(max(0.0, min(100.0, score)), 1)
 
 # ============================================================
 # VALUE SCORE
@@ -663,30 +563,16 @@ def calculate_final_score(
 # ============================================================
 # EVALUACIÓN GENERAL
 # ============================================================
-def classify_evaluation(
-    final_score
-):
-    # Por qué un solo umbral basta: final_score = base(edge+microestructura)
-    # x reliability_multiplier. Con reliability=0.65 el score máximo posible
-    # es 65 (100 x 0.65) -- matemáticamente no puede llegar a PREMIUM (>=80)
-    # aunque el edge crudo sea perfecto. La confiabilidad ya está aplicada
-    # ANTES de comparar contra el umbral, así que no hace falta repetir
-    # condiciones de model_edge/ev por separado como antes.
-    if final_score >= 80:
+def classify_evaluation(final_score):
+    if final_score >= 70:
         return "PREMIUM"
-
-    if final_score >= 65:
+    if final_score >= 55:
         return "STRONG"
-
-    if final_score >= 50:
+    if final_score >= 40:
         return "LEAN"
-
-    if final_score >= 35:
+    if final_score >= 25:
         return "WATCH"
-
     return "PASS"
-
-
 # ============================================================
 # RIESGO
 # ============================================================

@@ -1347,36 +1347,22 @@ function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 &&
 
 function getVisualConfig(p) {
     const score = p.score || 0;
-    const key = p.trendKey;
-    const edge = calculateEdge(p);
-    const ev = Number(p.ev || 0);
+    const action = (p.action || "").toUpperCase();
+    const hasWhale = p.whale || (p.text && p.text.includes("WHALE"));
 
-    if (p.actionKey === "pass" && edge < 5) {
-        return { key: "sin_ventaja", bg: "var(--red-soft)", border: "var(--border)", text: "var(--muted)", label: "⚪ SIN VENTAJA" };
-    }
-
-    if (key === "mixed" || key === "public" || key === "consensus") {
-        if (edge >= 8 || ev >= 5 || score >= 70) {
-            return { 
-                key: "mixed",
-                bg: "var(--amber-soft)", 
-                border: "var(--amber)", 
-                text: "var(--amber)", 
-                label: `🟨 ${key === "mixed" ? "MIXTO" : key === "public" ? "PUBLIC" : "CONSENSO"}` 
-            };
-        } else {
-            return { 
-                key: "sin_ventaja",
-                bg: "var(--red-soft)", 
-                border: "var(--red)", 
-                text: "var(--red)", 
-                label: "⚠️ SIN EDGE" 
-            };
-        }
-    }
-
-    if (key === "sharp" || score >= 80) {
+    // 1. Si hay ballena detectada o el score real cruza el umbral alto (> 30)
+    if (hasWhale || score >= 30 || action.includes("PREMIUM")) {
         return { key: "premium", bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
+    }
+    
+    // 2. Rango medio operativo (Scores entre 15 y 29 o etiquetas de valor)
+    if (score >= 15 || action.includes("VALOR") || action.includes("NORMAL")) {
+        return { key: "mixed", bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "🟨 VALOR OPERATIVO" };
+    }
+    
+    // 3. Scores muy bajos o descartables (< 15)
+    if (score < 15) {
+        return { key: "sin_ventaja", bg: "var(--red-soft)", border: "var(--red)", text: "var(--red)", label: "🔴 DESCARTAR" };
     }
 
     return { key: "atento", bg: "var(--panel2)", border: "var(--border)", text: "var(--text)", label: "⚡ ATENTO" };
