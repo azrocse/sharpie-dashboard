@@ -1233,10 +1233,11 @@ if (themeToggle) {
     });
 }
 
+// CORREGIDO: Muestra todos los partidos disponibles de la jornada y solo oculta únicamente los explícitamente finalizados/resueltos
 function isEventPending(p) {
     const status = (p.status || "").toUpperCase();
-    if (status === "LIVE" || status === "FINISHED" || status === "WON" || status === "LOST") return false;
-    return status === "UPCOMING" || status === "PENDING" || !status;
+    if (status === "FINISHED" || status === "WON" || status === "LOST" || status === "CANCELLED") return false;
+    return true;
 }
 
 function calculateEdge(p) { return p.edge !== undefined ? Number(p.edge) : 0; }
@@ -1342,9 +1343,9 @@ function getVisualConfig(p) {
 }
 
 function getCountdownText(isoString) {
-    if (!isoString) return { text: "--:--:--", urgent: false, expired: true };
+    if (!isoString) return { text: "--:--:--", urgent: false, expired: false };
     const diff = new Date(isoString) - new Date();
-    if (diff <= 0) return { text: "¡INICIADO!", urgent: true, expired: true };
+    if (diff <= 0) return { text: "⚽ EN JUEGO / INICIADO", urgent: true, expired: false };
     
     const hrs = Math.floor(diff / 3600000);
     const mins = Math.floor((diff % 3600000) / 60000);
@@ -1649,10 +1650,8 @@ function drawCards(list) {
 
             const evolutionHtml = buildEvolutionHtml(p);
 
-            // CORRECCIÓN 1: Formateo de fecha + hora en la cabecera
             const fechaHora = `${p.date ? p.date + ' ' : ''}${p.time || "--:--"}`;
 
-            // CORRECCIÓN 3: Formateo dinámico del Edge sin el duplicado +-
             const edgeVal = calculateEdge(p);
             const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
             const edgeColor = edgeVal >= 0 ? 'var(--teal)' : 'var(--red)';
@@ -1720,7 +1719,6 @@ function drawCards(list) {
             `;
             box.appendChild(card);
 
-            // Listener directo para evitar romper sintaxis JSON en atributo inline
             const copyBtn = card.querySelector(`#btn-copy-${index}`);
             if (copyBtn) {
                 copyBtn.addEventListener("click", () => copyPickForX(p));
