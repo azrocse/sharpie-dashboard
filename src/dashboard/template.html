@@ -1250,14 +1250,24 @@ function trendArrow(curr, prev) {
     return { arrow: '—', cls: 'evo-flat' };
 }
 
+// OPTIMIZADO: Filtra filas duplicadas y solo muestra cambios reales en Tickets, Dinero o Cuota
 function buildEvolutionHtml(p) {
     if (!p.history || !Array.isArray(p.history) || p.history.length === 0) return '';
 
     const hasOdds = p.history.some(h => h.odds != null && h.odds !== '');
 
+    const filteredHistory = p.history.filter((h, i) => {
+        if (i === 0) return true;
+        const prev = p.history[i - 1];
+        const betsChanged = h.betsPct !== prev.betsPct;
+        const handleChanged = h.handlePct !== prev.handlePct;
+        const oddsChanged = hasOdds && h.odds !== prev.odds;
+        return betsChanged || handleChanged || oddsChanged;
+    });
+
     let rows = '';
-    p.history.forEach((h, i) => {
-        const prev = i > 0 ? p.history[i - 1] : null;
+    filteredHistory.forEach((h, i) => {
+        const prev = i > 0 ? filteredHistory[i - 1] : null;
         const betsTrend = prev ? trendArrow(h.betsPct, prev.betsPct) : { arrow: '', cls: '' };
         const handleTrend = prev ? trendArrow(h.handlePct, prev.handlePct) : { arrow: '', cls: '' };
         const oddsTrend = (prev && hasOdds) ? trendArrow(h.odds, prev.odds) : { arrow: '', cls: '' };
@@ -1431,6 +1441,8 @@ function renderStatRows(items) {
 
     return sortedUpcoming.map(p => {
         const e = calculateEdge(p);
+        const formattedEdge = e > 0 ? `+${e}%` : `${e}%`;
+        const edgeColor = e >= 0 ? 'var(--teal)' : 'var(--red)';
         const cuota = p.odds || p.cuota || "—";
         const timeStr = p.time || "--:--";
         return `
@@ -1440,7 +1452,7 @@ function renderStatRows(items) {
                     <div class="stat-row-pick"><b>${p.pick}</b> (${p.market || 'Mercado'}) · ${p.league || ''}</div>
                 </div>
                 <div class="stat-row-nums">
-                    <span style="color:${e >= 0 ? 'var(--teal)' : 'var(--red)'}">+${e}%</span>
+                    <span style="color:${edgeColor}">${formattedEdge}</span>
                     <span style="color:var(--amber)">${cuota}</span>
                 </div>
             </div>
@@ -1637,6 +1649,14 @@ function drawCards(list) {
 
             const evolutionHtml = buildEvolutionHtml(p);
 
+            // CORRECCIÓN 1: Formateo de fecha + hora en la cabecera
+            const fechaHora = `${p.date ? p.date + ' ' : ''}${p.time || "--:--"}`;
+
+            // CORRECCIÓN 3: Formateo dinámico del Edge sin el duplicado +-
+            const edgeVal = calculateEdge(p);
+            const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
+            const edgeColor = edgeVal >= 0 ? 'var(--teal)' : 'var(--red)';
+
             const card = document.createElement("div");
             card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
             card.style.borderColor = config.border;
@@ -1650,7 +1670,7 @@ function drawCards(list) {
                         </span>
                     </div>
                     <div class="meta-row">
-                        <span>${p.league || ''} · ${p.time || "--:--"}</span>
+                        <span>${p.league || ''} · ${fechaHora}</span>
                         <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
                             ${timerData.text}
                         </span>
@@ -1663,7 +1683,7 @@ function drawCards(list) {
                         <div class="grid-metrics">
                             <div>Modelo: <b class="mono">${p.modelProb || 0}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
                             <div>Cuota: <b class="mono" style="color:var(--amber);">${cuotaDetectada || '—'}</b></div>
-                            <div>Edge: <b class="mono" style="color:var(--teal)">+${calculateEdge(p)}%</b></div>
+                            <div>Edge: <b class="mono" style="color:${edgeColor}">${formattedEdge}</b></div>
                             <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
                         </div>
                     </div>
@@ -1929,13 +1949,12 @@ function setupFilters() {
 function initEngine() {
     const clock = document.getElementById("clock");
     
-    // updateThemeByTime(); <-- Eliminar o comentar esta línea al inicio
     initCharts();
 
     setInterval(() => {
         if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];
         
-        updateThemeByTime(); // Se mantiene en el intervalo por si el usuario deja la app abierta durante el cambio de hora
+        updateThemeByTime();
 
         let needsReRender = false;
         
