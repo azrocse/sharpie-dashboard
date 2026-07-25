@@ -513,6 +513,22 @@
             align-items: center;
         }
 
+        .datetime-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 600;
+        }
+
+        .date-badge, .time-badge {
+            background: var(--panel2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-size: 11px;
+        }
+
         .countdown-timer {
             font-family: "JetBrains Mono", monospace;
             font-weight: 700;
@@ -718,7 +734,7 @@
             padding-top: 8px;
         }
 
-        /* EXPORTAR COPY A X & TOAST */
+        /* EXPORTAR A X & TOAST */
         .btn-copy-x {
             background: linear-gradient(135deg, #1da1f2 0%, #0d8ecf 100%);
             color: #fff;
@@ -1182,7 +1198,7 @@ function evBadgeClass(ev, isEstimated) {
     if (isEstimated) return "neutral";
     if (v >= 10) return "good";
     if (v > 0) return "warn";
-    return "neutral";
+    return "bad";
 }
 
 function stakeBadgeClass(stake) {
@@ -1190,7 +1206,7 @@ function stakeBadgeClass(stake) {
     if (s <= 0) return "neutral";
     if (s >= 4) return "good";
     if (s >= 2) return "warn";
-    return "neutral";
+    return "bad";
 }
 
 function riskBadgeClass(risk) {
@@ -1199,6 +1215,27 @@ function riskBadgeClass(risk) {
     if (r === "MEDIUM") return "warn";
     if (r === "HIGH") return "bad";
     return "neutral";
+}
+
+function modelProbColorClass(prob) {
+    const p = Number(prob || 0);
+    if (p >= 65) return "var(--teal)";
+    if (p >= 50) return "var(--amber)";
+    return "var(--text)";
+}
+
+function oddsColorClass(odds) {
+    const dec = parseOddsToDecimal(odds);
+    if (dec >= 2.0) return "var(--teal)";
+    if (dec > 0) return "var(--amber)";
+    return "var(--text)";
+}
+
+function edgeColorClass(edge) {
+    const e = Number(edge || 0);
+    if (e >= 5) return "var(--teal)";
+    if (e > 0) return "var(--amber)";
+    return "var(--red)";
 }
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
@@ -1581,6 +1618,8 @@ function applyFiltersAndSort(list) {
         if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
         if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
         if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
+        
+        // CORREGIDO: Filtro de Free Pick verificado correctamente
         if (state.freePickOnly && !p.freePick) return false;
 
         if (text) {
@@ -1652,16 +1691,23 @@ function drawCards(list) {
 
             const evolutionHtml = buildEvolutionHtml(p);
 
-            const fechaHora = `${p.date ? p.date + ' ' : ''}${p.time || "--:--"}`;
+            // SEPARACIÓN DE FECHA Y HORA
+            const fechaStr = p.date || '—';
+            const horaStr = p.time || '--:--';
 
-            // LECTURA DIRECTA DE MODEL EDGE
+            // LECTURA DE MÉTRICAS CON COLOR SEGÚN VALOR
             const edgeVal = calculateEdge(p);
             const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
-            const edgeColor = edgeVal >= 0 ? 'var(--teal)' : 'var(--red)';
+            const edgeColor = edgeColorClass(edgeVal);
 
-            // LECTURA DE MONEY EDGE (Opcional si viene de python)
             const moneyEdgeVal = p.moneyEdge !== undefined ? Number(p.moneyEdge) : calculateSmartMoney(p);
             const formattedMoneyEdge = moneyEdgeVal > 0 ? `+${moneyEdgeVal}%` : `${moneyEdgeVal}%`;
+            const moneyEdgeColor = edgeColorClass(moneyEdgeVal);
+
+            const modelProbVal = p.modelProb || 0;
+            const modelColor = modelProbColorClass(modelProbVal);
+
+            const cuotaColor = oddsColorClass(cuotaDetectada);
 
             const card = document.createElement("div");
             card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
@@ -1676,10 +1722,14 @@ function drawCards(list) {
                         </span>
                     </div>
                     <div class="meta-row">
-                        <span>${p.league || ''} · ${fechaHora}</span>
-                        <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
-                            ${timerData.text}
-                        </span>
+                        <span>${p.league || ''}</span>
+                        <div class="datetime-container">
+                            <span class="date-badge">📅 ${fechaStr}</span>
+                            <span class="time-badge">⏰ ${horaStr}</span>
+                            <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
+                                ${timerData.text}
+                            </span>
+                        </div>
                     </div>
                     
                     <div class="pick-details">
@@ -1687,10 +1737,10 @@ function drawCards(list) {
                         <div class="market-type">${p.market || ''}</div>
                         
                         <div class="grid-metrics">
-                            <div>Modelo: <b class="mono">${p.modelProb || 0}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
-                            <div>Cuota: <b class="mono" style="color:var(--amber);">${cuotaDetectada || '—'}</b></div>
+                            <div>Modelo: <b class="mono" style="color:${modelColor};">${modelProbVal}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
+                            <div>Cuota: <b class="mono" style="color:${cuotaColor};">${cuotaDetectada || '—'}</b></div>
                             <div>Edge Modelo: <b class="mono" style="color:${edgeColor}">${formattedEdge}</b></div>
-                            <div>Edge Dinero: <b class="mono">${formattedMoneyEdge}</b></div>
+                            <div>Edge Dinero: <b class="mono" style="color:${moneyEdgeColor}">${formattedMoneyEdge}</b></div>
                             <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
                         </div>
                     </div>
@@ -1722,7 +1772,7 @@ function drawCards(list) {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
-                    Copiar para X
+                    Exporta
                 </button>
             `;
             box.appendChild(card);

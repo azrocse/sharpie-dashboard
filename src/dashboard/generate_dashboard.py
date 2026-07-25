@@ -418,79 +418,32 @@ def detect_whale(market):
 
 
 # ============================================================
-# SCORE DE SHARP MONEY
+# CONFIABILIDAD DEL DATO (multiplicador continuo)
 # ============================================================
-def calculate_sharp_money_score(
-    handle,
-    bets
+# NOTA: antes existía calculate_sharp_money_score(), que recalculaba
+# handle-bets con su propia tabla de buckets -- una fuente de la MISMA
+# señal (divergencia) que market_score, con matemática distinta. Eso
+# hacía que hasta 55% del score final fuera el mismo dato triplicado.
+# Ahora la Microestructura usa market_score de analyze.py directamente
+# (ya es continuo, ya está bien diseñado) y esta función solo calcula
+# el multiplicador de confiabilidad -- espejo exacto del de analyze.py,
+# usado como respaldo si el JSON fuente no trae el campo "reliability"
+# (por ejemplo, datos generados antes de este cambio).
+def calculate_reliability_multiplier(
+    model_is_real,
+    is_valid_price,
+    ev_is_suspicious
 ):
-    if (
-        handle is None
-        or bets is None
-    ):
-        return {
-            "score": 0.0,
-            "divergence": 0.0,
-            "signedDivergence": 0.0
-        }
+    if model_is_real and is_valid_price and not ev_is_suspicious:
+        return 1.00
 
-    signed_divergence = (
-        handle - bets
-    )
+    if model_is_real and is_valid_price and ev_is_suspicious:
+        return 0.80
 
-    divergence = abs(
-        signed_divergence
-    )
+    if not model_is_real and is_valid_price:
+        return 0.65
 
-    if signed_divergence <= 0:
-        score = 0.0
-
-    elif signed_divergence < 10:
-        score = 20.0
-
-    elif signed_divergence < 15:
-        score = 35.0
-
-    elif signed_divergence < 20:
-        score = 50.0
-
-    elif signed_divergence < 30:
-        score = 65.0
-
-    elif signed_divergence < 40:
-        score = 80.0
-
-    else:
-        score = 95.0
-
-    if (
-        handle >= 70
-        and signed_divergence >= 15
-    ):
-        score += 5.0
-
-    score = max(
-        0.0,
-        min(
-            100.0,
-            score
-        )
-    )
-
-    return {
-        "score": round(
-            score,
-            1
-        ),
-        "divergence": round(
-            divergence,
-            1
-        ),
-        "signedDivergence": round(
-            signed_divergence,
-            1
-        )
-    }
+    return 0.40
 
 
 # ============================================================
@@ -667,28 +620,40 @@ def calculate_value_score(
 # ============================================================
 # FINAL SCORE
 # ============================================================
+# Rediseñado: dos ejes ortogonales en vez de 4 componentes solapados.
+#   Edge Estadístico (value_score) = "¿tengo ventaja probabilística real?"
+#   Microestructura (market_score) = "¿el dinero inteligente confirma?"
+# El multiplicador de confiabilidad NO es un tercer sumando (ahí nacía
+# el bug de duplicar market_score vía 'confidence') -- es multiplicativo:
+# reduce el score ya calculado si el dato es débil, en vez de sumarle
+# peso propio que puede inflarlo.
 def calculate_final_score(
     value_score,
-    sharp_money_score,
     market_score,
-    confidence
+    reliability_multiplier
 ):
-    score = (
-        value_score * 0.45
+    base_score = (
+        value_score * 0.55
         +
-        sharp_money_score * 0.25
-        +
-        market_score * 0.15
-        +
-        confidence * 0.15
+        market_score * 0.45
     )
+
+    base_score = max(
+        0.0,
+        min(
+            100.0,
+            base_score
+        )
+    )
+
+    final = base_score * reliability_multiplier
 
     return round(
         max(
             0.0,
             min(
                 100.0,
-                score
+                final
             )
         ),
         1
@@ -699,36 +664,24 @@ def calculate_final_score(
 # EVALUACIÓN GENERAL
 # ============================================================
 def classify_evaluation(
-    final_score,
-    value_score,
-    sharp_money_score,
-    model_edge,
-    ev
+    final_score
 ):
-    if (
-        final_score >= 80
-        and value_score >= 70
-        and model_edge is not None
-        and model_edge > 0
-        and ev > 0
-    ):
+    # Por qué un solo umbral basta: final_score = base(edge+microestructura)
+    # x reliability_multiplier. Con reliability=0.65 el score máximo posible
+    # es 65 (100 x 0.65) -- matemáticamente no puede llegar a PREMIUM (>=80)
+    # aunque el edge crudo sea perfecto. La confiabilidad ya está aplicada
+    # ANTES de comparar contra el umbral, así que no hace falta repetir
+    # condiciones de model_edge/ev por separado como antes.
+    if final_score >= 80:
         return "PREMIUM"
 
-    if (
-        final_score >= 70
-        and value_score >= 60
-        and ev > 0
-    ):
+    if final_score >= 65:
         return "STRONG"
 
-    if (
-        final_score >= 60
-        and value_score >= 50
-        and ev > 0
-    ):
+    if final_score >= 50:
         return "LEAN"
 
-    if final_score >= 45:
+    if final_score >= 35:
         return "WATCH"
 
     return "PASS"
@@ -739,11 +692,16 @@ def classify_evaluation(
 # ============================================================
 def calculate_risk(
     final_score,
-    value_score,
-    ev,
-    model_edge,
+    reliability_multiplier,
     odds_str
 ):
+    # Antes: árbol paralelo con SUS PROPIOS umbrales de ev/model_edge,
+    # distintos a los de classify_evaluation -- por eso un pick podía
+    # salir "PREMIUM" (evaluation) y "HIGH" (risk) al mismo tiempo.
+    # Ahora ambos leen la misma fuente de verdad (final_score), y el
+    # riesgo solo suma una penalización extra por cuota tipo longshot,
+    # que es un factor de riesgo genuinamente distinto (volatilidad de
+    # resultado), no una segunda medición de edge.
     try:
         odds_val = int(
             str(
@@ -762,41 +720,22 @@ def calculate_risk(
     ):
         odds_val = -110
 
-    if (
-        ev <= 0
-        or model_edge is None
-        or model_edge <= 0
-    ):
-        return "HIGH"
+    if final_score >= 80:
+        risk = "LOW"
 
-    if (
-        final_score >= 80
-        and value_score >= 70
-        and ev >= 5
-    ):
-        if odds_val >= 200:
-            return "MEDIUM"
+    elif final_score >= 65:
+        risk = "LOW" if reliability_multiplier >= 0.80 else "MEDIUM"
 
-        return "LOW"
+    elif final_score >= 50:
+        risk = "MEDIUM"
 
-    if (
-        final_score >= 70
-        and value_score >= 60
-        and ev >= 3
-    ):
-        if odds_val >= 200:
-            return "MEDIUM"
+    else:
+        risk = "HIGH"
 
-        return "LOW"
+    if risk == "LOW" and odds_val >= 200:
+        risk = "MEDIUM"
 
-    if (
-        final_score >= 60
-        and value_score >= 50
-        and ev > 0
-    ):
-        return "MEDIUM"
-
-    return "HIGH"
+    return risk
 
 
 # ============================================================
@@ -1161,15 +1100,30 @@ def build_picks(raw_data):
         action_text = market.get("action", "🔴 PASAR")
         pattern_tag = market.get("pattern", market.get("trend", "⚪ Neutral"))
 
+        # Microestructura: market_score de analyze.py, directo, sin
+        # recomputar una segunda vez con otra fórmula (ahí vivía el bug
+        # de triplicar la misma señal handle-bets bajo 3 nombres).
         market_score = safe_score(market.get("market_score", 0))
-        confidence = safe_score(market.get("confidence", market_score))
-        sharp_money = calculate_sharp_money_score(handle, bets)
-        sharp_money_score = sharp_money["score"]
+
+        signed_divergence = round(handle - bets, 1)
+        divergence = round(abs(signed_divergence), 1)
+
+        # Confiabilidad: analyze.py ya la manda calculada ("reliability").
+        # Fallback solo por compatibilidad con JSON generado antes de este
+        # cambio (donde ese campo no existe).
+        reliability_multiplier = market.get("reliability")
+        if reliability_multiplier is None:
+            reliability_multiplier = calculate_reliability_multiplier(
+                model_is_real,
+                bool(market.get("is_price", False)),
+                bool(market.get("evSuspicious", False))
+            )
+        reliability_multiplier = max(0.0, min(1.0, safe_float(reliability_multiplier)))
 
         model_edge_score = calculate_model_edge_score(model_edge)
         ev_score = calculate_ev_score(ev)
         value_score = calculate_value_score(model_edge_score, ev_score)
-        final_score = calculate_final_score(value_score, sharp_money_score, market_score, confidence)
+        final_score = calculate_final_score(value_score, market_score, reliability_multiplier)
 
         # ----------------------------------------------------
         # 5. OBJETO FINAL PARA EL DASHBOARD
@@ -1191,12 +1145,12 @@ def build_picks(raw_data):
             "stake": safe_float(market.get("stake", 0)),
             "score": final_score,
             "finalScore": final_score,
-            "valueScore": value_score,
-            "sharpScore": sharp_money_score,
+            "valueScore": value_score,           # Edge Estadístico (model_edge 60% + EV 40%)
+            "sharpScore": market_score,          # Microestructura -- misma fuente que marketScore, ya no una 2a fórmula
             "modelEdgeScore": model_edge_score,
             "evScore": ev_score,
             "marketScore": market_score,
-            "confidence": confidence,
+            "confidence": round(reliability_multiplier * 100, 1),  # antes duplicaba market_score; ahora es la confiabilidad real del dato (0-100)
             
             # PROBABILIDADES Y VENTAJAS
             "modelProb": round(model_prob, 2) if model_prob is not None else None,
@@ -1207,13 +1161,14 @@ def build_picks(raw_data):
             
             "ev": ev,
             "evEstimated": ev_estimated,
-            "evaluation": classify_evaluation(final_score, value_score, sharp_money_score, model_edge, ev),
-            "risk": calculate_risk(final_score, value_score, ev, model_edge, odds_str),
+            "evaluation": classify_evaluation(final_score),
+            "risk": calculate_risk(final_score, reliability_multiplier, odds_str),
+            "reliability": round(reliability_multiplier, 2),
             "whale": detect_whale(market),
             "handlePct": round(handle, 2),
             "betsPct": round(bets, 2),
-            "divergence": round(sharp_money["divergence"], 2),
-            "signedDivergence": round(sharp_money["signedDivergence"], 2),
+            "divergence": divergence,
+            "signedDivergence": signed_divergence,
             "reason": market.get("reason", ""),
             "date": date,
             "time": time,
@@ -1224,7 +1179,10 @@ def build_picks(raw_data):
             "roi": market.get("roi"),
         }
 
-        item["freePick"] = action_text in ["🟢 APOSTAR", "🟡 LEAN"] and final_score >= 50
+        # Antes: "🟡 LEAN" nunca existe como action_text real (analyze.py
+        # manda "🔵 INCLINACIÓN") -- freePick solo se activaba con APOSTAR.
+        # Corregido para incluir el string que analyze.py realmente emite.
+        item["freePick"] = action_text in ["🟢 APOSTAR", "🔵 INCLINACIÓN"] and final_score >= 50
         all_items.append(item)
 
     all_items.reverse()
