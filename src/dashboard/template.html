@@ -531,6 +531,24 @@
 
         .fchip-remove:hover { opacity: 1; color: var(--red); }
 
+        /* INDICADOR REGISTROS */
+        .records-summary {
+            margin: -10px 0 20px 0;
+            padding: 10px 14px;
+            background-color: var(--panel2);
+            border-left: 4px solid var(--blue);
+            color: var(--text);
+            font-size: 0.85rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--border);
+            border-left-width: 4px;
+        }
+
+        .records-summary strong { color: var(--teal); }
+
         /* CARDS */
         #cardsView {
             display: grid;
@@ -891,7 +909,7 @@
     <div class="header-meta">
         <div class="timestamp-badge">
             <div id="clock" class="mono">--:--:--</div>
-            <div class="updated">Generado (CDMX): __GENERATED_AT__</div>
+            <div class="updated">Generado (CDMX): <span id="generatedAtVal">__GENERATED_AT__</span></div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
     </div>
@@ -1062,8 +1080,6 @@
     </div>
 
     <div class="adv-filters-grid">
-        
-        <!-- 1. Hora / Ventana Temporal -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">⏰ Hora / Rango</label>
@@ -1080,7 +1096,6 @@
             </div>
         </div>
 
-        <!-- 2. Modelo (%) -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">🤖 Modelo Prob. (%)</label>
@@ -1092,7 +1107,6 @@
             </div>
         </div>
 
-        <!-- 3. Cuota -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">💵 Cuota (1.91 / -110)</label>
@@ -1104,7 +1118,6 @@
             </div>
         </div>
 
-        <!-- 4. Edge Modelo (%) -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">📈 Edge Modelo (%)</label>
@@ -1116,7 +1129,6 @@
             </div>
         </div>
 
-        <!-- 5. Edge Dinero (%) -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">💰 Edge Dinero (%)</label>
@@ -1128,7 +1140,6 @@
             </div>
         </div>
 
-        <!-- 6. Score -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">🔥 Score Integral</label>
@@ -1140,7 +1151,6 @@
             </div>
         </div>
 
-        <!-- 7. EV (%) -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">📊 Valor Esperado EV (%)</label>
@@ -1152,7 +1162,6 @@
             </div>
         </div>
 
-        <!-- 8. Stake -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">🎯 Stake Recom.</label>
@@ -1164,7 +1173,6 @@
             </div>
         </div>
 
-        <!-- 9. Divergencia (%) -->
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">⚡ Divergencia Flujo (%)</label>
@@ -1178,8 +1186,12 @@
 
     </div>
 
-    <!-- Indicador dinámico de filtros activos -->
     <div class="active-filter-chips" id="activeFilterChips"></div>
+</div>
+
+<!-- Indicador de Registros -->
+<div id="recordsSummary" class="records-summary">
+    Mostrando <strong id="filteredCount">0</strong> de <strong id="totalCount">0</strong> registros activos
 </div>
 
 <div id="cardsView"></div>
@@ -1195,12 +1207,34 @@
 </div>
 
 <script>
-// Manejo seguro del Injected JSON para Tarjetas Activas
 let PICKS = [];
-if (typeof __PICKS_JSON__ !== "undefined" && Array.isArray(__PICKS_JSON__)) {
-    PICKS = __PICKS_JSON__;
-} else if (typeof window.picksData !== "undefined" && Array.isArray(window.picksData)) {
-    PICKS = window.picksData;
+
+// Función para sanitizar HTML y prevenir fallas o XSS
+function escapeHTML(str) {
+    return String(str || '').replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    });
+}
+
+// Función híbrida para obtener los datos
+async function loadData() {
+    if (typeof __PICKS_JSON__ !== "undefined" && Array.isArray(__PICKS_JSON__)) {
+        PICKS = __PICKS_JSON__;
+        return;
+    } 
+    if (typeof window.picksData !== "undefined" && Array.isArray(window.picksData)) {
+        PICKS = window.picksData;
+        return;
+    }
+    
+    try {
+        const response = await fetch('picks.json?v=' + Date.now());
+        if (response.ok) {
+            PICKS = await response.json();
+        }
+    } catch (e) {
+        console.warn("Carga externa vía fetch omitida o fallida:", e);
+    }
 }
 
 const state = {
@@ -1215,7 +1249,6 @@ const state = {
     sort: "time",
     autoThemeEnabled: true,
     
-    // 9 Filtros Avanzados
     timeRange: "",
     modeloMin: null,
     modeloMax: null,
@@ -1360,15 +1393,11 @@ function updateThemeByTime() {
 
     const hour = new Date().getHours();
     const doc = document.documentElement;
+    const targetTheme = (hour >= 6 && hour < 19) ? 'light' : 'dark';
     
-    if (hour >= 6 && hour < 19) {
-        if (doc.getAttribute("data-theme") !== "light") {
-            doc.setAttribute("data-theme", "light");
-        }
-    } else {
-        if (doc.getAttribute("data-theme") !== "dark") {
-            doc.setAttribute("data-theme", "dark");
-        }
+    if (doc.getAttribute("data-theme") !== targetTheme) {
+        doc.setAttribute("data-theme", targetTheme);
+        initCharts();
     }
 }
 
@@ -1431,10 +1460,10 @@ function buildEvolutionHtml(p) {
 
         rows += `
             <tr>
-                <td>🕒 ${h.time || '—'}</td>
+                <td>🕒 ${escapeHTML(h.time) || '—'}</td>
                 <td>${h.betsPct != null ? h.betsPct + '%' : '—'} <span class="${betsTrend.cls}">${betsTrend.arrow}</span></td>
                 <td style="color:var(--teal)">${h.handlePct != null ? h.handlePct + '%' : '—'} <span class="${handleTrend.cls}">${handleTrend.arrow}</span></td>
-                ${hasOdds ? `<td>${h.odds != null ? h.odds : '—'} <span class="${oddsTrend.cls}">${oddsTrend.arrow}</span></td>` : ''}
+                ${hasOdds ? `<td>${h.odds != null ? escapeHTML(h.odds) : '—'} <span class="${oddsTrend.cls}">${oddsTrend.arrow}</span></td>` : ''}
             </tr>
         `;
     });
@@ -1522,23 +1551,21 @@ function computeConfianzaDelDinero(fadeN, sharpN) {
     return { text: "Dividido", color: "var(--amber)" };
 }
 
-function updateMetrics(filteredPicks) {
-    const active = filteredPicks.filter(isEventPending);
-
+function updateMetrics(activePicks) {
     const elAnalizados = document.getElementById("statAnalizados");
-    if(elAnalizados) elAnalizados.innerText = active.length;
+    if(elAnalizados) elAnalizados.innerText = activePicks.length;
 
-    const whalePicks = active.filter(p => p.whale || p.trendKey === "sharp" || calculateSmartMoney(p) >= 15);
+    const whalePicks = activePicks.filter(p => p.whale || p.trendKey === "sharp" || calculateSmartMoney(p) >= 15);
     const elWhale = document.getElementById("statWhale");
     if(elWhale) elWhale.innerText = whalePicks.length;
     statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
 
-    const freePicks = active.filter(p => p.freePick);
+    const freePicks = activePicks.filter(p => p.freePick);
     const elFree = document.getElementById("statFree");
     if(elFree) elFree.innerText = freePicks.length;
     statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
 
-    const soonPicks = active.filter(p => {
+    const soonPicks = activePicks.filter(p => {
         if (!p.iso) return false;
         const d = (new Date(p.iso) - new Date()) / 60000;
         return d >= 0 && d <= 30;
@@ -1548,7 +1575,7 @@ function updateMetrics(filteredPicks) {
     statState.proximos = soonPicks;
 
     const buckets = { fade: [], sharp: [], consenso: [] };
-    active.forEach(p => buckets[classifyMarketBucket(p)].push(p));
+    activePicks.forEach(p => buckets[classifyMarketBucket(p)].push(p));
     statState.mercado = buckets;
     
     const elMercado = document.getElementById("statMercado");
@@ -1562,8 +1589,8 @@ function updateMetrics(filteredPicks) {
     const cardConf = document.getElementById("cardConfianza");
     if(cardConf) cardConf.style.borderLeftColor = conf.color;
 
-    const bestBet = [...active].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
-    const best = bestBet || [...active].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+    const bestBet = [...activePicks].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+    const best = bestBet || [...activePicks].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
     statState.mejor = best ? [best] : [];
     
     const elMejor = document.getElementById("statMejor");
@@ -1585,13 +1612,13 @@ function renderStatRows(items) {
         const e = calculateEdge(p);
         const formattedEdge = e > 0 ? `+${e}%` : `${e}%`;
         const edgeColor = e >= 0 ? 'var(--teal)' : 'var(--red)';
-        const cuota = p.odds || p.cuota || "—";
-        const timeStr = p.time || "--:--";
+        const cuota = escapeHTML(p.odds || p.cuota || "—");
+        const timeStr = escapeHTML(p.time || "--:--");
         return `
             <div class="stat-row">
                 <div class="stat-row-main">
-                    <div class="stat-row-game">🕒 ${timeStr} · ${p.game || 'Evento'}</div>
-                    <div class="stat-row-pick"><b>${p.pick}</b> (${p.market || 'Mercado'}) · ${p.league || ''}</div>
+                    <div class="stat-row-game">🕒 ${timeStr} · ${escapeHTML(p.game) || 'Evento'}</div>
+                    <div class="stat-row-pick"><b>${escapeHTML(p.pick)}</b> (${escapeHTML(p.market) || 'Mercado'}) · ${escapeHTML(p.league) || ''}</div>
                 </div>
                 <div class="stat-row-nums">
                     <span style="color:${edgeColor}">${formattedEdge}</span>
@@ -1752,7 +1779,6 @@ function applyFiltersAndSort(list) {
             if (pRisk !== state.risk) return false;
         }
 
-        // 1. Hora / Rango Temporal
         if (state.timeRange && p.iso) {
             const timer = getCountdownText(p.iso);
             const nowLocal = new Date();
@@ -1764,11 +1790,9 @@ function applyFiltersAndSort(list) {
             if (state.timeRange === "today" && p.date !== todayStr) return false;
         }
 
-        // 2. Modelo
         if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
         if (state.modeloMax !== null && !isNaN(state.modeloMax) && (p.modelProb || 0) > state.modeloMax) return false;
 
-        // 3. Cuota
         const itemOddsDec = parseOddsToDecimal(p.odds || p.cuota);
         if (state.cuotaMin !== null) {
             const minDec = parseOddsToDecimal(state.cuotaMin);
@@ -1779,31 +1803,25 @@ function applyFiltersAndSort(list) {
             if (maxDec > 0 && itemOddsDec > maxDec) return false;
         }
 
-        // 4. Edge Modelo
         const edgeVal = calculateEdge(p);
         if (state.edgeMin !== null && !isNaN(state.edgeMin) && edgeVal < state.edgeMin) return false;
         if (state.edgeMax !== null && !isNaN(state.edgeMax) && edgeVal > state.edgeMax) return false;
 
-        // 5. Edge Dinero
         const moneyEdgeVal = p.moneyEdge !== undefined ? Number(p.moneyEdge) : calculateSmartMoney(p);
         if (state.moneyEdgeMin !== null && !isNaN(state.moneyEdgeMin) && moneyEdgeVal < state.moneyEdgeMin) return false;
         if (state.moneyEdgeMax !== null && !isNaN(state.moneyEdgeMax) && moneyEdgeVal > state.moneyEdgeMax) return false;
 
-        // 6. Score
         if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
         if (state.scoreMax !== null && !isNaN(state.scoreMax) && (p.score || 0) > state.scoreMax) return false;
 
-        // 7. EV
         const evVal = Number(p.ev || 0);
         if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
         if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
 
-        // 8. Stake
         const stakeVal = Number(p.stake || 0);
         if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
         if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
 
-        // 9. Divergencia (Handle % - Bets %)
         const divVal = calculateSmartMoney(p);
         if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
         if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
@@ -1895,12 +1913,12 @@ function drawCards(list) {
             const isWhale = p.whale || p.trendKey === "sharp" || smDiff >= 15;
             const config = getVisualConfig(p);
             const timerData = getCountdownText(p.iso);
-            const cuotaDetectada = p.odds || p.cuota || null;
+            const cuotaDetectada = escapeHTML(p.odds || p.cuota || null);
 
             const evolutionHtml = buildEvolutionHtml(p);
 
-            const fechaStr = p.date || '—';
-            const horaStr = p.time || '--:--';
+            const fechaStr = escapeHTML(p.date || '—');
+            const horaStr = escapeHTML(p.time || '--:--');
 
             const edgeVal = calculateEdge(p);
             const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
@@ -1922,13 +1940,13 @@ function drawCards(list) {
             card.innerHTML = `
                 <div>
                     <div class="pcard-header">
-                        <div class="game-title">${p.game || 'Evento'}</div>
+                        <div class="game-title">${escapeHTML(p.game) || 'Evento'}</div>
                         <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
                             ${config.label}
                         </span>
                     </div>
                     <div class="meta-row">
-                        <span>${p.league || ''}</span>
+                        <span>${escapeHTML(p.league) || ''}</span>
                         <div class="datetime-container">
                             <span class="date-badge">📅 ${fechaStr}</span>
                             <span class="time-badge">⏰ ${horaStr}</span>
@@ -1939,8 +1957,8 @@ function drawCards(list) {
                     </div>
                     
                     <div class="pick-details">
-                        <div class="pick-name">${p.pick || ''}</div>
-                        <div class="market-type">${p.market || ''}</div>
+                        <div class="pick-name">${escapeHTML(p.pick) || ''}</div>
+                        <div class="market-type">${escapeHTML(p.market) || ''}</div>
                         
                         <div class="grid-metrics">
                             <div>Modelo: <b class="mono" style="color:${modelColor};">${modelProbVal}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
@@ -1969,21 +1987,21 @@ function drawCards(list) {
                     <span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score: ${p.score || 0}</span>
                     <span class="badge-tag ${evBadgeClass(p.ev, p.evEstimated)}">EV: <span class="mono">${p.evEstimated ? '~' : ''}${p.ev || 0}%</span>${p.evEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</span>
                     <span class="badge-tag ${stakeBadgeClass(p.stake)}">Stake: ${p.stake || 0}u</span>
-                    <span class="badge-tag ${riskBadgeClass(p.risk)}">${p.risk || 'NORMAL'}</span>
+                    <span class="badge-tag ${riskBadgeClass(p.risk)}">${escapeHTML(p.risk) || 'NORMAL'}</span>
                 </div>
                 ${p.freePick ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
-                ${p.reason ? `<p class="reasoning-text">${p.reason}</p>` : ''}
+                ${p.reason ? `<p class="reasoning-text">${escapeHTML(p.reason)}</p>` : ''}
 
                 <button class="btn-copy-x" id="btn-copy-${index}">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
-                    Exporta
+                    Exportar a X
                 </button>
             `;
             box.appendChild(card);
 
-            const copyBtn = card.querySelector(`#btn-copy-${index}`);
+            const copyBtn = card.querySelector('#btn-copy-' + index);
             if (copyBtn) {
                 copyBtn.addEventListener("click", (e) => {
                     e.stopPropagation();
@@ -2022,13 +2040,19 @@ function render() {
         if (emptyState) emptyState.style.display = "block";
         if (emptyMsg) emptyMsg.innerText = "No se encontraron registros activos operables bajo estos parámetros.";
         if (cardsView) cardsView.style.display = "none";
+        document.getElementById('filteredCount').textContent = 0;
+        document.getElementById('totalCount').textContent = 0;
         return;
     }
 
     const filteredPicks = applyFiltersAndSort(PICKS);
-    updateMetrics(filteredPicks);
-
     const activePicks = filteredPicks.filter(isEventPending);
+
+    // Actualización de contadores del indicador
+    document.getElementById('filteredCount').textContent = activePicks.length;
+    document.getElementById('totalCount').textContent = PICKS.filter(isEventPending).length;
+
+    updateMetrics(activePicks);
     updateChartsData(activePicks);
 
     if (activePicks.length === 0) {
@@ -2060,7 +2084,7 @@ function setupFilters() {
         if (!el) return;
         el.innerHTML = `<option value="">${placeholder}</option>`;
         [...set].sort().reverse().forEach(v => {
-            el.innerHTML += `<option value="${v}">${v}</option>`;
+            el.innerHTML += `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`;
         });
         el.addEventListener("change", e => {
             const field = id === "fClassification" ? "classification" : id.replace("f", "").toLowerCase();
@@ -2118,7 +2142,6 @@ function setupFilters() {
         }
     };
 
-    // BINDING DE LOS 9 FILTROS AVANZADOS
     const timeRangeEl = document.getElementById("fTimeRange");
     if (timeRangeEl) {
         timeRangeEl.addEventListener("change", e => {
@@ -2233,16 +2256,20 @@ function setupFilters() {
     }
 }
 
-function initEngine() {
+async function initEngine() {
     const clock = document.getElementById("clock");
     
-    initCharts();
+    await loadData();
 
+    initCharts();
+    setupStatPopups();
+    setupFilters();
+    render();
+
+    // Actualización del reloj continuo
     setInterval(() => {
         if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];
         
-        updateThemeByTime();
-
         document.querySelectorAll(".countdown-timer").forEach(el => {
             const iso = el.getAttribute("data-iso");
             if (!iso) return;
@@ -2256,16 +2283,17 @@ function initEngine() {
                 el.classList.remove("urgent");
             }
         });
-        
     }, 1000);
+
+    // Revisión periódica de tema cada 30 segundos
+    setInterval(() => {
+        updateThemeByTime();
+    }, 30000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     setupThemeToggle();
-    setupStatPopups();
-    setupFilters();
     initEngine();
-    render();
 });
 </script>
 </body>
