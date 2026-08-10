@@ -1052,7 +1052,7 @@
     <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
 </div>
 
-<!-- NUEVA SECCIÓN DE FILTROS AVANZADOS MEJORADA (UI & UX) -->
+<!-- SECCIÓN DE FILTROS AVANZADOS -->
 <div class="adv-filters-panel" id="advFiltersPanel">
     <div class="adv-panel-header">
         <div class="adv-panel-title">
@@ -1372,16 +1372,18 @@ function updateThemeByTime() {
     }
 }
 
-const themeToggle = document.getElementById("themeToggle");
-if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-        state.autoThemeEnabled = false; 
-        const doc = document.documentElement;
-        const currentTheme = doc.getAttribute("data-theme");
-        doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
-        initCharts();
-        render();
-    });
+function setupThemeToggle() {
+    const themeToggle = document.getElementById("themeToggle");
+    if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+            state.autoThemeEnabled = false; 
+            const doc = document.documentElement;
+            const currentTheme = doc.getAttribute("data-theme");
+            doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
+            initCharts();
+            render();
+        });
+    }
 }
 
 function isEventPending(p) {
@@ -1600,49 +1602,51 @@ function renderStatRows(items) {
     }).join("");
 }
 
-document.querySelectorAll(".stat-card.expandable").forEach(card => {
-    card.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const targetId = card.dataset.target;
-        const box = document.getElementById(targetId);
-        if(!box) return;
-        
-        const isCurrentlyOpen = card.classList.contains("open");
-        
+function setupStatPopups() {
+    document.querySelectorAll(".stat-card.expandable").forEach(card => {
+        card.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const targetId = card.dataset.target;
+            const box = document.getElementById(targetId);
+            if(!box) return;
+            
+            const isCurrentlyOpen = card.classList.contains("open");
+            
+            document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
+            document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
+
+            if (!isCurrentlyOpen) {
+                card.classList.add("open");
+
+                let items = [];
+                let popupTitle = "Detalle de Eventos";
+                
+                if (targetId === "detailWhale") { items = statState.whale; popupTitle = "Top Whale Picks"; }
+                else if (targetId === "detailFree") { items = statState.free; popupTitle = "Top Free Picks"; }
+                else if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
+                else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
+                else if (targetId === "detailMercado") {
+                    items = [...statState.mercado.fade, ...statState.mercado.sharp, ...statState.mercado.consenso];
+                    popupTitle = "Picks de Mercado";
+                }
+
+                box.innerHTML = `
+                    <div class="stat-popup-title">
+                        <span>${popupTitle}</span>
+                        <span>Total: ${items.length}</span>
+                    </div>
+                    ${renderStatRows(items)}
+                `;
+                box.style.display = "block";
+            }
+        });
+    });
+
+    document.addEventListener("click", () => {
         document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
         document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
-
-        if (!isCurrentlyOpen) {
-            card.classList.add("open");
-
-            let items = [];
-            let popupTitle = "Detalle de Eventos";
-            
-            if (targetId === "detailWhale") { items = statState.whale; popupTitle = "Top Whale Picks"; }
-            else if (targetId === "detailFree") { items = statState.free; popupTitle = "Top Free Picks"; }
-            else if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
-            else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
-            else if (targetId === "detailMercado") {
-                items = [...statState.mercado.fade, ...statState.mercado.sharp, ...statState.mercado.consenso];
-                popupTitle = "Picks de Mercado";
-            }
-
-            box.innerHTML = `
-                <div class="stat-popup-title">
-                    <span>${popupTitle}</span>
-                    <span>Total: ${items.length}</span>
-                </div>
-                ${renderStatRows(items)}
-            `;
-            box.style.display = "block";
-        }
     });
-});
-
-document.addEventListener("click", () => {
-    document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
-    document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
-});
+}
 
 function parseOddsToDecimal(odds) {
     if (odds == null || odds === "") return 0;
@@ -1751,7 +1755,8 @@ function applyFiltersAndSort(list) {
         // 1. Hora / Rango Temporal
         if (state.timeRange && p.iso) {
             const timer = getCountdownText(p.iso);
-            const todayStr = new Date().toISOString().split("T")[0];
+            const nowLocal = new Date();
+            const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
             if (state.timeRange === "in_play" && !timer.expired) return false;
             if (state.timeRange === "30m" && (timer.diffMin < 0 || timer.diffMin > 30)) return false;
             if (state.timeRange === "1h" && (timer.diffMin < 0 || timer.diffMin > 60)) return false;
@@ -1826,6 +1831,23 @@ function applyFiltersAndSort(list) {
     });
 }
 
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showToastX();
+    } catch (err) {
+        console.error('Error al copiar al portapapeles:', err);
+    }
+    document.body.removeChild(textArea);
+}
+
 function copyPickForX(p) {
     const dateStr = p.date || new Date().toLocaleDateString('es-MX');
     const timeStr = p.time || "--:--";
@@ -1844,11 +1866,13 @@ ${league}
 💵 Cuota: ${odds}
 💰 Stake: ${stake}`;
 
-    navigator.clipboard.writeText(copyText).then(() => {
-        showToastX();
-    }).catch(err => {
-        console.error('Error al copiar al portapapeles:', err);
-    });
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(copyText).then(() => {
+            showToastX();
+        }).catch(() => fallbackCopyText(copyText));
+    } else {
+        fallbackCopyText(copyText);
+    }
 }
 
 function showToastX() {
@@ -1979,7 +2003,10 @@ function getRecentDatesList(days = 15) {
     for (let i = 0; i < days; i++) {
         const d = new Date(today);
         d.setDate(d.getDate() - i);
-        dates.push(d.toISOString().split("T")[0]);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        dates.push(`${year}-${month}-${day}`);
     }
     return dates;
 }
@@ -1992,9 +2019,9 @@ function render() {
     renderActiveChips();
 
     if (!Array.isArray(PICKS) || PICKS.length === 0) {
-        emptyState.style.display = "block";
-        emptyMsg.innerText = "No se encontraron registros activos operables bajo estos parámetros.";
-        cardsView.style.display = "none";
+        if (emptyState) emptyState.style.display = "block";
+        if (emptyMsg) emptyMsg.innerText = "No se encontraron registros activos operables bajo estos parámetros.";
+        if (cardsView) cardsView.style.display = "none";
         return;
     }
 
@@ -2005,12 +2032,12 @@ function render() {
     updateChartsData(activePicks);
 
     if (activePicks.length === 0) {
-        emptyState.style.display = "block";
-        emptyMsg.innerText = "No se encontraron eventos activos que coincidan con los filtros.";
-        cardsView.style.display = "none";
+        if (emptyState) emptyState.style.display = "block";
+        if (emptyMsg) emptyMsg.innerText = "No se encontraron eventos activos que coincidan con los filtros.";
+        if (cardsView) cardsView.style.display = "none";
     } else {
-        emptyState.style.display = "none";
-        cardsView.style.display = "grid";
+        if (emptyState) emptyState.style.display = "none";
+        if (cardsView) cardsView.style.display = "grid";
         drawCards(activePicks);
     }
 }
@@ -2234,6 +2261,8 @@ function initEngine() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    setupThemeToggle();
+    setupStatPopups();
     setupFilters();
     initEngine();
     render();
