@@ -73,9 +73,7 @@
             --radius: 12px;
         }
 
-        html {
-            overflow-x: hidden;
-        }
+        html { overflow-x: hidden; }
 
         body {
             background-color: var(--bg);
@@ -87,9 +85,7 @@
             max-width: 100vw;
         }
 
-        .mono {
-            font-family: "JetBrains Mono", monospace;
-        }
+        .mono { font-family: "JetBrains Mono", monospace; }
 
         /* HEADER */
         .header {
@@ -108,9 +104,7 @@
             letter-spacing: -0.5px;
         }
 
-        .brand h1 span {
-            color: var(--teal);
-        }
+        .brand h1 span { color: var(--teal); }
 
         .tagline {
             color: var(--muted);
@@ -183,17 +177,9 @@
             justify-content: space-between;
         }
 
-        .stat-card.expandable {
-            cursor: pointer;
-        }
-
-        .stat-card.expandable:hover {
-            border-color: var(--teal);
-        }
-
-        .stat-card.card-featured {
-            grid-column: span 2;
-        }
+        .stat-card.expandable { cursor: pointer; }
+        .stat-card.expandable:hover { border-color: var(--teal); }
+        .stat-card.card-featured { grid-column: span 2; }
 
         .stat-header {
             display: flex;
@@ -202,7 +188,6 @@
         }
 
         .stat-icon { font-size: 20px; line-height: 1; }
-
         .stat-body { flex: 1; min-width: 0; }
 
         .label {
@@ -295,7 +280,6 @@
         }
 
         .stat-row:last-child { margin-bottom: 0; }
-
         .stat-row-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
         .stat-row-game { font-weight: 700; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .stat-row-pick { color: var(--muted); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -394,13 +378,8 @@
             outline: none;
         }
 
-        input[type="number"] {
-            cursor: text;
-        }
-
-        select:focus, input[type="number"]:focus {
-            border-color: var(--teal);
-        }
+        input[type="number"], input[type="text"] { cursor: text; }
+        select:focus, input[type="number"]:focus, input[type="text"]:focus { border-color: var(--teal); }
 
         .btn-chip[aria-pressed="true"], .btn-adv-toggle[aria-pressed="true"] {
             background: rgba(251, 191, 36, 0.15);
@@ -415,45 +394,83 @@
             color: var(--muted);
         }
 
-        .clear-btn:hover {
-            color: var(--text);
-        }
+        .clear-btn:hover { color: var(--text); }
 
-        /* FILTROS AVANZADOS NUMÉRICOS */
+        /* SECCIÓN DE FILTROS AVANZADOS OPTIMIZADA UI/UX */
         .adv-filters-panel {
             width: 100%;
-            background: var(--panel2);
+            background: var(--panel);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 20px;
             margin-top: -12px;
             margin-bottom: 25px;
             display: none;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-premium);
         }
 
         .adv-filters-panel.show {
             display: block;
-            animation: fadeIn 0.2s ease-out;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        .adv-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .adv-panel-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .adv-filters-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 16px;
         }
 
-        .adv-group {
+        .adv-card {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
+            transition: transform 0.15s ease, border-color 0.2s;
+        }
+
+        .adv-card:focus-within {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 2px var(--teal-soft);
+        }
+
+        .adv-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .adv-label {
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--muted);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .adv-inputs {
@@ -462,9 +479,57 @@
             gap: 8px;
         }
 
-        .adv-inputs input {
+        .adv-inputs input, .adv-inputs select {
             width: 100%;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text);
         }
+
+        .adv-inputs select {
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .adv-sep {
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .active-filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .fchip {
+            background: var(--teal-soft);
+            border: 1px solid var(--teal);
+            color: var(--teal);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fchip-remove {
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+            opacity: 0.8;
+        }
+
+        .fchip-remove:hover { opacity: 1; color: var(--red); }
 
         /* CARDS */
         #cardsView {
@@ -574,9 +639,7 @@
             font-size: 12px;
         }
 
-        .volume-container {
-            margin: 12px 0;
-        }
+        .volume-container { margin: 12px 0; }
 
         .volume-labels {
             display: flex;
@@ -684,27 +747,10 @@
             border: 1px solid var(--border);
         }
 
-        .badge-tag.good {
-            background: var(--teal-soft);
-            border-color: var(--teal);
-            color: var(--teal);
-        }
-
-        .badge-tag.warn {
-            background: var(--amber-soft);
-            border-color: var(--amber);
-            color: var(--amber);
-        }
-
-        .badge-tag.bad {
-            background: var(--red-soft);
-            border-color: var(--red);
-            color: var(--red);
-        }
-
-        .badge-tag.neutral {
-            color: var(--muted);
-        }
+        .badge-tag.good { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); }
+        .badge-tag.warn { background: var(--amber-soft); border-color: var(--amber); color: var(--amber); }
+        .badge-tag.bad { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+        .badge-tag.neutral { color: var(--muted); }
 
         .estimated-marker {
             opacity: 0.7;
@@ -760,9 +806,7 @@
             background: linear-gradient(135deg, #33abf4 0%, #1199de 100%);
         }
 
-        .btn-copy-x:active {
-            transform: translateY(0);
-        }
+        .btn-copy-x:active { transform: translateY(0); }
 
         #toast-x {
             position: fixed;
@@ -825,6 +869,7 @@
             .history-evolution-table th,
             .history-evolution-table td { font-size: 10px; padding: 2px 4px 2px 0; }
             .stat-popup { width: 280px; }
+            .adv-filters-grid { grid-template-columns: 1fr; }
         }
     </style>
 
@@ -1007,70 +1052,134 @@
     <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
 </div>
 
+<!-- NUEVA SECCIÓN DE FILTROS AVANZADOS MEJORADA (UI & UX) -->
 <div class="adv-filters-panel" id="advFiltersPanel">
+    <div class="adv-panel-header">
+        <div class="adv-panel-title">
+            <span>⚙️ Matriz de Filtros Cuantitativos y Métricas</span>
+        </div>
+        <span class="mono" style="font-size: 11px; color: var(--muted);">Ajusta los umbrales para aislar valor absoluto</span>
+    </div>
+
     <div class="adv-filters-grid">
         
-        <!-- 1. Modelo (%) -->
-        <div class="adv-group">
-            <label class="adv-label">Modelo Min / Max (%)</label>
+        <!-- 1. Hora / Ventana Temporal -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">⏰ Hora / Rango</label>
+            </div>
             <div class="adv-inputs">
-                <input type="number" id="fModeloMin" placeholder="0" min="0" max="100" step="1">
-                <span style="color:var(--muted);">-</span>
-                <input type="number" id="fModeloMax" placeholder="100" min="0" max="100" step="1">
+                <select id="fTimeRange">
+                    <option value="">⏱️ Todos los horarios</option>
+                    <option value="in_play">🔴 En juego / Iniciados</option>
+                    <option value="30m">⏳ Próximos 30 min</option>
+                    <option value="1h">⏳ Próxima 1 hora</option>
+                    <option value="2h">⏳ Próximas 2 horas</option>
+                    <option value="today">📅 Eventos de Hoy</option>
+                </select>
             </div>
         </div>
 
-        <!-- 2. Cuota (Soporta Americano y Decimal) -->
-        <div class="adv-group">
-            <label class="adv-label">Cuota Min / Max (+150, -110)</label>
+        <!-- 2. Modelo (%) -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">🤖 Modelo Prob. (%)</label>
+            </div>
             <div class="adv-inputs">
-                <input type="text" id="fCuotaMin" placeholder="-150 ó 1.5">
-                <span style="color:var(--muted);">-</span>
-                <input type="text" id="fCuotaMax" placeholder="+200 ó 3.0">
+                <input type="number" id="fModeloMin" placeholder="Min %" min="0" max="100" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fModeloMax" placeholder="Max %" min="0" max="100" step="1">
             </div>
         </div>
 
-        <!-- 3. Edge (%) -->
-        <div class="adv-group">
-            <label class="adv-label">Edge / Ventaja Min / Max (%)</label>
+        <!-- 3. Cuota -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">💵 Cuota (1.91 / -110)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="text" id="fCuotaMin" placeholder="Min (ej. 1.80)">
+                <span class="adv-sep">-</span>
+                <input type="text" id="fCuotaMax" placeholder="Max (ej. +200)">
+            </div>
+        </div>
+
+        <!-- 4. Edge Modelo (%) -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">📈 Edge Modelo (%)</label>
+            </div>
             <div class="adv-inputs">
                 <input type="number" id="fEdgeMin" placeholder="Min %" step="0.1">
-                <span style="color:var(--muted);">-</span>
+                <span class="adv-sep">-</span>
                 <input type="number" id="fEdgeMax" placeholder="Max %" step="0.1">
             </div>
         </div>
 
-        <!-- 4. Score -->
-        <div class="adv-group">
-            <label class="adv-label">Score Min / Max</label>
+        <!-- 5. Edge Dinero (%) -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">💰 Edge Dinero (%)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fMoneyEdgeMin" placeholder="Min %" step="0.1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fMoneyEdgeMax" placeholder="Max %" step="0.1">
+            </div>
+        </div>
+
+        <!-- 6. Score -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">🔥 Score Integral</label>
+            </div>
             <div class="adv-inputs">
                 <input type="number" id="fScoreMin" placeholder="Min" step="1">
-                <span style="color:var(--muted);">-</span>
+                <span class="adv-sep">-</span>
                 <input type="number" id="fScoreMax" placeholder="Max" step="1">
             </div>
         </div>
 
-        <!-- 5. EV (%) -->
-        <div class="adv-group">
-            <label class="adv-label">EV Min / Max (%)</label>
+        <!-- 7. EV (%) -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">📊 Valor Esperado EV (%)</label>
+            </div>
             <div class="adv-inputs">
                 <input type="number" id="fEvMin" placeholder="Min %" step="0.1">
-                <span style="color:var(--muted);">-</span>
+                <span class="adv-sep">-</span>
                 <input type="number" id="fEvMax" placeholder="Max %" step="0.1">
             </div>
         </div>
 
-        <!-- 6. Stake -->
-        <div class="adv-group">
-            <label class="adv-label">Stake Min / Max</label>
+        <!-- 8. Stake -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">🎯 Stake Recom.</label>
+            </div>
             <div class="adv-inputs">
                 <input type="number" id="fStakeMin" placeholder="Min" step="0.25">
-                <span style="color:var(--muted);">-</span>
+                <span class="adv-sep">-</span>
                 <input type="number" id="fStakeMax" placeholder="Max" step="0.25">
             </div>
         </div>
 
+        <!-- 9. Divergencia (%) -->
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">⚡ Divergencia Flujo (%)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fDivergenciaMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fDivergenciaMax" placeholder="Max %" step="1">
+            </div>
+        </div>
+
     </div>
+
+    <!-- Indicador dinámico de filtros activos -->
+    <div class="active-filter-chips" id="activeFilterChips"></div>
 </div>
 
 <div id="cardsView"></div>
@@ -1105,19 +1214,25 @@ const state = {
     freePickOnly: false,
     sort: "time",
     autoThemeEnabled: true,
-    // Filtros numéricos
+    
+    // 9 Filtros Avanzados
+    timeRange: "",
     modeloMin: null,
     modeloMax: null,
     cuotaMin: null,
     cuotaMax: null,
     edgeMin: null,
     edgeMax: null,
+    moneyEdgeMin: null,
+    moneyEdgeMax: null,
     scoreMin: null,
     scoreMax: null,
     evMin: null,
     evMax: null,
     stakeMin: null,
-    stakeMax: null
+    stakeMax: null,
+    divergenciaMin: null,
+    divergenciaMax: null
 };
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
@@ -1365,20 +1480,22 @@ function getVisualConfig(p) {
 }
 
 function getCountdownText(isoString) {
-    if (!isoString) return { text: "--:--:--", urgent: false, expired: false };
-    const diff = new Date(isoString) - new Date();
-    if (diff <= 0) return { text: "⚽ EN JUEGO / INICIADO", urgent: true, expired: true };
+    if (!isoString) return { text: "--:--:--", urgent: false, expired: false, diffMin: 99999 };
+    const diffMs = new Date(isoString) - new Date();
+    const diffMin = diffMs / 60000;
+
+    if (diffMs <= 0) return { text: "⚽ EN JUEGO / INICIADO", urgent: true, expired: true, diffMin };
     
-    const hrs = Math.floor(diff / 3600000);
-    const mins = Math.floor((diff % 3600000) / 60000);
-    const secs = Math.floor((diff % 60000) / 1000);
+    const hrs = Math.floor(diffMs / 3600000);
+    const mins = Math.floor((diffMs % 3600000) / 60000);
+    const secs = Math.floor((diffMs % 60000) / 1000);
     const pad = (n) => String(n).padStart(2, '0');
     
     let timeStr = "";
     if (hrs > 0) timeStr += `${pad(hrs)}h `;
     timeStr += `${pad(mins)}m ${pad(secs)}s`;
     
-    return { text: `⏳ ${timeStr}`, urgent: diff < 900000, expired: false };
+    return { text: `⏳ ${timeStr}`, urgent: diffMs < 900000, expired: false, diffMin };
 }
 
 const statState = {
@@ -1545,6 +1662,73 @@ function parseOddsToDecimal(odds) {
     return val;
 }
 
+function renderActiveChips() {
+    const box = document.getElementById("activeFilterChips");
+    if (!box) return;
+
+    const chips = [];
+
+    if (state.timeRange) {
+        const labels = {
+            in_play: "En Juego",
+            "30m": "Próx. 30m",
+            "1h": "Próx. 1h",
+            "2h": "Próx. 2h",
+            today: "Hoy"
+        };
+        chips.push({ key: "timeRange", label: `⏰ Hora: ${labels[state.timeRange] || state.timeRange}` });
+    }
+    if (state.modeloMin !== null || state.modeloMax !== null) {
+        chips.push({ key: "modelo", label: `🤖 Modelo: ${state.modeloMin ?? 0}% - ${state.modeloMax ?? 100}%` });
+    }
+    if (state.cuotaMin !== null || state.cuotaMax !== null) {
+        chips.push({ key: "cuota", label: `💵 Cuota: ${state.cuotaMin ?? 'Min'} - ${state.cuotaMax ?? 'Max'}` });
+    }
+    if (state.edgeMin !== null || state.edgeMax !== null) {
+        chips.push({ key: "edge", label: `📈 Edge Mod: ${state.edgeMin ?? '-∞'}% - ${state.edgeMax ?? '+∞'}%` });
+    }
+    if (state.moneyEdgeMin !== null || state.moneyEdgeMax !== null) {
+        chips.push({ key: "moneyEdge", label: `💰 Edge Dinero: ${state.moneyEdgeMin ?? '-∞'}% - ${state.moneyEdgeMax ?? '+∞'}%` });
+    }
+    if (state.scoreMin !== null || state.scoreMax !== null) {
+        chips.push({ key: "score", label: `🔥 Score: ${state.scoreMin ?? 0} - ${state.scoreMax ?? 100}` });
+    }
+    if (state.evMin !== null || state.evMax !== null) {
+        chips.push({ key: "ev", label: `📊 EV: ${state.evMin ?? '-∞'}% - ${state.evMax ?? '+∞'}%` });
+    }
+    if (state.stakeMin !== null || state.stakeMax !== null) {
+        chips.push({ key: "stake", label: `🎯 Stake: ${state.stakeMin ?? 0}u - ${state.stakeMax ?? 'Max'}u` });
+    }
+    if (state.divergenciaMin !== null || state.divergenciaMax !== null) {
+        chips.push({ key: "divergencia", label: `⚡ Divergencia: ${state.divergenciaMin ?? '-∞'}% - ${state.divergenciaMax ?? '+∞'}%` });
+    }
+
+    if (chips.length === 0) {
+        box.innerHTML = `<span style="font-size:11px; color:var(--muted);">No hay filtros cuantitativos activos.</span>`;
+        return;
+    }
+
+    box.innerHTML = chips.map(c => `
+        <span class="fchip">
+            ${c.label}
+            <span class="fchip-remove" onclick="clearSpecificAdvFilter('${c.key}')">✕</span>
+        </span>
+    `).join("");
+}
+
+function clearSpecificAdvFilter(type) {
+    if (type === "timeRange") { state.timeRange = ""; const el = document.getElementById("fTimeRange"); if (el) el.value = ""; }
+    if (type === "modelo") { state.modeloMin = null; state.modeloMax = null; document.getElementById("fModeloMin").value = ""; document.getElementById("fModeloMax").value = ""; }
+    if (type === "cuota") { state.cuotaMin = null; state.cuotaMax = null; document.getElementById("fCuotaMin").value = ""; document.getElementById("fCuotaMax").value = ""; }
+    if (type === "edge") { state.edgeMin = null; state.edgeMax = null; document.getElementById("fEdgeMin").value = ""; document.getElementById("fEdgeMax").value = ""; }
+    if (type === "moneyEdge") { state.moneyEdgeMin = null; state.moneyEdgeMax = null; document.getElementById("fMoneyEdgeMin").value = ""; document.getElementById("fMoneyEdgeMax").value = ""; }
+    if (type === "score") { state.scoreMin = null; state.scoreMax = null; document.getElementById("fScoreMin").value = ""; document.getElementById("fScoreMax").value = ""; }
+    if (type === "ev") { state.evMin = null; state.evMax = null; document.getElementById("fEvMin").value = ""; document.getElementById("fEvMax").value = ""; }
+    if (type === "stake") { state.stakeMin = null; state.stakeMax = null; document.getElementById("fStakeMin").value = ""; document.getElementById("fStakeMax").value = ""; }
+    if (type === "divergencia") { state.divergenciaMin = null; state.divergenciaMax = null; document.getElementById("fDivergenciaMin").value = ""; document.getElementById("fDivergenciaMax").value = ""; }
+    render();
+}
+
 function applyFiltersAndSort(list) {
     if (!Array.isArray(list)) return [];
     const text = state.search.toLowerCase().trim();
@@ -1564,37 +1748,62 @@ function applyFiltersAndSort(list) {
             if (pRisk !== state.risk) return false;
         }
 
+        // 1. Hora / Rango Temporal
+        if (state.timeRange && p.iso) {
+            const timer = getCountdownText(p.iso);
+            const todayStr = new Date().toISOString().split("T")[0];
+            if (state.timeRange === "in_play" && !timer.expired) return false;
+            if (state.timeRange === "30m" && (timer.diffMin < 0 || timer.diffMin > 30)) return false;
+            if (state.timeRange === "1h" && (timer.diffMin < 0 || timer.diffMin > 60)) return false;
+            if (state.timeRange === "2h" && (timer.diffMin < 0 || timer.diffMin > 120)) return false;
+            if (state.timeRange === "today" && p.date !== todayStr) return false;
+        }
+
+        // 2. Modelo
         if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
         if (state.modeloMax !== null && !isNaN(state.modeloMax) && (p.modelProb || 0) > state.modeloMax) return false;
 
+        // 3. Cuota
         const itemOddsDec = parseOddsToDecimal(p.odds || p.cuota);
-        
         if (state.cuotaMin !== null) {
             const minDec = parseOddsToDecimal(state.cuotaMin);
             if (minDec > 0 && itemOddsDec < minDec) return false;
         }
-        
         if (state.cuotaMax !== null) {
             const maxDec = parseOddsToDecimal(state.cuotaMax);
             if (maxDec > 0 && itemOddsDec > maxDec) return false;
         }
 
+        // 4. Edge Modelo
         const edgeVal = calculateEdge(p);
         if (state.edgeMin !== null && !isNaN(state.edgeMin) && edgeVal < state.edgeMin) return false;
         if (state.edgeMax !== null && !isNaN(state.edgeMax) && edgeVal > state.edgeMax) return false;
 
+        // 5. Edge Dinero
+        const moneyEdgeVal = p.moneyEdge !== undefined ? Number(p.moneyEdge) : calculateSmartMoney(p);
+        if (state.moneyEdgeMin !== null && !isNaN(state.moneyEdgeMin) && moneyEdgeVal < state.moneyEdgeMin) return false;
+        if (state.moneyEdgeMax !== null && !isNaN(state.moneyEdgeMax) && moneyEdgeVal > state.moneyEdgeMax) return false;
+
+        // 6. Score
         if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
         if (state.scoreMax !== null && !isNaN(state.scoreMax) && (p.score || 0) > state.scoreMax) return false;
 
+        // 7. EV
         const evVal = Number(p.ev || 0);
         if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
         if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
 
+        // 8. Stake
         const stakeVal = Number(p.stake || 0);
         if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
         if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
+
+        // 9. Divergencia (Handle % - Bets %)
+        const divVal = calculateSmartMoney(p);
+        if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
+        if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
+
         if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
-        
         if (state.freePickOnly && !p.freePick) return false;
 
         if (text) {
@@ -1753,7 +1962,7 @@ function drawCards(list) {
             const copyBtn = card.querySelector(`#btn-copy-${index}`);
             if (copyBtn) {
                 copyBtn.addEventListener("click", (e) => {
-                    e.stopPropagation(); // Evita interferencias de eventos
+                    e.stopPropagation();
                     copyPickForX(p);
                 });
             }
@@ -1779,6 +1988,8 @@ function render() {
     const emptyState = document.getElementById("emptyState");
     const emptyMsg = document.getElementById("emptyStateMsg");
     const cardsView = document.getElementById("cardsView");
+
+    renderActiveChips();
 
     if (!Array.isArray(PICKS) || PICKS.length === 0) {
         emptyState.style.display = "block";
@@ -1880,18 +2091,31 @@ function setupFilters() {
         }
     };
 
+    // BINDING DE LOS 9 FILTROS AVANZADOS
+    const timeRangeEl = document.getElementById("fTimeRange");
+    if (timeRangeEl) {
+        timeRangeEl.addEventListener("change", e => {
+            state.timeRange = e.target.value;
+            render();
+        });
+    }
+
     bindNumInput("fModeloMin", "modeloMin");
     bindNumInput("fModeloMax", "modeloMax");
     bindOddsInput("fCuotaMin", "cuotaMin");
     bindOddsInput("fCuotaMax", "cuotaMax");
     bindNumInput("fEdgeMin", "edgeMin");
     bindNumInput("fEdgeMax", "edgeMax");
+    bindNumInput("fMoneyEdgeMin", "moneyEdgeMin");
+    bindNumInput("fMoneyEdgeMax", "moneyEdgeMax");
     bindNumInput("fScoreMin", "scoreMin");
     bindNumInput("fScoreMax", "scoreMax");
     bindNumInput("fEvMin", "evMin");
     bindNumInput("fEvMax", "evMax");
     bindNumInput("fStakeMin", "stakeMin");
     bindNumInput("fStakeMax", "stakeMax");
+    bindNumInput("fDivergenciaMin", "divergenciaMin");
+    bindNumInput("fDivergenciaMax", "divergenciaMax");
 
     const btnAdv = document.getElementById("btnAdvToggle");
     const advPanel = document.getElementById("advFiltersPanel");
@@ -1948,25 +2172,29 @@ function setupFilters() {
             state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; 
             state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
             
+            state.timeRange = "";
             state.modeloMin = null; state.modeloMax = null;
             state.cuotaMin = null; state.cuotaMax = null;
             state.edgeMin = null; state.edgeMax = null;
+            state.moneyEdgeMin = null; state.moneyEdgeMax = null;
             state.scoreMin = null; state.scoreMax = null;
             state.evMin = null; state.evMax = null;
             state.stakeMin = null; state.stakeMax = null;
+            state.divergenciaMin = null; state.divergenciaMax = null;
 
             if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
             if (searchEl) searchEl.value = "";
             if (sortEl) sortEl.value = "time";
-            ["fDate", "fLeague", "fTrend", "fClassification", "fRisk"].forEach(id => {
+            ["fDate", "fLeague", "fTrend", "fClassification", "fRisk", "fTimeRange"].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = "";
             });
             
             [
                 "fModeloMin", "fModeloMax", "fCuotaMin", "fCuotaMax",
-                "fEdgeMin", "fEdgeMax", "fScoreMin", "fScoreMax",
-                "fEvMin", "fEvMax", "fStakeMin", "fStakeMax"
+                "fEdgeMin", "fEdgeMax", "fMoneyEdgeMin", "fMoneyEdgeMax",
+                "fScoreMin", "fScoreMax", "fEvMin", "fEvMax",
+                "fStakeMin", "fStakeMax", "fDivergenciaMin", "fDivergenciaMax"
             ].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = "";
@@ -1988,7 +2216,6 @@ function initEngine() {
         
         updateThemeByTime();
 
-        // Actualiza el texto de los contadores en tiempo real sin destruir el DOM
         document.querySelectorAll(".countdown-timer").forEach(el => {
             const iso = el.getAttribute("data-iso");
             if (!iso) return;
