@@ -1874,7 +1874,7 @@ function applyFiltersAndSort(list) {
             if (p.date !== todayStr) return false;
             if (Number(p.betsPct || 0) >= 30) return false;
             if (Number(p.handlePct || 0) <= 60) return false;
-            if (Number(p.score || 0) <= 55) return false;
+            if (Number(p.score || 0) <= 65) return false;
             if (calculateSmartMoney(p) <= 30) return false;
         }
 
@@ -1882,10 +1882,10 @@ function applyFiltersAndSort(list) {
             const nowLocal = new Date();
             const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
             if (p.date !== todayStr) return false;
-            if (Number(p.betsPct || 0) <= 65) return false;
-            if (Number(p.handlePct || 0) <= 65) return false;
+            if (Number(p.betsPct || 0) <= 60) return false;
+            if (Number(p.handlePct || 0) <= 60) return false;
             if (Number(p.score || 0) <= 55) return false;
-            if (calculateSmartMoney(p) <= 5) return false;
+            if (calculateSmartMoney(p) <= 10) return false;
         }
 
         if (text) {
