@@ -1142,6 +1142,28 @@
 
         <div class="adv-card">
             <div class="adv-card-header">
+                <label class="adv-label">🎟️ % Bets (Tickets)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fBetsMin" placeholder="Min %" min="0" max="100" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fBetsMax" placeholder="Max %" min="0" max="100" step="1">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">💵 % Handle (Dinero)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fHandleMin" placeholder="Min %" min="0" max="100" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fHandleMax" placeholder="Max %" min="0" max="100" step="1">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
                 <label class="adv-label">🔥 Score Integral</label>
             </div>
             <div class="adv-inputs">
@@ -1258,6 +1280,10 @@ const state = {
     edgeMax: null,
     moneyEdgeMin: null,
     moneyEdgeMax: null,
+    betsMin: null,
+    betsMax: null,
+    handleMin: null,
+    handleMax: null,
     scoreMin: null,
     scoreMax: null,
     evMin: null,
@@ -1721,6 +1747,12 @@ function renderActiveChips() {
     if (state.moneyEdgeMin !== null || state.moneyEdgeMax !== null) {
         chips.push({ key: "moneyEdge", label: `💰 Edge Dinero: ${state.moneyEdgeMin ?? '-∞'}% - ${state.moneyEdgeMax ?? '+∞'}%` });
     }
+    if (state.betsMin !== null || state.betsMax !== null) {
+        chips.push({ key: "bets", label: `🎟️ Bets: ${state.betsMin ?? 0}% - ${state.betsMax ?? 100}%` });
+    }
+    if (state.handleMin !== null || state.handleMax !== null) {
+        chips.push({ key: "handle", label: `💵 Handle: ${state.handleMin ?? 0}% - ${state.handleMax ?? 100}%` });
+    }
     if (state.scoreMin !== null || state.scoreMax !== null) {
         chips.push({ key: "score", label: `🔥 Score: ${state.scoreMin ?? 0} - ${state.scoreMax ?? 100}` });
     }
@@ -1753,6 +1785,8 @@ function clearSpecificAdvFilter(type) {
     if (type === "cuota") { state.cuotaMin = null; state.cuotaMax = null; document.getElementById("fCuotaMin").value = ""; document.getElementById("fCuotaMax").value = ""; }
     if (type === "edge") { state.edgeMin = null; state.edgeMax = null; document.getElementById("fEdgeMin").value = ""; document.getElementById("fEdgeMax").value = ""; }
     if (type === "moneyEdge") { state.moneyEdgeMin = null; state.moneyEdgeMax = null; document.getElementById("fMoneyEdgeMin").value = ""; document.getElementById("fMoneyEdgeMax").value = ""; }
+    if (type === "bets") { state.betsMin = null; state.betsMax = null; document.getElementById("fBetsMin").value = ""; document.getElementById("fBetsMax").value = ""; }
+    if (type === "handle") { state.handleMin = null; state.handleMax = null; document.getElementById("fHandleMin").value = ""; document.getElementById("fHandleMax").value = ""; }
     if (type === "score") { state.scoreMin = null; state.scoreMax = null; document.getElementById("fScoreMin").value = ""; document.getElementById("fScoreMax").value = ""; }
     if (type === "ev") { state.evMin = null; state.evMax = null; document.getElementById("fEvMin").value = ""; document.getElementById("fEvMax").value = ""; }
     if (type === "stake") { state.stakeMin = null; state.stakeMax = null; document.getElementById("fStakeMin").value = ""; document.getElementById("fStakeMax").value = ""; }
@@ -1810,6 +1844,14 @@ function applyFiltersAndSort(list) {
         const moneyEdgeVal = p.moneyEdge !== undefined ? Number(p.moneyEdge) : calculateSmartMoney(p);
         if (state.moneyEdgeMin !== null && !isNaN(state.moneyEdgeMin) && moneyEdgeVal < state.moneyEdgeMin) return false;
         if (state.moneyEdgeMax !== null && !isNaN(state.moneyEdgeMax) && moneyEdgeVal > state.moneyEdgeMax) return false;
+
+        const betsVal = Number(p.betsPct || 0);
+        if (state.betsMin !== null && !isNaN(state.betsMin) && betsVal < state.betsMin) return false;
+        if (state.betsMax !== null && !isNaN(state.betsMax) && betsVal > state.betsMax) return false;
+
+        const handleVal = Number(p.handlePct || 0);
+        if (state.handleMin !== null && !isNaN(state.handleMin) && handleVal < state.handleMin) return false;
+        if (state.handleMax !== null && !isNaN(state.handleMax) && handleVal > state.handleMax) return false;
 
         if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
         if (state.scoreMax !== null && !isNaN(state.scoreMax) && (p.score || 0) > state.scoreMax) return false;
@@ -2158,6 +2200,10 @@ function setupFilters() {
     bindNumInput("fEdgeMax", "edgeMax");
     bindNumInput("fMoneyEdgeMin", "moneyEdgeMin");
     bindNumInput("fMoneyEdgeMax", "moneyEdgeMax");
+    bindNumInput("fBetsMin", "betsMin");
+    bindNumInput("fBetsMax", "betsMax");
+    bindNumInput("fHandleMin", "handleMin");
+    bindNumInput("fHandleMax", "handleMax");
     bindNumInput("fScoreMin", "scoreMin");
     bindNumInput("fScoreMax", "scoreMax");
     bindNumInput("fEvMin", "evMin");
@@ -2227,6 +2273,8 @@ function setupFilters() {
             state.cuotaMin = null; state.cuotaMax = null;
             state.edgeMin = null; state.edgeMax = null;
             state.moneyEdgeMin = null; state.moneyEdgeMax = null;
+            state.betsMin = null; state.betsMax = null;
+            state.handleMin = null; state.handleMax = null;
             state.scoreMin = null; state.scoreMax = null;
             state.evMin = null; state.evMax = null;
             state.stakeMin = null; state.stakeMax = null;
@@ -2243,6 +2291,7 @@ function setupFilters() {
             [
                 "fModeloMin", "fModeloMax", "fCuotaMin", "fCuotaMax",
                 "fEdgeMin", "fEdgeMax", "fMoneyEdgeMin", "fMoneyEdgeMax",
+                "fBetsMin", "fBetsMax", "fHandleMin", "fHandleMax",
                 "fScoreMin", "fScoreMax", "fEvMin", "fEvMax",
                 "fStakeMin", "fStakeMax", "fDivergenciaMin", "fDivergenciaMax"
             ].forEach(id => {
