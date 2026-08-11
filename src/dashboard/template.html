@@ -1868,8 +1868,25 @@ function applyFiltersAndSort(list) {
         if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
         if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
 
-        if (state.whaleOnly && !p.whale && p.trendKey !== "sharp" && calculateSmartMoney(p) < 15) return false;
-        if (state.freePickOnly && !p.freePick) return false;
+        if (state.whaleOnly) {
+            const nowLocal = new Date();
+            const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
+            if (p.date !== todayStr) return false;
+            if (Number(p.betsPct || 0) >= 30) return false;
+            if (Number(p.handlePct || 0) <= 60) return false;
+            if (Number(p.score || 0) <= 55) return false;
+            if (calculateSmartMoney(p) <= 30) return false;
+        }
+
+        if (state.freePickOnly) {
+            const nowLocal = new Date();
+            const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
+            if (p.date !== todayStr) return false;
+            if (Number(p.betsPct || 0) <= 65) return false;
+            if (Number(p.handlePct || 0) <= 65) return false;
+            if (Number(p.score || 0) <= 55) return false;
+            if (calculateSmartMoney(p) <= 5) return false;
+        }
 
         if (text) {
             const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
@@ -2245,18 +2262,27 @@ function setupFilters() {
     }
 
     const whaleBtn = document.getElementById("whaleOnly");
+    const freePickBtn = document.getElementById("freePickOnly");
+
     if (whaleBtn) {
         whaleBtn.addEventListener("click", () => {
             state.whaleOnly = !state.whaleOnly;
+            if (state.whaleOnly) {
+                state.freePickOnly = false;
+                if (freePickBtn) freePickBtn.setAttribute("aria-pressed", "false");
+            }
             whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
             render();
         });
     }
 
-    const freePickBtn = document.getElementById("freePickOnly");
     if (freePickBtn) {
         freePickBtn.addEventListener("click", () => {
             state.freePickOnly = !state.freePickOnly;
+            if (state.freePickOnly) {
+                state.whaleOnly = false;
+                if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
+            }
             freePickBtn.setAttribute("aria-pressed", state.freePickOnly);
             render();
         });
