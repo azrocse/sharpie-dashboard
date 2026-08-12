@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <!-- Librería Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -87,29 +87,68 @@
 
         .mono { font-family: "JetBrains Mono", monospace; }
 
-        /* HEADER */
+        /* HEADER REDISEÑADO & VISUALMENTE IMPACTANTE */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             margin-bottom: 25px;
+            box-shadow: var(--shadow-premium);
         }
 
-        .brand h1 {
-            font-size: 30px;
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--teal) 0%, #0284c7 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(45, 212, 191, 0.3);
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .brand-info h1 {
+            font-size: 28px;
             font-weight: 800;
             letter-spacing: -0.5px;
+            line-height: 1.1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .brand h1 span { color: var(--teal); }
+        .brand-info h1 span { color: var(--teal); }
+
+        .brand-tag-badge {
+            background: var(--teal-soft);
+            color: var(--teal);
+            border: 1px solid var(--teal);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
         .tagline {
             color: var(--muted);
-            font-size: 13px;
-            margin-top: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 3px;
         }
 
         .header-meta {
@@ -118,42 +157,77 @@
             gap: 16px;
         }
 
-        .timestamp-badge {
-            background: var(--panel);
+        /* RECOLECTOR VISUAL DE FECHA Y HORA DESTACADO */
+        .timestamp-box {
+            background: var(--panel2);
             border: 1px solid var(--border);
-            padding: 8px 14px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .time-display {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            box-shadow: var(--shadow);
+            align-items: flex-start;
+        }
+
+        .time-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         #clock {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 800;
             color: var(--teal);
+            line-height: 1.1;
         }
 
-        .updated {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 2px;
+        .time-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--border);
+        }
+
+        .updated-display {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .updated-val {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            font-family: "JetBrains Mono", monospace;
         }
 
         .theme-toggle {
-            background: var(--panel);
+            background: var(--panel2);
             border: 1px solid var(--border);
             color: var(--text);
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
             box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: var(--teal);
         }
 
         /* KPI GRID */
@@ -878,7 +952,7 @@
             body { padding: 14px; }
             .header { flex-direction: column; align-items: flex-start; }
             .header-meta { width: 100%; justify-content: space-between; }
-            .brand h1 { font-size: 24px; }
+            .brand-info h1 { font-size: 22px; }
             .toolbar { padding: 10px; }
             .search-box { min-width: 100%; }
             #cardsView { gap: 14px; }
@@ -901,15 +975,30 @@
 </head>
 <body>
 
+<!-- HEADER REDISEÑADO CON ELEMENTOS VISUALES AVANZADOS -->
 <div class="header">
-    <div class="brand">
-        <h1>Sharp<span>IE</span></h1>
-        <div class="tagline">Donde el dinero inteligente toma la ventaja.</div>
+    <div class="brand-container">
+        <div class="brand-logo-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+        </div>
+        <div class="brand-info">
+            <h1>Sharp<span>IE</span> <span class="brand-tag-badge">PRO v2.5</span></h1>
+            <div class="tagline">⚡ Inteligencia Cuantitativa & Rastreo Institucional del Dinero</div>
+        </div>
     </div>
     <div class="header-meta">
-        <div class="timestamp-badge">
-            <div id="clock" class="mono">--:--:--</div>
-            <div class="updated">Generado (CDMX): <span id="generatedAtVal">__GENERATED_AT__</span></div>
+        <div class="timestamp-box">
+            <div class="time-display">
+                <span class="time-label">⏱️ Reloj Real</span>
+                <div id="clock" class="mono">--:--:--</div>
+            </div>
+            <div class="time-divider"></div>
+            <div class="updated-display">
+                <span class="time-label">📅 Reporte CDMX</span>
+                <div class="updated-val"><span id="generatedAtVal">__GENERATED_AT__</span></div>
+            </div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
     </div>
@@ -1231,6 +1320,21 @@
 <script>
 let PICKS = [];
 
+// Reloj en tiempo real
+function startRealtimeClock() {
+    const clockEl = document.getElementById("clock");
+    function updateClock() {
+        if (!clockEl) return;
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        clockEl.innerText = `${hrs}:${mins}:${secs}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+}
+
 // Función para sanitizar HTML y prevenir fallas o XSS
 function escapeHTML(str) {
     return String(str || '').replace(/[&<>"']/g, function(m) {
@@ -1329,7 +1433,7 @@ function initCharts() {
         marketChartInstance = new Chart(ctxDoughnut, {
             type: 'doughnut',
             data: {
-                labels: ['Smart Money', 'Mixto / Consenso', 'Público'],
+                labels: ['Sharp (Smart Money)', 'Consensus / Mixto', 'Fade (Público)'],
                 datasets: [{ data: [0, 0, 0], backgroundColor: ['#2dd4bf', '#fbbf24', '#fb7185'], borderWidth: 0 }]
             },
             options: {
@@ -1342,6 +1446,7 @@ function initCharts() {
     }
 }
 
+// Sincronización exacta de gráfica con conteos de mercado
 function updateChartsData(activeList) {
     if (edgeChartInstance) {
         edgeChartInstance.data.datasets[0].data = activeList.map(p => ({ x: p.score || 0, y: calculateEdge(p) }));
@@ -1349,13 +1454,14 @@ function updateChartsData(activeList) {
     }
 
     if (marketChartInstance) {
-        let sharpCount = 0, mixedCount = 0, publicCount = 0;
+        let sharpCount = 0, consensoCount = 0, fadeCount = 0;
         activeList.forEach(p => {
-            if (p.trendKey === 'sharp' || p.whale) sharpCount++;
-            else if (p.trendKey === 'mixed' || p.trendKey === 'consensus') mixedCount++;
-            else publicCount++;
+            const b = classifyMarketBucket(p);
+            if (b === "sharp") sharpCount++;
+            else if (b === "consenso") consensoCount++;
+            else if (b === "fade") fadeCount++;
         });
-        marketChartInstance.data.datasets[0].data = [sharpCount, mixedCount, publicCount];
+        marketChartInstance.data.datasets[0].data = [sharpCount, consensoCount, fadeCount];
         marketChartInstance.update();
     }
 }
@@ -1455,6 +1561,32 @@ function calculateEdge(p) {
 
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
 
+function isWhalePick(p) {
+    if (p.whale) return true;
+    const nowLocal = new Date();
+    const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
+    const matchesDate = !p.date || p.date === todayStr;
+    const betsCondition = Number(p.betsPct || 0) < 30;
+    const handleCondition = Number(p.handlePct || 0) > 60;
+    const scoreCondition = Number(p.score || 0) > 65;
+    const smartMoneyCondition = calculateSmartMoney(p) > 30;
+    
+    return matchesDate && betsCondition && handleCondition && scoreCondition && smartMoneyCondition;
+}
+
+function isFreePick(p) {
+    if (p.freePick) return true;
+    const nowLocal = new Date();
+    const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
+    const matchesDate = !p.date || p.date === todayStr;
+    const betsCondition = Number(p.betsPct || 0) > 60;
+    const handleCondition = Number(p.handlePct || 0) > 60;
+    const scoreCondition = Number(p.score || 0) > 55;
+    const smartMoneyCondition = calculateSmartMoney(p) > 10;
+
+    return matchesDate && betsCondition && handleCondition && scoreCondition && smartMoneyCondition;
+}
+
 function trendArrow(curr, prev) {
     if (curr == null || prev == null || isNaN(curr) || isNaN(prev)) return { arrow: '', cls: '' };
     const c = parseFloat(curr), pv = parseFloat(prev);
@@ -1519,7 +1651,7 @@ function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 &&
 function getVisualConfig(p) {
     const score = p.score || 0;
     const action = (p.action || "").toUpperCase();
-    const hasWhale = p.whale || (p.text && p.text.includes("WHALE"));
+    const hasWhale = isWhalePick(p) || (p.text && p.text.includes("WHALE"));
 
     if (hasWhale || score >= 30 || action.includes("PREMIUM")) {
         return { key: "premium", bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
@@ -1563,10 +1695,10 @@ const statState = {
     mejor: []
 };
 
+// Clasificación de Mercado coherente para métricas y gráficos
 function classifyMarketBucket(p) {
-    const e = calculateEdge(p);
-    if (e <= -15) return "fade";
-    if (e >= 15) return "sharp";
+    if (p.trendKey === "sharp" || isWhalePick(p) || calculateSmartMoney(p) >= 15) return "sharp";
+    if (p.trendKey === "public" || calculateSmartMoney(p) <= -15) return "fade";
     return "consenso";
 }
 
@@ -1577,16 +1709,17 @@ function computeConfianzaDelDinero(fadeN, sharpN) {
     return { text: "Dividido", color: "var(--amber)" };
 }
 
+// Métricas de Mercado, Whale y Free Picks precisas y dinámicas
 function updateMetrics(activePicks) {
     const elAnalizados = document.getElementById("statAnalizados");
     if(elAnalizados) elAnalizados.innerText = activePicks.length;
 
-    const whalePicks = activePicks.filter(p => p.whale || p.trendKey === "sharp" || calculateSmartMoney(p) >= 15);
+    const whalePicks = activePicks.filter(p => isWhalePick(p));
     const elWhale = document.getElementById("statWhale");
     if(elWhale) elWhale.innerText = whalePicks.length;
     statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
 
-    const freePicks = activePicks.filter(p => p.freePick);
+    const freePicks = activePicks.filter(p => isFreePick(p));
     const elFree = document.getElementById("statFree");
     if(elFree) elFree.innerText = freePicks.length;
     statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
@@ -1606,7 +1739,7 @@ function updateMetrics(activePicks) {
     
     const elMercado = document.getElementById("statMercado");
     if (elMercado) {
-        elMercado.innerText = `🚨 Fade (${buckets.fade.length}) · 🐋 Sharp (${buckets.sharp.length}) · ⚪ Cons. (${buckets.consenso.length})`;
+        elMercado.innerText = `🚨 ${buckets.fade.length} Fade · 🐋 ${buckets.sharp.length} Sharp · ⚪ ${buckets.consenso.length} Cons.`;
     }
 
     const conf = computeConfianzaDelDinero(buckets.fade.length, buckets.sharp.length);
@@ -1868,25 +2001,8 @@ function applyFiltersAndSort(list) {
         if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
         if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
 
-        if (state.whaleOnly) {
-            const nowLocal = new Date();
-            const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
-            if (p.date !== todayStr) return false;
-            if (Number(p.betsPct || 0) >= 30) return false;
-            if (Number(p.handlePct || 0) <= 60) return false;
-            if (Number(p.score || 0) <= 65) return false;
-            if (calculateSmartMoney(p) <= 30) return false;
-        }
-
-        if (state.freePickOnly) {
-            const nowLocal = new Date();
-            const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
-            if (p.date !== todayStr) return false;
-            if (Number(p.betsPct || 0) <= 60) return false;
-            if (Number(p.handlePct || 0) <= 60) return false;
-            if (Number(p.score || 0) <= 55) return false;
-            if (calculateSmartMoney(p) <= 10) return false;
-        }
+        if (state.whaleOnly && !isWhalePick(p)) return false;
+        if (state.freePickOnly && !isFreePick(p)) return false;
 
         if (text) {
             const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
@@ -1969,7 +2085,8 @@ function drawCards(list) {
     list.forEach((p, index) => {
         try {
             const smDiff = calculateSmartMoney(p);
-            const isWhale = p.whale || p.trendKey === "sharp" || smDiff >= 15;
+            const isWhale = isWhalePick(p);
+            const isFree = isFreePick(p);
             const config = getVisualConfig(p);
             const timerData = getCountdownText(p.iso);
             const cuotaDetectada = escapeHTML(p.odds || p.cuota || null);
@@ -2048,7 +2165,7 @@ function drawCards(list) {
                     <span class="badge-tag ${stakeBadgeClass(p.stake)}">Stake: ${p.stake || 0}u</span>
                     <span class="badge-tag ${riskBadgeClass(p.risk)}">${escapeHTML(p.risk) || 'NORMAL'}</span>
                 </div>
-                ${p.freePick ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
+                ${isFree ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
                 ${p.reason ? `<p class="reasoning-text">${escapeHTML(p.reason)}</p>` : ''}
 
                 <button class="btn-copy-x" id="btn-copy-${index}">
@@ -2307,6 +2424,7 @@ function setupFilters() {
             state.divergenciaMin = null; state.divergenciaMax = null;
 
             if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
+            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", false);
             if (searchEl) searchEl.value = "";
             if (sortEl) sortEl.value = "time";
             ["fDate", "fLeague", "fTrend", "fClassification", "fRisk", "fTimeRange"].forEach(id => {
@@ -2324,52 +2442,25 @@ function setupFilters() {
                 const el = document.getElementById(id);
                 if (el) el.value = "";
             });
-            
-            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", false);
+
             render();
         });
     }
 }
 
-async function initEngine() {
-    const clock = document.getElementById("clock");
-    
+document.addEventListener("DOMContentLoaded", async () => {
+    startRealtimeClock();
     await loadData();
-
     initCharts();
-    setupStatPopups();
     setupFilters();
-    render();
-
-    // Actualización del reloj continuo
-    setInterval(() => {
-        if (clock) clock.innerText = new Date().toTimeString().split(" ")[0];
-        
-        document.querySelectorAll(".countdown-timer").forEach(el => {
-            const iso = el.getAttribute("data-iso");
-            if (!iso) return;
-            const data = getCountdownText(iso);
-            if (el.innerText !== data.text) {
-                el.innerText = data.text;
-            }
-            if (data.urgent) {
-                el.classList.add("urgent");
-            } else {
-                el.classList.remove("urgent");
-            }
-        });
-    }, 1000);
-
-    // Revisión periódica de tema cada 30 segundos
-    setInterval(() => {
-        updateThemeByTime();
-    }, 30000);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
+    setupStatPopups();
     setupThemeToggle();
-    initEngine();
+    render();
+    
+    // Intervalo de actualización automática cada 30 min para sincronización de tema
+    setInterval(updateThemeByTime, 1800000);
 });
 </script>
+
 </body>
 </html>
