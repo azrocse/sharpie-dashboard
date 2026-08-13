@@ -650,52 +650,55 @@
 
         /* EDITOR'S CHOICE: selección automática por análisis de evolución */
         .pcard.editor-choice {
-            box-shadow: var(--shadow), 0 0 0 2px var(--gold), 0 0 24px rgba(251, 191, 36, 0.16) !important;
+            box-shadow: var(--shadow), 0 0 0 2px var(--gold), 0 0 18px rgba(251, 191, 36, 0.12) !important;
             border-color: var(--gold) !important;
         }
 
-        .editor-choice-ribbon {
-            position: absolute;
-            top: 12px;
-            right: -1px;
-            z-index: 4;
+        .editor-choice-badge {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 5px 9px 5px 8px;
-            background: linear-gradient(135deg, var(--gold), #f59e0b);
-            color: #111827;
-            border-radius: 7px 0 0 7px;
-            font-size: 10px;
+            gap: 4px;
+            padding: 4px 7px;
+            border: 1px solid var(--gold);
+            border-radius: 999px;
+            background: var(--amber-soft);
+            color: var(--gold);
+            font-size: 9px;
             font-weight: 900;
-            letter-spacing: .35px;
-            text-transform: uppercase;
-            box-shadow: 0 5px 14px rgba(251, 191, 36, 0.22);
-        }
-
-        .editor-choice-ribbon::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            bottom: -5px;
-            border-top: 5px solid #a16207;
-            border-right: 5px solid transparent;
+            letter-spacing: .25px;
+            white-space: nowrap;
         }
 
         .editor-analysis {
-            margin-top: 8px;
+            margin-top: 7px;
             padding: 7px 9px;
-            border: 1px solid var(--gold);
-            border-radius: 7px;
+            border-left: 3px solid var(--gold);
+            border-radius: 6px;
             background: var(--amber-soft);
             color: var(--text);
             font-size: 10px;
-            line-height: 1.35;
+            line-height: 1.4;
+        }
+
+        .editor-analysis-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 3px;
         }
 
         .editor-analysis strong { color: var(--gold); }
         .editor-analysis .editor-good { color: var(--teal); font-weight: 800; }
         .editor-analysis .editor-bad { color: var(--red); font-weight: 800; }
+        .editor-analysis details { margin-top: 4px; }
+        .editor-analysis summary { cursor: pointer; color: var(--gold); font-weight: 800; }
+        .editor-observation-list {
+            margin: 5px 0 0 0;
+            padding-left: 17px;
+            display: grid;
+            gap: 2px;
+        }
 
         .pcard-header {
             display: flex;
@@ -1194,6 +1197,7 @@
         <option value="sin_ventaja">⚪ Sin Ventaja</option>
     </select>
 
+    <button class="btn-chip" id="editorOnly" aria-pressed="false">🏆 Editor's Choice</button>
     <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
     <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks</button>
 
@@ -1420,6 +1424,7 @@ const state = {
     trend: "",
     classification: "",
     risk: "",
+    editorOnly: false,
     whaleOnly: false,
     freePickOnly: false,
     sort: "time",
@@ -1686,6 +1691,8 @@ function getEvolutionAnalysis(p) {
         betsDelta, handleDelta, gapDelta,
         oddsMove, oddsConfirmed, movementLabel,
         historyPoints: history.length,
+        historyDetails: history,
+        hasHistoryOdds: history.some(h => h.odds != null && h.odds !== ''),
         criteria, score, enoughHistory, isEditorChoice
     };
 }
@@ -1699,19 +1706,35 @@ function editorChoiceSummary(a) {
 
 function editorChoiceReasonHtml(a) {
     if (!a || !a.isEditorChoice) return '';
-    const betsTrend = a.betsDelta == null ? '—' : `${a.betsDelta >= 0 ? '+' : ''}${a.betsDelta.toFixed(1)} pts`;
-    const handleTrend = a.handleDelta == null ? '—' : `${a.handleDelta >= 0 ? '+' : ''}${a.handleDelta.toFixed(1)} pts`;
-    const gapTrend = a.gapDelta == null ? '—' : `${a.gapDelta >= 0 ? '+' : ''}${a.gapDelta.toFixed(1)} pts`;
+
+    const signals = [];
+    if (a.betsDelta != null && a.betsDelta < 0) signals.push(`Tickets ↓ ${Math.abs(a.betsDelta).toFixed(1)} pts`);
+    if (a.handleDelta != null && a.handleDelta >= 0) signals.push(`Dinero ↑ ${a.handleDelta.toFixed(1)} pts`);
+    else if (a.handleDelta != null && a.betsDelta != null && a.handleDelta > a.betsDelta) signals.push('Dinero cae menos que Tickets');
+    if (a.gapDelta != null && a.gapDelta >= 0) signals.push(`Gap H-B ${a.gapDelta > 0 ? '↑' : 'estable'}`);
+    if (a.oddsConfirmed) signals.push('Cuota a favor');
+
+    const observationRows = a.historyDetails.map((h, i) => {
+        const prev = i > 0 ? a.historyDetails[i - 1] : null;
+        const bets = h.betsPct != null ? `${h.betsPct}%` : '—';
+        const handle = h.handlePct != null ? `${h.handlePct}%` : '—';
+        const gap = (h.betsPct != null && h.handlePct != null) ? `${(Number(h.handlePct)-Number(h.betsPct)).toFixed(1)} pts` : '—';
+        const odds = h.odds != null && h.odds !== '' ? escapeHTML(h.odds) : '—';
+        return `<li><b>${escapeHTML(h.time || `Medición ${i + 1}`)}</b>: Tickets ${bets} · Dinero ${handle} · Gap ${gap}${a.hasHistoryOdds ? ` · Cuota ${odds}` : ''}</li>`;
+    }).join('');
+
     return `
         <div class="editor-analysis">
-            <strong>🏆 EDITOR'S CHOICE · ${a.score}/100</strong>
-            <br>
-            Tickets: <span class="editor-good">${a.bets}% (${betsTrend})</span> ·
-            Dinero: <span class="editor-good">${a.handle}% (${handleTrend})</span> ·
-            Gap H-B: <span class="editor-good">+${a.gap.toFixed(1)} pts (${gapTrend})</span> ·
-            H/B: <span class="editor-good">${a.ratio.toFixed(2)}x</span>
-            <br>
-            Mercado: <span class="editor-good">${escapeHTML(a.movementLabel)}</span> · ${a.historyPoints} observaciones
+            <div class="editor-analysis-head">
+                <strong>🏆 ANÁLISIS DESTACADO · ${a.score}/100</strong>
+                <span>${a.historyPoints} mediciones</span>
+            </div>
+            <div>Tickets <b>${a.bets}%</b> · Dinero <b>${a.handle}%</b> · Gap H-B <b>+${a.gap.toFixed(1)} pts</b> · H/B <b>${a.ratio.toFixed(2)}x</b></div>
+            <div style="margin-top:3px;">${signals.length ? `Señales: <span class="editor-good">${signals.join(' · ')}</span>` : 'Señales de evolución confirmadas'}</div>
+            <details>
+                <summary>Ver las ${a.historyPoints} mediciones que sustentan el análisis</summary>
+                <ul class="editor-observation-list">${observationRows}</ul>
+            </details>
         </div>`;
 }
 
@@ -2166,6 +2189,7 @@ function applyFiltersAndSort(list) {
         if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
         if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
 
+        if (state.editorOnly && !getEvolutionAnalysis(p).isEditorChoice) return false;
         if (state.whaleOnly && !isWhalePick(p)) return false;
         if (state.freePickOnly && !isFreePick(p)) return false;
 
@@ -2283,13 +2307,16 @@ function drawCards(list) {
             card.style.borderColor = isEditorChoice ? 'var(--gold)' : config.border;
 
             card.innerHTML = `
-                ${isEditorChoice ? `<div class="editor-choice-ribbon" title="Selección automática por evolución Bets / Handle / Cuota">🏆 EDITOR'S CHOICE</div>` : ''}
+                
                 <div>
                     <div class="pcard-header">
                         <div class="game-title">${escapeHTML(p.game) || 'Evento'}</div>
-                        <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
-                            ${config.label}
-                        </span>
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+                            ${isEditorChoice ? `<span class="editor-choice-badge" title="Pick destacado por el análisis de evolución">🏆 Editor's Choice</span>` : ''}
+                            <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
+                                ${config.label}
+                            </span>
+                        </div>
                     </div>
                     <div class="meta-row">
                         <span>${escapeHTML(p.league) || ''}</span>
@@ -2550,13 +2577,30 @@ function setupFilters() {
         });
     }
 
+    const editorBtn = document.getElementById("editorOnly");
     const whaleBtn = document.getElementById("whaleOnly");
     const freePickBtn = document.getElementById("freePickOnly");
+
+    if (editorBtn) {
+        editorBtn.addEventListener("click", () => {
+            state.editorOnly = !state.editorOnly;
+            if (state.editorOnly) {
+                state.whaleOnly = false;
+                state.freePickOnly = false;
+                if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
+                if (freePickBtn) freePickBtn.setAttribute("aria-pressed", "false");
+            }
+            editorBtn.setAttribute("aria-pressed", state.editorOnly);
+            render();
+        });
+    }
 
     if (whaleBtn) {
         whaleBtn.addEventListener("click", () => {
             state.whaleOnly = !state.whaleOnly;
             if (state.whaleOnly) {
+                state.editorOnly = false;
+                if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
                 state.freePickOnly = false;
                 if (freePickBtn) freePickBtn.setAttribute("aria-pressed", "false");
             }
@@ -2569,6 +2613,8 @@ function setupFilters() {
         freePickBtn.addEventListener("click", () => {
             state.freePickOnly = !state.freePickOnly;
             if (state.freePickOnly) {
+                state.editorOnly = false;
+                if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
                 state.whaleOnly = false;
                 if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
             }
@@ -2581,7 +2627,7 @@ function setupFilters() {
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
             state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; 
-            state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
+            state.editorOnly = false; state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
             
             state.timeRange = "";
             state.modeloMin = null; state.modeloMax = null;
@@ -2595,6 +2641,7 @@ function setupFilters() {
             state.stakeMin = null; state.stakeMax = null;
             state.divergenciaMin = null; state.divergenciaMax = null;
 
+            if (editorBtn) editorBtn.setAttribute("aria-pressed", false);
             if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
             if (whaleBtn) whaleBtn.setAttribute("aria-pressed", false);
             if (searchEl) searchEl.value = "";
