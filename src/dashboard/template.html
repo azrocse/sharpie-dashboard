@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
@@ -647,6 +648,55 @@
             border-color: var(--blue) !important;
         }
 
+        /* EDITOR'S CHOICE: selección automática por análisis de evolución */
+        .pcard.editor-choice {
+            box-shadow: var(--shadow), 0 0 0 2px var(--gold), 0 0 24px rgba(251, 191, 36, 0.16) !important;
+            border-color: var(--gold) !important;
+        }
+
+        .editor-choice-ribbon {
+            position: absolute;
+            top: 12px;
+            right: -1px;
+            z-index: 4;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px 5px 8px;
+            background: linear-gradient(135deg, var(--gold), #f59e0b);
+            color: #111827;
+            border-radius: 7px 0 0 7px;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .35px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 14px rgba(251, 191, 36, 0.22);
+        }
+
+        .editor-choice-ribbon::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: -5px;
+            border-top: 5px solid #a16207;
+            border-right: 5px solid transparent;
+        }
+
+        .editor-analysis {
+            margin-top: 8px;
+            padding: 7px 9px;
+            border: 1px solid var(--gold);
+            border-radius: 7px;
+            background: var(--amber-soft);
+            color: var(--text);
+            font-size: 10px;
+            line-height: 1.35;
+        }
+
+        .editor-analysis strong { color: var(--gold); }
+        .editor-analysis .editor-good { color: var(--teal); font-weight: 800; }
+        .editor-analysis .editor-bad { color: var(--red); font-weight: 800; }
+
         .pcard-header {
             display: flex;
             justify-content: space-between;
@@ -1120,7 +1170,7 @@
     </div>
     <select id="fSort">
         <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
-        <option value="recommended">⭐ Ordenar por: Recomendados</option>
+        <option value="recommended">🏆 Ordenar por: Recomendados / Editor</option>
         <option value="score">🔥 Ordenar por: Mayor Score</option>
         <option value="edge">📈 Ordenar por: Mayor Edge</option>
     </select>
@@ -1561,6 +1611,110 @@ function calculateEdge(p) {
 
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
 
+// Parámetros de análisis de evolución para destacar automáticamente los picks.
+// Se mantienen separados de los filtros/clasificaciones existentes para no alterar su comportamiento.
+const EDITOR_ANALYSIS_CONFIG = Object.freeze({
+    minBets: 30,
+    minHandle: 50,
+    minGap: 10,
+    minRatio: 1.20,
+    minHistoryPoints: 2,
+    minEditorScore: 80
+});
+
+function getEvolutionAnalysis(p) {
+    const bets = Number(p.betsPct || 0);
+    const handle = Number(p.handlePct || 0);
+    const gap = handle - bets;
+    const ratio = bets > 0 ? handle / bets : 0;
+
+    const history = Array.isArray(p.history) ? p.history.filter(h =>
+        h && (h.betsPct != null || h.handlePct != null || h.odds != null)
+    ) : [];
+
+    const previous = history.length >= 2 ? history[history.length - 2] : null;
+    const prevBets = previous && previous.betsPct != null ? Number(previous.betsPct) : null;
+    const prevHandle = previous && previous.handlePct != null ? Number(previous.handlePct) : null;
+    const prevGap = (prevBets != null && prevHandle != null) ? prevHandle - prevBets : null;
+
+    const betsDelta = prevBets != null ? bets - prevBets : null;
+    const handleDelta = prevHandle != null ? handle - prevHandle : null;
+    const gapDelta = prevGap != null ? gap - prevGap : null;
+
+    let oddsMove = null;
+    let oddsConfirmed = false;
+    const currentOdds = p.odds != null && p.odds !== '' ? p.odds : p.cuota;
+    if (previous && previous.odds != null && currentOdds != null && currentOdds !== '') {
+        const prevDec = parseOddsToDecimal(previous.odds);
+        const currentDec = parseOddsToDecimal(currentOdds);
+        if (prevDec > 0 && currentDec > 0) {
+            // En un mismo pick, menor cuota decimal = movimiento a favor del lado seleccionado.
+            oddsMove = prevDec - currentDec;
+            oddsConfirmed = oddsMove > 0.0005;
+        }
+    }
+
+    const criteria = {
+        bets: bets >= EDITOR_ANALYSIS_CONFIG.minBets,
+        handle: handle >= EDITOR_ANALYSIS_CONFIG.minHandle,
+        gap: gap >= EDITOR_ANALYSIS_CONFIG.minGap,
+        ratio: ratio >= EDITOR_ANALYSIS_CONFIG.minRatio,
+        gapTrend: gapDelta != null && gapDelta >= 0,
+        odds: oddsConfirmed
+    };
+
+    let score = 0;
+    if (criteria.bets) score += 20;
+    if (criteria.handle) score += 20;
+    if (criteria.gap) score += 25;
+    if (criteria.ratio) score += 15;
+    if (criteria.gapTrend) score += 10;
+    if (criteria.odds) score += 10;
+
+    const enoughHistory = history.length >= EDITOR_ANALYSIS_CONFIG.minHistoryPoints;
+    const isEditorChoice = enoughHistory &&
+        criteria.bets && criteria.handle && criteria.gap && criteria.ratio &&
+        criteria.gapTrend && score >= EDITOR_ANALYSIS_CONFIG.minEditorScore;
+
+    let movementLabel = 'Sin confirmación de cuota';
+    if (oddsConfirmed) movementLabel = 'Cuota a favor';
+    else if (oddsMove != null && oddsMove < -0.0005) movementLabel = 'Cuota en contra';
+
+    return {
+        bets, handle, gap, ratio,
+        prevBets, prevHandle, prevGap,
+        betsDelta, handleDelta, gapDelta,
+        oddsMove, oddsConfirmed, movementLabel,
+        historyPoints: history.length,
+        criteria, score, enoughHistory, isEditorChoice
+    };
+}
+
+function editorChoiceSummary(a) {
+    if (!a || !a.isEditorChoice) return '';
+    const gapTxt = `${a.gap >= 0 ? '+' : ''}${a.gap.toFixed(1)} pts H-B`;
+    const trendTxt = a.gapDelta != null ? `${a.gapDelta >= 0 ? '+' : ''}${a.gapDelta.toFixed(1)} pts vs anterior` : 'evolución';
+    return `🏆 EDITOR'S CHOICE · ${gapTxt} · H/B ${a.ratio.toFixed(2)} · ${trendTxt} · ${a.movementLabel}`;
+}
+
+function editorChoiceReasonHtml(a) {
+    if (!a || !a.isEditorChoice) return '';
+    const betsTrend = a.betsDelta == null ? '—' : `${a.betsDelta >= 0 ? '+' : ''}${a.betsDelta.toFixed(1)} pts`;
+    const handleTrend = a.handleDelta == null ? '—' : `${a.handleDelta >= 0 ? '+' : ''}${a.handleDelta.toFixed(1)} pts`;
+    const gapTrend = a.gapDelta == null ? '—' : `${a.gapDelta >= 0 ? '+' : ''}${a.gapDelta.toFixed(1)} pts`;
+    return `
+        <div class="editor-analysis">
+            <strong>🏆 EDITOR'S CHOICE · ${a.score}/100</strong>
+            <br>
+            Tickets: <span class="editor-good">${a.bets}% (${betsTrend})</span> ·
+            Dinero: <span class="editor-good">${a.handle}% (${handleTrend})</span> ·
+            Gap H-B: <span class="editor-good">+${a.gap.toFixed(1)} pts (${gapTrend})</span> ·
+            H/B: <span class="editor-good">${a.ratio.toFixed(2)}x</span>
+            <br>
+            Mercado: <span class="editor-good">${escapeHTML(a.movementLabel)}</span> · ${a.historyPoints} observaciones
+        </div>`;
+}
+
 function isWhalePick(p) {
     if (p.whale) return true;
     const nowLocal = new Date();
@@ -1748,8 +1902,19 @@ function updateMetrics(activePicks) {
     const cardConf = document.getElementById("cardConfianza");
     if(cardConf) cardConf.style.borderLeftColor = conf.color;
 
-    const bestBet = [...activePicks].filter(p => p.actionKey === "bet").sort((a, b) => (b.score || 0) - (a.score || 0))[0];
-    const best = bestBet || [...activePicks].sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+    const bestBet = [...activePicks].filter(p => p.actionKey === "bet")
+        .sort((a, b) => {
+            const ea = getEvolutionAnalysis(a), eb = getEvolutionAnalysis(b);
+            const va = (ea.isEditorChoice ? 1000 : 0) + ea.score + Number(a.score || 0);
+            const vb = (eb.isEditorChoice ? 1000 : 0) + eb.score + Number(b.score || 0);
+            return vb - va;
+        })[0];
+    const best = bestBet || [...activePicks].sort((a, b) => {
+        const ea = getEvolutionAnalysis(a), eb = getEvolutionAnalysis(b);
+        const va = (ea.isEditorChoice ? 1000 : 0) + ea.score + Number(a.score || 0);
+        const vb = (eb.isEditorChoice ? 1000 : 0) + eb.score + Number(b.score || 0);
+        return vb - va;
+    })[0];
     statState.mejor = best ? [best] : [];
     
     const elMejor = document.getElementById("statMejor");
@@ -2016,8 +2181,10 @@ function applyFiltersAndSort(list) {
         if (state.sort === "score") return (b.score || 0) - (a.score || 0);
         if (state.sort === "edge") return calculateEdge(b) - calculateEdge(a);
         if (state.sort === "recommended") {
-            const scoreA = (isPremium(a) ? 1000 : 0) + (a.score || 0);
-            const scoreB = (isPremium(b) ? 1000 : 0) + (b.score || 0);
+            const editorA = getEvolutionAnalysis(a);
+            const editorB = getEvolutionAnalysis(b);
+            const scoreA = (editorA.isEditorChoice ? 2000 : 0) + (isPremium(a) ? 1000 : 0) + (editorA.score * 5) + (a.score || 0);
+            const scoreB = (editorB.isEditorChoice ? 2000 : 0) + (isPremium(b) ? 1000 : 0) + (editorB.score * 5) + (b.score || 0);
             return scoreB - scoreA;
         }
         return 0;
@@ -2088,6 +2255,8 @@ function drawCards(list) {
             const isWhale = isWhalePick(p);
             const isFree = isFreePick(p);
             const config = getVisualConfig(p);
+            const editorAnalysis = getEvolutionAnalysis(p);
+            const isEditorChoice = editorAnalysis.isEditorChoice;
             const timerData = getCountdownText(p.iso);
             const cuotaDetectada = escapeHTML(p.odds || p.cuota || null);
 
@@ -2110,10 +2279,11 @@ function drawCards(list) {
             const cuotaColor = oddsColorClass(cuotaDetectada);
 
             const card = document.createElement("div");
-            card.className = `pcard ${isWhale ? 'whale-alert' : ''}`;
-            card.style.borderColor = config.border;
+            card.className = `pcard ${isWhale ? 'whale-alert' : ''} ${isEditorChoice ? 'editor-choice' : ''}`;
+            card.style.borderColor = isEditorChoice ? 'var(--gold)' : config.border;
 
             card.innerHTML = `
+                ${isEditorChoice ? `<div class="editor-choice-ribbon" title="Selección automática por evolución Bets / Handle / Cuota">🏆 EDITOR'S CHOICE</div>` : ''}
                 <div>
                     <div class="pcard-header">
                         <div class="game-title">${escapeHTML(p.game) || 'Evento'}</div>
@@ -2156,6 +2326,7 @@ function drawCards(list) {
                         </div>
                         ${evolutionHtml}
                         ${isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
+                        ${editorChoiceReasonHtml(editorAnalysis)}
                     </div>
                 </div>
 
@@ -2164,6 +2335,7 @@ function drawCards(list) {
                     <span class="badge-tag ${evBadgeClass(p.ev, p.evEstimated)}">EV: <span class="mono">${p.evEstimated ? '~' : ''}${p.ev || 0}%</span>${p.evEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</span>
                     <span class="badge-tag ${stakeBadgeClass(p.stake)}">Stake: ${p.stake || 0}u</span>
                     <span class="badge-tag ${riskBadgeClass(p.risk)}">${escapeHTML(p.risk) || 'NORMAL'}</span>
+                    ${isEditorChoice ? `<span class="badge-tag good">🏆 Análisis destacado</span>` : ''}
                 </div>
                 ${isFree ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
                 ${p.reason ? `<p class="reasoning-text">${escapeHTML(p.reason)}</p>` : ''}
