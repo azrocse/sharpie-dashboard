@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
@@ -2239,428 +2238,362 @@ function copyPickForX(p) {
     const game = p.game || "Evento";
     const pickName = p.pick || "Selección";
     const market = p.market ? ` (${p.market})` : "";
-    const odds = p.odds || p.cuota || "Mkt";
-    const stake = p.stake ? `${p.stake}u` : "1u";
+    const odds = p.odds || p.cuota || "";
+    const oddsStr = odds ? ` @ ${odds}` : "";
+    const edgeVal = calculateEdge(p);
+    const edgeStr = edgeVal !== 0 ? `\n📈 Edge Modelo: ${edgeVal > 0 ? '+' : ''}${edgeVal}%` : "";
+    const bets = p.betsPct != null ? `${p.betsPct}%` : "—";
+    const handle = p.handlePct != null ? `${p.handlePct}%` : "—";
+    const smartMoney = calculateSmartMoney(p);
+    const smartMoneyStr = (p.handlePct != null && p.betsPct != null) ? `\n🐋 Dinero Institucional: ${smartMoney > 0 ? '+' : ''}${smartMoney}% (Bets: ${bets} | Handle: ${handle})` : "";
+    const reason = p.reason ? `\n\n💡 ${p.reason}` : "";
 
-    const copyText = `🔥 FREE PICK
-📅 ${dateStr} | ⏰ ${timeStr}
-${league}
-🏟️ ${game}
-🎯 Pick: ${pickName}${market}
-💵 Cuota: ${odds}
-💰 Stake: ${stake}`;
+    const tweetText = `⚡ SHARPIE PRO SIGNAL ⚡\n\n📅 ${dateStr} - ${timeStr}\n${league}\n⚽ ${game}\n\n🎯 PICK: ${pickName}${market}${oddsStr}${edgeStr}${smartMoneyStr}${reason}\n\n#ApuestasDeportivas #SmartMoney #SharpiePRO`;
 
     if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(copyText).then(() => {
+        navigator.clipboard.writeText(tweetText).then(() => {
             showToastX();
-        }).catch(() => fallbackCopyText(copyText));
+        }).catch(err => {
+            console.error("Error al copiar vía Clipboard API:", err);
+            fallbackCopyText(tweetText);
+        });
     } else {
-        fallbackCopyText(copyText);
+        fallbackCopyText(tweetText);
     }
 }
 
 function showToastX() {
-    const toast = document.getElementById('toast-x');
+    const toast = document.getElementById("toast-x");
     if (!toast) return;
-    toast.classList.add('show');
+    toast.classList.add("show");
     setTimeout(() => {
-        toast.classList.remove('show');
+        toast.classList.remove("show");
     }, 3000);
 }
 
-function drawCards(list) {
-    const box = document.getElementById("cardsView");
-    if (!box) return;
-    box.innerHTML = "";
+function populateSelectOptions() {
+    const dates = new Set();
+    const leagues = new Set();
 
-    list.forEach((p, index) => {
-        try {
-            const smDiff = calculateSmartMoney(p);
-            const isWhale = isWhalePick(p);
-            const isFree = isFreePick(p);
-            const config = getVisualConfig(p);
-            const editorAnalysis = getEvolutionAnalysis(p);
-            const isEditorChoice = editorAnalysis.isEditorChoice;
-            const timerData = getCountdownText(p.iso);
-            const cuotaDetectada = escapeHTML(p.odds || p.cuota || null);
+    PICKS.forEach(p => {
+        if (p.date) dates.add(p.date);
+        if (p.league) leagues.add(p.league);
+    });
 
-            const evolutionHtml = buildEvolutionHtml(p);
+    const fDate = document.getElementById("fDate");
+    if (fDate) {
+        const sortedDates = Array.from(dates).sort();
+        fDate.innerHTML = `<option value="">📆 Todas las fechas (${sortedDates.length})</option>` +
+            sortedDates.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join("");
+        fDate.value = state.date;
+    }
 
-            const fechaStr = escapeHTML(p.date || '—');
-            const horaStr = escapeHTML(p.time || '--:--');
+    const fLeague = document.getElementById("fLeague");
+    if (fLeague) {
+        const sortedLeagues = Array.from(leagues).sort();
+        fLeague.innerHTML = `<option value="">🏆 Todas las ligas (${sortedLeagues.length})</option>` +
+            sortedLeagues.map(l => `<option value="${escapeHTML(l)}">${escapeHTML(l)}</option>`).join("");
+        fLeague.value = state.league;
+    }
+}
 
-            const edgeVal = calculateEdge(p);
-            const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
-            const edgeColor = edgeColorClass(edgeVal);
+function render() {
+    updateThemeByTime();
 
-            const moneyEdgeVal = p.moneyEdge !== undefined ? Number(p.moneyEdge) : calculateSmartMoney(p);
-            const formattedMoneyEdge = moneyEdgeVal > 0 ? `+${moneyEdgeVal}%` : `${moneyEdgeVal}%`;
-            const moneyEdgeColor = edgeColorClass(moneyEdgeVal);
+    const pendingPicks = PICKS.filter(p => isEventPending(p));
+    const activeList = applyFiltersAndSort(pendingPicks);
 
-            const modelProbVal = p.modelProb || 0;
-            const modelColor = modelProbColorClass(modelProbVal);
+    updateMetrics(activeList);
+    updateChartsData(activeList);
 
-            const cuotaColor = oddsColorClass(cuotaDetectada);
+    const filteredCountEl = document.getElementById("filteredCount");
+    const totalCountEl = document.getElementById("totalCount");
+    if (filteredCountEl) filteredCountEl.innerText = activeList.length;
+    if (totalCountEl) totalCountEl.innerText = pendingPicks.length;
 
-            const card = document.createElement("div");
-            card.className = `pcard ${isWhale ? 'whale-alert' : ''} ${isEditorChoice ? 'editor-choice' : ''}`;
-            card.style.borderColor = isEditorChoice ? 'var(--gold)' : config.border;
+    renderActiveChips();
 
-            card.innerHTML = `
-                
+    const cardsView = document.getElementById("cardsView");
+    const emptyState = document.getElementById("emptyState");
+
+    if (!cardsView) return;
+
+    if (activeList.length === 0) {
+        cardsView.style.display = "none";
+        if (emptyState) emptyState.style.display = "block";
+        return;
+    }
+
+    if (emptyState) emptyState.style.display = "none";
+    cardsView.style.display = "grid";
+
+    cardsView.innerHTML = activeList.map(p => {
+        const isWhale = isWhalePick(p);
+        const isFree = isFreePick(p);
+        const editorEval = getEvolutionAnalysis(p);
+        const isEditor = editorEval.isEditorChoice;
+        
+        let cardClasses = "pcard";
+        if (isWhale) cardClasses += " whale-alert";
+        if (isEditor) cardClasses += " editor-choice";
+
+        const config = getVisualConfig(p);
+        const timer = getCountdownText(p.iso);
+        const edgeVal = calculateEdge(p);
+        const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
+        const smartMoney = calculateSmartMoney(p);
+
+        const betsPct = p.betsPct != null ? p.betsPct : 50;
+        const handlePct = p.handlePct != null ? p.handlePct : 50;
+
+        const isEvEstimated = p.evEstimated === true;
+        const isStakeEstimated = p.stakeEstimated === true;
+
+        const dateDisplay = escapeHTML(p.date || "--/--/----");
+        const timeDisplay = escapeHTML(p.time || "--:--");
+
+        return `
+            <div class="${cardClasses}">
                 <div>
                     <div class="pcard-header">
-                        <div class="game-title">${escapeHTML(p.game) || 'Evento'}</div>
-                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
-                            ${isEditorChoice ? `<span class="editor-choice-badge" title="Pick destacado por el análisis de evolución">🏆 Editor's Choice</span>` : ''}
-                            <span class="badge-action" style="background:${config.bg}; color:${config.text}; border-color:${config.border}">
-                                ${config.label}
-                            </span>
+                        <span class="badge-action" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">
+                            ${config.label}
+                        </span>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
+                            <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}">${timer.text}</span>
                         </div>
                     </div>
+
+                    <div style="margin-top: 8px; margin-bottom: 4px;">
+                        <span style="font-size: 11px; font-weight: 800; color: var(--teal); text-transform: uppercase;">
+                            ${escapeHTML(p.league) || 'LIGA DESCONOCIDA'}
+                        </span>
+                        <h3 class="game-title">${escapeHTML(p.game) || 'Evento no especificado'}</h3>
+                    </div>
+
                     <div class="meta-row">
-                        <span>${escapeHTML(p.league) || ''}</span>
                         <div class="datetime-container">
-                            <span class="date-badge">📅 ${fechaStr}</span>
-                            <span class="time-badge">⏰ ${horaStr}</span>
-                            <span class="countdown-timer ${timerData.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">
-                                ${timerData.text}
-                            </span>
+                            <span class="date-badge">📅 ${dateDisplay}</span>
+                            <span class="time-badge">🕒 ${timeDisplay}</span>
                         </div>
+                        <span style="font-weight:700;">${trendTag(p.trendKey)}</span>
                     </div>
-                    
+
                     <div class="pick-details">
-                        <div class="pick-name">${escapeHTML(p.pick) || ''}</div>
-                        <div class="market-type">${escapeHTML(p.market) || ''}</div>
+                        <div class="pick-name">${escapeHTML(p.pick) || 'Selección'}</div>
+                        <div class="market-type">${escapeHTML(p.market) || 'Mercado General'}</div>
                         
                         <div class="grid-metrics">
-                            <div>Modelo: <b class="mono" style="color:${modelColor};">${modelProbVal}%</b>${p.modelEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</div>
-                            <div>Cuota: <b class="mono" style="color:${cuotaColor};">${cuotaDetectada || '—'}</b></div>
-                            <div>Edge Modelo: <b class="mono" style="color:${edgeColor}">${formattedEdge}</b></div>
-                            <div>Edge Dinero: <b class="mono" style="color:${moneyEdgeColor}">${formattedMoneyEdge}</b></div>
-                            <div style="grid-column: span 2;">Señal: <b>${trendTag(p.trendKey)}</b></div>
+                            <div>
+                                <span style="color:var(--muted);">🤖 Modelo:</span>
+                                <strong style="color:${modelProbColorClass(p.modelProb)}">${p.modelProb != null ? p.modelProb + '%' : '—'}</strong>
+                            </div>
+                            <div>
+                                <span style="color:var(--muted);">💵 Cuota:</span>
+                                <strong style="color:${oddsColorClass(p.odds || p.cuota)}">${escapeHTML(p.odds || p.cuota || '—')}</strong>
+                            </div>
+                            <div>
+                                <span style="color:var(--muted);">📈 Edge Mod:</span>
+                                <strong style="color:${edgeColorClass(edgeVal)}">${formattedEdge}</strong>
+                            </div>
+                            <div>
+                                <span style="color:var(--muted);">💰 Smart Money:</span>
+                                <strong style="color:${smartMoney >= 0 ? 'var(--teal)' : 'var(--red)'}">${smartMoney > 0 ? '+' : ''}${smartMoney}%</strong>
+                            </div>
                         </div>
                     </div>
 
                     <div class="volume-container">
                         <div class="volume-labels">
-                            <span>Tickets: ${p.betsPct || 0}%</span>
-                            <span>Dinero: ${p.handlePct || 0}%</span>
+                            <span>🎟️ Tickets (Bets): <b>${p.betsPct != null ? p.betsPct + '%' : '—'}</b></span>
+                            <span>💵 Dinero (Handle): <b>${p.handlePct != null ? p.handlePct + '%' : '—'}</b></span>
                         </div>
                         <div class="volume-bar-wrapper">
-                            <div class="v-bets" style="width: ${p.betsPct || 0}%"></div>
-                            <div class="v-handle" style="width: ${p.handlePct || 0}%"></div>
+                            <div class="v-bets" style="width: ${betsPct}%;"></div>
+                            <div class="v-handle" style="width: ${handlePct}%;"></div>
                         </div>
-                        ${evolutionHtml}
-                        ${isWhale ? `<div class="whale-banner">🐋 WHALE ALERT: +${smDiff}% Divergencia</div>` : ''}
-                        ${editorChoiceReasonHtml(editorAnalysis)}
                     </div>
+
+                    ${buildEvolutionHtml(p)}
+                    ${editorChoiceReasonHtml(editorEval)}
+
+                    ${isWhale ? `<div class="whale-banner">🐋 ALERTA WHALE: Movimiento Institucional Detectado</div>` : ''}
+                    ${isFree ? `<div class="free-pick-banner">🔓 SEÑAL FREE DESTACADA PARA REDES</div>` : ''}
+
+                    ${p.reason ? `<div class="reasoning-text">💡 <b>Análisis:</b> ${escapeHTML(p.reason)}</div>` : ''}
                 </div>
 
-                <div class="card-footer-tags">
-                    <span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score: ${p.score || 0}</span>
-                    <span class="badge-tag ${evBadgeClass(p.ev, p.evEstimated)}">EV: <span class="mono">${p.evEstimated ? '~' : ''}${p.ev || 0}%</span>${p.evEstimated ? ' <span class="estimated-marker">(est.)</span>' : ''}</span>
-                    <span class="badge-tag ${stakeBadgeClass(p.stake)}">Stake: ${p.stake || 0}u</span>
-                    <span class="badge-tag ${riskBadgeClass(p.risk)}">${escapeHTML(p.risk) || 'NORMAL'}</span>
-                    ${isEditorChoice ? `<span class="badge-tag good">🏆 Análisis destacado</span>` : ''}
+                <div style="margin-top: 14px;">
+                    <div class="card-footer-tags">
+                        <span class="badge-tag ${scoreBadgeClass(p.score)}">
+                            🔥 Score: <b>${p.score != null ? p.score : '—'}</b>
+                        </span>
+                        <span class="badge-tag ${evBadgeClass(p.ev, isEvEstimated)}">
+                            📊 EV: <b>${p.ev != null ? p.ev + '%' : '—'}</b>
+                            ${isEvEstimated ? `<span class="estimated-marker">(Est.)</span>` : ''}
+                        </span>
+                        <span class="badge-tag ${stakeBadgeClass(p.stake)}">
+                            🎯 Stake: <b>${p.stake != null ? p.stake + 'u' : '—'}</b>
+                            ${isStakeEstimated ? `<span class="estimated-marker">(Est.)</span>` : ''}
+                        </span>
+                        <span class="badge-tag ${riskBadgeClass(p.risk)}">
+                            🛡️ Riesgo: <b>${escapeHTML(p.risk || '—')}</b>
+                        </span>
+                    </div>
+
+                    <button class="btn-copy-x" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+                        <span>✨</span>
+                        <span>Copiar para X</span>
+                    </button>
                 </div>
-                ${isFree ? `<div class="free-pick-banner">🔓 Sin ventaja para apostar, pero análisis válido para compartir como pick gratis</div>` : ''}
-                ${p.reason ? `<p class="reasoning-text">${escapeHTML(p.reason)}</p>` : ''}
-
-                <button class="btn-copy-x" id="btn-copy-${index}">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                    </svg>
-                    Exportar a X
-                </button>
-            `;
-            box.appendChild(card);
-
-            const copyBtn = card.querySelector('#btn-copy-' + index);
-            if (copyBtn) {
-                copyBtn.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    copyPickForX(p);
-                });
-            }
-
-        } catch (err) {
-            console.error(`❌ ERROR en tarjeta index ${index}:`, err);
-        }
-    });
+            </div>
+        `;
+    }).join("");
 }
 
-function getRecentDatesList(days = 15) {
-    const dates = [];
-    const today = new Date();
-    for (let i = 0; i < days; i++) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        dates.push(`${year}-${month}-${day}`);
-    }
-    return dates;
-}
-
-function render() {
-    const emptyState = document.getElementById("emptyState");
-    const emptyMsg = document.getElementById("emptyStateMsg");
-    const cardsView = document.getElementById("cardsView");
-
-    renderActiveChips();
-
-    if (!Array.isArray(PICKS) || PICKS.length === 0) {
-        if (emptyState) emptyState.style.display = "block";
-        if (emptyMsg) emptyMsg.innerText = "No se encontraron registros activos operables bajo estos parámetros.";
-        if (cardsView) cardsView.style.display = "none";
-        document.getElementById('filteredCount').textContent = 0;
-        document.getElementById('totalCount').textContent = 0;
-        return;
-    }
-
-    const filteredPicks = applyFiltersAndSort(PICKS);
-    const activePicks = filteredPicks.filter(isEventPending);
-
-    // Actualización de contadores del indicador
-    document.getElementById('filteredCount').textContent = activePicks.length;
-    document.getElementById('totalCount').textContent = PICKS.filter(isEventPending).length;
-
-    updateMetrics(activePicks);
-    updateChartsData(activePicks);
-
-    if (activePicks.length === 0) {
-        if (emptyState) emptyState.style.display = "block";
-        if (emptyMsg) emptyMsg.innerText = "No se encontraron eventos activos que coincidan con los filtros.";
-        if (cardsView) cardsView.style.display = "none";
-    } else {
-        if (emptyState) emptyState.style.display = "none";
-        if (cardsView) cardsView.style.display = "grid";
-        drawCards(activePicks);
-    }
-}
-
-function setupFilters() {
-    let dates = new Set();
-    let leagues = new Set();
-
-    if (Array.isArray(PICKS)) {
-        PICKS.forEach(p => {
-            if (p.date) dates.add(p.date);
-            if (p.league) leagues.add(p.league);
-        });
-    }
-
-    getRecentDatesList(15).forEach(d => dates.add(d));
-
-    function buildSelector(id, placeholder, set) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.innerHTML = `<option value="">${placeholder}</option>`;
-        [...set].sort().reverse().forEach(v => {
-            el.innerHTML += `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`;
-        });
-        el.addEventListener("change", e => {
-            const field = id === "fClassification" ? "classification" : id.replace("f", "").toLowerCase();
-            state[field] = e.target.value;
-            render();
-        });
-    }
-
-    buildSelector("fDate", "📆 Todas las fechas", dates);
-    buildSelector("fLeague", "🏆 Todas las ligas", leagues);
-
-    const trendEl = document.getElementById("fTrend");
-    if (trendEl) {
-        trendEl.addEventListener("change", e => {
-            state.trend = e.target.value;
-            render();
-        });
-    }
-
-    const classificationEl = document.getElementById("fClassification");
-    if (classificationEl) {
-        classificationEl.addEventListener("change", e => {
-            state.classification = e.target.value;
-            render();
-        });
-    }
-
-    const riskEl = document.getElementById("fRisk");
-    if (riskEl) {
-        riskEl.addEventListener("change", e => {
-            state.risk = e.target.value;
-            render();
-        });
-    }
-
-    const bindNumInput = (id, stateKey) => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener("input", e => {
-                const val = parseFloat(e.target.value);
-                state[stateKey] = isNaN(val) ? null : val;
-                render();
-            });
-        }
-    };
-
-    const bindOddsInput = (id, stateKey) => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener("input", e => {
-                const val = e.target.value.trim();
-                state[stateKey] = val === "" ? null : val;
-                render();
-            });
-        }
-    };
-
-    const timeRangeEl = document.getElementById("fTimeRange");
-    if (timeRangeEl) {
-        timeRangeEl.addEventListener("change", e => {
-            state.timeRange = e.target.value;
-            render();
-        });
-    }
-
-    bindNumInput("fModeloMin", "modeloMin");
-    bindNumInput("fModeloMax", "modeloMax");
-    bindOddsInput("fCuotaMin", "cuotaMin");
-    bindOddsInput("fCuotaMax", "cuotaMax");
-    bindNumInput("fEdgeMin", "edgeMin");
-    bindNumInput("fEdgeMax", "edgeMax");
-    bindNumInput("fMoneyEdgeMin", "moneyEdgeMin");
-    bindNumInput("fMoneyEdgeMax", "moneyEdgeMax");
-    bindNumInput("fBetsMin", "betsMin");
-    bindNumInput("fBetsMax", "betsMax");
-    bindNumInput("fHandleMin", "handleMin");
-    bindNumInput("fHandleMax", "handleMax");
-    bindNumInput("fScoreMin", "scoreMin");
-    bindNumInput("fScoreMax", "scoreMax");
-    bindNumInput("fEvMin", "evMin");
-    bindNumInput("fEvMax", "evMax");
-    bindNumInput("fStakeMin", "stakeMin");
-    bindNumInput("fStakeMax", "stakeMax");
-    bindNumInput("fDivergenciaMin", "divergenciaMin");
-    bindNumInput("fDivergenciaMax", "divergenciaMax");
-
-    const btnAdv = document.getElementById("btnAdvToggle");
-    const advPanel = document.getElementById("advFiltersPanel");
-    if (btnAdv && advPanel) {
-        btnAdv.addEventListener("click", () => {
-            const isOpen = advPanel.classList.contains("show");
-            if (isOpen) {
-                advPanel.classList.remove("show");
-                btnAdv.setAttribute("aria-pressed", "false");
-            } else {
-                advPanel.classList.add("show");
-                btnAdv.setAttribute("aria-pressed", "true");
-            }
-        });
-    }
-
-    const sortEl = document.getElementById("fSort");
-    if (sortEl) {
-        sortEl.addEventListener("change", e => {
-            state.sort = e.target.value;
-            render();
-        });
-    }
-
+function setupListeners() {
     const searchEl = document.getElementById("search");
-    if (searchEl) {
-        searchEl.addEventListener("input", e => { 
-            state.search = e.target.value; 
-            render(); 
-        });
-    }
+    if (searchEl) searchEl.addEventListener("input", (e) => { state.search = e.target.value; render(); });
+
+    const fSortEl = document.getElementById("fSort");
+    if (fSortEl) fSortEl.addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+
+    const fDateEl = document.getElementById("fDate");
+    if (fDateEl) fDateEl.addEventListener("change", (e) => { state.date = e.target.value; render(); });
+
+    const fLeagueEl = document.getElementById("fLeague");
+    if (fLeagueEl) fLeagueEl.addEventListener("change", (e) => { state.league = e.target.value; render(); });
+
+    const fTrendEl = document.getElementById("fTrend");
+    if (fTrendEl) fTrendEl.addEventListener("change", (e) => { state.trend = e.target.value; render(); });
+
+    const fClassEl = document.getElementById("fClassification");
+    if (fClassEl) fClassEl.addEventListener("change", (e) => { state.classification = e.target.value; render(); });
+
+    const fRiskEl = document.getElementById("fRisk");
+    if (fRiskEl) fRiskEl.addEventListener("change", (e) => { state.risk = e.target.value; render(); });
 
     const editorBtn = document.getElementById("editorOnly");
+    if (editorBtn) editorBtn.addEventListener("click", () => {
+        state.editorOnly = !state.editorOnly;
+        editorBtn.setAttribute("aria-pressed", state.editorOnly);
+        render();
+    });
+
     const whaleBtn = document.getElementById("whaleOnly");
-    const freePickBtn = document.getElementById("freePickOnly");
+    if (whaleBtn) whaleBtn.addEventListener("click", () => {
+        state.whaleOnly = !state.whaleOnly;
+        whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
+        render();
+    });
 
-    if (editorBtn) {
-        editorBtn.addEventListener("click", () => {
-            state.editorOnly = !state.editorOnly;
-            if (state.editorOnly) {
-                state.whaleOnly = false;
-                state.freePickOnly = false;
-                if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
-                if (freePickBtn) freePickBtn.setAttribute("aria-pressed", "false");
+    const freeBtn = document.getElementById("freePickOnly");
+    if (freeBtn) freeBtn.addEventListener("click", () => {
+        state.freePickOnly = !state.freePickOnly;
+        freeBtn.setAttribute("aria-pressed", state.freePickOnly);
+        render();
+    });
+
+    const btnAdvToggle = document.getElementById("btnAdvToggle");
+    const advPanel = document.getElementById("advFiltersPanel");
+    if (btnAdvToggle && advPanel) {
+        btnAdvToggle.addEventListener("click", () => {
+            const isShown = advPanel.classList.contains("show");
+            if (isShown) {
+                advPanel.classList.remove("show");
+                btnAdvToggle.setAttribute("aria-pressed", "false");
+            } else {
+                advPanel.classList.add("show");
+                btnAdvToggle.setAttribute("aria-pressed", "true");
             }
-            editorBtn.setAttribute("aria-pressed", state.editorOnly);
-            render();
         });
     }
 
-    if (whaleBtn) {
-        whaleBtn.addEventListener("click", () => {
-            state.whaleOnly = !state.whaleOnly;
-            if (state.whaleOnly) {
-                state.editorOnly = false;
-                if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
-                state.freePickOnly = false;
-                if (freePickBtn) freePickBtn.setAttribute("aria-pressed", "false");
-            }
-            whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
-            render();
-        });
-    }
+    // Escuchadores de Filtros Avanzados Cuantitativos
+    const bindInput = (id, prop, isFloat = true) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", (e) => {
+                const val = e.target.value;
+                if (val === "" || val === null) {
+                    state[prop] = null;
+                } else {
+                    state[prop] = isFloat ? parseFloat(val) : val;
+                }
+                render();
+            });
+        }
+    };
 
-    if (freePickBtn) {
-        freePickBtn.addEventListener("click", () => {
-            state.freePickOnly = !state.freePickOnly;
-            if (state.freePickOnly) {
-                state.editorOnly = false;
-                if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
-                state.whaleOnly = false;
-                if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
-            }
-            freePickBtn.setAttribute("aria-pressed", state.freePickOnly);
-            render();
-        });
-    }
+    const fTimeRangeEl = document.getElementById("fTimeRange");
+    if (fTimeRangeEl) fTimeRangeEl.addEventListener("change", (e) => { state.timeRange = e.target.value; render(); });
+
+    bindInput("fModeloMin", "modeloMin");
+    bindInput("fModeloMax", "modeloMax");
+    bindInput("fCuotaMin", "cuotaMin", false);
+    bindInput("fCuotaMax", "cuotaMax", false);
+    bindInput("fEdgeMin", "edgeMin");
+    bindInput("fEdgeMax", "edgeMax");
+    bindInput("fMoneyEdgeMin", "moneyEdgeMin");
+    bindInput("fMoneyEdgeMax", "moneyEdgeMax");
+    bindInput("fBetsMin", "betsMin");
+    bindInput("fBetsMax", "betsMax");
+    bindInput("fHandleMin", "handleMin");
+    bindInput("fHandleMax", "handleMax");
+    bindInput("fScoreMin", "scoreMin");
+    bindInput("fScoreMax", "scoreMax");
+    bindInput("fEvMin", "evMin");
+    bindInput("fEvMax", "evMax");
+    bindInput("fStakeMin", "stakeMin");
+    bindInput("fStakeMax", "stakeMax");
+    bindInput("fDivergenciaMin", "divergenciaMin");
+    bindInput("fDivergenciaMax", "divergenciaMax");
 
     const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
-            state.search = ""; state.date = ""; state.league = ""; state.trend = ""; state.classification = ""; state.risk = ""; 
-            state.editorOnly = false; state.whaleOnly = false; state.freePickOnly = false; state.sort = "time";
+            state.search = "";
+            state.date = "";
+            state.league = "";
+            state.trend = "";
+            state.classification = "";
+            state.risk = "";
+            state.editorOnly = false;
+            state.whaleOnly = false;
+            state.freePickOnly = false;
+            state.sort = "time";
             
             state.timeRange = "";
-            state.modeloMin = null; state.modeloMax = null;
-            state.cuotaMin = null; state.cuotaMax = null;
-            state.edgeMin = null; state.edgeMax = null;
-            state.moneyEdgeMin = null; state.moneyEdgeMax = null;
-            state.betsMin = null; state.betsMax = null;
-            state.handleMin = null; state.handleMax = null;
-            state.scoreMin = null; state.scoreMax = null;
-            state.evMin = null; state.evMax = null;
-            state.stakeMin = null; state.stakeMax = null;
-            state.divergenciaMin = null; state.divergenciaMax = null;
+            state.modeloMin = null;
+            state.modeloMax = null;
+            state.cuotaMin = null;
+            state.cuotaMax = null;
+            state.edgeMin = null;
+            state.edgeMax = null;
+            state.moneyEdgeMin = null;
+            state.moneyEdgeMax = null;
+            state.betsMin = null;
+            state.betsMax = null;
+            state.handleMin = null;
+            state.handleMax = null;
+            state.scoreMin = null;
+            state.scoreMax = null;
+            state.evMin = null;
+            state.evMax = null;
+            state.stakeMin = null;
+            state.stakeMax = null;
+            state.divergenciaMin = null;
+            state.divergenciaMax = null;
 
-            if (editorBtn) editorBtn.setAttribute("aria-pressed", false);
-            if (freePickBtn) freePickBtn.setAttribute("aria-pressed", false);
-            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", false);
-            if (searchEl) searchEl.value = "";
-            if (sortEl) sortEl.value = "time";
-            ["fDate", "fLeague", "fTrend", "fClassification", "fRisk", "fTimeRange"].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = "";
-            });
+            document.querySelectorAll(".toolbar input, .toolbar select").forEach(i => i.value = "");
+            document.querySelectorAll(".adv-filters-panel input, .adv-filters-panel select").forEach(i => i.value = "");
             
-            [
-                "fModeloMin", "fModeloMax", "fCuotaMin", "fCuotaMax",
-                "fEdgeMin", "fEdgeMax", "fMoneyEdgeMin", "fMoneyEdgeMax",
-                "fBetsMin", "fBetsMax", "fHandleMin", "fHandleMax",
-                "fScoreMin", "fScoreMax", "fEvMin", "fEvMax",
-                "fStakeMin", "fStakeMax", "fDivergenciaMin", "fDivergenciaMax"
-            ].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = "";
-            });
+            if (fSortEl) fSortEl.value = "time";
+
+            if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
+            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
+            if (freeBtn) freeBtn.setAttribute("aria-pressed", "false");
 
             render();
         });
@@ -2669,15 +2602,18 @@ function setupFilters() {
 
 document.addEventListener("DOMContentLoaded", async () => {
     startRealtimeClock();
-    await loadData();
-    initCharts();
-    setupFilters();
-    setupStatPopups();
     setupThemeToggle();
+    initCharts();
+    await loadData();
+    populateSelectOptions();
+    setupListeners();
+    setupStatPopups();
     render();
-    
-    // Intervalo de actualización automática cada 30 min para sincronización de tema
-    setInterval(updateThemeByTime, 1800000);
+
+    // Actualización de timers cada 30s
+    setInterval(() => {
+        render();
+    }, 30000);
 });
 </script>
 
