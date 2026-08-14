@@ -4,7 +4,6 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-# Intentamos importar MAX_PAGES de settings, si no existe por estructura de paquetes usamos un default
 try:
     from settings import MAX_PAGES
 except ImportError:
@@ -18,6 +17,7 @@ BASE_DIR = os.path.abspath(
     )
 )
 
+
 class DraftKingsScraper:
 
     def __init__(self):
@@ -25,19 +25,29 @@ class DraftKingsScraper:
             "https://dknetwork.draftkings.com/"
             "draftkings-sportsbook-betting-splits/"
         )
+        # User-Agent completo para evitar bloqueos
         self.headers = {
-            "User-Agent": "Mozilla/5.0"
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/126.0.0.0 Safari/537.36"
+            ),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         }
 
     def build_url(self, league_slug, date_range, page):
-        return (
+        url = (
             f"{self.base_url}"
             f"?tb_eg={league_slug}"
             f"&tb_edate={date_range}"
             f"&tb_emt=0"
             f"&itm_content={league_slug}"
-            f"&tb_page={page}"
         )
+        # SOLO agregar tb_page si estamos en la página 2 o superior
+        if page > 1:
+            url += f"&tb_page={page}"
+            
+        return url
 
     def fetch_page(self, league_slug, date_range, page):
         url = self.build_url(league_slug, date_range, page)
@@ -85,19 +95,16 @@ class DraftKingsScraper:
             html = self.fetch_page(league_slug, date_range, page)
             events = self.extract_events(html)
 
-            #print("Eventos:", len(events))
             if not events:
                 break
 
             current = set(events)
             if current == previous:
-                #print("Página repetida.")
                 break
 
             previous = current
             file = self.save_raw(html, league_name, page)
             files.append(file)
-            #print("✓", os.path.basename(file))
 
             if len(events) < 5:
                 break
