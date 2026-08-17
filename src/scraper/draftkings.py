@@ -25,7 +25,6 @@ class DraftKingsScraper:
             "https://dknetwork.draftkings.com/"
             "draftkings-sportsbook-betting-splits/"
         )
-        # User-Agent completo para evitar bloqueos
         self.headers = {
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -36,14 +35,17 @@ class DraftKingsScraper:
         }
 
     def build_url(self, league_slug, date_range, page):
+        # tb_eg SIEMPRE es 'Sports'
+        # itm_content recibe el slug o ID de la liga (ej. '84240', 'Sports', 'NFL')
         url = (
             f"{self.base_url}"
-            f"?tb_eg={league_slug}"
+            f"?tb_eg=Sports"
             f"&tb_edate={date_range}"
             f"&tb_emt=0"
             f"&itm_content={league_slug}"
         )
-        # SOLO agregar tb_page si estamos en la página 2 o superior
+        
+        # Omitir tb_page en la página 1
         if page > 1:
             url += f"&tb_page={page}"
             

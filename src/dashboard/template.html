@@ -924,6 +924,64 @@
             padding-top: 8px;
         }
 
+        /* Panel de Decisión -- métricas duras del motor de análisis (analyze.py v3) */
+        .decision-panel {
+            margin-top: 10px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .decision-panel-title {
+            color: var(--muted);
+            font-weight: 800;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .decision-panel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 14px;
+            font-size: 11px;
+        }
+
+        .decision-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .decision-metric span:first-child { color: var(--muted); }
+        .decision-metric span:last-child { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+
+        .decision-splitbar {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .decision-splitbar-track {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--panel);
+            overflow: hidden;
+            display: flex;
+        }
+
+        .decision-splitbar-seg.divergence { background: var(--blue); height: 100%; }
+        .decision-splitbar-seg.ev { background: var(--teal); height: 100%; }
+
+        .coherence-ok { color: var(--teal); }
+        .coherence-bad { color: var(--red); }
+        .coherence-na { color: var(--muted); }
+
         /* EXPORTAR A X & TOAST */
         .btn-copy-x {
             background: linear-gradient(135deg, #1da1f2 0%, #0d8ecf 100%);
@@ -951,6 +1009,114 @@
         }
 
         .btn-copy-x:active { transform: translateY(0); }
+
+        .pcard-action-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-copy-x.pcard-action-row-item { margin-top: 0; flex: 1; }
+
+        .btn-reminder {
+            background: var(--panel2);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            flex: 1;
+            white-space: nowrap;
+        }
+
+        .btn-reminder:hover {
+            transform: translateY(-2px);
+            border-color: var(--amber);
+        }
+
+        .btn-reminder:active { transform: translateY(0); }
+
+        .btn-reminder.active {
+            background: var(--amber-soft);
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        /* RECORDATORIOS: notificaciones visuales en navegador */
+        .reminder-notif-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: min(360px, calc(100vw - 40px));
+        }
+
+        .reminder-notif {
+            background: rgba(15, 23, 42, 0.97);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 4px solid var(--blue);
+            padding: 14px 16px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+        }
+
+        .reminder-notif.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reminder-notif-urgent {
+            border-left-color: var(--gold);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--gold);
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        .reminder-notif-success { border-left-color: var(--teal); }
+        .reminder-notif-info { border-left-color: var(--muted); }
+
+        .reminder-notif-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .reminder-notif-body {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.4;
+        }
+
+        .reminder-notif-close {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+        }
+
+        .reminder-notif-close:hover { color: #fff; }
 
         #toast-x {
             position: fixed;
@@ -1191,9 +1357,10 @@
     <select id="fClassification">
         <option value="">🏷️ Todas las clasificaciones</option>
         <option value="premium">🟢 Premium</option>
-        <option value="mixed">🟨 Mixto</option>
+        <option value="solido">🔵 Sólido</option>
+        <option value="mixed">🟨 Valor Operativo</option>
         <option value="atento">⚡ Atento</option>
-        <option value="sin_ventaja">⚪ Sin Ventaja</option>
+        <option value="sin_ventaja">🔴 Descartar</option>
     </select>
 
     <select id="fRisk">
@@ -1368,6 +1535,8 @@
   <span>¡Copy formateado para X copiado al portapapeles!</span>
 </div>
 
+<div id="reminderNotifContainer" class="reminder-notif-container"></div>
+
 <script>
 let PICKS = [];
 
@@ -1525,11 +1694,12 @@ function scoreBadgeClass(score) {
     return "bad";
 }
 
-function evBadgeClass(ev, isEstimated) {
+// El EV se semaforiza SIEMPRE por su valor real, sea estimado o no — antes el flag
+// "estimado" forzaba el badge a gris neutral y ocultaba la señal real del EV.
+function evBadgeClass(ev) {
     const v = Number(ev || 0);
-    if (isEstimated) return "neutral";
-    if (v >= 10) return "good";
-    if (v > 0) return "warn";
+    if (v >= 8) return "good";
+    if (v >= 3) return "warn";
     return "bad";
 }
 
@@ -1539,6 +1709,21 @@ function stakeBadgeClass(stake) {
     if (s >= 4) return "good";
     if (s >= 2) return "warn";
     return "bad";
+}
+
+// Escala fija de stakes permitida (evita fraccionamientos excesivos)
+const STAKE_SCALE = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
+
+function snapStakeToScale(stake) {
+    const val = Number(stake);
+    if (stake == null || isNaN(val) || val <= 0) return null;
+    let closest = STAKE_SCALE[0];
+    let minDiff = Math.abs(val - closest);
+    for (let i = 1; i < STAKE_SCALE.length; i++) {
+        const diff = Math.abs(val - STAKE_SCALE[i]);
+        if (diff < minDiff) { minDiff = diff; closest = STAKE_SCALE[i]; }
+    }
+    return closest;
 }
 
 function riskBadgeClass(risk) {
@@ -1613,15 +1798,38 @@ function calculateEdge(p) {
 
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
 
+// Devuelve únicamente las mediciones donde Bets, Handle o Cuota realmente cambiaron
+// respecto a la medición anterior. Fuente única usada tanto por la Evolución Histórica
+// como por el Análisis Destacado, para que ninguna de las dos repita mediciones idénticas.
+function getChangedHistoryEntries(p) {
+    const rawHistory = Array.isArray(p.history) ? p.history.filter(h =>
+        h && (h.betsPct != null || h.handlePct != null || h.odds != null)
+    ) : [];
+    if (rawHistory.length === 0) return [];
+
+    const hasOdds = rawHistory.some(h => h.odds != null && h.odds !== '');
+
+    return rawHistory.filter((h, i) => {
+        if (i === 0) return true;
+        const prev = rawHistory[i - 1];
+        const betsChanged = h.betsPct !== prev.betsPct;
+        const handleChanged = h.handlePct !== prev.handlePct;
+        const oddsChanged = hasOdds && h.odds !== prev.odds;
+        return betsChanged || handleChanged || oddsChanged;
+    });
+}
+
 // Parámetros de análisis de evolución para destacar automáticamente los picks.
 // Se mantienen separados de los filtros/clasificaciones existentes para no alterar su comportamiento.
 const EDITOR_ANALYSIS_CONFIG = Object.freeze({
-    minBets: 30,
-    minHandle: 50,
-    minGap: 10,
-    minRatio: 1.20,
-    minHistoryPoints: 2,
-    minEditorScore: 80
+    minBets: 25,          // Antes: 30%
+    minHandle: 45,        // Antes: 50%
+    minGap: 8,            // Antes: 10%
+    minRatio: 1.15,       // Antes: 1.20x
+    minHistoryPoints: 1,  // Antes: 2
+    minEditorScore: 55,   // Antes: 65
+    minOdds: -140,        // Antes: -125
+    maxOdds: 115          // Antes: 100
 });
 
 function getEvolutionAnalysis(p) {
@@ -1630,9 +1838,7 @@ function getEvolutionAnalysis(p) {
     const gap = handle - bets;
     const ratio = bets > 0 ? handle / bets : 0;
 
-    const history = Array.isArray(p.history) ? p.history.filter(h =>
-        h && (h.betsPct != null || h.handlePct != null || h.odds != null)
-    ) : [];
+    const history = getChangedHistoryEntries(p);
 
     const previous = history.length >= 2 ? history[history.length - 2] : null;
     const prevBets = previous && previous.betsPct != null ? Number(previous.betsPct) : null;
@@ -1656,13 +1862,30 @@ function getEvolutionAnalysis(p) {
         }
     }
 
+    // Editor's Choice busca cuotas atractivas pero no tan positivas (relación cuota/análisis),
+    // rango -125 a +100: favoritos moderados o paridad, nunca long-shots.
+    const editorOddsVal = getAmericanOddsValue(currentOdds);
+    const oddsInEditorRange = editorOddsVal != null &&
+        editorOddsVal >= EDITOR_ANALYSIS_CONFIG.minOdds && editorOddsVal <= EDITOR_ANALYSIS_CONFIG.maxOdds;
+
+    // El backend (analyze.py v3) ya evaluó confiabilidad real del dato (Monte Carlo,
+    // coherencia cuota/dinero, redundancia de fuentes). Si esos campos vienen presentes,
+    // Editor's Choice los exige además de la aritmética de Δ -- así un pick con Δ grande
+    // pero riesgo HIGH o baja confianza del análisis cualitativo no se corona sin más.
+    // Compatibilidad hacia atrás: si el pick no trae esos campos (datos legado), no bloquea.
+    const backendRiskOk = p.risk == null || p.risk !== "HIGH";
+    const backendConfidenceOk = p.confidence == null || p.confidence >= 0.95;
+    const backendCoherenceOk = p.coherence == null || p.coherence !== "contradictoria";
+
     const criteria = {
         bets: bets >= EDITOR_ANALYSIS_CONFIG.minBets,
         handle: handle >= EDITOR_ANALYSIS_CONFIG.minHandle,
         gap: gap >= EDITOR_ANALYSIS_CONFIG.minGap,
         ratio: ratio >= EDITOR_ANALYSIS_CONFIG.minRatio,
         gapTrend: gapDelta != null && gapDelta >= 0,
-        odds: oddsConfirmed
+        odds: oddsConfirmed,
+        oddsRange: oddsInEditorRange,
+        backend: backendRiskOk && backendConfidenceOk && backendCoherenceOk
     };
 
     let score = 0;
@@ -1676,7 +1899,8 @@ function getEvolutionAnalysis(p) {
     const enoughHistory = history.length >= EDITOR_ANALYSIS_CONFIG.minHistoryPoints;
     const isEditorChoice = enoughHistory &&
         criteria.bets && criteria.handle && criteria.gap && criteria.ratio &&
-        criteria.gapTrend && score >= EDITOR_ANALYSIS_CONFIG.minEditorScore;
+        criteria.gapTrend && criteria.oddsRange && criteria.backend &&
+        score >= EDITOR_ANALYSIS_CONFIG.minEditorScore;
 
     let movementLabel = 'Sin confirmación de cuota';
     if (oddsConfirmed) movementLabel = 'Cuota a favor';
@@ -1711,54 +1935,55 @@ function editorChoiceReasonHtml(a) {
     if (a.gapDelta != null && a.gapDelta >= 0) signals.push(`Gap H-B ${a.gapDelta > 0 ? '↑' : 'estable'}`);
     if (a.oddsConfirmed) signals.push('Cuota a favor');
 
-    const observationRows = a.historyDetails.map((h, i) => {
-        const prev = i > 0 ? a.historyDetails[i - 1] : null;
-        const bets = h.betsPct != null ? `${h.betsPct}%` : '—';
-        const handle = h.handlePct != null ? `${h.handlePct}%` : '—';
-        const gap = (h.betsPct != null && h.handlePct != null) ? `${(Number(h.handlePct)-Number(h.betsPct)).toFixed(1)} pts` : '—';
-        const odds = h.odds != null && h.odds !== '' ? escapeHTML(h.odds) : '—';
-        return `<li><b>${escapeHTML(h.time || `Medición ${i + 1}`)}</b>: Tickets ${bets} · Dinero ${handle} · Gap ${gap}${a.hasHistoryOdds ? ` · Cuota ${odds}` : ''}</li>`;
-    }).join('');
-
+    // No se repite el detalle de cada medición (ya está en la Evolución Histórica de arriba);
+    // aquí solo se indica cuántas mediciones con cambios reales sustentan el análisis.
     return `
         <div class="editor-analysis">
             <div class="editor-analysis-head">
                 <strong>🏆 ANÁLISIS DESTACADO · ${a.score}/100</strong>
-                <span>${a.historyPoints} mediciones</span>
+                <span>${a.historyPoints} mediciones con cambios sustentan el análisis</span>
             </div>
             <div>Tickets <b>${a.bets}%</b> · Dinero <b>${a.handle}%</b> · Gap H-B <b>+${a.gap.toFixed(1)} pts</b> · H/B <b>${a.ratio.toFixed(2)}x</b></div>
             <div style="margin-top:3px;">${signals.length ? `Señales: <span class="editor-good">${signals.join(' · ')}</span>` : 'Señales de evolución confirmadas'}</div>
-            <details>
-                <summary>Ver las ${a.historyPoints} mediciones que sustentan el análisis</summary>
-                <ul class="editor-observation-list">${observationRows}</ul>
-            </details>
         </div>`;
 }
 
+// Filtro Whale Alerts -- el backend (analyze.py v3) ya calcula esta confirmación
+// con coherencia cuota/dinero + profundidad de historial real, así que si el
+// campo viene presente como booleano es la fuente de verdad y NO se recalcula
+// con el heurístico numérico crudo de abajo (evita que dos lecturas distintas
+// del mismo pick se contradigan entre sí).
 function isWhalePick(p) {
-    if (p.whale) return true;
-    const nowLocal = new Date();
-    const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
-    const matchesDate = !p.date || p.date === todayStr;
-    const betsCondition = Number(p.betsPct || 0) < 30;
-    const handleCondition = Number(p.handlePct || 0) > 60;
-    const scoreCondition = Number(p.score || 0) > 65;
-    const smartMoneyCondition = calculateSmartMoney(p) > 30;
-    
-    return matchesDate && betsCondition && handleCondition && scoreCondition && smartMoneyCondition;
+    if (typeof p.whale === "boolean") return p.whale;
+
+    const betsCondition = Number(p.betsPct || 0) <= 35;           // Antes: < 30%
+    const handleCondition = Number(p.handlePct || 0) >= 55;        // Antes: > 60%
+    const scoreCondition = Number(p.score || 0) >= 55;            // Antes: > 65
+    const smartMoneyCondition = calculateSmartMoney(p) >= 20;     // Antes: > 30%
+
+    const oddsVal = getAmericanOddsValue(p.odds != null && p.odds !== '' ? p.odds : p.cuota);
+    const oddsCondition = oddsVal != null && oddsVal >= -110;      // Antes: >= +100
+
+    return betsCondition && handleCondition && scoreCondition && smartMoneyCondition && oddsCondition;
 }
 
+// Filtro Free Picks Flexibilizado
 function isFreePick(p) {
     if (p.freePick) return true;
-    const nowLocal = new Date();
-    const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
-    const matchesDate = !p.date || p.date === todayStr;
-    const betsCondition = Number(p.betsPct || 0) > 60;
-    const handleCondition = Number(p.handlePct || 0) > 60;
-    const scoreCondition = Number(p.score || 0) > 55;
-    const smartMoneyCondition = calculateSmartMoney(p) > 10;
 
-    return matchesDate && betsCondition && handleCondition && scoreCondition && smartMoneyCondition;
+    const betsCondition = Number(p.betsPct || 0) >= 50;           // Antes: > 60%
+    const handleCondition = Number(p.handlePct || 0) >= 50;         // Antes: > 60%
+
+    const score = Number(p.score || 0);
+    const scoreCondition = score >= 20 && score <= 60;            // Antes: 25 a 44
+
+    const smartMoney = calculateSmartMoney(p);
+    const smartMoneyCondition = smartMoney >= 0 && smartMoney <= 20; // Antes: > 5 y < 15
+
+    const oddsVal = getAmericanOddsValue(p.odds != null && p.odds !== '' ? p.odds : p.cuota);
+    const oddsCondition = oddsVal != null && oddsVal >= -250 && oddsVal <= -110; // Antes: -200 a -125
+
+    return betsCondition && handleCondition && scoreCondition && smartMoneyCondition && oddsCondition;
 }
 
 function trendArrow(curr, prev) {
@@ -1770,18 +1995,10 @@ function trendArrow(curr, prev) {
 }
 
 function buildEvolutionHtml(p) {
-    if (!p.history || !Array.isArray(p.history) || p.history.length === 0) return '';
+    const filteredHistory = getChangedHistoryEntries(p);
+    if (filteredHistory.length === 0) return '';
 
-    const hasOdds = p.history.some(h => h.odds != null && h.odds !== '');
-
-    const filteredHistory = p.history.filter((h, i) => {
-        if (i === 0) return true;
-        const prev = p.history[i - 1];
-        const betsChanged = h.betsPct !== prev.betsPct;
-        const handleChanged = h.handlePct !== prev.handlePct;
-        const oddsChanged = hasOdds && h.odds !== prev.odds;
-        return betsChanged || handleChanged || oddsChanged;
-    });
+    const hasOdds = filteredHistory.some(h => h.odds != null && h.odds !== '');
 
     let rows = '';
     filteredHistory.forEach((h, i) => {
@@ -1820,26 +2037,95 @@ function buildEvolutionHtml(p) {
     `;
 }
 
+// Panel de Decisión: métricas duras que produce el motor de análisis y que antes
+// se calculaban y se descartaban (Monte Carlo) o no se mostraban en absoluto
+// (confianza cualitativa, coherencia cuota/dinero, reliability del dato).
+// Se muestra solo si el pick trae estos campos -- no rompe con datos legado.
+function decisionPanelHtml(p) {
+    const hasHybridData = p.confidence != null || p.monteCarlo != null || p.divergenceScore != null;
+    if (!hasHybridData) return '';
+
+    const rows = [];
+
+    if (p.divergenceScore != null && p.evScore != null) {
+        const d = Number(p.divergenceScore), e = Number(p.evScore);
+        const total = Math.max(d + e, 1);
+        rows.push(`
+            <div class="decision-metric"><span>Divergencia H-B</span><span>${d.toFixed(1)}</span></div>
+            <div class="decision-metric"><span>Score EV modelo</span><span>${e.toFixed(1)}</span></div>
+            <div class="decision-splitbar">
+                <div class="decision-splitbar-track">
+                    <div class="decision-splitbar-seg divergence" style="width:${(d / total) * 100}%"></div>
+                    <div class="decision-splitbar-seg ev" style="width:${(e / total) * 100}%"></div>
+                </div>
+            </div>
+        `);
+    }
+
+    if (p.confidence != null) {
+        const c = Number(p.confidence);
+        rows.push(`<div class="decision-metric"><span>Confianza cualitativa</span><span>${(c * 100).toFixed(0)}%</span></div>`);
+    }
+
+    if (p.reliability != null) {
+        rows.push(`<div class="decision-metric"><span>Confiabilidad del dato</span><span>${(Number(p.reliability) * 100).toFixed(0)}%</span></div>`);
+    }
+
+    if (p.monteCarlo) {
+        const mc = p.monteCarlo;
+        if (mc.win_probability != null) rows.push(`<div class="decision-metric"><span>Monte Carlo (P. victoria)</span><span>${mc.win_probability}%</span></div>`);
+        if (mc.expected_roi != null) rows.push(`<div class="decision-metric"><span>Monte Carlo (ROI esp.)</span><span>${mc.expected_roi >= 0 ? '+' : ''}${mc.expected_roi}%</span></div>`);
+    }
+
+    if (p.coherence !== undefined) {
+        let label = '<span class="coherence-na">— sin datos suficientes</span>';
+        if (p.coherence === "confirmada") label = '<span class="coherence-ok">✅ confirmada por la cuota</span>';
+        else if (p.coherence === "contradictoria") label = '<span class="coherence-bad">⚠️ contradictoria con la cuota</span>';
+        rows.push(`<div class="decision-metric"><span>Coherencia cuota/dinero</span>${label}</div>`);
+    }
+
+    if (Array.isArray(p.history)) {
+        rows.push(`<div class="decision-metric"><span>Puntos de historial</span><span>${p.history.length}</span></div>`);
+    }
+
+    if (rows.length === 0) return '';
+
+    return `
+        <div class="decision-panel">
+            <div class="decision-panel-title">📐 Panel de Decisión</div>
+            <div class="decision-panel-grid">
+                ${rows.join('')}
+            </div>
+        </div>
+    `;
+}
+
 function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && (p.score || 0) >= 75; }
 
+// Clasificación visual puramente por score (0-100), sin overrides por flags externos
+// (whale, texto de acción del backend) para evitar sesgos: la señal whale y editor's choice
+// ya se muestran con sus propios badges independientes en la card.
 function getVisualConfig(p) {
-    const score = p.score || 0;
-    const action = (p.action || "").toUpperCase();
-    const hasWhale = isWhalePick(p) || (p.text && p.text.includes("WHALE"));
+    const score = Number(p.score || 0);
+    const edge = calculateEdge(p);
 
-    if (hasWhale || score >= 30 || action.includes("PREMIUM")) {
+    if (score >= 65 && edge >= 3) {
         return { key: "premium", bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
     }
-    
-    if (score >= 15 || action.includes("VALOR") || action.includes("NORMAL")) {
-        return { key: "mixed", bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "🟨 VALOR OPERATIVO" };
-    }
-    
-    if (score < 15) {
-        return { key: "sin_ventaja", bg: "var(--red-soft)", border: "var(--red)", text: "var(--red)", label: "🔴 DESCARTAR" };
+
+    if (score >= 45) {
+        return { key: "solido", bg: "var(--blue-soft)", border: "var(--blue)", text: "var(--blue)", label: "🔵 SÓLIDO" };
     }
 
-    return { key: "atento", bg: "var(--panel2)", border: "var(--border)", text: "var(--text)", label: "⚡ ATENTO" };
+    if (score >= 25) {
+        return { key: "mixed", bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "🟨 VALOR OPERATIVO" };
+    }
+
+    if (score >= 10) {
+        return { key: "atento", bg: "var(--panel2)", border: "var(--border)", text: "var(--text)", label: "⚡ ATENTO" };
+    }
+
+    return { key: "sin_ventaja", bg: "var(--red-soft)", border: "var(--red)", text: "var(--red)", label: "🔴 DESCARTAR" };
 }
 
 function getCountdownText(isoString) {
@@ -1869,10 +2155,17 @@ const statState = {
     mejor: []
 };
 
-// Clasificación de Mercado coherente para métricas y gráficos
+// Clasificación de Mercado unificada con la Señal visible en cada card (p.trendKey):
+// el bucket de mercado nunca debe contradecir el tag 🐋/🟡/⚪/🚨/⚙️ que ve el usuario.
+// Solo recurre a la divergencia (Smart Money) como respaldo si el pick no trae trendKey.
 function classifyMarketBucket(p) {
-    if (p.trendKey === "sharp" || isWhalePick(p) || calculateSmartMoney(p) >= 15) return "sharp";
-    if (p.trendKey === "public" || calculateSmartMoney(p) <= -15) return "fade";
+    if (p.trendKey === "sharp") return "sharp";
+    if (p.trendKey === "public") return "fade";
+    if (p.trendKey === "mixed" || p.trendKey === "consensus" || p.trendKey === "other") return "consenso";
+
+    // Fallback solo para datos sin trendKey (legado/incompleto)
+    if (isWhalePick(p) || calculateSmartMoney(p) >= 15) return "sharp";
+    if (calculateSmartMoney(p) <= -15) return "fade";
     return "consenso";
 }
 
@@ -2017,6 +2310,12 @@ function setupStatPopups() {
         document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
         document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
     });
+}
+
+function getAmericanOddsValue(oddsRaw) {
+    if (oddsRaw == null || oddsRaw === '') return null;
+    const val = parseFloat(String(oddsRaw).trim());
+    return isNaN(val) ? null : val;
 }
 
 function parseOddsToDecimal(odds) {
@@ -2178,7 +2477,7 @@ function applyFiltersAndSort(list) {
         if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
         if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
 
-        const stakeVal = Number(p.stake || 0);
+        const stakeVal = snapStakeToScale(p.stake) || 0;
         if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
         if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
 
@@ -2211,11 +2510,13 @@ function applyFiltersAndSort(list) {
         return 0;
     });
 }
-
 function fallbackCopyText(text) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
+    // Evita desplazamiento en la pantalla al enfocar
     textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
     textArea.style.opacity = "0";
     document.body.appendChild(textArea);
     textArea.focus();
@@ -2229,32 +2530,66 @@ function fallbackCopyText(text) {
     document.body.removeChild(textArea);
 }
 
+function getHeaderTag(type) {
+    switch ((type || '').toLowerCase()) {
+        case 'editors_choice':
+        case 'editor':
+            return "🎖️ EDITOR'S CHOICE PICK";
+        case 'whale':
+        case 'whale_alert':
+            return "🐳 WHALE ALERT PICK";
+        case 'free':
+        default:
+            return "🔥 FREE PICK";
+    }
+}
+
 function copyPickForX(p) {
-    const dateStr = p.date || new Date().toLocaleDateString('es-MX');
+    // 1. Encabezado dinámico según el tipo de pick
+    const header = getHeaderTag(p.type || p.pickType || (p.isFree ? 'free' : ''));
+
+    // 2. Extracción y formateo de datos
+    const dateStr = p.date || new Date().toISOString().split('T')[0];
     const timeStr = p.time || "--:--";
-    const league = p.league ? `🏆 ${p.league}` : "";
+    const league = p.league || p.sport || "SPORTS";
     const game = p.game || "Evento";
+    
     const pickName = p.pick || "Selección";
     const market = p.market ? ` (${p.market})` : "";
-    const odds = p.odds || p.cuota || "";
-    const oddsStr = odds ? ` @ ${odds}` : "";
-    const edgeVal = calculateEdge(p);
-    const edgeStr = edgeVal !== 0 ? `\n📈 Edge Modelo: ${edgeVal > 0 ? '+' : ''}${edgeVal}%` : "";
-    const bets = p.betsPct != null ? `${p.betsPct}%` : "—";
-    const handle = p.handlePct != null ? `${p.handlePct}%` : "—";
-    const smartMoney = calculateSmartMoney(p);
-    const smartMoneyStr = (p.handlePct != null && p.betsPct != null) ? `\n🐋 Dinero Institucional: ${smartMoney > 0 ? '+' : ''}${smartMoney}% (Bets: ${bets} | Handle: ${handle})` : "";
-    const reason = p.reason ? `\n\n💡 ${p.reason}` : "";
+    const odds = p.odds || p.cuota || "Ev";
 
-    const tweetText = `⚡ SHARPIE PRO SIGNAL ⚡\n\n📅 ${dateStr} - ${timeStr}\n${league}\n⚽ ${game}\n\n🎯 PICK: ${pickName}${market}${oddsStr}${edgeStr}${smartMoneyStr}${reason}\n\n#ApuestasDeportivas #SmartMoney #SharpiePRO`;
+    // 3. Formateo preciso del Stake (Asegura "1.0u", "1.5u", etc.)
+    let rawStake = p.stake ?? p.recommendedStake ?? p.units ?? 1.0;
+    let stakeStr = "";
 
+    if (typeof rawStake === "number") {
+        // Si viene como número (ej: 1 o 1.1), aseguramos formato decimal + 'u'
+        stakeStr = `${rawStake.toFixed(1)}u`;
+    } else {
+        // Si viene como string, limpiamos espacios y aseguramos que lleve 'u'
+        const cleanStake = String(rawStake).trim();
+        stakeStr = cleanStake.endsWith("u") ? cleanStake : `${cleanStake}u`;
+    }
+
+    // 4. Construcción del mensaje con la salida idéntica requerida
+    const tweetText = `${header}\n` +
+        `📅 ${dateStr} | ⏰ ${timeStr}\n` +
+        `🏆 ${league}\n` +
+        `🏟️ ${game}\n` +
+        `🎯 Pick: ${pickName}${market}\n` +
+        `💵 Cuota: ${odds}\n` +
+        `💰 Stake: ${stakeStr}`;
+
+    // 5. Copiar al portapapeles
     if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(tweetText).then(() => {
-            showToastX();
-        }).catch(err => {
-            console.error("Error al copiar vía Clipboard API:", err);
-            fallbackCopyText(tweetText);
-        });
+        navigator.clipboard.writeText(tweetText)
+            .then(() => {
+                showToastX();
+            })
+            .catch(err => {
+                console.error("Error al copiar vía Clipboard API:", err);
+                fallbackCopyText(tweetText);
+            });
     } else {
         fallbackCopyText(tweetText);
     }
@@ -2267,6 +2602,140 @@ function showToastX() {
     setTimeout(() => {
         toast.classList.remove("show");
     }, 3000);
+}
+
+// ============ SISTEMA DE RECORDATORIOS (30 min antes del evento) ============
+const REMINDER_STORAGE_KEY = "sharpie_reminders_v1";
+const REMINDER_LEAD_MS = 60 * 60 * 1000;
+
+function getReminderId(p) {
+    return `${p.league || ''}|${p.game || ''}|${p.market || ''}|${p.pick || ''}|${p.iso || ''}`;
+}
+
+function loadReminders() {
+    try {
+        return JSON.parse(localStorage.getItem(REMINDER_STORAGE_KEY)) || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveReminders(reminders) {
+    try {
+        localStorage.setItem(REMINDER_STORAGE_KEY, JSON.stringify(reminders));
+    } catch (e) {
+        console.error("Error al guardar recordatorios:", e);
+    }
+}
+
+function hasReminder(p) {
+    const reminders = loadReminders();
+    return !!reminders[getReminderId(p)];
+}
+
+function toggleReminder(p) {
+    const reminders = loadReminders();
+    const id = getReminderId(p);
+
+    if (reminders[id]) {
+        delete reminders[id];
+        saveReminders(reminders);
+        showAttractiveNotification({
+            title: "🔕 Recordatorio cancelado",
+            body: `${p.game || 'Evento'} — ${p.pick || ''}`,
+            variant: "info"
+        });
+    } else {
+        if (!p.iso) return;
+        if (typeof Notification !== "undefined" && Notification.permission === "default") {
+            try { Notification.requestPermission(); } catch (e) {}
+        }
+        reminders[id] = {
+            iso: p.iso,
+            league: p.league || '',
+            game: p.game || '',
+            pick: p.pick || '',
+            market: p.market || '',
+            odds: p.odds || p.cuota || '',
+            notified: false
+        };
+        saveReminders(reminders);
+        showAttractiveNotification({
+            title: "🔔 Recordatorio activado",
+            body: `Te avisaremos 60 min antes de: ${p.game || 'Evento'}`,
+            variant: "success"
+        });
+    }
+    render();
+}
+
+function checkReminders() {
+    const reminders = loadReminders();
+    const now = Date.now();
+    let changed = false;
+
+    Object.keys(reminders).forEach(id => {
+        const r = reminders[id];
+        if (!r.iso) return;
+        const eventTime = new Date(r.iso).getTime();
+        const diff = eventTime - now;
+
+        if (diff <= 0) {
+            delete reminders[id];
+            changed = true;
+            return;
+        }
+
+        if (!r.notified && diff <= REMINDER_LEAD_MS) {
+            r.notified = true;
+            changed = true;
+            fireReminderNotification(r);
+        }
+    });
+
+    if (changed) saveReminders(reminders);
+}
+
+function fireReminderNotification(r) {
+    const oddsStr = r.odds ? ` @ ${r.odds}` : "";
+    showAttractiveNotification({
+        title: "⏰ ¡Faltan 60 minutos!",
+        body: `${r.league ? '🏆 ' + r.league + ' · ' : ''}${r.game || 'Evento'}\n🎯 ${r.pick || ''}${oddsStr}`,
+        variant: "urgent"
+    });
+
+    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+        try {
+            new Notification("⏰ Sharpie · Faltan 30 minutos", {
+                body: `${r.game || 'Evento'} — ${r.pick || ''}${oddsStr}`
+            });
+        } catch (e) {}
+    }
+}
+
+function showAttractiveNotification({ title, body, variant = "info" }) {
+    const container = document.getElementById("reminderNotifContainer");
+    if (!container) return;
+
+    const el = document.createElement("div");
+    el.className = `reminder-notif reminder-notif-${variant}`;
+    el.innerHTML = `
+        <button class="reminder-notif-close" aria-label="Cerrar">&times;</button>
+        <div class="reminder-notif-title">${escapeHTML(title)}</div>
+        <div class="reminder-notif-body">${escapeHTML(body).replace(/\n/g, '<br>')}</div>
+    `;
+    el.querySelector(".reminder-notif-close").addEventListener("click", () => dismissNotif(el));
+    container.appendChild(el);
+
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("show")));
+
+    setTimeout(() => dismissNotif(el), variant === "urgent" ? 15000 : 5000);
+}
+
+function dismissNotif(el) {
+    if (!el || !el.parentNode) return;
+    el.classList.remove("show");
+    setTimeout(() => el.remove(), 300);
 }
 
 function populateSelectOptions() {
@@ -2344,8 +2813,9 @@ function render() {
         const betsPct = p.betsPct != null ? p.betsPct : 50;
         const handlePct = p.handlePct != null ? p.handlePct : 50;
 
-        const isEvEstimated = p.evEstimated === true;
         const isStakeEstimated = p.stakeEstimated === true;
+        const displayStake = snapStakeToScale(p.stake);
+        const reminderActive = hasReminder(p);
 
         const dateDisplay = escapeHTML(p.date || "--/--/----");
         const timeDisplay = escapeHTML(p.time || "--:--");
@@ -2415,6 +2885,7 @@ function render() {
 
                     ${buildEvolutionHtml(p)}
                     ${editorChoiceReasonHtml(editorEval)}
+                    ${decisionPanelHtml(p)}
 
                     ${isWhale ? `<div class="whale-banner">🐋 ALERTA WHALE: Movimiento Institucional Detectado</div>` : ''}
                     ${isFree ? `<div class="free-pick-banner">🔓 SEÑAL FREE DESTACADA PARA REDES</div>` : ''}
@@ -2427,12 +2898,11 @@ function render() {
                         <span class="badge-tag ${scoreBadgeClass(p.score)}">
                             🔥 Score: <b>${p.score != null ? p.score : '—'}</b>
                         </span>
-                        <span class="badge-tag ${evBadgeClass(p.ev, isEvEstimated)}">
+                        <span class="badge-tag ${evBadgeClass(p.ev)}">
                             📊 EV: <b>${p.ev != null ? p.ev + '%' : '—'}</b>
-                            ${isEvEstimated ? `<span class="estimated-marker">(Est.)</span>` : ''}
                         </span>
-                        <span class="badge-tag ${stakeBadgeClass(p.stake)}">
-                            🎯 Stake: <b>${p.stake != null ? p.stake + 'u' : '—'}</b>
+                        <span class="badge-tag ${stakeBadgeClass(displayStake)}">
+                            🎯 Stake: <b>${displayStake != null ? displayStake.toFixed(1) + 'u' : '—'}</b>
                             ${isStakeEstimated ? `<span class="estimated-marker">(Est.)</span>` : ''}
                         </span>
                         <span class="badge-tag ${riskBadgeClass(p.risk)}">
@@ -2440,10 +2910,16 @@ function render() {
                         </span>
                     </div>
 
-                    <button class="btn-copy-x" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
-                        <span>✨</span>
-                        <span>Copiar para X</span>
-                    </button>
+                    <div class="pcard-action-row">
+                        <button class="btn-copy-x pcard-action-row-item" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+                            <span>✨</span>
+                            <span>Copiar para X</span>
+                        </button>
+                        <button class="btn-reminder ${reminderActive ? 'active' : ''}" onclick='toggleReminder(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+                            <span>${reminderActive ? '🔔' : '🔕'}</span>
+                            <span>${reminderActive ? 'Activado' : 'Recordar'}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -2612,6 +3088,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     setInterval(() => {
         render();
     }, 30000);
+
+    // Sistema de recordatorios: revisa cada 15s si algún pick entró a la ventana de 30 min
+    checkReminders();
+    setInterval(checkReminders, 15000);
 });
 </script>
 

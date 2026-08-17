@@ -122,7 +122,10 @@ def classify_action(text):
             "BET",
             "SHARP LEAN",
             "LEAN",
-            "TAKE"
+            "TAKE",
+            "PREMIUM",
+            "VALOR OPERATIVO",
+            "VALOR"
         ]
     ):
         return "bet"
@@ -353,7 +356,12 @@ def american_implied_probability(american_odds):
 # WHALE / SHARP MONEY
 # ============================================================
 def detect_whale(market):
-    if market.get("whale"):
+    # Si el motor de análisis confirmó whale institucional real (coherencia +
+    # historial), esa es la verdad. Si dice False, NO se corta el heurístico --
+    # su confirmación es intencionalmente estricta (exige 2+ snapshots con
+    # steam confirmado), así que un False solo significa "no confirmado aún",
+    # no "descartado"; el heurístico numérico sigue como red de seguridad.
+    if market.get("whale") is True:
         return True
 
     handle = safe_pct(
@@ -557,12 +565,31 @@ def classify_evaluation(final_score):
 
 
 # ============================================================
-# RIESGO
+# STAKE -- calculado aquí, con las MISMAS variables que deciden
+# evaluación/riesgo, para que nunca se desalinee con lo que el
+# usuario ve en el badge (antes: stake venía de analyze.py con su
+# propio score interno, que casi nunca coincidía con final_score).
+# ============================================================
+def calculate_stake_units(final_score, risk, reliability_multiplier, evaluation, ev):
+    if evaluation == "DESCARTAR" or final_score < 25 or ev <= -0.5:
+        return 0.0
+
+    kelly_like = max(0.0, (final_score - 25.0) / 75.0)  # 0 en el piso de "LEAN", 1 en score=100
+    risk_multiplier = {"LOW": 1.0, "MEDIUM": 0.7, "HIGH": 0.4}.get(risk, 0.4)
+
+    stake = kelly_like * risk_multiplier * reliability_multiplier * 3.0  # techo ~3u
+    stake = max(0.5, min(3.0, stake)) if stake > 0 else 0.0
+    return round(stake, 1)
+
+
+# ============================================================
+# RIESGO (con ajuste por Monte Carlo, si viene del motor de análisis)
 # ============================================================
 def calculate_risk(
     final_score,
     reliability_multiplier,
-    odds_str
+    odds_str,
+    monte_carlo=None
 ):
     try:
         odds_val = int(
@@ -596,6 +623,22 @@ def calculate_risk(
 
     if risk == "LOW" and odds_val >= 200:
         risk = "MEDIUM"
+
+    # Antes esta simulación se calculaba en analyze.py y nunca llegaba a
+    # ninguna decisión real -- aquí sí se usa: una probabilidad de victoria
+    # simulada muy baja no debería mostrarse como riesgo bajo aunque el
+    # score de mercado se vea bien, y viceversa no mejora el riesgo, solo
+    # puede empeorarlo (la simulación es una segunda opinión, no un bono).
+    if isinstance(monte_carlo, dict):
+        mc_win = monte_carlo.get("win_probability")
+        if mc_win is not None:
+            order = ["LOW", "MEDIUM", "HIGH"]
+            idx = order.index(risk) if risk in order else 2
+            if mc_win < 35:
+                idx = min(idx + 2, 2)
+            elif mc_win < 48:
+                idx = min(idx + 1, 2)
+            risk = order[idx]
 
     return risk
 
@@ -959,9 +1002,15 @@ def build_picks(raw_data):
                 ev_estimated = True
 
         action_text = market.get("action", "🔴 PASAR")
-        pattern_tag = market.get("pattern", market.get("trend", "⚪ Neutral"))
+        # trendKey: si el motor de análisis ya lo clasificó, esa es la fuente de verdad.
+        # Solo se re-deriva por texto para datos legado que no traen trendKey.
+        pattern_tag = market.get("pattern", market.get("trend", market.get("reason", "⚪ Neutral")))
+        explicit_trend_key = market.get("trendKey")
 
-        market_score = safe_score(market.get("market_score", 0))
+        # market_score restaurado: analyze.py v3 renombró este campo a "score" para
+        # calzar con el HTML, y luego a "divergenceScore" para el desglose -- aquí se
+        # busca en ese orden en vez de asumir el nombre viejo que ya no existe.
+        market_score = safe_score(market.get("divergenceScore", market.get("market_score", 0)))
 
         signed_divergence = round(handle - bets, 1)
         divergence = round(abs(signed_divergence), 1)
@@ -990,6 +1039,27 @@ def build_picks(raw_data):
             pattern_tag
         )
 
+        monte_carlo = market.get("monteCarlo") if isinstance(market.get("monteCarlo"), dict) else None
+        evaluation = classify_evaluation(final_score)
+        # Un EV negativo no debe mostrarse con una etiqueta de "STRONG/PREMIUM" aunque
+        # el resto del score (dominado por divergencia institucional) se vea bien --
+        # el texto del badge debe ser consistente con que ya no es accionable.
+        if ev <= -0.5 and evaluation in ("PREMIUM", "STRONG"):
+            evaluation = "LEAN"
+        risk = calculate_risk(final_score, reliability_multiplier, odds_str, monte_carlo)
+        stake = calculate_stake_units(final_score, risk, reliability_multiplier, evaluation, ev)
+
+        # Confianza cualitativa REAL del motor de análisis (0.55-1.20, es un
+        # multiplicador, no un porcentaje ya escalado). Antes esta clave se
+        # sobreescribía con reliability_multiplier*100 -- eso ya vive en su
+        # propia clave "reliability" más abajo, no hace falta duplicarlo aquí
+        # con otra escala distinta bajo el mismo nombre.
+        qualitative_confidence = market.get("confidence")
+        if qualitative_confidence is None:
+            qualitative_confidence = 1.0
+        else:
+            qualitative_confidence = safe_float(qualitative_confidence)
+
         # ----------------------------------------------------
         # 5. OBJETO FINAL PARA EL DASHBOARD
         # ----------------------------------------------------
@@ -1001,13 +1071,13 @@ def build_picks(raw_data):
             "pick": pick or "Sin selección",
             "odds": odds_str,
             "action": action_text,
-            "actionKey": classify_action(action_text),
+            "actionKey": market.get("actionKey", classify_action(action_text)),
             "pattern": pattern_tag,
             "trend": pattern_tag,
-            "trendKey": classify_trend(pattern_tag),
+            "trendKey": explicit_trend_key if explicit_trend_key else classify_trend(pattern_tag),
             "priority": market.get("priority", "👀 OBSERVAR"),
             "priorityKey": classify_priority(market.get("priority", "")),
-            "stake": safe_float(market.get("stake", 0)),
+            "stake": stake,
             "score": final_score,
             "finalScore": final_score,
             "valueScore": value_score,
@@ -1015,8 +1085,9 @@ def build_picks(raw_data):
             "modelEdgeScore": model_edge_score,
             "evScore": ev_score,
             "marketScore": market_score,
-            "confidence": round(reliability_multiplier * 100, 1),
-            
+            "divergenceScore": market_score,
+            "confidence": qualitative_confidence,
+
             "modelProb": round(model_prob, 2) if model_prob is not None else None,
             "modelEstimated": not model_is_real,
             "impliedProb": round(implied_prob, 2) if implied_prob is not None else None,
@@ -1025,8 +1096,10 @@ def build_picks(raw_data):
             
             "ev": ev,
             "evEstimated": ev_estimated,
-            "evaluation": classify_evaluation(final_score),
-            "risk": calculate_risk(final_score, reliability_multiplier, odds_str),
+            "evaluation": evaluation,
+            "risk": risk,
+            "monteCarlo": monte_carlo,
+            "coherence": market.get("coherence"),
             "reliability": round(reliability_multiplier, 2),
             "whale": is_whale_flag,
             "handlePct": round(handle, 2),
@@ -1043,7 +1116,18 @@ def build_picks(raw_data):
             "roi": market.get("roi"),
         }
 
-        item["freePick"] = action_text in ["🟢 APOSTAR", "🔵 INCLINACIÓN"] and final_score >= 50
+        # freePick ahora sale de la evaluación real (coherente con lo que el
+        # usuario ve en el badge), no de comparar contra un texto de acción
+        # que "action_text" nunca produce literalmente. Piso de EV explícito:
+        # el peso que "final_score" le da al dinero institucional puede tapar
+        # un EV negativo (fue el hueco original detectado en TB Rays), así
+        # que un EV claramente negativo veta freePick sin importar qué tan
+        # alto salga el score combinado.
+        item["freePick"] = (
+            evaluation in ("PREMIUM", "STRONG", "LEAN")
+            and risk != "HIGH"
+            and ev > -0.5
+        )
         all_items.append(item)
 
     all_items.reverse()
