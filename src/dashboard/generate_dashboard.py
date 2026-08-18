@@ -366,18 +366,24 @@ def detect_whale(market):
 
     handle = safe_pct(
         market.get(
-            "handle_pct",
+            "handlePct",
             market.get(
-                "handle"
+                "handle_pct",
+                market.get(
+                    "handle"
+                )
             )
         )
     )
 
     bets = safe_pct(
         market.get(
-            "bets_pct",
+            "betsPct",
             market.get(
-                "bets"
+                "bets_pct",
+                market.get(
+                    "bets"
+                )
             )
         )
     )
@@ -519,7 +525,8 @@ def calculate_final_score(
     reliability_multiplier,
     edge_dinero,
     is_whale,
-    signal_type
+    signal_type,
+    weights=None
 ):
     # Base por Edge de Dinero (Divergencia institucional)
     if edge_dinero is None:
@@ -527,12 +534,16 @@ def calculate_final_score(
     else:
         dinero_score = min(100.0, max(0.0, 50.0 + (edge_dinero * 1.25)))
 
-    # Ponderación dinámica adaptada para empujar los Premium con Smart Money
-    if is_whale or "Smart Money" in str(signal_type):
-        base_score = (value_score * 0.20) + (market_score * 0.20) + (dinero_score * 0.60)
-        base_score = max(base_score, 55.0) # Piso mínimo garantizado para ballenas
+    if weights:
+        w_value, w_market, w_dinero = weights
+    elif is_whale or "Smart Money" in str(signal_type):
+        w_value, w_market, w_dinero = 0.20, 0.20, 0.60
     else:
-        base_score = (value_score * 0.40) + (market_score * 0.30) + (dinero_score * 0.30)
+        w_value, w_market, w_dinero = 0.40, 0.30, 0.30
+
+    base_score = (value_score * w_value) + (market_score * w_market) + (dinero_score * w_dinero)
+    if is_whale or "Smart Money" in str(signal_type):
+        base_score = max(base_score, 55.0)  # Piso mínimo garantizado para ballenas
 
     base_score = max(0.0, min(100.0, base_score))
     final = base_score * reliability_multiplier
@@ -553,13 +564,13 @@ def calculate_final_score(
 # EVALUACIÓN GENERAL
 # ============================================================
 def classify_evaluation(final_score):
-    if final_score >= 55:
+    if final_score >= 48:
         return "PREMIUM"
-    if final_score >= 40:
+    if final_score >= 35:
         return "STRONG"
-    if final_score >= 25:
+    if final_score >= 22:
         return "LEAN"
-    if final_score >= 15:
+    if final_score >= 12:
         return "WATCH"
     return "DESCARTAR"
 
@@ -609,13 +620,13 @@ def calculate_risk(
     ):
         odds_val = -110
 
-    if final_score >= 80:
+    if final_score >= 62:
         risk = "LOW"
 
-    elif final_score >= 65:
-        risk = "LOW" if reliability_multiplier >= 0.80 else "MEDIUM"
+    elif final_score >= 45:
+        risk = "LOW" if reliability_multiplier >= 0.65 else "MEDIUM"
 
-    elif final_score >= 50:
+    elif final_score >= 28:
         risk = "MEDIUM"
 
     else:
@@ -634,9 +645,9 @@ def calculate_risk(
         if mc_win is not None:
             order = ["LOW", "MEDIUM", "HIGH"]
             idx = order.index(risk) if risk in order else 2
-            if mc_win < 35:
+            if mc_win < 20:
                 idx = min(idx + 2, 2)
-            elif mc_win < 48:
+            elif mc_win < 35:
                 idx = min(idx + 1, 2)
             risk = order[idx]
 
@@ -834,6 +845,37 @@ def _load_league_snapshots(
     return indexed
 
 
+# ============================================================
+# COHERENCIA CUOTA/DINERO -- calculada aquí, no en analyze.py
+# ============================================================
+# analyze.py corre sobre UN solo snapshot fresco (parser.py no le manda
+# historial), así que su chequeo de coherencia casi nunca tiene 2+ puntos
+# para comparar y queda en None ("sin datos suficientes") casi siempre.
+# Aquí sí existe el historial real (de los snapshots en disco), así que
+# el chequeo se hace con datos de verdad.
+def calculate_coherence(history):
+    if not isinstance(history, list) or len(history) < 2:
+        return None
+
+    prev, curr = history[-2], history[-1]
+    prev_odds = american_to_decimal(prev.get("odds")) if prev.get("odds") not in (None, "—") else None
+    curr_odds = american_to_decimal(curr.get("odds")) if curr.get("odds") not in (None, "—") else None
+    prev_handle = prev.get("handlePct")
+    curr_handle = curr.get("handlePct")
+
+    if prev_odds is None or curr_odds is None or prev_handle is None or curr_handle is None:
+        return None
+
+    odds_shortened = (prev_odds - curr_odds) > 0.0005
+    handle_grew = curr_handle > prev_handle
+
+    if handle_grew and odds_shortened:
+        return "confirmada"
+    if handle_grew and not odds_shortened:
+        return "contradictoria"
+    return None
+
+
 def build_pick_history(
     league_name,
     game,
@@ -950,8 +992,11 @@ def build_picks(raw_data):
         # ----------------------------------------------------
         # 1. METRICAS DE VOLUMEN (HANDLE / BETS / MONEY EDGE)
         # ----------------------------------------------------
-        raw_bets = market.get("bets", 50.0)
-        raw_handle = market.get("handle", 50.0)
+        # analyze.py v3 emite handlePct/betsPct (para calzar con el HTML) --
+        # antes esto solo buscaba "bets"/"handle" (nombres viejos del parser),
+        # así que siempre caía al default 50.0 sin importar el dato real.
+        raw_bets = market.get("betsPct", market.get("bets", 50.0))
+        raw_handle = market.get("handlePct", market.get("handle", 50.0))
 
         bets = safe_pct(raw_bets) if safe_pct(raw_bets) is not None else 50.0
         handle = safe_pct(raw_handle) if safe_pct(raw_handle) is not None else 50.0
@@ -1025,18 +1070,42 @@ def build_picks(raw_data):
         reliability_multiplier = max(0.0, min(1.0, safe_float(reliability_multiplier)))
 
         model_edge_score = calculate_model_edge_score(model_edge)
-        ev_score = calculate_ev_score(ev)
+        # Preferir el evScore real de analyze.py (mi modelo híbrido) -- antes se
+        # sobreescribía siempre con este cálculo local, que es un score distinto
+        # (mismo nombre, dos fórmulas), y es lo que se veía mal en el Panel de Decisión.
+        ev_score = market.get("evScore")
+        if ev_score is None:
+            ev_score = calculate_ev_score(ev)
+        else:
+            ev_score = safe_float(ev_score)
         value_score = calculate_value_score(model_edge_score, ev_score)
         
         # Detección de ballena para el cálculo optimizado del score final
         is_whale_flag = detect_whale(market)
+
+        # Sin modelo real, el EV siempre sale ≈0 por construcción (el "modelo" es
+        # la probabilidad implícita de la propia cuota, no una predicción externa),
+        # así que value_score estructuralmente no tiene señal real que aportar.
+        # En ese caso se le da más peso a lo que sí es dato observado real
+        # (divergencia de mercado / dinero institucional) en vez de ahogar un
+        # pick con divergencia real solo porque no hay modelo propio detrás.
+        model_is_real_flag = bool(market.get("modelIsReal", model_is_real))
+        if not model_is_real_flag:
+            if is_whale_flag or "Smart Money" in str(pattern_tag):
+                w_value, w_market, w_dinero = 0.10, 0.20, 0.70
+            else:
+                w_value, w_market, w_dinero = 0.15, 0.425, 0.425
+        else:
+            w_value, w_market, w_dinero = (0.20, 0.20, 0.60) if (is_whale_flag or "Smart Money" in str(pattern_tag)) else (0.40, 0.30, 0.30)
+
         final_score = calculate_final_score(
             value_score, 
             market_score, 
             reliability_multiplier, 
             json_money_edge, 
             is_whale_flag, 
-            pattern_tag
+            pattern_tag,
+            weights=(w_value, w_market, w_dinero)
         )
 
         monte_carlo = market.get("monteCarlo") if isinstance(market.get("monteCarlo"), dict) else None
@@ -1059,6 +1128,16 @@ def build_picks(raw_data):
             qualitative_confidence = 1.0
         else:
             qualitative_confidence = safe_float(qualitative_confidence)
+
+        # El historial real (de snapshots en disco) se arma una sola vez y se
+        # reutiliza tanto para el campo "history" como para la coherencia --
+        # antes se llamaba build_pick_history() otra vez más abajo (recalculo
+        # redundante) y la coherencia se leía de analyze.py, que casi nunca
+        # tiene suficientes puntos para calcularla.
+        pick_history = build_pick_history(market.get("league", "Otras Ligas"), game, pick, market_name)
+        coherence = calculate_coherence(pick_history)
+        if coherence is None:
+            coherence = market.get("coherence")  # respaldo: lo que haya visto analyze.py
 
         # ----------------------------------------------------
         # 5. OBJETO FINAL PARA EL DASHBOARD
@@ -1099,7 +1178,7 @@ def build_picks(raw_data):
             "evaluation": evaluation,
             "risk": risk,
             "monteCarlo": monte_carlo,
-            "coherence": market.get("coherence"),
+            "coherence": coherence,
             "reliability": round(reliability_multiplier, 2),
             "whale": is_whale_flag,
             "handlePct": round(handle, 2),
@@ -1110,7 +1189,7 @@ def build_picks(raw_data):
             "date": date,
             "time": time,
             "iso": iso,
-            "history": build_pick_history(market.get("league", "Otras Ligas"), game, pick, market_name),
+            "history": pick_history,
             "status": classify_status(market, iso),
             "result": market.get("result", "PENDING"),
             "roi": market.get("roi"),

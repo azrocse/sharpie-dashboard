@@ -949,6 +949,30 @@
             font-size: 11px;
         }
 
+        .badge-tag-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .view-mode-btn {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .view-mode-btn.active {
+            background: var(--teal-soft);
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
         .decision-metric {
             display: flex;
             justify-content: space-between;
@@ -1336,6 +1360,7 @@
     <div class="search-box">
         <input id="search" placeholder="Buscar por equipo, liga, mercado...">
     </div>
+    <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
     <select id="fSort">
         <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
         <option value="recommended">🏆 Ordenar por: Recomendados / Editor</option>
@@ -1351,7 +1376,6 @@
         <option value="mixed">🟡 Flujo Mixto</option>
         <option value="consensus">⚪ Consenso</option>
         <option value="public">🚨 Public Heavy</option>
-        <option value="other">⚙️ Normal</option>
     </select>
     
     <select id="fClassification">
@@ -1512,6 +1536,38 @@
                 <input type="number" id="fDivergenciaMax" placeholder="Max %" step="1">
             </div>
         </div>
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">✅ Confiabilidad (%)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fConfMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fConfMax" placeholder="Max %" step="1">
+            </div>
+        </div>
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">🎲 Prob. Victoria (%)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fWinProbMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fWinProbMax" placeholder="Max %" step="1">
+            </div>
+        </div>
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">👉 Recomendación</label>
+            </div>
+            <select id="fRecommendation">
+                <option value="">Todas</option>
+                <option value="Apostar">✅ Apostar</option>
+                <option value="Opcional">🟡 Opcional</option>
+                <option value="Esperar (riesgo alto)">🟠 Esperar (riesgo alto)</option>
+                <option value="Evitar">🔴 Evitar</option>
+            </select>
+        </div>
 
     </div>
 
@@ -1595,6 +1651,7 @@ const state = {
     freePickOnly: false,
     sort: "time",
     autoThemeEnabled: true,
+    advancedView: true,   // Arranca en Avanzado -- el botón siempre muestra el modo AL QUE CAMBIAS, no el actual
     
     timeRange: "",
     modeloMin: null,
@@ -1616,7 +1673,12 @@ const state = {
     stakeMin: null,
     stakeMax: null,
     divergenciaMin: null,
-    divergenciaMax: null
+    divergenciaMax: null,
+    confMin: null,
+    confMax: null,
+    winProbMin: null,
+    winProbMax: null,
+    recommendation: ""
 };
 
 const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
@@ -1689,17 +1751,17 @@ function updateChartsData(activeList) {
 
 function scoreBadgeClass(score) {
     const s = Number(score || 0);
-    if (s >= 80) return "good";
-    if (s >= 55) return "warn";
+    if (s >= 48) return "good";   // alineado con umbral PREMIUM real
+    if (s >= 30) return "warn";
     return "bad";
 }
 
-// El EV se semaforiza SIEMPRE por su valor real, sea estimado o no — antes el flag
-// "estimado" forzaba el badge a gris neutral y ocultaba la señal real del EV.
+// EV real vive en rango de -1% a +2% -- los umbrales viejos (8/3) eran de otra
+// escala y dejaban el badge siempre en rojo aunque el EV fuera positivo.
 function evBadgeClass(ev) {
     const v = Number(ev || 0);
-    if (v >= 8) return "good";
-    if (v >= 3) return "warn";
+    if (v >= 0.5) return "good";
+    if (v > 0) return "warn";
     return "bad";
 }
 
@@ -1753,6 +1815,112 @@ function edgeColorClass(edge) {
     if (e >= 5) return "var(--teal)";
     if (e > 0) return "var(--amber)";
     return "var(--red)";
+}
+
+function reliabilityBadgeClass(rel) {
+    const r = Number(rel);
+    if (isNaN(r)) return "neutral";
+    if (r >= 0.80) return "good";
+    if (r >= 0.55) return "warn";
+    return "bad";
+}
+
+function winProbBadgeClass(wp) {
+    const w = Number(wp);
+    if (isNaN(w)) return "neutral";
+    if (w >= 55) return "good";
+    if (w >= 45) return "warn";
+    return "bad";
+}
+
+function modelBadgeClass(prob) {
+    const p = Number(prob);
+    if (isNaN(p)) return "neutral";
+    if (p >= 60) return "good";
+    if (p >= 45) return "warn";
+    return "bad";
+}
+
+function edgeModBadgeClass(edge) {
+    const e = Number(edge);
+    if (isNaN(e)) return "neutral";
+    if (e >= 0.5) return "good";
+    if (e > 0) return "warn";
+    return "bad";
+}
+
+function recommendationLabel(p) {
+    const displayStake = snapStakeToScale(p.stake) || 0;
+    if (p.evaluation === "DESCARTAR" || Number(p.ev || 0) <= -0.5 || displayStake <= 0) {
+        return { text: "Evitar", cls: "bad" };
+    }
+    if (p.risk === "LOW" && (p.evaluation === "PREMIUM" || p.evaluation === "STRONG")) {
+        return { text: "Apostar", cls: "good" };
+    }
+    if (p.risk === "HIGH") {
+        return { text: "Esperar (riesgo alto)", cls: "warn" };
+    }
+    return { text: "Opcional", cls: "warn" };
+}
+
+// ============================================================
+// PANEL DE DECISIÓN UNIFICADO -- reemplaza los 3 bloques dispersos
+// (grid-metrics arriba, panel de confianza/coherencia en medio, badges
+// de score/ev/stake/riesgo en el footer) por UNA sola grilla semaforizada.
+// Todo lo que informa la decisión vive en un solo lugar, un solo estilo.
+//
+// Modo Simple (default): solo lo que responde "¿apuesto o no, cuánto,
+// qué riesgo?" -- Recomendación, Score, EV, Stake, Riesgo.
+// Modo Avanzado: agrega la evidencia detrás de la decisión -- Modelo,
+// Edge Modelo, Cuota, Smart Money, Confiabilidad, Prob. Victoria, Coherencia.
+// "Confianza cualitativa" ya NO se muestra por separado: en la práctica es
+// casi constante entre picks (88% o 80% en casi todo el dataset real) porque
+// depende de señales que casi nunca cambian (1 punto de historial, Smart
+// Money duplicado del edge) -- no aporta información que distinga un pick
+// de otro, solo ruido. Sigue usándose puertas adentro para ajustar el score.
+// ============================================================
+function unifiedDecisionPanelHtml(p) {
+    const displayStake = snapStakeToScale(p.stake);
+    const isStakeEstimated = p.stakeEstimated === true;
+    const stakeText = (displayStake != null ? displayStake : 0).toFixed(1) + 'u';
+    const rec = recommendationLabel(p);
+    const winProb = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
+
+    // Jerarquía: 1) veredicto 2) riesgo 3) cuánto apostar 4) valor esperado
+    // 5) prob. de victoria simulada -- Score se retira del básico porque se
+    // confundía visualmente con Prob. Victoria (números parecidos, distinto significado).
+    const chips = [];
+    chips.push(`<span class="badge-tag ${rec.cls}" style="font-size:12px;">👉 <b>${rec.text}</b></span>`);
+    chips.push(`<span class="badge-tag ${riskBadgeClass(p.risk)}">🛡️ Riesgo <b>${escapeHTML(p.risk || '—')}</b></span>`);
+    chips.push(`<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b>${isStakeEstimated ? '<span class="estimated-marker">(Est.)</span>' : ''}</span>`);
+    chips.push(`<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`);
+    if (winProb != null) {
+        chips.push(`<span class="badge-tag ${winProbBadgeClass(winProb)}">🎲 Prob. Victoria <b>${winProb}%</b></span>`);
+    }
+
+    if (!state.advancedView) {
+        return `<div class="decision-panel"><div class="decision-panel-title">📐 Decisión</div><div class="badge-tag-grid">${chips.join('')}</div></div>`;
+    }
+
+    const modelEdgeVal = p.modelEdge != null ? Number(p.modelEdge) : null;
+    const smartMoneyVal = calculateSmartMoney(p);
+    const reliabilityVal = p.reliability != null ? Number(p.reliability) : (p.confidence != null ? Number(p.confidence) : null);
+
+    // Sección avanzada: evidencia detrás de la decisión, en orden de relevancia.
+    chips.push(`<span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score <b>${p.score != null ? p.score : '—'}</b></span>`);
+    if (reliabilityVal != null) {
+        chips.push(`<span class="badge-tag ${reliabilityBadgeClass(reliabilityVal)}">✅ Confiabilidad <b>${(reliabilityVal * 100).toFixed(0)}%</b></span>`);
+    }
+    chips.push(`<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`);
+    chips.push(`<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`);
+    chips.push(`<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`);
+    chips.push(`<span class="badge-tag ${smartMoneyVal >= 4 ? 'good' : (smartMoneyVal > 0 ? 'warn' : 'neutral')}">💰 Smart Money <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`);
+    if (p.coherence === "confirmada" || p.coherence === "contradictoria") {
+        const ok = p.coherence === "confirmada";
+        chips.push(`<span class="badge-tag ${ok ? 'good' : 'bad'}">${ok ? '✅' : '⚠️'} Coherencia <b>${ok ? 'confirmada' : 'contradictoria'}</b></span>`);
+    }
+
+    return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid">${chips.join('')}</div></div>`;
 }
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
@@ -1868,13 +2036,13 @@ function getEvolutionAnalysis(p) {
     const oddsInEditorRange = editorOddsVal != null &&
         editorOddsVal >= EDITOR_ANALYSIS_CONFIG.minOdds && editorOddsVal <= EDITOR_ANALYSIS_CONFIG.maxOdds;
 
-    // El backend (analyze.py v3) ya evaluó confiabilidad real del dato (Monte Carlo,
-    // coherencia cuota/dinero, redundancia de fuentes). Si esos campos vienen presentes,
-    // Editor's Choice los exige además de la aritmética de Δ -- así un pick con Δ grande
-    // pero riesgo HIGH o baja confianza del análisis cualitativo no se corona sin más.
-    // Compatibilidad hacia atrás: si el pick no trae esos campos (datos legado), no bloquea.
+    // El backend (analyze.py v3 + generate_dashboard.py) ya evaluó confiabilidad real
+    // (Monte Carlo, coherencia cuota/dinero, redundancia de fuentes). Umbral en 0.70:
+    // la confianza arranca en 1.0 y CASI todo pick fresco recibe al menos una
+    // penalización menor (ej. -0.12 por historial corto), así que exigir >=0.95
+    // bloqueaba Editor's Choice incluso en picks limpios sin ninguna señal de alarma real.
     const backendRiskOk = p.risk == null || p.risk !== "HIGH";
-    const backendConfidenceOk = p.confidence == null || p.confidence >= 0.95;
+    const backendConfidenceOk = p.confidence == null || p.confidence >= 0.70;
     const backendCoherenceOk = p.coherence == null || p.coherence !== "contradictoria";
 
     const criteria = {
@@ -1969,7 +2137,7 @@ function isWhalePick(p) {
 
 // Filtro Free Picks Flexibilizado
 function isFreePick(p) {
-    if (p.freePick) return true;
+    if (typeof p.freePick === "boolean") return p.freePick;
 
     const betsCondition = Number(p.betsPct || 0) >= 50;           // Antes: > 60%
     const handleCondition = Number(p.handlePct || 0) >= 50;         // Antes: > 60%
@@ -2037,68 +2205,9 @@ function buildEvolutionHtml(p) {
     `;
 }
 
-// Panel de Decisión: métricas duras que produce el motor de análisis y que antes
-// se calculaban y se descartaban (Monte Carlo) o no se mostraban en absoluto
-// (confianza cualitativa, coherencia cuota/dinero, reliability del dato).
-// Se muestra solo si el pick trae estos campos -- no rompe con datos legado.
-function decisionPanelHtml(p) {
-    const hasHybridData = p.confidence != null || p.monteCarlo != null || p.divergenceScore != null;
-    if (!hasHybridData) return '';
-
-    const rows = [];
-
-    if (p.divergenceScore != null && p.evScore != null) {
-        const d = Number(p.divergenceScore), e = Number(p.evScore);
-        const total = Math.max(d + e, 1);
-        rows.push(`
-            <div class="decision-metric"><span>Divergencia H-B</span><span>${d.toFixed(1)}</span></div>
-            <div class="decision-metric"><span>Score EV modelo</span><span>${e.toFixed(1)}</span></div>
-            <div class="decision-splitbar">
-                <div class="decision-splitbar-track">
-                    <div class="decision-splitbar-seg divergence" style="width:${(d / total) * 100}%"></div>
-                    <div class="decision-splitbar-seg ev" style="width:${(e / total) * 100}%"></div>
-                </div>
-            </div>
-        `);
-    }
-
-    if (p.confidence != null) {
-        const c = Number(p.confidence);
-        rows.push(`<div class="decision-metric"><span>Confianza cualitativa</span><span>${(c * 100).toFixed(0)}%</span></div>`);
-    }
-
-    if (p.reliability != null) {
-        rows.push(`<div class="decision-metric"><span>Confiabilidad del dato</span><span>${(Number(p.reliability) * 100).toFixed(0)}%</span></div>`);
-    }
-
-    if (p.monteCarlo) {
-        const mc = p.monteCarlo;
-        if (mc.win_probability != null) rows.push(`<div class="decision-metric"><span>Monte Carlo (P. victoria)</span><span>${mc.win_probability}%</span></div>`);
-        if (mc.expected_roi != null) rows.push(`<div class="decision-metric"><span>Monte Carlo (ROI esp.)</span><span>${mc.expected_roi >= 0 ? '+' : ''}${mc.expected_roi}%</span></div>`);
-    }
-
-    if (p.coherence !== undefined) {
-        let label = '<span class="coherence-na">— sin datos suficientes</span>';
-        if (p.coherence === "confirmada") label = '<span class="coherence-ok">✅ confirmada por la cuota</span>';
-        else if (p.coherence === "contradictoria") label = '<span class="coherence-bad">⚠️ contradictoria con la cuota</span>';
-        rows.push(`<div class="decision-metric"><span>Coherencia cuota/dinero</span>${label}</div>`);
-    }
-
-    if (Array.isArray(p.history)) {
-        rows.push(`<div class="decision-metric"><span>Puntos de historial</span><span>${p.history.length}</span></div>`);
-    }
-
-    if (rows.length === 0) return '';
-
-    return `
-        <div class="decision-panel">
-            <div class="decision-panel-title">📐 Panel de Decisión</div>
-            <div class="decision-panel-grid">
-                ${rows.join('')}
-            </div>
-        </div>
-    `;
-}
+// Panel de Decisión unificado (ver unifiedDecisionPanelHtml más abajo) --
+// esta versión anterior por secciones ya no se usa, se deja fuera para no
+// tener dos fuentes de verdad del mismo panel.
 
 function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && (p.score || 0) >= 75; }
 
@@ -2485,6 +2594,16 @@ function applyFiltersAndSort(list) {
         if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
         if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
 
+        const relVal = p.reliability != null ? Number(p.reliability) * 100 : (p.confidence != null ? Number(p.confidence) * 100 : null);
+        if (state.confMin !== null && !isNaN(state.confMin) && (relVal === null || relVal < state.confMin)) return false;
+        if (state.confMax !== null && !isNaN(state.confMax) && (relVal === null || relVal > state.confMax)) return false;
+
+        const wpVal = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
+        if (state.winProbMin !== null && !isNaN(state.winProbMin) && (wpVal === null || wpVal < state.winProbMin)) return false;
+        if (state.winProbMax !== null && !isNaN(state.winProbMax) && (wpVal === null || wpVal > state.winProbMax)) return false;
+
+        if (state.recommendation && recommendationLabel(p).text !== state.recommendation) return false;
+
         if (state.editorOnly && !getEvolutionAnalysis(p).isEditorChoice) return false;
         if (state.whaleOnly && !isWhalePick(p)) return false;
         if (state.freePickOnly && !isFreePick(p)) return false;
@@ -2851,25 +2970,6 @@ function render() {
                     <div class="pick-details">
                         <div class="pick-name">${escapeHTML(p.pick) || 'Selección'}</div>
                         <div class="market-type">${escapeHTML(p.market) || 'Mercado General'}</div>
-                        
-                        <div class="grid-metrics">
-                            <div>
-                                <span style="color:var(--muted);">🤖 Modelo:</span>
-                                <strong style="color:${modelProbColorClass(p.modelProb)}">${p.modelProb != null ? p.modelProb + '%' : '—'}</strong>
-                            </div>
-                            <div>
-                                <span style="color:var(--muted);">💵 Cuota:</span>
-                                <strong style="color:${oddsColorClass(p.odds || p.cuota)}">${escapeHTML(p.odds || p.cuota || '—')}</strong>
-                            </div>
-                            <div>
-                                <span style="color:var(--muted);">📈 Edge Mod:</span>
-                                <strong style="color:${edgeColorClass(edgeVal)}">${formattedEdge}</strong>
-                            </div>
-                            <div>
-                                <span style="color:var(--muted);">💰 Smart Money:</span>
-                                <strong style="color:${smartMoney >= 0 ? 'var(--teal)' : 'var(--red)'}">${smartMoney > 0 ? '+' : ''}${smartMoney}%</strong>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="volume-container">
@@ -2885,7 +2985,7 @@ function render() {
 
                     ${buildEvolutionHtml(p)}
                     ${editorChoiceReasonHtml(editorEval)}
-                    ${decisionPanelHtml(p)}
+                    ${unifiedDecisionPanelHtml(p)}
 
                     ${isWhale ? `<div class="whale-banner">🐋 ALERTA WHALE: Movimiento Institucional Detectado</div>` : ''}
                     ${isFree ? `<div class="free-pick-banner">🔓 SEÑAL FREE DESTACADA PARA REDES</div>` : ''}
@@ -2894,22 +2994,6 @@ function render() {
                 </div>
 
                 <div style="margin-top: 14px;">
-                    <div class="card-footer-tags">
-                        <span class="badge-tag ${scoreBadgeClass(p.score)}">
-                            🔥 Score: <b>${p.score != null ? p.score : '—'}</b>
-                        </span>
-                        <span class="badge-tag ${evBadgeClass(p.ev)}">
-                            📊 EV: <b>${p.ev != null ? p.ev + '%' : '—'}</b>
-                        </span>
-                        <span class="badge-tag ${stakeBadgeClass(displayStake)}">
-                            🎯 Stake: <b>${displayStake != null ? displayStake.toFixed(1) + 'u' : '—'}</b>
-                            ${isStakeEstimated ? `<span class="estimated-marker">(Est.)</span>` : ''}
-                        </span>
-                        <span class="badge-tag ${riskBadgeClass(p.risk)}">
-                            🛡️ Riesgo: <b>${escapeHTML(p.risk || '—')}</b>
-                        </span>
-                    </div>
-
                     <div class="pcard-action-row">
                         <button class="btn-copy-x pcard-action-row-item" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
                             <span>✨</span>
@@ -2929,6 +3013,20 @@ function render() {
 function setupListeners() {
     const searchEl = document.getElementById("search");
     if (searchEl) searchEl.addEventListener("input", (e) => { state.search = e.target.value; render(); });
+
+    const viewModeBtn = document.getElementById("viewModeToggle");
+    if (viewModeBtn) {
+        const syncViewModeBtn = () => {
+            viewModeBtn.textContent = state.advancedView ? "🎓 Modo Simple" : "🔬 Modo Avanzado";
+            viewModeBtn.classList.toggle("active", state.advancedView);
+        };
+        syncViewModeBtn();
+        viewModeBtn.addEventListener("click", () => {
+            state.advancedView = !state.advancedView;
+            syncViewModeBtn();
+            render();
+        });
+    }
 
     const fSortEl = document.getElementById("fSort");
     if (fSortEl) fSortEl.addEventListener("change", (e) => { state.sort = e.target.value; render(); });
@@ -3023,6 +3121,13 @@ function setupListeners() {
     bindInput("fStakeMax", "stakeMax");
     bindInput("fDivergenciaMin", "divergenciaMin");
     bindInput("fDivergenciaMax", "divergenciaMax");
+    bindInput("fConfMin", "confMin");
+    bindInput("fConfMax", "confMax");
+    bindInput("fWinProbMin", "winProbMin");
+    bindInput("fWinProbMax", "winProbMax");
+
+    const fRecommendationEl = document.getElementById("fRecommendation");
+    if (fRecommendationEl) fRecommendationEl.addEventListener("change", (e) => { state.recommendation = e.target.value; render(); });
 
     const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
@@ -3059,6 +3164,11 @@ function setupListeners() {
             state.stakeMax = null;
             state.divergenciaMin = null;
             state.divergenciaMax = null;
+            state.confMin = null;
+            state.confMax = null;
+            state.winProbMin = null;
+            state.winProbMax = null;
+            state.recommendation = "";
 
             document.querySelectorAll(".toolbar input, .toolbar select").forEach(i => i.value = "");
             document.querySelectorAll(".adv-filters-panel input, .adv-filters-panel select").forEach(i => i.value = "");
