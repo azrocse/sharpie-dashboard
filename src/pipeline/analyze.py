@@ -1,24 +1,14 @@
 # ============================================================
-# analyze.py -- Motor de análisis Sharpie v3 (Modelo Híbrido Tipster)
+# analyze.py -- Motor de análisis Sharpie v3.1 (Edición Robustecida)
 # ============================================================
 """
 Motor de evaluación de picks que combina:
   1. Base estadística: divergencia Handle/Bets + EV del modelo + Monte Carlo.
-  2. Capa cualitativa ("feeling" de analista): coherencia cuota↔dinero,
-     profundidad de historial, redundancia de fuentes, saturación de liquidez.
+  2. Capa cualitativa: coherencia cuota↔dinero, profundidad de historial,
+     saturación de liquidez.
   3. Decisión unificada de acción/stake (Kelly real, sin bypass de EV).
 
-SCHEMA DE SALIDA: alineado 1:1 con lo que consume template.html.
-No se duplica lógica de tendencia/momentum en Python -- el HTML ya la
-calcula desde `history` (getEvolutionAnalysis). Este motor solo entrega
-la clasificación estática del snapshot actual + los datos crudos.
-
-Fuente única de verdad por campo (sin redundancia):
-  - handlePct / betsPct  -> el HTML deriva "edge" y "moneyEdge" de aquí,
-    por lo que NO se emite un campo moneyEdge aparte (evita datos que
-    puedan desincronizarse).
-  - trendKey -> reemplaza a los dos sistemas paralelos previos
-    (detect_pattern + calculate_trend), que podían contradecirse.
+SCHEMA DE SALIDA: Alineado 1:1 con el contrato de consumo de template.html.
 """
 
 import json
@@ -38,16 +28,16 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 SHARPIE_PATH = os.path.join(OUTPUT_DIR, "sharpie.json")
 
 # ============================================================
-# CONSTANTES / UMBRALES (ajustables en un solo lugar)
+# CONSTANTES / UMBRALES
 # ============================================================
 EDGE_CAP = 40                       # Δ Handle-Bets a partir del cual el score satura
 CONSENSUS_BAND = 5                  # |Δ| <= esto = consenso de mercado
 LEAN_THRESHOLD = 15                 # Δ >= esto = lean marcado (sharp/public)
 
-MAX_PLAUSIBLE_EV_DIVERGENCE = 35    # separación modelo/implícito que dispara sospecha
+MAX_PLAUSIBLE_EV_DIVERGENCE = 35    # Separación modelo/implícito que dispara sospecha
 MAX_PLAUSIBLE_EV = 75               # EV que ya no es creíble (dato corrupto/feed)
 
-MONTE_CARLO_RUNS = 20000            # suficiente para estabilizar sin costo excesivo
+MONTE_CARLO_RUNS = 20000            
 
 # --- Stake (Kelly fraccional real) ---
 UNIT_PCT = 0.01
@@ -56,8 +46,8 @@ MAX_UNITS = MAX_STAKE_PCT / UNIT_PCT
 STAKE_FLOOR_UNITS = 0.5
 
 # --- Umbrales de decisión ---
-EV_DISCARD_THRESHOLD = -2.0         # por debajo de esto, se descarta sin importar patrón
-PREMIUM_SCORE = 75
+EV_DISCARD_THRESHOLD = -2.0         # Por debajo de esto, se descarta sin importar patrón
+PREMIUM_SCORE = 70
 PREMIUM_EV = 0.3
 VALUE_SCORE = 60
 VALUE_EV = -0.5
@@ -122,6 +112,57 @@ def implied_probability(decimal_odds):
     return round((1.0 / decimal_odds) * 100, 1)
 
 
+# ============================================================
+# MODELO PROPIO: DE-VIG + AJUSTE POR DIVERGENCIA HANDLE-BETS
+# ------------------------------------------------------------
+# Sin un modelo predictivo externo (DraftKings no lo da), esta es la
+# probabilidad "evaluativa" construida con lo único que sí tenemos por
+# evento/mercado: cuota, bets% y handle%. Reemplaza el fallback anterior
+# (cuota implícita cruda, que forzaba EV a ser ruido de redondeo).
+#
+# PROVISIONAL_DIVERGENCE_WEIGHT es un punto de partida razonable, NO un
+# valor calibrado con datos reales todavía. El log de CLV que ya está
+# corriendo en generate_dashboard.py (data/results/clv_log.json) es lo que,
+# con suficientes picks cerrados, va a decir cuál es el peso real medido.
+# Cuando esa calibración exista, este número se reemplaza aquí y solo aquí.
+# ============================================================
+PROVISIONAL_DIVERGENCE_WEIGHT = 0.15
+MAX_DIVERGENCE_ADJUSTMENT = 8.0  # tope en puntos de probabilidad -- evita que un outlier dispare el modelo
+
+
+def devig_probability(decimal_odds, opponent_decimal_odds):
+    """
+    Quita el margen del libro (vig) normalizando ambas caras del mercado
+    para que sus probabilidades implícitas sumen 100% real, no el ~105-108%
+    que hoy incluye la ganancia de la casa sin corregir.
+    """
+    if decimal_odds is None or decimal_odds <= 0:
+        return None
+    if opponent_decimal_odds is None or opponent_decimal_odds <= 0:
+        return None
+
+    p_a = 1.0 / decimal_odds
+    p_b = 1.0 / opponent_decimal_odds
+    overround = p_a + p_b
+
+    if overround <= 0:
+        return None
+
+    return round((p_a / overround) * 100, 2)
+
+
+def apply_divergence_adjustment(base_prob, edge):
+    """Desplaza la probabilidad de-vig hacia donde está el dinero grande (Handle-Bets), con tope."""
+    if base_prob is None:
+        return None
+
+    adjustment = (edge or 0.0) * PROVISIONAL_DIVERGENCE_WEIGHT
+    adjustment = max(-MAX_DIVERGENCE_ADJUSTMENT, min(MAX_DIVERGENCE_ADJUSTMENT, adjustment))
+
+    adjusted = base_prob + adjustment
+    return round(max(1.0, min(99.0, adjusted)), 2)
+
+
 INVALID_TOKENS = {"—", "", "0", "-0", "-1", "None", "0%", "NaN", None}
 
 
@@ -136,10 +177,9 @@ def clean_odds(raw_odds):
 
 
 # ============================================================
-# CLASIFICACIÓN DE MERCADO (trendKey) -- fuente única
+# CLASIFICACIÓN DE MERCADO (trendKey)
 # ============================================================
 def classify_trend_key(edge):
-    """Devuelve la clave que el frontend usa para bucket/badge (sharp/mixed/consensus/public/other)."""
     if edge >= LEAN_THRESHOLD:
         return "sharp"
     if edge > CONSENSUS_BAND:
@@ -166,10 +206,15 @@ def pattern_label(edge):
 
 
 # ============================================================
-# MODELO Y EV
+# MODELO Y EV (CORREGIDO: Extracción explícita sin fallo por 0)
 # ============================================================
-def calculate_model_probability(market, decimal_odds, is_valid_price):
-    raw_model = market.get("model_prob", market.get("model_pct", market.get("modelProb")))
+def calculate_model_probability(market, decimal_odds, is_valid_price, edge=0.0, opponent_decimal_odds=None):
+    raw_model = None
+    for key in ("model_prob", "model_pct", "modelProb"):
+        if key in market and market[key] is not None:
+            raw_model = market[key]
+            break
+
     try:
         model_val = float(raw_model) if raw_model is not None else None
         if model_val is not None and 0 < model_val <= 1:
@@ -181,8 +226,16 @@ def calculate_model_probability(market, decimal_odds, is_valid_price):
         return int(round(model_val)), True, "modelo_real"
 
     if is_valid_price and decimal_odds is not None:
+        devigged = devig_probability(decimal_odds, opponent_decimal_odds)
+
+        if devigged is not None:
+            adjusted = apply_divergence_adjustment(devigged, edge)
+            return int(round(adjusted)), True, "propio_devig_divergencia"
+
+        # No se encontró el lado contrario del mercado para des-vigorizar
+        # (línea sin pareja en este snapshot) -- fallback a implícita simple.
         implied = implied_probability(decimal_odds)
-        return int(round(implied)), False, "implicito_de_cuota"
+        return int(round(implied)), False, "implicito_de_cuota_sin_pareja"
 
     return 50, False, "sin_base_neutral"
 
@@ -204,25 +257,13 @@ def calculate_ev(model_prob, model_is_real, decimal_odds, is_valid_price, raw_ev
         )
         return ev, False, "modelo_real", is_suspicious
 
-    return ev, True, "implicito_de_cuota", False
+    return ev, True, "modelo_propio", False
 
 
 # ============================================================
-# HISTORIAL -- normalizado al schema del frontend
+# HISTORIAL
 # ============================================================
 def normalize_history(market):
-    """
-    Convierte el historial crudo de la fuente a [{time, betsPct, handlePct, odds}],
-    agregando el snapshot actual como último punto. Única fuente de verdad para
-    todo análisis temporal -- el motor Python NO recalcula tendencia/momentum,
-    eso lo hace el frontend a partir de este arreglo.
-
-    Se descartan puntos "fantasma" donde bets==0 Y handle==0 simultáneamente:
-    eso no es una lectura real de mercado, es el estado previo a que exista
-    volumen (el mercado recién abrió). Tratarlo como dato real genera falsas
-    "contradicciones" de coherencia cuota/dinero en cuanto aparece la primera
-    lectura real.
-    """
     points = []
     raw_history = market.get("history", [])
     if isinstance(raw_history, list):
@@ -236,34 +277,39 @@ def normalize_history(market):
             if bets is None and handle is None and odds is None:
                 continue
             if bets == 0 and handle == 0:
-                continue  # placeholder de "mercado sin volumen aún", no es un snapshot real
+                continue
             points.append({"time": time_raw, "betsPct": bets, "handlePct": handle, "odds": odds})
     return points
 
 
 # ============================================================
-# CAPA CUALITATIVA -- "FEELING" DE ANALISTA
+# CAPA CUALITATIVA (CORREGIDO: Sensible a tipo de mercado + Single Snapshot)
 # ============================================================
 def assess_qualitative_signals(handle, bets, edge, odds, history_points, smart_money_raw,
-                                model_is_real, ev_is_suspicious):
-    """
-    Traduce a números el criterio que aplicaría un tipster humano al leer el pick.
-    Retorna un multiplicador de confianza [0.55, 1.20] y las notas que lo explican
-    (para construir el `reason` en lenguaje natural).
-    """
+                                model_is_real, ev_is_suspicious, market_type=""):
     confidence = 1.0
     notes = []
-
-    # --- Coherencia cuota <-> dinero (steam real vs. contradictorio) ---
     coherence_flag = None
+
+    # --- Coherencia cuota <-> dinero ---
     if len(history_points) >= 2:
         prev, curr = history_points[-2], history_points[-1]
         prev_odds = american_to_decimal(prev.get("odds")) if prev.get("odds") else None
         curr_odds = american_to_decimal(curr.get("odds")) if curr.get("odds") else None
+        
         if prev_odds and curr_odds:
-            # cuota decimal más baja = línea se movió a favor del lado con más dinero
-            odds_shortened = (prev_odds - curr_odds) > 0.0005
             handle_grew = (curr.get("handlePct") or 0) > (prev.get("handlePct") or 0)
+            
+            # Evaluación según tipo de mercado
+            is_spread_or_total = bool(re.search(r"\b(spread|handicap|hándicap|total|line|línea|puntos|goles)\b", str(market_type).lower()))
+            
+            if is_spread_or_total:
+                # En hándicap/totales, la cuota se mueve en un rango estrecho (-110 / -115).
+                # Un cambio significativo es >= 0.03 decimal (~5-10 puntos de juice)
+                odds_shortened = (prev_odds - curr_odds) >= 0.02
+            else:
+                odds_shortened = (prev_odds - curr_odds) > 0.0005
+
             if handle_grew and odds_shortened:
                 confidence += 0.08
                 coherence_flag = "confirmada"
@@ -273,7 +319,7 @@ def assess_qualitative_signals(handle, bets, edge, odds, history_points, smart_m
                 coherence_flag = "contradictoria"
                 notes.append("el dinero sube pero la cuota no lo confirma (posible outlier o dinero contrario absorbiendo)")
 
-    # --- Redundancia de fuente: Smart Money% == Δ exacto no es confirmación independiente ---
+    # --- Redundancia de fuente ---
     if smart_money_raw is not None and abs(safe_float(smart_money_raw) - edge) < 0.5:
         notes.append("Smart Money% replica el Δ Handle-Bets, no es una segunda fuente")
     elif smart_money_raw is not None:
@@ -283,18 +329,18 @@ def assess_qualitative_signals(handle, bets, edge, odds, history_points, smart_m
     # --- Profundidad de historial ---
     n_points = len(history_points)
     if n_points <= 1:
-        confidence -= 0.12
+        confidence -= 0.08  # Penalización moderada para no matar impulsos nuevos
         notes.append("un solo punto de historial, sin confirmación temporal")
     elif n_points >= 4:
         confidence += 0.05
         notes.append(f"{n_points} mediciones sustentan la lectura")
 
-    # --- Saturación de liquidez sospechosa ---
+    # --- Saturación de liquidez ---
     if handle >= 97 and n_points <= 1:
         confidence -= 0.08
-        notes.append("concentración casi total (≥97%) sin serie temporal — podría ser una sola apuesta grande, no consenso institucional amplio")
+        notes.append("concentración casi total (≥97%) sin serie temporal — podría ser una sola apuesta grande")
 
-    # --- Divergencia modelo/mercado sospechosa ---
+    # --- Divergencia modelo/mercado ---
     if model_is_real and ev_is_suspicious:
         confidence -= 0.15
         notes.append("el modelo se separa demasiado de la cuota implícita, dato marcado como sospechoso")
@@ -304,14 +350,12 @@ def assess_qualitative_signals(handle, bets, edge, odds, history_points, smart_m
 
 
 # ============================================================
-# MONTE CARLO -- ahora conectado a la decisión real
+# MONTE CARLO
 # ============================================================
 def run_monte_carlo(model_prob, decimal_odds, confidence, runs=MONTE_CARLO_RUNS):
     if decimal_odds is None or decimal_odds <= 1.0 or model_prob <= 0:
         return {"win_probability": 45.0, "expected_roi": 0.0, "runs": runs}
 
-    # La confianza cualitativa ajusta levemente la probabilidad simulada:
-    # un pick con señales contradictorias no debe simular como si fuera limpio.
     p_adjusted = max(0.05, min(0.95, (model_prob / 100.0) * (0.85 + 0.15 * confidence)))
     net_odds = decimal_odds - 1.0
 
@@ -342,13 +386,6 @@ def classify_risk(mc, decimal_odds, coherence_flag, n_history_points):
     else:
         risk = "HIGH"
 
-    # Degradar riesgo solo cuando hay evidencia real de problema:
-    # - Contradicción de steam (dinero sube, cuota no confirma) -> degradación completa,
-    #   es una señal de calidad de dato genuinamente mala.
-    # - Historial insuficiente por sí solo -> ya NO fuerza a HIGH directo; solo evita
-    #   que algo recién visto se declare LOW con exceso de confianza (cae a MEDIUM).
-    #   Antes esto tumbaba automáticamente TODO pick fresco a HIGH, sin importar
-    #   qué tan bueno fuera el resto de la señal.
     if coherence_flag == "contradictoria":
         risk = {"LOW": "MEDIUM", "MEDIUM": "HIGH", "HIGH": "HIGH"}[risk]
     elif n_history_points <= 1 and risk == "LOW":
@@ -358,27 +395,24 @@ def classify_risk(mc, decimal_odds, coherence_flag, n_history_points):
 
 
 # ============================================================
-# SCORE HÍBRIDO (estadística + feeling)
+# SCORE HÍBRIDO
 # ============================================================
 def calculate_hybrid_score(handle, bets, edge, ev, confidence):
-    # Componente 1: divergencia handle/bets (0-100)
     bonus = max(-45, min(45, edge * (45 / EDGE_CAP)))
     divergence_score = 50 + bonus
     if handle >= 70:
         divergence_score += 5
     divergence_score = max(0, min(100, divergence_score))
 
-    # Componente 2: EV del modelo (0-100), centrado en 50 -> +/-10 pts por cada 1% de EV
     ev_score = max(0, min(100, 50 + ev * 10))
-
     stat_score = 0.6 * divergence_score + 0.4 * ev_score
-
     final_score = max(0, min(100, stat_score * confidence))
+
     return round(final_score, 1), round(divergence_score, 1), round(ev_score, 1)
 
 
 # ============================================================
-# RELIABILITY (confianza del dato en sí, no del pick)
+# RELIABILITY
 # ============================================================
 def calculate_reliability(model_is_real, is_valid_price, ev_is_suspicious, confidence):
     base = 1.00
@@ -389,12 +423,11 @@ def calculate_reliability(model_is_real, is_valid_price, ev_is_suspicious, confi
     if ev_is_suspicious:
         base -= 0.15
     base = max(0.40, base)
-    # La confianza cualitativa modera un poco la confiabilidad final
     return round(max(0.35, min(1.0, base * (0.85 + 0.15 * confidence))), 2)
 
 
 # ============================================================
-# STAKE -- KELLY FRACCIONAL REAL (reemplaza valores fijos)
+# STAKE (KELLY FRACCIONAL REAL)
 # ============================================================
 def calculate_stake(model_prob, decimal_odds, reliability, risk, is_actionable):
     if not is_actionable or model_prob is None or decimal_odds is None:
@@ -418,13 +451,9 @@ def calculate_stake(model_prob, decimal_odds, reliability, risk, is_actionable):
 
 
 # ============================================================
-# DECISIÓN UNIFICADA -- SIN BYPASS POR PATRÓN
+# DECISIÓN UNIFICADA -- CANDADO EN EV
 # ============================================================
 def decide_action(score, ev, risk, coherence_flag, edge):
-    """
-    Un solo camino de decisión: el patrón (sharp/whale/etc.) ya está incorporado
-    en el score vía la capa cualitativa, así que no hay override que ignore el EV.
-    """
     if ev <= EV_DISCARD_THRESHOLD or (coherence_flag == "contradictoria" and edge < LEAN_THRESHOLD):
         return {"action": "🔴 DESCARTAR", "priority": "❌ DESCARTAR", "actionKey": "pass", "is_actionable": False}
 
@@ -438,11 +467,11 @@ def decide_action(score, ev, risk, coherence_flag, edge):
 
 
 # ============================================================
-# REASON -- explicación en lenguaje de tipster
+# REASON
 # ============================================================
 def build_reason(pattern_reason, notes):
     parts = [pattern_reason] + notes
-    return ". ".join(dict.fromkeys(parts)) + "."  # dedup preservando orden
+    return ". ".join(dict.fromkeys(parts)) + "."
 
 
 # ============================================================
@@ -459,12 +488,12 @@ def get_latest_files():
     return candidates
 
 
-def process_market(league_name, game, market):
+def process_market(league_name, game, market, opponent_market=None):
     handle = safe_pct(market.get("handle"))
     bets = safe_pct(market.get("bets"))
     raw_odds = clean_odds(market.get("odds"))
 
-    # Fallback: si la cuota actual es inválida, usar el último dato válido del historial
+    # Fallback: si la cuota actual es inválida, buscar en el historial
     if raw_odds is None and "history" in market:
         for hist_run in reversed(market["history"]):
             if isinstance(hist_run, dict):
@@ -474,7 +503,7 @@ def process_market(league_name, game, market):
                     break
 
     if handle is None or bets is None or raw_odds is None:
-        return None  # ruido / dato incompleto
+        return None  # Ruido / dato incompleto
 
     edge = round(handle - bets, 1)
     market_type = market.get("market", "")
@@ -482,14 +511,23 @@ def process_market(league_name, game, market):
     decimal_odds = american_to_decimal(raw_odds) if valid_price else None
     implied = implied_probability(decimal_odds) if decimal_odds else None
 
-    model_prob, model_is_real, model_source = calculate_model_probability(market, decimal_odds, valid_price)
+    opponent_odds = clean_odds(opponent_market.get("odds")) if opponent_market else None
+    opponent_decimal_odds = american_to_decimal(opponent_odds) if opponent_odds is not None else None
+
+    model_prob, model_is_real, model_source = calculate_model_probability(
+        market, decimal_odds, valid_price, edge=edge, opponent_decimal_odds=opponent_decimal_odds
+    )
     raw_ev = market.get("ev")
     ev, ev_is_estimated, ev_source, ev_is_suspicious = calculate_ev(
         model_prob, model_is_real, decimal_odds, valid_price, raw_ev, implied
     )
 
     history_points = normalize_history(market)
-    # Asegurar que el snapshot actual quede reflejado como último punto del historial
+    
+    # Normalizar hora del partido con Fallback seguro (evita crash en render UI)
+    game_time = game.get("time_raw") or game.get("time") or market.get("time_raw") or datetime.now().strftime("%H:%M")
+
+    # Asegurar snapshot actual en el historial
     if not history_points or history_points[-1].get("handlePct") != handle or history_points[-1].get("betsPct") != bets:
         history_points.append({
             "time": market.get("time_raw", datetime.now().strftime("%H:%M")),
@@ -498,7 +536,7 @@ def process_market(league_name, game, market):
 
     smart_money_raw = market.get("smart_money")
     confidence, notes, coherence_flag = assess_qualitative_signals(
-        handle, bets, edge, raw_odds, history_points, smart_money_raw, model_is_real, ev_is_suspicious
+        handle, bets, edge, raw_odds, history_points, smart_money_raw, model_is_real, ev_is_suspicious, market_type
     )
 
     score, divergence_score, ev_score = calculate_hybrid_score(handle, bets, edge, ev, confidence)
@@ -515,15 +553,12 @@ def process_market(league_name, game, market):
     _pattern_name, pattern_reason = pattern_label(edge)
     reason = build_reason(pattern_reason, notes)
 
-    # Whale = confirmación institucional REAL (no solo cruzar un umbral numérico):
-    # requiere lean marcado, cuota confirmando el dinero, historial suficiente y
-    # dato confiable. Se calcula una sola vez aquí -- el frontend ya no debe
-    # re-derivarlo con su propio heurístico si este campo viene presente.
+    # Whale = confirmación institucional (v3.1: Permite 1 solo snapshot si la divergencia es masiva)
     whale = (
         trend_key == "sharp"
-        and coherence_flag == "confirmada"
-        and len(history_points) >= 2
-        and reliability >= 0.7
+        and coherence_flag != "contradictoria"
+        and (len(history_points) >= 2 or edge >= 35.0)
+        and reliability >= 0.65
     )
 
     return {
@@ -531,7 +566,7 @@ def process_market(league_name, game, market):
         "game": game.get("game"),
         "away": game.get("away", ""),
         "home": game.get("home", ""),
-        "time": game.get("time_raw", ""),
+        "time": game_time,
         "market": market.get("market"),
         "pick": market.get("pick"),
 
@@ -561,8 +596,8 @@ def process_market(league_name, game, market):
 
         "reliability": reliability,
         "trendKey": trend_key,
-        "coherence": coherence_flag,   # "confirmada" | "contradictoria" | None (datos insuficientes)
-        "whale": whale,                 # confirmación real, no heurística de umbral crudo
+        "coherence": coherence_flag,
+        "whale": whale,
         "reason": reason,
 
         "history": history_points,
@@ -573,6 +608,28 @@ def process_market(league_name, game, market):
         "stake": stake,
         "stakeEstimated": ev_is_estimated or not model_is_real,
     }
+
+
+def _pair_opponent_markets(markets):
+    """
+    Empareja cada mercado con su lado contrario (misma línea, mismo evento)
+    para poder des-vigorizar. Heurística: DraftKings expone las dos caras de
+    un mismo market_name en pares consecutivos -- así las arma parser.py
+    (cada .tb-sm agrega sus 2 .tb-sodd uno detrás del otro). Si un
+    market_name termina con cantidad impar de entradas, la última se queda
+    sin pareja y cae al fallback de probabilidad implícita simple.
+    """
+    groups = {}
+    for idx, m in enumerate(markets):
+        groups.setdefault(m.get("market", ""), []).append(idx)
+
+    opponent_idx = {}
+    for _name, idxs in groups.items():
+        for i in range(0, len(idxs) - 1, 2):
+            a, b = idxs[i], idxs[i + 1]
+            opponent_idx[a] = b
+            opponent_idx[b] = a
+    return opponent_idx
 
 
 def analyze_all(parsed_files=None):
@@ -592,8 +649,12 @@ def analyze_all(parsed_files=None):
         league_result = {"league": league_name, "date": datetime.now().strftime("%Y-%m-%d"), "markets": []}
 
         for game in data.get("games", []):
-            for market in game.get("markets", []):
-                processed = process_market(league_name, game, market)
+            markets_list = game.get("markets", [])
+            opponent_idx = _pair_opponent_markets(markets_list)
+
+            for idx, market in enumerate(markets_list):
+                opponent_market = markets_list[opponent_idx[idx]] if idx in opponent_idx else None
+                processed = process_market(league_name, game, market, opponent_market)
                 if processed is not None:
                     league_result["markets"].append(processed)
 

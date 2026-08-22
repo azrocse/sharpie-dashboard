@@ -1,0 +1,78 @@
+11:10:29 - [INFO] - Se cargaron 1 ligas desde la configuraci�n.
+11:10:29 - [INFO] - \U0001f504 Procesando: 'SPORTS' | Slug: 'Sports' | Date Range: 'n30days'
+11:10:35 - [INFO] - \u2705 'SPORTS' descargado con �xito. Elementos/Archivos: 5
+11:10:35 - [INFO] - Proceso finalizado. Ligas procesadas exitosamente: 1
+
+============================================================
+SPORTS
+Rango: n30days
+============================================================
+Descargando p�gina 1...
+Descargando p�gina 2...
+Descargando p�gina 3...
+Descargando p�gina 4...
+Descargando p�gina 5...
+Descargando p�gina 6...
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\sharpie-dashboard\src\main.py", line 55, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\Administrator\Desktop\sharpie-dashboard\src\main.py", line 19, in main
+    parsed = parse_all(
+        downloaded
+    )
+  File "C:\Users\Administrator\Desktop\sharpie-dashboard\src\pipeline\parse.py", line 161, in parse_all
+    print(
+    ~~~~~^
+        f"\u2713 JSON creado: {os.path.basename(filename)} (Total juegos incluidos: {len(games)})"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Administrator\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>
+11:11:59 - [INFO] - Se cargaron 1 ligas desde la configuración.
+11:11:59 - [INFO] - 🔄 Procesando: 'SPORTS' | Slug: 'Sports' | Date Range: 'n30days'
+11:12:12 - [INFO] - ✅ 'SPORTS' descargado con éxito. Elementos/Archivos: 5
+11:12:12 - [INFO] - Proceso finalizado. Ligas procesadas exitosamente: 1
+
+============================================================
+SPORTS
+Rango: n30days
+============================================================
+Descargando página 1...
+Descargando página 2...
+Descargando página 3...
+Descargando página 4...
+Descargando página 5...
+Descargando página 6...
+✓ JSON creado: sports.json (Total juegos incluidos: 50)
+
+✓ Historial guardado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-21\sharpie.json
+📊 Calibración CLV actualizada: 80 picks en el log, peso medido = -0.0018
+📊 Calibración CLV actualizada: 80 picks en el log, peso medido = -0.0018
+[OK] Historial del día guardado en: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-21\sharpie.json
+[OK] Dashboard generado con éxito: C:\Users\Administrator\Desktop\sharpie-dashboard\index.html
+12:30:01 - [INFO] - Se cargaron 1 ligas desde la configuración.
+12:30:01 - [INFO] - 🔄 Procesando: 'SPORTS' | Slug: 'Sports' | Date Range: 'n30days'
+12:30:11 - [INFO] - ✅ 'SPORTS' descargado con éxito. Elementos/Archivos: 5
+12:30:11 - [INFO] - Proceso finalizado. Ligas procesadas exitosamente: 1
+
+============================================================
+SPORTS
+Rango: n30days
+============================================================
+Descargando página 1...
+Descargando página 2...
+Descargando página 3...
+Descargando página 4...
+Descargando página 5...
+Descargando página 6...
+✓ JSON creado: sports.json (Total juegos incluidos: 50)
+
+✓ Historial guardado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-21\sharpie.json
+📊 Calibración CLV actualizada: 80 picks en el log, peso medido = -0.0018
+📊 Calibración CLV actualizada: 80 picks en el log, peso medido = -0.0018
+[OK] Historial del día guardado en: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-21\sharpie.json
+[OK] Dashboard generado con éxito: C:\Users\Administrator\Desktop\sharpie-dashboard\index.html

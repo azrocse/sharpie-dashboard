@@ -411,11 +411,10 @@
         /* TOOLBAR */
         .toolbar {
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-            background: var(--panel);
-            padding: 14px;
+            flex-direction: column;
+            gap: 10px;
+            background: linear-gradient(180deg, var(--panel), var(--panel2));
+            padding: 16px 18px;
             border-radius: var(--radius);
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
@@ -439,6 +438,51 @@
             color: var(--text);
             font-size: 14px;
         }
+
+        .search-suggest {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px -6px rgba(0,0,0,.4);
+            z-index: 50;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .search-suggest.open {
+            display: block;
+        }
+
+        .search-suggest-item {
+            padding: 8px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-suggest-item:last-child { border-bottom: none; }
+        .search-suggest-item:hover,
+        .search-suggest-item.active {
+            background: var(--teal-soft);
+            color: var(--teal);
+        }
+
+        .search-suggest-item .ss-meta {
+            font-size: 10px;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .search-suggest-item.active .ss-meta { color: var(--teal); }
 
         select, input[type="number"], input[type="text"], .btn-chip, .btn-adv-toggle, .clear-btn {
             background: var(--panel2);
@@ -506,28 +550,61 @@
             gap: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            background: linear-gradient(90deg, var(--teal), var(--blue, #3b82f6));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .adv-filters-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 16px;
+            counter-reset: advcard;
         }
 
         .adv-card {
+            position: relative;
             background: var(--panel2);
             border: 1px solid var(--border);
+            border-left: 3px solid var(--border);
             border-radius: 10px;
-            padding: 12px 14px;
+            padding: 12px 14px 12px 16px;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            transition: transform 0.15s ease, border-color 0.2s;
+            transition: transform 0.15s ease, border-color 0.2s, box-shadow 0.2s;
+            counter-increment: advcard;
+        }
+
+        .adv-card::before {
+            content: counter(advcard);
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--muted);
+            opacity: 0.5;
+        }
+
+        .adv-card:hover {
+            transform: translateY(-1px);
         }
 
         .adv-card:focus-within {
             border-color: var(--teal);
             box-shadow: 0 0 0 2px var(--teal-soft);
+        }
+
+        .adv-card.adv-card-active {
+            border-left-color: var(--teal);
+            background: var(--teal-soft);
+            box-shadow: 0 0 14px -6px var(--teal);
+        }
+
+        .adv-card.adv-card-active .adv-label {
+            color: var(--teal);
         }
 
         .adv-card-header {
@@ -545,6 +622,87 @@
             display: flex;
             align-items: center;
             gap: 6px;
+        }
+
+        /* ===== SLIDER DE RANGO DOBLE (reemplaza los inputs min/max numéricos) ===== */
+        .adv-slider-value {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            font-family: "JetBrains Mono", monospace;
+            white-space: nowrap;
+        }
+
+        .adv-slider-value.adv-slider-value-active {
+            color: var(--teal);
+        }
+
+        .adv-slider-wrap {
+            position: relative;
+            height: 26px;
+            margin: 6px 2px 2px;
+        }
+
+        .adv-slider-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transform: translateY(-50%);
+            background: var(--border);
+            border-radius: 999px;
+        }
+
+        .adv-slider-fill {
+            position: absolute;
+            top: 50%;
+            height: 4px;
+            transform: translateY(-50%);
+            background: var(--teal);
+            border-radius: 999px;
+            pointer-events: none;
+        }
+
+        .adv-range {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 26px;
+            margin: 0;
+            background: transparent;
+            -webkit-appearance: none;
+            appearance: none;
+            pointer-events: none;
+        }
+
+        .adv-range:focus { outline: none; }
+        .adv-range::-webkit-slider-runnable-track { -webkit-appearance: none; background: transparent; height: 26px; }
+        .adv-range::-moz-range-track { background: transparent; border: none; height: 26px; }
+
+        .adv-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            pointer-events: auto;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--panel);
+            border: 2px solid var(--teal);
+            cursor: pointer;
+            margin-top: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.35);
+        }
+
+        .adv-range::-moz-range-thumb {
+            pointer-events: auto;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--panel);
+            border: 2px solid var(--teal);
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,.35);
         }
 
         .adv-inputs {
@@ -653,6 +811,57 @@
             border-color: var(--gold) !important;
         }
 
+        /* FREE PICK: borde gris -- picks que no califican como Editor's Choice ni Whale Alert */
+        .pcard.free-pick {
+            box-shadow: var(--shadow), 0 0 0 2px var(--muted) !important;
+            border-color: var(--muted) !important;
+        }
+
+        .free-pick-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            border: 1px solid var(--muted);
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.12);
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+        }
+
+        .whale-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            border: 1px solid var(--blue);
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.12);
+            color: var(--blue);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+        }
+
+        .featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            border: 1px solid var(--amber);
+            border-radius: 999px;
+            background: var(--amber-soft);
+            color: var(--amber);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+        }
+
         .editor-choice-badge {
             display: inline-flex;
             align-items: center;
@@ -701,10 +910,30 @@
 
         .pcard-header {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 4px;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .pcard-header-line1 {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .pcard-header-line2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
         }
 
         .game-title {
@@ -746,6 +975,8 @@
             padding: 2px 6px;
             border-radius: 4px;
             border: 1px solid var(--border);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
         .countdown-timer.urgent {
@@ -903,18 +1134,6 @@
             color: var(--muted);
         }
 
-        .free-pick-banner {
-            margin-top: 8px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            background: var(--teal-soft);
-            border: 1px dashed var(--teal);
-            color: var(--teal);
-            font-size: 11px;
-            font-weight: 700;
-            text-align: center;
-        }
-
         .reasoning-text {
             margin-top: 12px;
             font-size: 12px;
@@ -955,6 +1174,18 @@
             gap: 6px;
         }
 
+        .badge-tag-grid-3x3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px 8px;
+        }
+
+        .badge-tag-grid-3x3 .badge-tag {
+            width: 100%;
+            box-sizing: border-box;
+            justify-content: center;
+        }
+
         .view-mode-btn {
             background: var(--panel2);
             border: 1px solid var(--border);
@@ -971,6 +1202,54 @@
             background: var(--teal-soft);
             border-color: var(--teal);
             color: var(--teal);
+        }
+
+        .filter-section-label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--muted);
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-section-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent);
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-row select,
+        .filter-row .search-box,
+        .filter-row .btn-chip,
+        .filter-row .view-mode-btn,
+        .filter-row .btn-adv-toggle,
+        .filter-row .clear-btn {
+            flex: 0 0 auto;
+        }
+
+        .btn-chip[aria-pressed="true"] {
+            background: var(--teal-soft);
+            border-color: var(--teal);
+            color: var(--teal);
+            box-shadow: 0 0 0 1px var(--teal) inset, 0 0 12px -2px var(--teal);
+        }
+
+        .btn-adv-toggle[aria-pressed="true"] {
+            background: var(--blue-soft, rgba(59,130,246,.12));
+            border-color: var(--blue, #3b82f6);
+            color: var(--blue, #3b82f6);
         }
 
         .decision-metric {
@@ -1180,6 +1459,8 @@
             font-weight: 800;
             border: 1px solid transparent;
             display: inline-block;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         @keyframes pulse {
@@ -1251,24 +1532,11 @@
         <div class="stat-header">
             <span class="stat-icon">🎯</span>
             <div class="stat-body">
-                <div class="label">ANALIZADOS</div>
+                <div class="label">PICKS ANALIZADOS</div>
                 <div class="stat-value" id="statAnalizados">0</div>
                 <div class="stat-sub">Filtrados activos</div>
             </div>
         </div>
-    </div>
-
-    <div class="stat-card expandable" id="cardWhale" data-target="detailWhale" style="border-left-color: var(--gold);">
-        <div class="stat-header">
-            <span class="stat-icon">🐋</span>
-            <div class="stat-body">
-                <div class="label">WHALE PICKS</div>
-                <div class="stat-value" id="statWhale">0</div>
-                <div class="stat-sub">Dinero institucional</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailWhale"></div>
     </div>
 
     <div class="stat-card expandable" id="cardFree" data-target="detailFree" style="border-left-color: var(--blue);">
@@ -1282,6 +1550,32 @@
             <span class="stat-chevron">▾</span>
         </div>
         <div class="stat-popup" id="detailFree"></div>
+    </div>
+
+    <div class="stat-card expandable" id="cardEditor" data-target="detailEditor" style="border-left-color: var(--purple, #8b5cf6);">
+        <div class="stat-header">
+            <span class="stat-icon">🏆</span>
+            <div class="stat-body">
+                <div class="label">EDITORS CHOICE</div>
+                <div class="stat-value" id="statEditor">0</div>
+                <div class="stat-sub">Picks de mayor valor</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-popup" id="detailEditor"></div>
+    </div>
+
+    <div class="stat-card expandable" id="cardWhale" data-target="detailWhale" style="border-left-color: var(--gold);">
+        <div class="stat-header">
+            <span class="stat-icon">🐋</span>
+            <div class="stat-body">
+                <div class="label">WHALE ALERTS</div>
+                <div class="stat-value" id="statWhale">0</div>
+                <div class="stat-sub">Dinero institucional</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-popup" id="detailWhale"></div>
     </div>
 
     <div class="stat-card expandable" id="cardProximos" data-target="detailProximos" style="border-left-color: var(--amber);">
@@ -1357,55 +1651,53 @@
 </div>
 
 <div class="toolbar">
-    <div class="search-box">
-        <input id="search" placeholder="Buscar por equipo, liga, mercado...">
+    <div class="filter-section-label">🔍 Filtros Cualitativos</div>
+    <div class="filter-row">
+        <div class="search-box" style="position:relative;">
+            <input id="search" placeholder="Buscar por equipo, liga, mercado..." autocomplete="off" list="searchSuggestions">
+            <datalist id="searchSuggestions"></datalist>
+            <div id="searchSuggest" class="search-suggest"></div>
+        </div>
+        <select id="fSort">
+            <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
+            <option value="recommended">🏆 Ordenar por: Recomendados / Editor</option>
+            <option value="score">🔥 Ordenar por: Mayor Score</option>
+            <option value="winprob">🎲 Ordenar por: Mayor Prob. de Victoria</option>
+        </select>
+        <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks</button>
+        <button class="btn-chip" id="editorOnly" aria-pressed="false">🏆 Editor's Choice</button>
+        <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
+        <button class="btn-chip" id="featuredOnly" aria-pressed="false">⭐ Pick Destacado</button>
+        <button class="btn-chip" id="watchlistOnly" aria-pressed="false">👁 My Watchlist</button>
+        <select id="fDate"><option value="">📆 Todas las fechas</option></select>
+        <select id="fTimeRange">
+            <option value="">⏱️ Hora / Rango</option>
+            <option value="in_play">🔴 En juego / Iniciados</option>
+            <option value="30m">⏳ Próximos 30 min</option>
+            <option value="1h">⏳ Próxima 1 hora</option>
+            <option value="2h">⏳ Próximas 2 horas</option>
+            <option value="today">📅 Eventos de Hoy</option>
+        </select>
+        <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
+        <select id="fTrend">
+            <option value="">📊 Todas las señales</option>
+            <option value="SMART_MONEY">🐋 SMART MONEY</option>
+            <option value="PUBLIC_HEAVY">🚨 PUBLIC HEAVY</option>
+            <option value="CONSENSUS">📊 CONSENSUS</option>
+            <option value="MIXED">🔀 MIXED</option>
+            <option value="NO_ACTION">⚪ NO ACTION</option>
+        </select>
+        <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
+        <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
+        <button class="clear-btn" id="clearBtn">🧹 Limpiar filtros</button>
     </div>
-    <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
-    <select id="fSort">
-        <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
-        <option value="recommended">🏆 Ordenar por: Recomendados / Editor</option>
-        <option value="score">🔥 Ordenar por: Mayor Score</option>
-        <option value="edge">📈 Ordenar por: Mayor Edge</option>
-    </select>
-    <select id="fDate"><option value="">📆 Todas las fechas</option></select>
-    <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
-    
-    <select id="fTrend">
-        <option value="">📊 Todas las señales</option>
-        <option value="sharp">🐋 Smart Money</option>
-        <option value="mixed">🟡 Flujo Mixto</option>
-        <option value="consensus">⚪ Consenso</option>
-        <option value="public">🚨 Public Heavy</option>
-    </select>
-    
-    <select id="fClassification">
-        <option value="">🏷️ Todas las clasificaciones</option>
-        <option value="premium">🟢 Premium</option>
-        <option value="solido">🔵 Sólido</option>
-        <option value="mixed">🟨 Valor Operativo</option>
-        <option value="atento">⚡ Atento</option>
-        <option value="sin_ventaja">🔴 Descartar</option>
-    </select>
-
-    <select id="fRisk">
-        <option value="">🛡️ Todos los Riesgos</option>
-        <option value="LOW">🟢 Riesgo Bajo (Low)</option>
-        <option value="MEDIUM">🟡 Riesgo Medio (Medium)</option>
-        <option value="HIGH">🔴 Riesgo Alto (High)</option>
-    </select>
-
-    <button class="btn-chip" id="editorOnly" aria-pressed="false">🏆 Editor's Choice</button>
-    <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
-    <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks</button>
-    <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
-    <button class="clear-btn" id="clearBtn">Limpiar filtros</button>
 </div>
 
 <!-- SECCIÓN DE FILTROS AVANZADOS -->
 <div class="adv-filters-panel" id="advFiltersPanel">
     <div class="adv-panel-header">
         <div class="adv-panel-title">
-            <span>⚙️ Matriz de Filtros Cuantitativos y Métricas</span>
+            <span>🔢 Filtros Cuantitativos</span>
         </div>
         <span class="mono" style="font-size: 11px; color: var(--muted);">Ajusta los umbrales para aislar valor absoluto</span>
     </div>
@@ -1413,29 +1705,72 @@
     <div class="adv-filters-grid">
         <div class="adv-card">
             <div class="adv-card-header">
-                <label class="adv-label">⏰ Hora / Rango</label>
+                <label class="adv-label">🤖 Modelo Prob. (%)</label>
+                <span class="adv-slider-value" id="fModeloValue">Todos</span>
             </div>
-            <div class="adv-inputs">
-                <select id="fTimeRange">
-                    <option value="">⏱️ Todos los horarios</option>
-                    <option value="in_play">🔴 En juego / Iniciados</option>
-                    <option value="30m">⏳ Próximos 30 min</option>
-                    <option value="1h">⏳ Próxima 1 hora</option>
-                    <option value="2h">⏳ Próximas 2 horas</option>
-                    <option value="today">📅 Eventos de Hoy</option>
-                </select>
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fModeloFill"></div></div>
+                <input type="range" class="adv-range" id="fModeloMinRange" min="0" max="100" step="1" value="0">
+                <input type="range" class="adv-range" id="fModeloMaxRange" min="0" max="100" step="1" value="100">
             </div>
+            <input type="hidden" id="fModeloMin">
+            <input type="hidden" id="fModeloMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
-                <label class="adv-label">🤖 Modelo Prob. (%)</label>
+                <label class="adv-label">🔥 Score Integral</label>
+                <span class="adv-slider-value" id="fScoreValue">Todos</span>
             </div>
-            <div class="adv-inputs">
-                <input type="number" id="fModeloMin" placeholder="Min %" min="0" max="100" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fModeloMax" placeholder="Max %" min="0" max="100" step="1">
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fScoreFill"></div></div>
+                <input type="range" class="adv-range" id="fScoreMinRange" min="0" max="100" step="1" value="0">
+                <input type="range" class="adv-range" id="fScoreMaxRange" min="0" max="100" step="1" value="100">
             </div>
+            <input type="hidden" id="fScoreMin">
+            <input type="hidden" id="fScoreMax">
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">🎲 Prob. Victoria (%)</label>
+                <span class="adv-slider-value" id="fWinProbValue">Todos</span>
+            </div>
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fWinProbFill"></div></div>
+                <input type="range" class="adv-range" id="fWinProbMinRange" min="0" max="100" step="1" value="0">
+                <input type="range" class="adv-range" id="fWinProbMaxRange" min="0" max="100" step="1" value="100">
+            </div>
+            <input type="hidden" id="fWinProbMin">
+            <input type="hidden" id="fWinProbMax">
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">⚡ Divergencia Flujo (%)</label>
+                <span class="adv-slider-value" id="fDivergenciaValue">Todos</span>
+            </div>
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fDivergenciaFill"></div></div>
+                <input type="range" class="adv-range" id="fDivergenciaMinRange" min="-100" max="100" step="1" value="-100">
+                <input type="range" class="adv-range" id="fDivergenciaMaxRange" min="-100" max="100" step="1" value="100">
+            </div>
+            <input type="hidden" id="fDivergenciaMin">
+            <input type="hidden" id="fDivergenciaMax">
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">✅ Confiabilidad (%)</label>
+                <span class="adv-slider-value" id="fConfValue">Todos</span>
+            </div>
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fConfFill"></div></div>
+                <input type="range" class="adv-range" id="fConfMinRange" min="0" max="100" step="1" value="0">
+                <input type="range" class="adv-range" id="fConfMaxRange" min="0" max="100" step="1" value="100">
+            </div>
+            <input type="hidden" id="fConfMin">
+            <input type="hidden" id="fConfMax">
         </div>
 
         <div class="adv-card">
@@ -1451,124 +1786,73 @@
 
         <div class="adv-card">
             <div class="adv-card-header">
-                <label class="adv-label">📈 Edge Modelo (%)</label>
+                <label class="adv-label">🎯 Stake Recom.</label>
+                <span class="adv-slider-value" id="fStakeValue">Todos</span>
             </div>
-            <div class="adv-inputs">
-                <input type="number" id="fEdgeMin" placeholder="Min %" step="0.1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fEdgeMax" placeholder="Max %" step="0.1">
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fStakeFill"></div></div>
+                <input type="range" class="adv-range" id="fStakeMinRange" min="0" max="4" step="0.1" value="0">
+                <input type="range" class="adv-range" id="fStakeMaxRange" min="0" max="4" step="0.1" value="4">
             </div>
-        </div>
-
-        <div class="adv-card">
-            <div class="adv-card-header">
-                <label class="adv-label">💰 Edge Dinero (%)</label>
-            </div>
-            <div class="adv-inputs">
-                <input type="number" id="fMoneyEdgeMin" placeholder="Min %" step="0.1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fMoneyEdgeMax" placeholder="Max %" step="0.1">
-            </div>
+            <input type="hidden" id="fStakeMin">
+            <input type="hidden" id="fStakeMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">🎟️ % Bets (Tickets)</label>
+                <span class="adv-slider-value" id="fBetsValue">Todos</span>
             </div>
-            <div class="adv-inputs">
-                <input type="number" id="fBetsMin" placeholder="Min %" min="0" max="100" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fBetsMax" placeholder="Max %" min="0" max="100" step="1">
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fBetsFill"></div></div>
+                <input type="range" class="adv-range" id="fBetsMinRange" min="0" max="100" step="1" value="0">
+                <input type="range" class="adv-range" id="fBetsMaxRange" min="0" max="100" step="1" value="100">
             </div>
+            <input type="hidden" id="fBetsMin">
+            <input type="hidden" id="fBetsMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">💵 % Handle (Dinero)</label>
+                <span class="adv-slider-value" id="fHandleValue">Todos</span>
             </div>
-            <div class="adv-inputs">
-                <input type="number" id="fHandleMin" placeholder="Min %" min="0" max="100" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fHandleMax" placeholder="Max %" min="0" max="100" step="1">
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fHandleFill"></div></div>
+                <input type="range" class="adv-range" id="fHandleMinRange" min="0" max="100" step="1" value="0">
+                <input type="range" class="adv-range" id="fHandleMaxRange" min="0" max="100" step="1" value="100">
             </div>
+            <input type="hidden" id="fHandleMin">
+            <input type="hidden" id="fHandleMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
-                <label class="adv-label">🔥 Score Integral</label>
+                <label class="adv-label">📈 Edge Modelo (%)</label>
+                <span class="adv-slider-value" id="fEdgeValue">Todos</span>
             </div>
-            <div class="adv-inputs">
-                <input type="number" id="fScoreMin" placeholder="Min" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fScoreMax" placeholder="Max" step="1">
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fEdgeFill"></div></div>
+                <input type="range" class="adv-range" id="fEdgeMinRange" min="-20" max="20" step="0.5" value="-20">
+                <input type="range" class="adv-range" id="fEdgeMaxRange" min="-20" max="20" step="0.5" value="20">
             </div>
+            <input type="hidden" id="fEdgeMin">
+            <input type="hidden" id="fEdgeMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">📊 Valor Esperado EV (%)</label>
+                <span class="adv-slider-value" id="fEvValue">Todos</span>
             </div>
-            <div class="adv-inputs">
-                <input type="number" id="fEvMin" placeholder="Min %" step="0.1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fEvMax" placeholder="Max %" step="0.1">
+            <div class="adv-slider-wrap">
+                <div class="adv-slider-track"><div class="adv-slider-fill" id="fEvFill"></div></div>
+                <input type="range" class="adv-range" id="fEvMinRange" min="-20" max="20" step="0.5" value="-20">
+                <input type="range" class="adv-range" id="fEvMaxRange" min="-20" max="20" step="0.5" value="20">
             </div>
+            <input type="hidden" id="fEvMin">
+            <input type="hidden" id="fEvMax">
         </div>
-
-        <div class="adv-card">
-            <div class="adv-card-header">
-                <label class="adv-label">🎯 Stake Recom.</label>
-            </div>
-            <div class="adv-inputs">
-                <input type="number" id="fStakeMin" placeholder="Min" step="0.25">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fStakeMax" placeholder="Max" step="0.25">
-            </div>
-        </div>
-
-        <div class="adv-card">
-            <div class="adv-card-header">
-                <label class="adv-label">⚡ Divergencia Flujo (%)</label>
-            </div>
-            <div class="adv-inputs">
-                <input type="number" id="fDivergenciaMin" placeholder="Min %" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fDivergenciaMax" placeholder="Max %" step="1">
-            </div>
-        </div>
-        <div class="adv-card">
-            <div class="adv-card-header">
-                <label class="adv-label">✅ Confiabilidad (%)</label>
-            </div>
-            <div class="adv-inputs">
-                <input type="number" id="fConfMin" placeholder="Min %" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fConfMax" placeholder="Max %" step="1">
-            </div>
-        </div>
-        <div class="adv-card">
-            <div class="adv-card-header">
-                <label class="adv-label">🎲 Prob. Victoria (%)</label>
-            </div>
-            <div class="adv-inputs">
-                <input type="number" id="fWinProbMin" placeholder="Min %" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fWinProbMax" placeholder="Max %" step="1">
-            </div>
-        </div>
-        <div class="adv-card">
-            <div class="adv-card-header">
-                <label class="adv-label">👉 Recomendación</label>
-            </div>
-            <select id="fRecommendation">
-                <option value="">Todas</option>
-                <option value="Apostar">✅ Apostar</option>
-                <option value="Opcional">🟡 Opcional</option>
-                <option value="Esperar (riesgo alto)">🟠 Esperar (riesgo alto)</option>
-                <option value="Evitar">🔴 Evitar</option>
-            </select>
-        </div>
-
     </div>
 
     <div class="active-filter-chips" id="activeFilterChips"></div>
@@ -1644,14 +1928,14 @@ const state = {
     date: "",
     league: "",
     trend: "",
-    classification: "",
-    risk: "",
     editorOnly: false,
     whaleOnly: false,
     freePickOnly: false,
+    featuredOnly: false,
+    watchlistOnly: false,
     sort: "time",
     autoThemeEnabled: true,
-    advancedView: true,   // Arranca en Avanzado -- el botón siempre muestra el modo AL QUE CAMBIAS, no el actual
+    advancedView: false,  // Arranca en Simple -- el botón siempre muestra el modo AL QUE CAMBIAS, no el actual
     
     timeRange: "",
     modeloMin: null,
@@ -1660,8 +1944,6 @@ const state = {
     cuotaMax: null,
     edgeMin: null,
     edgeMax: null,
-    moneyEdgeMin: null,
-    moneyEdgeMax: null,
     betsMin: null,
     betsMax: null,
     handleMin: null,
@@ -1681,8 +1963,22 @@ const state = {
     recommendation: ""
 };
 
-const TREND_LABEL = { sharp: "Smart Money", mixed: "Flujo Mixto", consensus: "Consenso", public: "Public Heavy", other: "Normal" };
-const TREND_ICON = { sharp: "🐋", mixed: "🟡", consensus: "⚪", public: "🚨", other: "⚙️" };
+// Parte 3: 5 señales de mercado homologadas a inglés -- únicas, calculadas
+// en el backend (p.marketSignal / p.trendKey). El frontend solo pinta.
+const TREND_LABEL = {
+    SMART_MONEY: "SMART MONEY",
+    PUBLIC_HEAVY: "PUBLIC HEAVY",
+    CONSENSUS: "CONSENSUS",
+    MIXED: "MIXED",
+    NO_ACTION: "NO ACTION"
+};
+const TREND_ICON = {
+    SMART_MONEY: "🐋",
+    PUBLIC_HEAVY: "🚨",
+    CONSENSUS: "📊",
+    MIXED: "🔀",
+    NO_ACTION: "⚪"
+};
 
 let edgeChartInstance = null;
 let marketChartInstance = null;
@@ -1768,32 +2064,9 @@ function evBadgeClass(ev) {
 function stakeBadgeClass(stake) {
     const s = Number(stake || 0);
     if (s <= 0) return "neutral";
-    if (s >= 4) return "good";
-    if (s >= 2) return "warn";
+    if (s >= 3) return "good";
+    if (s >= 1.5) return "warn";
     return "bad";
-}
-
-// Escala fija de stakes permitida (evita fraccionamientos excesivos)
-const STAKE_SCALE = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
-
-function snapStakeToScale(stake) {
-    const val = Number(stake);
-    if (stake == null || isNaN(val) || val <= 0) return null;
-    let closest = STAKE_SCALE[0];
-    let minDiff = Math.abs(val - closest);
-    for (let i = 1; i < STAKE_SCALE.length; i++) {
-        const diff = Math.abs(val - STAKE_SCALE[i]);
-        if (diff < minDiff) { minDiff = diff; closest = STAKE_SCALE[i]; }
-    }
-    return closest;
-}
-
-function riskBadgeClass(risk) {
-    const r = (risk || "").toUpperCase();
-    if (r === "LOW") return "good";
-    if (r === "MEDIUM") return "warn";
-    if (r === "HIGH") return "bad";
-    return "neutral";
 }
 
 function modelProbColorClass(prob) {
@@ -1849,20 +2122,6 @@ function edgeModBadgeClass(edge) {
     return "bad";
 }
 
-function recommendationLabel(p) {
-    const displayStake = snapStakeToScale(p.stake) || 0;
-    if (p.evaluation === "DESCARTAR" || Number(p.ev || 0) <= -0.5 || displayStake <= 0) {
-        return { text: "Evitar", cls: "bad" };
-    }
-    if (p.risk === "LOW" && (p.evaluation === "PREMIUM" || p.evaluation === "STRONG")) {
-        return { text: "Apostar", cls: "good" };
-    }
-    if (p.risk === "HIGH") {
-        return { text: "Esperar (riesgo alto)", cls: "warn" };
-    }
-    return { text: "Opcional", cls: "warn" };
-}
-
 // ============================================================
 // PANEL DE DECISIÓN UNIFICADO -- reemplaza los 3 bloques dispersos
 // (grid-metrics arriba, panel de confianza/coherencia en medio, badges
@@ -1880,47 +2139,53 @@ function recommendationLabel(p) {
 // de otro, solo ruido. Sigue usándose puertas adentro para ajustar el score.
 // ============================================================
 function unifiedDecisionPanelHtml(p) {
-    const displayStake = snapStakeToScale(p.stake);
-    const isStakeEstimated = p.stakeEstimated === true;
-    const stakeText = (displayStake != null ? displayStake : 0).toFixed(1) + 'u';
-    const rec = recommendationLabel(p);
+    const displayStake = Number(p.stake) || 0;
+    const stakeText = displayStake.toFixed(1) + '%';
     const winProb = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
 
-    // Jerarquía: 1) veredicto 2) riesgo 3) cuánto apostar 4) valor esperado
-    // 5) prob. de victoria simulada -- Score se retira del básico porque se
-    // confundía visualmente con Prob. Victoria (números parecidos, distinto significado).
-    const chips = [];
-    chips.push(`<span class="badge-tag ${rec.cls}" style="font-size:12px;">👉 <b>${rec.text}</b></span>`);
-    chips.push(`<span class="badge-tag ${riskBadgeClass(p.risk)}">🛡️ Riesgo <b>${escapeHTML(p.risk || '—')}</b></span>`);
-    chips.push(`<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b>${isStakeEstimated ? '<span class="estimated-marker">(Est.)</span>' : ''}</span>`);
-    chips.push(`<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`);
-    if (winProb != null) {
-        chips.push(`<span class="badge-tag ${winProbBadgeClass(winProb)}">🎲 Prob. Victoria <b>${winProb}%</b></span>`);
-    }
-
     if (!state.advancedView) {
-        return `<div class="decision-panel"><div class="decision-panel-title">📐 Decisión</div><div class="badge-tag-grid">${chips.join('')}</div></div>`;
+        // Modo Simple: solo 3 datos -- Modelo, Cuota, Stake.
+        const simpleChips = [
+            `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
+            `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
+            `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`
+        ];
+        return `<div class="decision-panel"><div class="decision-panel-title">📐 Decisión</div><div class="badge-tag-grid">${simpleChips.join('')}</div></div>`;
     }
 
     const modelEdgeVal = p.modelEdge != null ? Number(p.modelEdge) : null;
     const smartMoneyVal = calculateSmartMoney(p);
     const reliabilityVal = p.reliability != null ? Number(p.reliability) : (p.confidence != null ? Number(p.confidence) : null);
 
-    // Sección avanzada: evidencia detrás de la decisión, en orden de relevancia.
-    chips.push(`<span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score <b>${p.score != null ? p.score : '—'}</b></span>`);
-    if (reliabilityVal != null) {
-        chips.push(`<span class="badge-tag ${reliabilityBadgeClass(reliabilityVal)}">✅ Confiabilidad <b>${(reliabilityVal * 100).toFixed(0)}%</b></span>`);
-    }
-    chips.push(`<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`);
-    chips.push(`<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`);
-    chips.push(`<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`);
-    chips.push(`<span class="badge-tag ${smartMoneyVal >= 4 ? 'good' : (smartMoneyVal > 0 ? 'warn' : 'neutral')}">💰 Smart Money <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`);
+    // Grid fija 3x3, en este orden exacto:
+    // Modelo   -> Edge Modelo -> EV
+    // Victoria -> Score       -> Confiabilidad
+    // Cuota    -> Stake       -> Smart Money
+    const advGrid = [
+        `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
+        `<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`,
+        `<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`,
+
+        winProb != null
+            ? `<span class="badge-tag ${winProbBadgeClass(winProb)}">🎲 Prob. Victoria <b>${winProb}%</b></span>`
+            : `<span class="badge-tag neutral">🎲 Prob. Victoria <b>—</b></span>`,
+        `<span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score <b>${p.score != null ? p.score : '—'}</b></span>`,
+        reliabilityVal != null
+            ? `<span class="badge-tag ${reliabilityBadgeClass(reliabilityVal)}">✅ Confiabilidad <b>${(reliabilityVal * 100).toFixed(0)}%</b></span>`
+            : `<span class="badge-tag neutral">✅ Confiabilidad <b>—</b></span>`,
+
+        `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
+        `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
+        `<span class="badge-tag ${smartMoneyVal >= 4 ? 'good' : (smartMoneyVal > 0 ? 'warn' : 'neutral')}">💰 Smart Money <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
+    ];
+
+    let advExtra = '';
     if (p.coherence === "confirmada" || p.coherence === "contradictoria") {
         const ok = p.coherence === "confirmada";
-        chips.push(`<span class="badge-tag ${ok ? 'good' : 'bad'}">${ok ? '✅' : '⚠️'} Coherencia <b>${ok ? 'confirmada' : 'contradictoria'}</b></span>`);
+        advExtra = `<div class="badge-tag-grid" style="margin-top:6px;"><span class="badge-tag ${ok ? 'good' : 'bad'}">${ok ? '✅' : '⚠️'} Coherencia <b>${ok ? 'confirmada' : 'contradictoria'}</b></span></div>`;
     }
 
-    return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid">${chips.join('')}</div></div>`;
+    return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div>${advExtra}</div>`;
 }
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
@@ -1965,6 +2230,35 @@ function calculateEdge(p) {
 }
 
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
+
+// ============================================================
+// CLASIFICACIÓN ÚNICA Y EXCLUYENTE: Free / Editor's Choice / Whale Alert
+// Parte 2: la categoría de cada pick (FREE/EDITORS/WHALE) ya viene calculada
+// desde el backend en p.pickCategory -- ya no se recalcula en el frontend
+// (eso era justo la fuente de los bugs de inconsistencia card-vs-filtro que
+// veníamos arrastrando). Se usa directo: p.pickCategory === "FREE", etc.
+
+// Equipos mediáticos: si el pick los menciona, es automáticamente "Pick Destacado"
+const FEATURED_TEAMS = [
+    "Cowboys", "Chiefs", "49ers", "Patriots", "Packers", "Steelers",
+    "Lakers", "Warriors", "Celtics", "Bulls", "Knicks",
+    "Yankees", "Dodgers", "Red Sox", "Cubs",
+    "Maple Leafs", "Canadiens", "Rangers", "Bruins",
+    "Inter Miami", "LA Galaxy", "LAFC",
+    "Manchester United", "Liverpool", "Manchester City", "Arsenal", "Chelsea",
+    "Real Madrid", "Barcelona", "Atlético de Madrid", "Atletico de Madrid", "Atletico Madrid",
+    "Juventus", "Inter", "AC Milan", "Milan",
+    "Bayern Munich", "Bayern Múnich", "Borussia Dortmund",
+    "PSG", "Marseille",
+    "América", "America", "Chivas", "Cruz Azul",
+    "River Plate", "Boca Juniors",
+    "Flamengo", "Corinthians", "Palmeiras", "São Paulo", "Sao Paulo"
+];
+
+function isFeaturedPick(p) {
+    const blob = `${p.game || ''} ${p.pick || ''} ${p.team || ''} ${p.home || ''} ${p.away || ''}`;
+    return FEATURED_TEAMS.some(team => blob.includes(team));
+}
 
 // Devuelve únicamente las mediciones donde Bets, Handle o Cuota realmente cambiaron
 // respecto a la medición anterior. Fuente única usada tanto por la Evolución Histórica
@@ -2087,14 +2381,14 @@ function getEvolutionAnalysis(p) {
 }
 
 function editorChoiceSummary(a) {
-    if (!a || !a.isEditorChoice) return '';
+    if (!a) return '';
     const gapTxt = `${a.gap >= 0 ? '+' : ''}${a.gap.toFixed(1)} pts H-B`;
     const trendTxt = a.gapDelta != null ? `${a.gapDelta >= 0 ? '+' : ''}${a.gapDelta.toFixed(1)} pts vs anterior` : 'evolución';
     return `🏆 EDITOR'S CHOICE · ${gapTxt} · H/B ${a.ratio.toFixed(2)} · ${trendTxt} · ${a.movementLabel}`;
 }
 
 function editorChoiceReasonHtml(a) {
-    if (!a || !a.isEditorChoice) return '';
+    if (!a) return '';
 
     const signals = [];
     if (a.betsDelta != null && a.betsDelta < 0) signals.push(`Tickets ↓ ${Math.abs(a.betsDelta).toFixed(1)} pts`);
@@ -2177,6 +2471,7 @@ function buildEvolutionHtml(p) {
 
         rows += `
             <tr>
+                <td>📅 ${h.timestamp ? escapeHTML(h.timestamp.split('T')[0]) : '—'}</td>
                 <td>🕒 ${escapeHTML(h.time) || '—'}</td>
                 <td>${h.betsPct != null ? h.betsPct + '%' : '—'} <span class="${betsTrend.cls}">${betsTrend.arrow}</span></td>
                 <td style="color:var(--teal)">${h.handlePct != null ? h.handlePct + '%' : '—'} <span class="${handleTrend.cls}">${handleTrend.arrow}</span></td>
@@ -2191,6 +2486,7 @@ function buildEvolutionHtml(p) {
             <table class="history-evolution-table">
                 <thead>
                     <tr>
+                        <th>Fecha</th>
                         <th>Hora</th>
                         <th>Tickets</th>
                         <th>Dinero</th>
@@ -2214,27 +2510,19 @@ function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 &&
 // Clasificación visual puramente por score (0-100), sin overrides por flags externos
 // (whale, texto de acción del backend) para evitar sesgos: la señal whale y editor's choice
 // ya se muestran con sus propios badges independientes en la card.
-function getVisualConfig(p) {
-    const score = Number(p.score || 0);
-    const edge = calculateEdge(p);
-
-    if (score >= 65 && edge >= 3) {
-        return { key: "premium", bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "🟢 PREMIUM" };
+function marketSignalVisualConfig(marketSignal) {
+    switch (marketSignal) {
+        case "SMART_MONEY":
+            return { bg: "var(--blue-soft)", border: "var(--blue)", text: "var(--blue)", label: "🐋 SMART MONEY" };
+        case "PUBLIC_HEAVY":
+            return { bg: "var(--red-soft)", border: "var(--red)", text: "var(--red)", label: "🚨 PUBLIC HEAVY" };
+        case "CONSENSUS":
+            return { bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "📊 CONSENSUS" };
+        case "MIXED":
+            return { bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "🔀 MIXED" };
+        default:
+            return { bg: "var(--panel2)", border: "var(--border)", text: "var(--muted)", label: "⚪ NO ACTION" };
     }
-
-    if (score >= 45) {
-        return { key: "solido", bg: "var(--blue-soft)", border: "var(--blue)", text: "var(--blue)", label: "🔵 SÓLIDO" };
-    }
-
-    if (score >= 25) {
-        return { key: "mixed", bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "🟨 VALOR OPERATIVO" };
-    }
-
-    if (score >= 10) {
-        return { key: "atento", bg: "var(--panel2)", border: "var(--border)", text: "var(--text)", label: "⚡ ATENTO" };
-    }
-
-    return { key: "sin_ventaja", bg: "var(--red-soft)", border: "var(--red)", text: "var(--red)", label: "🔴 DESCARTAR" };
 }
 
 function getCountdownText(isoString) {
@@ -2256,26 +2544,37 @@ function getCountdownText(isoString) {
     return { text: `⏳ ${timeStr}`, urgent: diffMs < 900000, expired: false, diffMin };
 }
 
+// Contador dinámico (Parte 1): tick real cada segundo sobre el DOM, sin
+// re-renderizar toda la lista de cards -- solo actualiza el texto/estado de
+// cada timer visible ahora mismo.
+function tickAllCountdowns() {
+    document.querySelectorAll(".countdown-timer[data-iso]").forEach(el => {
+        const iso = el.getAttribute("data-iso");
+        if (!iso) return;
+        const t = getCountdownText(iso);
+        el.textContent = t.text;
+        el.classList.toggle("urgent", t.urgent);
+    });
+}
+
+setInterval(tickAllCountdowns, 1000);
+
 const statState = {
     whale: [],
+    editor: [],
     free: [],
     proximos: [],
     mercado: { fade: [], sharp: [], consenso: [] },
     mejor: []
 };
 
-// Clasificación de Mercado unificada con la Señal visible en cada card (p.trendKey):
-// el bucket de mercado nunca debe contradecir el tag 🐋/🟡/⚪/🚨/⚙️ que ve el usuario.
-// Solo recurre a la divergencia (Smart Money) como respaldo si el pick no trae trendKey.
+// Parte 3: el bucket de Análisis de Mercado ahora es un espejo directo de
+// p.marketSignal (backend), sin heurística de respaldo -- ya no hay drift
+// posible entre lo que dice el tag de la card y lo que cuenta esta métrica.
 function classifyMarketBucket(p) {
-    if (p.trendKey === "sharp") return "sharp";
-    if (p.trendKey === "public") return "fade";
-    if (p.trendKey === "mixed" || p.trendKey === "consensus" || p.trendKey === "other") return "consenso";
-
-    // Fallback solo para datos sin trendKey (legado/incompleto)
-    if (isWhalePick(p) || calculateSmartMoney(p) >= 15) return "sharp";
-    if (calculateSmartMoney(p) <= -15) return "fade";
-    return "consenso";
+    if (p.marketSignal === "SMART_MONEY") return "sharp";
+    if (p.marketSignal === "PUBLIC_HEAVY") return "fade";
+    return "consenso"; // CONSENSUS, MIXED, NO_ACTION
 }
 
 function computeConfianzaDelDinero(fadeN, sharpN) {
@@ -2290,12 +2589,17 @@ function updateMetrics(activePicks) {
     const elAnalizados = document.getElementById("statAnalizados");
     if(elAnalizados) elAnalizados.innerText = activePicks.length;
 
-    const whalePicks = activePicks.filter(p => isWhalePick(p));
+    const whalePicks = activePicks.filter(p => p.pickCategory === "WHALE");
     const elWhale = document.getElementById("statWhale");
     if(elWhale) elWhale.innerText = whalePicks.length;
     statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
 
-    const freePicks = activePicks.filter(p => isFreePick(p));
+    const editorPicks = activePicks.filter(p => p.pickCategory === "EDITORS");
+    const elEditor = document.getElementById("statEditor");
+    if(elEditor) elEditor.innerText = editorPicks.length;
+    statState.editor = editorPicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+
+    const freePicks = activePicks.filter(p => p.pickCategory === "FREE");
     const elFree = document.getElementById("statFree");
     if(elFree) elFree.innerText = freePicks.length;
     statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
@@ -2395,6 +2699,7 @@ function setupStatPopups() {
                 let popupTitle = "Detalle de Eventos";
                 
                 if (targetId === "detailWhale") { items = statState.whale; popupTitle = "Top Whale Picks"; }
+                else if (targetId === "detailEditor") { items = statState.editor; popupTitle = "Top Editor's Choice"; }
                 else if (targetId === "detailFree") { items = statState.free; popupTitle = "Top Free Picks"; }
                 else if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
                 else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
@@ -2470,9 +2775,6 @@ function renderActiveChips() {
     if (state.edgeMin !== null || state.edgeMax !== null) {
         chips.push({ key: "edge", label: `📈 Edge Mod: ${state.edgeMin ?? '-∞'}% - ${state.edgeMax ?? '+∞'}%` });
     }
-    if (state.moneyEdgeMin !== null || state.moneyEdgeMax !== null) {
-        chips.push({ key: "moneyEdge", label: `💰 Edge Dinero: ${state.moneyEdgeMin ?? '-∞'}% - ${state.moneyEdgeMax ?? '+∞'}%` });
-    }
     if (state.betsMin !== null || state.betsMax !== null) {
         chips.push({ key: "bets", label: `🎟️ Bets: ${state.betsMin ?? 0}% - ${state.betsMax ?? 100}%` });
     }
@@ -2486,10 +2788,16 @@ function renderActiveChips() {
         chips.push({ key: "ev", label: `📊 EV: ${state.evMin ?? '-∞'}% - ${state.evMax ?? '+∞'}%` });
     }
     if (state.stakeMin !== null || state.stakeMax !== null) {
-        chips.push({ key: "stake", label: `🎯 Stake: ${state.stakeMin ?? 0}u - ${state.stakeMax ?? 'Max'}u` });
+        chips.push({ key: "stake", label: `🎯 Stake: ${state.stakeMin ?? 0}% - ${state.stakeMax ?? 'Max'}%` });
     }
     if (state.divergenciaMin !== null || state.divergenciaMax !== null) {
         chips.push({ key: "divergencia", label: `⚡ Divergencia: ${state.divergenciaMin ?? '-∞'}% - ${state.divergenciaMax ?? '+∞'}%` });
+    }
+    if (state.confMin !== null || state.confMax !== null) {
+        chips.push({ key: "conf", label: `✅ Confiabilidad: ${state.confMin ?? 0}% - ${state.confMax ?? 100}%` });
+    }
+    if (state.winProbMin !== null || state.winProbMax !== null) {
+        chips.push({ key: "winProb", label: `🎲 Prob. Victoria: ${state.winProbMin ?? 0}% - ${state.winProbMax ?? 100}%` });
     }
 
     if (chips.length === 0) {
@@ -2510,13 +2818,14 @@ function clearSpecificAdvFilter(type) {
     if (type === "modelo") { state.modeloMin = null; state.modeloMax = null; document.getElementById("fModeloMin").value = ""; document.getElementById("fModeloMax").value = ""; }
     if (type === "cuota") { state.cuotaMin = null; state.cuotaMax = null; document.getElementById("fCuotaMin").value = ""; document.getElementById("fCuotaMax").value = ""; }
     if (type === "edge") { state.edgeMin = null; state.edgeMax = null; document.getElementById("fEdgeMin").value = ""; document.getElementById("fEdgeMax").value = ""; }
-    if (type === "moneyEdge") { state.moneyEdgeMin = null; state.moneyEdgeMax = null; document.getElementById("fMoneyEdgeMin").value = ""; document.getElementById("fMoneyEdgeMax").value = ""; }
     if (type === "bets") { state.betsMin = null; state.betsMax = null; document.getElementById("fBetsMin").value = ""; document.getElementById("fBetsMax").value = ""; }
     if (type === "handle") { state.handleMin = null; state.handleMax = null; document.getElementById("fHandleMin").value = ""; document.getElementById("fHandleMax").value = ""; }
     if (type === "score") { state.scoreMin = null; state.scoreMax = null; document.getElementById("fScoreMin").value = ""; document.getElementById("fScoreMax").value = ""; }
     if (type === "ev") { state.evMin = null; state.evMax = null; document.getElementById("fEvMin").value = ""; document.getElementById("fEvMax").value = ""; }
     if (type === "stake") { state.stakeMin = null; state.stakeMax = null; document.getElementById("fStakeMin").value = ""; document.getElementById("fStakeMax").value = ""; }
     if (type === "divergencia") { state.divergenciaMin = null; state.divergenciaMax = null; document.getElementById("fDivergenciaMin").value = ""; document.getElementById("fDivergenciaMax").value = ""; }
+    if (type === "conf") { state.confMin = null; state.confMax = null; document.getElementById("fConfMin").value = ""; document.getElementById("fConfMax").value = ""; }
+    if (type === "winProb") { state.winProbMin = null; state.winProbMax = null; document.getElementById("fWinProbMin").value = ""; document.getElementById("fWinProbMax").value = ""; }
     render();
 }
 
@@ -2528,16 +2837,6 @@ function applyFiltersAndSort(list) {
         if (state.league && p.league !== state.league) return false;
         if (state.date && p.date !== state.date) return false;
         if (state.trend && p.trendKey !== state.trend) return false;
-        
-        if (state.classification) {
-            const config = getVisualConfig(p);
-            if (config.key !== state.classification) return false;
-        }
-
-        if (state.risk) {
-            const pRisk = (p.risk || "").toUpperCase();
-            if (pRisk !== state.risk) return false;
-        }
 
         if (state.timeRange && p.iso) {
             const timer = getCountdownText(p.iso);
@@ -2567,10 +2866,6 @@ function applyFiltersAndSort(list) {
         if (state.edgeMin !== null && !isNaN(state.edgeMin) && edgeVal < state.edgeMin) return false;
         if (state.edgeMax !== null && !isNaN(state.edgeMax) && edgeVal > state.edgeMax) return false;
 
-        const moneyEdgeVal = p.moneyEdge !== undefined ? Number(p.moneyEdge) : calculateSmartMoney(p);
-        if (state.moneyEdgeMin !== null && !isNaN(state.moneyEdgeMin) && moneyEdgeVal < state.moneyEdgeMin) return false;
-        if (state.moneyEdgeMax !== null && !isNaN(state.moneyEdgeMax) && moneyEdgeVal > state.moneyEdgeMax) return false;
-
         const betsVal = Number(p.betsPct || 0);
         if (state.betsMin !== null && !isNaN(state.betsMin) && betsVal < state.betsMin) return false;
         if (state.betsMax !== null && !isNaN(state.betsMax) && betsVal > state.betsMax) return false;
@@ -2586,7 +2881,7 @@ function applyFiltersAndSort(list) {
         if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
         if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
 
-        const stakeVal = snapStakeToScale(p.stake) || 0;
+        const stakeVal = Number(p.stake) || 0;
         if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
         if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
 
@@ -2602,11 +2897,12 @@ function applyFiltersAndSort(list) {
         if (state.winProbMin !== null && !isNaN(state.winProbMin) && (wpVal === null || wpVal < state.winProbMin)) return false;
         if (state.winProbMax !== null && !isNaN(state.winProbMax) && (wpVal === null || wpVal > state.winProbMax)) return false;
 
-        if (state.recommendation && recommendationLabel(p).text !== state.recommendation) return false;
+        if (state.freePickOnly && p.pickCategory !== "FREE") return false;
+        if (state.editorOnly && p.pickCategory !== "EDITORS") return false;
+        if (state.whaleOnly && p.pickCategory !== "WHALE") return false;
+        if (state.watchlistOnly && !isInWatchlist(p)) return false;
 
-        if (state.editorOnly && !getEvolutionAnalysis(p).isEditorChoice) return false;
-        if (state.whaleOnly && !isWhalePick(p)) return false;
-        if (state.freePickOnly && !isFreePick(p)) return false;
+        if (state.featuredOnly && !isFeaturedPick(p)) return false;
 
         if (text) {
             const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
@@ -2618,6 +2914,11 @@ function applyFiltersAndSort(list) {
     return result.sort((a, b) => {
         if (state.sort === "time") return new Date(a.iso || 0) - new Date(b.iso || 0);
         if (state.sort === "score") return (b.score || 0) - (a.score || 0);
+        if (state.sort === "winprob") {
+            const wa = a.monteCarlo && a.monteCarlo.win_probability != null ? a.monteCarlo.win_probability : -1;
+            const wb = b.monteCarlo && b.monteCarlo.win_probability != null ? b.monteCarlo.win_probability : -1;
+            return wb - wa;
+        }
         if (state.sort === "edge") return calculateEdge(b) - calculateEdge(a);
         if (state.sort === "recommended") {
             const editorA = getEvolutionAnalysis(a);
@@ -2649,23 +2950,22 @@ function fallbackCopyText(text) {
     document.body.removeChild(textArea);
 }
 
-function getHeaderTag(type) {
-    switch ((type || '').toLowerCase()) {
-        case 'editors_choice':
-        case 'editor':
+function getHeaderTag(category) {
+    switch (category) {
+        case 'EDITORS':
             return "🎖️ EDITOR'S CHOICE PICK";
-        case 'whale':
-        case 'whale_alert':
+        case 'WHALE':
             return "🐳 WHALE ALERT PICK";
-        case 'free':
+        case 'FREE':
+            return "🔓 FREE PICK";
         default:
-            return "🔥 FREE PICK";
+            return "🔥 PICK";
     }
 }
 
 function copyPickForX(p) {
-    // 1. Encabezado dinámico según el tipo de pick
-    const header = getHeaderTag(p.type || p.pickType || (p.isFree ? 'free' : ''));
+    // 1. Encabezado dinámico según la categoría real del pick (misma fuente que el borde/etiqueta de la card)
+    const header = getHeaderTag(p.pickCategory);
 
     // 2. Extracción y formateo de datos
     const dateStr = p.date || new Date().toISOString().split('T')[0];
@@ -2677,18 +2977,9 @@ function copyPickForX(p) {
     const market = p.market ? ` (${p.market})` : "";
     const odds = p.odds || p.cuota || "Ev";
 
-    // 3. Formateo preciso del Stake (Asegura "1.0u", "1.5u", etc.)
-    let rawStake = p.stake ?? p.recommendedStake ?? p.units ?? 1.0;
-    let stakeStr = "";
-
-    if (typeof rawStake === "number") {
-        // Si viene como número (ej: 1 o 1.1), aseguramos formato decimal + 'u'
-        stakeStr = `${rawStake.toFixed(1)}u`;
-    } else {
-        // Si viene como string, limpiamos espacios y aseguramos que lleve 'u'
-        const cleanStake = String(rawStake).trim();
-        stakeStr = cleanStake.endsWith("u") ? cleanStake : `${cleanStake}u`;
-    }
+    // 3. Formateo del Stake -- % directo del backend (Parte 4), ya viene limpio, sin redondeo a escala
+    const displayStake = Number(p.stake) || 0;
+    const stakeStr = `${displayStake.toFixed(1)}%`;
 
     // 4. Construcción del mensaje con la salida idéntica requerida
     const tweetText = `${header}\n` +
@@ -2723,113 +3014,101 @@ function showToastX() {
     }, 3000);
 }
 
-// ============ SISTEMA DE RECORDATORIOS (30 min antes del evento) ============
-const REMINDER_STORAGE_KEY = "sharpie_reminders_v1";
-const REMINDER_LEAD_MS = 60 * 60 * 1000;
+// ============ MY WATCHLIST (Parte 1: reemplaza el Recordatorio de 60 min) ============
+// Al "Seguir" un pick se guarda un snapshot (bets/handle/divergencia/cuota)
+// en localStorage. Cada vez que el dashboard se regenera y se recarga, se
+// compara el dato actual contra ese snapshot para mostrar si la línea
+// mejoró o empeoró desde que se empezó a seguir.
+const WATCHLIST_STORAGE_KEY = "sharpie_watchlist_v1";
 
-function getReminderId(p) {
-    return `${p.league || ''}|${p.game || ''}|${p.market || ''}|${p.pick || ''}|${p.iso || ''}`;
+function getWatchlistId(p) {
+    return `${(p.league || '').toLowerCase()}|${(p.game || '').toLowerCase()}|${(p.market || '').toLowerCase()}|${(p.pick || '').toLowerCase()}`.trim();
 }
 
-function loadReminders() {
+function loadWatchlist() {
     try {
-        return JSON.parse(localStorage.getItem(REMINDER_STORAGE_KEY)) || {};
+        return JSON.parse(localStorage.getItem(WATCHLIST_STORAGE_KEY)) || {};
     } catch (e) {
         return {};
     }
 }
 
-function saveReminders(reminders) {
+function saveWatchlist(list) {
     try {
-        localStorage.setItem(REMINDER_STORAGE_KEY, JSON.stringify(reminders));
+        localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(list));
     } catch (e) {
-        console.error("Error al guardar recordatorios:", e);
+        console.error("Error al guardar watchlist:", e);
     }
 }
 
-function hasReminder(p) {
-    const reminders = loadReminders();
-    return !!reminders[getReminderId(p)];
+function isInWatchlist(p) {
+    const list = loadWatchlist();
+    return !!list[getWatchlistId(p)];
 }
 
-function toggleReminder(p) {
-    const reminders = loadReminders();
-    const id = getReminderId(p);
+function toggleWatchlist(p) {
+    const list = loadWatchlist();
+    const id = getWatchlistId(p);
 
-    if (reminders[id]) {
-        delete reminders[id];
-        saveReminders(reminders);
+    if (list[id]) {
+        delete list[id];
+        saveWatchlist(list);
         showAttractiveNotification({
-            title: "🔕 Recordatorio cancelado",
+            title: "👁 Dejaste de seguir",
             body: `${p.game || 'Evento'} — ${p.pick || ''}`,
             variant: "info"
         });
     } else {
-        if (!p.iso) return;
-        if (typeof Notification !== "undefined" && Notification.permission === "default") {
-            try { Notification.requestPermission(); } catch (e) {}
-        }
-        reminders[id] = {
-            iso: p.iso,
+        list[id] = {
+            followedAt: new Date().toISOString(),
             league: p.league || '',
             game: p.game || '',
             pick: p.pick || '',
             market: p.market || '',
-            odds: p.odds || p.cuota || '',
-            notified: false
+            snapshot: {
+                betsPct: p.betsPct != null ? Number(p.betsPct) : null,
+                handlePct: p.handlePct != null ? Number(p.handlePct) : null,
+                divergence: calculateSmartMoney(p),
+                odds: p.odds || p.cuota || null
+            }
         };
-        saveReminders(reminders);
+        saveWatchlist(list);
         showAttractiveNotification({
-            title: "🔔 Recordatorio activado",
-            body: `Te avisaremos 60 min antes de: ${p.game || 'Evento'}`,
+            title: "👁 Ahora sigues este pick",
+            body: `${p.game || 'Evento'} — ${p.pick || ''}`,
             variant: "success"
         });
     }
     render();
 }
 
-function checkReminders() {
-    const reminders = loadReminders();
-    const now = Date.now();
-    let changed = false;
-
-    Object.keys(reminders).forEach(id => {
-        const r = reminders[id];
-        if (!r.iso) return;
-        const eventTime = new Date(r.iso).getTime();
-        const diff = eventTime - now;
-
-        if (diff <= 0) {
-            delete reminders[id];
-            changed = true;
-            return;
-        }
-
-        if (!r.notified && diff <= REMINDER_LEAD_MS) {
-            r.notified = true;
-            changed = true;
-            fireReminderNotification(r);
-        }
-    });
-
-    if (changed) saveReminders(reminders);
+// Flecha de comparación actual vs snapshot -- usada en el panel de watchlist
+function watchlistDeltaArrow(current, snapshot) {
+    if (current == null || snapshot == null) return '';
+    const diff = current - snapshot;
+    if (Math.abs(diff) < 0.05) return ' <span class="wl-delta wl-flat">＝</span>';
+    return diff > 0 ? ` <span class="wl-delta wl-up">▲ +${diff.toFixed(1)}</span>` : ` <span class="wl-delta wl-down">▼ ${diff.toFixed(1)}</span>`;
 }
 
-function fireReminderNotification(r) {
-    const oddsStr = r.odds ? ` @ ${r.odds}` : "";
-    showAttractiveNotification({
-        title: "⏰ ¡Faltan 60 minutos!",
-        body: `${r.league ? '🏆 ' + r.league + ' · ' : ''}${r.game || 'Evento'}\n🎯 ${r.pick || ''}${oddsStr}`,
-        variant: "urgent"
-    });
+function watchlistPanelHtml(p) {
+    const list = loadWatchlist();
+    const entry = list[getWatchlistId(p)];
+    if (!entry) return '';
 
-    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-        try {
-            new Notification("⏰ Sharpie · Faltan 30 minutos", {
-                body: `${r.game || 'Evento'} — ${r.pick || ''}${oddsStr}`
-            });
-        } catch (e) {}
-    }
+    const snap = entry.snapshot || {};
+    const currentDivergence = calculateSmartMoney(p);
+    const followedDate = entry.followedAt ? new Date(entry.followedAt) : null;
+    const followedText = followedDate ? followedDate.toLocaleString() : '';
+
+    return `<div class="watchlist-panel">
+        <div class="watchlist-panel-title">👁 En seguimiento desde ${escapeHTML(followedText)}</div>
+        <div class="badge-tag-grid">
+            <span class="badge-tag neutral">🎟️ Bets <b>${p.betsPct != null ? p.betsPct + '%' : '—'}</b>${watchlistDeltaArrow(p.betsPct, snap.betsPct)}</span>
+            <span class="badge-tag neutral">💵 Handle <b>${p.handlePct != null ? p.handlePct + '%' : '—'}</b>${watchlistDeltaArrow(p.handlePct, snap.handlePct)}</span>
+            <span class="badge-tag neutral">⚡ Divergencia <b>${currentDivergence}%</b>${watchlistDeltaArrow(currentDivergence, snap.divergence)}</span>
+            <span class="badge-tag neutral">💰 Cuota apertura <b>${escapeHTML(String(snap.odds ?? '—'))}</b> → <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>
+        </div>
+    </div>`;
 }
 
 function showAttractiveNotification({ title, body, variant = "info" }) {
@@ -2860,11 +3139,23 @@ function dismissNotif(el) {
 function populateSelectOptions() {
     const dates = new Set();
     const leagues = new Set();
+    const suggestions = new Set();
 
     PICKS.forEach(p => {
         if (p.date) dates.add(p.date);
         if (p.league) leagues.add(p.league);
+        if (p.league) suggestions.add(p.league);
+        if (p.away) suggestions.add(p.away);
+        if (p.home) suggestions.add(p.home);
+        if (p.pick) suggestions.add(p.pick);
+        if (p.market) suggestions.add(p.market);
     });
+
+    const searchList = document.getElementById("searchSuggestions");
+    if (searchList) {
+        searchList.innerHTML = Array.from(suggestions).sort()
+            .map(s => `<option value="${escapeHTML(s)}"></option>`).join("");
+    }
 
     const fDate = document.getElementById("fDate");
     if (fDate) {
@@ -2883,8 +3174,16 @@ function populateSelectOptions() {
     }
 }
 
+function syncAdvCardActiveStates() {
+    document.querySelectorAll("#advFiltersPanel .adv-card").forEach(card => {
+        const anyFilled = Array.from(card.querySelectorAll("input:not(.adv-range), select")).some(i => i.value !== "" && i.value != null);
+        card.classList.toggle("adv-card-active", anyFilled);
+    });
+}
+
 function render() {
     updateThemeByTime();
+    syncAdvCardActiveStates();
 
     const pendingPicks = PICKS.filter(p => isEventPending(p));
     const activeList = applyFiltersAndSort(pendingPicks);
@@ -2914,16 +3213,18 @@ function render() {
     cardsView.style.display = "grid";
 
     cardsView.innerHTML = activeList.map(p => {
-        const isWhale = isWhalePick(p);
-        const isFree = isFreePick(p);
+        const isWhale = p.pickCategory === "WHALE";
+        const isEditor = p.pickCategory === "EDITORS";
+        const isFree = p.pickCategory === "FREE";
+        const isFeatured = isFeaturedPick(p);
         const editorEval = getEvolutionAnalysis(p);
-        const isEditor = editorEval.isEditorChoice;
-        
+
         let cardClasses = "pcard";
         if (isWhale) cardClasses += " whale-alert";
-        if (isEditor) cardClasses += " editor-choice";
+        else if (isEditor) cardClasses += " editor-choice";
+        else if (isFree) cardClasses += " free-pick";
 
-        const config = getVisualConfig(p);
+        const config = marketSignalVisualConfig(p.marketSignal);
         const timer = getCountdownText(p.iso);
         const edgeVal = calculateEdge(p);
         const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
@@ -2932,9 +3233,8 @@ function render() {
         const betsPct = p.betsPct != null ? p.betsPct : 50;
         const handlePct = p.handlePct != null ? p.handlePct : 50;
 
-        const isStakeEstimated = p.stakeEstimated === true;
-        const displayStake = snapStakeToScale(p.stake);
-        const reminderActive = hasReminder(p);
+        const displayStake = Number(p.stake) || 0;
+        const isFollowed = isInWatchlist(p);
 
         const dateDisplay = escapeHTML(p.date || "--/--/----");
         const timeDisplay = escapeHTML(p.time || "--:--");
@@ -2943,12 +3243,17 @@ function render() {
             <div class="${cardClasses}">
                 <div>
                     <div class="pcard-header">
-                        <span class="badge-action" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">
-                            ${config.label}
-                        </span>
-                        <div style="display:flex; align-items:center; gap:6px;">
+                        <div class="pcard-header-line1">
+                            <span class="badge-action" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">
+                                ${config.label}
+                            </span>
+                            ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
                             ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
-                            <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}">${timer.text}</span>
+                            ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
+                            ${isFree ? `<span class="free-pick-badge">🔓 FREE</span>` : ''}
+                        </div>
+                        <div class="pcard-header-line2">
+                            <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
                         </div>
                     </div>
 
@@ -2984,24 +3289,24 @@ function render() {
                     </div>
 
                     ${buildEvolutionHtml(p)}
-                    ${editorChoiceReasonHtml(editorEval)}
+                    ${isEditor ? editorChoiceReasonHtml(editorEval) : ''}
                     ${unifiedDecisionPanelHtml(p)}
 
                     ${isWhale ? `<div class="whale-banner">🐋 ALERTA WHALE: Movimiento Institucional Detectado</div>` : ''}
-                    ${isFree ? `<div class="free-pick-banner">🔓 SEÑAL FREE DESTACADA PARA REDES</div>` : ''}
 
                     ${p.reason ? `<div class="reasoning-text">💡 <b>Análisis:</b> ${escapeHTML(p.reason)}</div>` : ''}
                 </div>
 
                 <div style="margin-top: 14px;">
+                    ${isFollowed ? watchlistPanelHtml(p) : ''}
                     <div class="pcard-action-row">
                         <button class="btn-copy-x pcard-action-row-item" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
                             <span>✨</span>
                             <span>Copiar para X</span>
                         </button>
-                        <button class="btn-reminder ${reminderActive ? 'active' : ''}" onclick='toggleReminder(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
-                            <span>${reminderActive ? '🔔' : '🔕'}</span>
-                            <span>${reminderActive ? 'Activado' : 'Recordar'}</span>
+                        <button class="btn-reminder ${isFollowed ? 'active' : ''}" onclick='toggleWatchlist(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+                            <span>${isFollowed ? '👁' : '👁‍🗨'}</span>
+                            <span>${isFollowed ? 'Siguiendo' : 'Seguir'}</span>
                         </button>
                     </div>
                 </div>
@@ -3040,30 +3345,60 @@ function setupListeners() {
     const fTrendEl = document.getElementById("fTrend");
     if (fTrendEl) fTrendEl.addEventListener("change", (e) => { state.trend = e.target.value; render(); });
 
-    const fClassEl = document.getElementById("fClassification");
-    if (fClassEl) fClassEl.addEventListener("change", (e) => { state.classification = e.target.value; render(); });
-
-    const fRiskEl = document.getElementById("fRisk");
-    if (fRiskEl) fRiskEl.addEventListener("change", (e) => { state.risk = e.target.value; render(); });
-
+    // Filtros básicos directos Free / Editors / Whale -- filtran directo por
+    // p.pickCategory (Parte 2, calculado en el backend). Mutuamente excluyentes.
     const editorBtn = document.getElementById("editorOnly");
-    if (editorBtn) editorBtn.addEventListener("click", () => {
-        state.editorOnly = !state.editorOnly;
-        editorBtn.setAttribute("aria-pressed", state.editorOnly);
-        render();
-    });
-
     const whaleBtn = document.getElementById("whaleOnly");
-    if (whaleBtn) whaleBtn.addEventListener("click", () => {
-        state.whaleOnly = !state.whaleOnly;
-        whaleBtn.setAttribute("aria-pressed", state.whaleOnly);
+    const freeBtn = document.getElementById("freePickOnly");
+    const featuredBtn = document.getElementById("featuredOnly");
+
+    const deactivateBasicButtons = () => {
+        state.editorOnly = false;
+        state.whaleOnly = false;
+        state.freePickOnly = false;
+        if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
+        if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
+        if (freeBtn) freeBtn.setAttribute("aria-pressed", "false");
+    };
+
+    if (freeBtn) freeBtn.addEventListener("click", () => {
+        const activate = !state.freePickOnly;
+        deactivateBasicButtons();
+        state.freePickOnly = activate;
+        freeBtn.setAttribute("aria-pressed", String(activate));
         render();
     });
 
-    const freeBtn = document.getElementById("freePickOnly");
-    if (freeBtn) freeBtn.addEventListener("click", () => {
-        state.freePickOnly = !state.freePickOnly;
-        freeBtn.setAttribute("aria-pressed", state.freePickOnly);
+    if (editorBtn) editorBtn.addEventListener("click", () => {
+        const activate = !state.editorOnly;
+        deactivateBasicButtons();
+        state.editorOnly = activate;
+        editorBtn.setAttribute("aria-pressed", String(activate));
+        render();
+    });
+
+    if (whaleBtn) whaleBtn.addEventListener("click", () => {
+        const activate = !state.whaleOnly;
+        deactivateBasicButtons();
+        state.whaleOnly = activate;
+        whaleBtn.setAttribute("aria-pressed", String(activate));
+        render();
+    });
+
+    // Featured Pick -- filtra únicamente por equipo mediático, independiente de la
+    // categoría de valor (Free/Editor/Whale), así que no se limpia junto con ellas.
+    if (featuredBtn) featuredBtn.addEventListener("click", () => {
+        state.featuredOnly = !state.featuredOnly;
+        featuredBtn.setAttribute("aria-pressed", String(state.featuredOnly));
+        render();
+    });
+
+    // My Watchlist -- filtra solo por picks seguidos (localStorage), independiente
+    // de las demás categorías.
+    const watchlistBtn = document.getElementById("watchlistOnly");
+    if (watchlistBtn) watchlistBtn.addEventListener("click", () => {
+        state.watchlistOnly = !state.watchlistOnly;
+        watchlistBtn.setAttribute("aria-pressed", String(state.watchlistOnly));
         render();
     });
 
@@ -3082,10 +3417,73 @@ function setupListeners() {
         });
     }
 
+    // Registro global para poder resetear cada slider desde fuera (clear-chip individual y "Limpiar filtros")
+    window.rangeSliders = window.rangeSliders || {};
+
+    const initRangeSlider = (key, prop, { min, max, step, suffix }) => {
+        const minRange = document.getElementById(`f${key}MinRange`);
+        const maxRange = document.getElementById(`f${key}MaxRange`);
+        const fill = document.getElementById(`f${key}Fill`);
+        const valueLabel = document.getElementById(`f${key}Value`);
+        const hiddenMin = document.getElementById(`f${key}Min`);
+        const hiddenMax = document.getElementById(`f${key}Max`);
+        if (!minRange || !maxRange || !fill || !valueLabel) return;
+
+        const card = minRange.closest(".adv-card");
+        const fmt = (v) => (step < 1 ? v.toFixed(2).replace(/\.?0+$/, '') : v);
+
+        const sync = () => {
+            let minVal = parseFloat(minRange.value);
+            let maxVal = parseFloat(maxRange.value);
+
+            // Nunca deja que las manijas se crucen -- empuja la otra en vez de trabarse
+            if (minVal > maxVal) {
+                if (document.activeElement === minRange) { maxVal = minVal; maxRange.value = maxVal; }
+                else { minVal = maxVal; minRange.value = minVal; }
+            }
+
+            const pctMin = ((minVal - min) / (max - min)) * 100;
+            const pctMax = ((maxVal - min) / (max - min)) * 100;
+            fill.style.left = pctMin + '%';
+            fill.style.width = Math.max(0, pctMax - pctMin) + '%';
+
+            const isFullRange = minVal <= min && maxVal >= max;
+            valueLabel.textContent = isFullRange ? 'Todos' : `${fmt(minVal)}${suffix} - ${fmt(maxVal)}${suffix}`;
+            valueLabel.classList.toggle('adv-slider-value-active', !isFullRange);
+
+            if (hiddenMin) hiddenMin.value = isFullRange ? '' : minVal;
+            if (hiddenMax) hiddenMax.value = isFullRange ? '' : maxVal;
+
+            state[prop + 'Min'] = isFullRange ? null : minVal;
+            state[prop + 'Max'] = isFullRange ? null : maxVal;
+
+            if (card) card.classList.toggle('adv-card-active', !isFullRange);
+        };
+
+        minRange.addEventListener('input', () => { sync(); render(); });
+        maxRange.addEventListener('input', () => { sync(); render(); });
+
+        window.rangeSliders[prop] = {
+            reset() {
+                minRange.value = min;
+                maxRange.value = max;
+                sync();
+            }
+        };
+
+        sync();
+    };
+
     // Escuchadores de Filtros Avanzados Cuantitativos
     const bindInput = (id, prop, isFloat = true) => {
         const el = document.getElementById(id);
         if (el) {
+            const card = el.closest(".adv-card");
+            const syncCardActive = () => {
+                if (!card) return;
+                const anyFilled = Array.from(card.querySelectorAll("input, select")).some(i => i.value !== "" && i.value != null);
+                card.classList.toggle("adv-card-active", anyFilled);
+            };
             el.addEventListener("input", (e) => {
                 const val = e.target.value;
                 if (val === "" || val === null) {
@@ -3093,6 +3491,7 @@ function setupListeners() {
                 } else {
                     state[prop] = isFloat ? parseFloat(val) : val;
                 }
+                syncCardActive();
                 render();
             });
         }
@@ -3101,33 +3500,20 @@ function setupListeners() {
     const fTimeRangeEl = document.getElementById("fTimeRange");
     if (fTimeRangeEl) fTimeRangeEl.addEventListener("change", (e) => { state.timeRange = e.target.value; render(); });
 
-    bindInput("fModeloMin", "modeloMin");
-    bindInput("fModeloMax", "modeloMax");
     bindInput("fCuotaMin", "cuotaMin", false);
     bindInput("fCuotaMax", "cuotaMax", false);
-    bindInput("fEdgeMin", "edgeMin");
-    bindInput("fEdgeMax", "edgeMax");
-    bindInput("fMoneyEdgeMin", "moneyEdgeMin");
-    bindInput("fMoneyEdgeMax", "moneyEdgeMax");
-    bindInput("fBetsMin", "betsMin");
-    bindInput("fBetsMax", "betsMax");
-    bindInput("fHandleMin", "handleMin");
-    bindInput("fHandleMax", "handleMax");
-    bindInput("fScoreMin", "scoreMin");
-    bindInput("fScoreMax", "scoreMax");
-    bindInput("fEvMin", "evMin");
-    bindInput("fEvMax", "evMax");
-    bindInput("fStakeMin", "stakeMin");
-    bindInput("fStakeMax", "stakeMax");
-    bindInput("fDivergenciaMin", "divergenciaMin");
-    bindInput("fDivergenciaMax", "divergenciaMax");
-    bindInput("fConfMin", "confMin");
-    bindInput("fConfMax", "confMax");
-    bindInput("fWinProbMin", "winProbMin");
-    bindInput("fWinProbMax", "winProbMax");
 
-    const fRecommendationEl = document.getElementById("fRecommendation");
-    if (fRecommendationEl) fRecommendationEl.addEventListener("change", (e) => { state.recommendation = e.target.value; render(); });
+    // Filtros cuantitativos migrados a slider de rango doble (ver initRangeSlider)
+    initRangeSlider("Modelo", "modelo", { min: 0, max: 100, step: 1, suffix: "%" });
+    initRangeSlider("Score", "score", { min: 0, max: 100, step: 1, suffix: "" });
+    initRangeSlider("WinProb", "winProb", { min: 0, max: 100, step: 1, suffix: "%" });
+    initRangeSlider("Divergencia", "divergencia", { min: -100, max: 100, step: 1, suffix: "%" });
+    initRangeSlider("Conf", "conf", { min: 0, max: 100, step: 1, suffix: "%" });
+    initRangeSlider("Stake", "stake", { min: 0, max: 4, step: 0.1, suffix: "%" });
+    initRangeSlider("Bets", "bets", { min: 0, max: 100, step: 1, suffix: "%" });
+    initRangeSlider("Handle", "handle", { min: 0, max: 100, step: 1, suffix: "%" });
+    initRangeSlider("Edge", "edge", { min: -20, max: 20, step: 0.5, suffix: "%" });
+    initRangeSlider("Ev", "ev", { min: -20, max: 20, step: 0.5, suffix: "%" });
 
     const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {
@@ -3136,11 +3522,11 @@ function setupListeners() {
             state.date = "";
             state.league = "";
             state.trend = "";
-            state.classification = "";
-            state.risk = "";
             state.editorOnly = false;
             state.whaleOnly = false;
             state.freePickOnly = false;
+            state.featuredOnly = false;
+            state.watchlistOnly = false;
             state.sort = "time";
             
             state.timeRange = "";
@@ -3150,8 +3536,6 @@ function setupListeners() {
             state.cuotaMax = null;
             state.edgeMin = null;
             state.edgeMax = null;
-            state.moneyEdgeMin = null;
-            state.moneyEdgeMax = null;
             state.betsMin = null;
             state.betsMax = null;
             state.handleMin = null;
@@ -3168,7 +3552,6 @@ function setupListeners() {
             state.confMax = null;
             state.winProbMin = null;
             state.winProbMax = null;
-            state.recommendation = "";
 
             document.querySelectorAll(".toolbar input, .toolbar select").forEach(i => i.value = "");
             document.querySelectorAll(".adv-filters-panel input, .adv-filters-panel select").forEach(i => i.value = "");
@@ -3178,6 +3561,8 @@ function setupListeners() {
             if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
             if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
             if (freeBtn) freeBtn.setAttribute("aria-pressed", "false");
+            if (featuredBtn) featuredBtn.setAttribute("aria-pressed", "false");
+            if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", "false");
 
             render();
         });
@@ -3198,10 +3583,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     setInterval(() => {
         render();
     }, 30000);
-
-    // Sistema de recordatorios: revisa cada 15s si algún pick entró a la ventana de 30 min
-    checkReminders();
-    setInterval(checkReminders, 15000);
 });
 </script>
 

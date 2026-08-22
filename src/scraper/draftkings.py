@@ -35,8 +35,7 @@ class DraftKingsScraper:
         }
 
     def build_url(self, league_slug, date_range, page):
-        # tb_eg SIEMPRE es 'Sports'
-        # itm_content recibe el slug o ID de la liga (ej. '84240', 'Sports', 'NFL')
+        # URL principal
         url = (
             f"{self.base_url}"
             f"?tb_eg=Sports"
@@ -51,13 +50,54 @@ class DraftKingsScraper:
             
         return url
 
+    def build_fallback_url(self, league_slug, page):
+        # URL de respaldo usando el nuevo formato recibido
+        # Si league_slug contiene un ID específico (ej. '84240'), se usa ese valor en tb_eg
+        tb_eg_val = league_slug if league_slug.isdigit() else "84240"
+        
+        url = (
+            f"{self.base_url}"
+            f"?tb_eg={tb_eg_val}"
+            f"&tb_edate=n30days"
+            f"&tb_emt=0"
+        )
+        
+        if page > 1:
+            url += f"&tb_page={page}"
+            
+        return url
+
     def fetch_page(self, league_slug, date_range, page):
-        url = self.build_url(league_slug, date_range, page)
-        response = requests.get(url, headers=self.headers, timeout=30)
-        response.raise_for_status()
-        return response.text
+        primary_url = self.build_url(league_slug, date_range, page)
+        
+        try:
+            # Intento principal
+            response = requests.get(primary_url, headers=self.headers, timeout=30)
+            response.raise_for_status()
+            html = response.text
+            
+            # Verificamos si la página realmente trajo eventos
+            if self.extract_events(html):
+                return html
+            else:
+                print(f"  [!] URL principal no retornó eventos en pag {page}. Intentando URL de respaldo...")
+        except requests.RequestException as e:
+            print(f"  [!] Error en URL principal ({e}). Intentando URL de respaldo...")
+
+        # Módulo de Respaldo / Fallback
+        fallback_url = self.build_fallback_url(league_slug, page)
+        try:
+            fallback_response = requests.get(fallback_url, headers=self.headers, timeout=30)
+            fallback_response.raise_for_status()
+            return fallback_response.text
+        except requests.RequestException as e:
+            print(f"  [X] También falló la URL de respaldo: {e}")
+            return ""
 
     def extract_events(self, html):
+        if not html:
+            return []
+            
         soup = BeautifulSoup(html, "html.parser")
         events = soup.select(".tb-se")
         result = []
@@ -98,6 +138,7 @@ class DraftKingsScraper:
             events = self.extract_events(html)
 
             if not events:
+                print("No se encontraron más eventos.")
                 break
 
             current = set(events)

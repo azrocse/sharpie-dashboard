@@ -57472,3 +57472,32 @@ Descargando página 6...
  delete mode 100644 data/snapshots/sports/20260813_021004.json
  create mode 100644 data/snapshots/sports/20260818_093648.json
 [2026-08-18 09:36:58] Proyecto actualizado y publicado con éxito.
+[2026-08-22 10:02:10] Iniciando refresco...
+python : 10:02:12 - [INFO] - Se cargaron 1 ligas desde la configuración.
+En C:\Users\Administrator\Desktop\sharpie-dashboard\auto_publish.ps1: 26 Carácter: 1
++ python -B src\main.py 2>&1 | Out-File -FilePath $log -Append -Encodin ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (10:02:12 - [INF... configuración.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+10:02:12 - [INFO] - 🔄 Procesando: 'SPORTS' | Slug: 'Sports' | Date Range: 'n30days'
+10:02:18 - [INFO] - ✅ 'SPORTS' descargado con éxito. Elementos/Archivos: 5
+10:02:18 - [INFO] - Proceso finalizado. Ligas procesadas exitosamente: 1
+
+============================================================
+SPORTS
+Rango: n30days
+============================================================
+Descargando página 1...
+Descargando página 2...
+Descargando página 3...
+Descargando página 4...
+Descargando página 5...
+Descargando página 6...
+✓ JSON creado: sports.json (Total juegos incluidos: 50)
+
+✓ Historial guardado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-22\sharpie.json
+📊 Calibración CLV actualizada: 113 picks en el log, peso medido = -0.0002
+📊 Calibración CLV actualizada: 113 picks en el log, peso medido = -0.0002
+[OK] Historial del día guardado en: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-22\sharpie.json
+[OK] Dashboard generado con éxito: C:\Users\Administrator\Desktop\sharpie-dashboard\index.html
