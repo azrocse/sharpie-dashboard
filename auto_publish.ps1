@@ -1,9 +1,9 @@
 # 0. Ocultar la ventana automáticamente si se abrió visible
-if ([Environment]::UserInteractive -and -not $env:PS_HIDDEN) {
-    $env:PS_HIDDEN = "1"
-    Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$PSCommandPath`"" -WindowStyle Hidden
-    exit
-}
+#if ([Environment]::UserInteractive -and -not $env:PS_HIDDEN) {
+#    $env:PS_HIDDEN = "1"
+#    Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$PSCommandPath`"" -WindowStyle Hidden
+#    exit
+#}
 
 $repo = "C:\Users\Administrator\Desktop\sharpie-dashboard"
 $log  = "$repo\refresh_log.txt"
