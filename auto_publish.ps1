@@ -15,14 +15,17 @@ chcp 65001 > $null
 
 Set-Location $repo
 
-# Función optimizada con .NET para escribir logs sin bloquear hilos de archivo
+# Función optimizada y protegida contra salidas vacías o nulas
 function Write-Utf8Log ($text) {
+    if ($null -eq $text -or $text -eq "") { 
+        $text = [string]::Empty 
+    }
     [System.IO.File]::AppendAllLines($log, [string[]]$text, [System.Text.Encoding]::UTF8)
 }
 
 Write-Utf8Log "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] Iniciando refresco..."
 
-# 2. Ejecutar Python capturando su salida directamente en una variable para no bloquear el flujo
+# 2. Ejecutar Python capturando su salida directamente en una variable
 $pythonOutput = & python -B src\main.py 2>&1
 Write-Utf8Log $pythonOutput
 
