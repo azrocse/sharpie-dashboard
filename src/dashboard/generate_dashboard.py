@@ -549,18 +549,18 @@ def classify_evaluation(final_score):
 # y frontend -- ahora vive solo aquí).
 # ============================================================
 def classify_market_signal(signed_divergence, bets, handle, ev, model_edge):
-    if (signed_divergence >= 15 and 15 <= bets <= 40 and 55 <= handle <= 85
-            and 5.0 <= ev <= 12.0 and model_edge >= 3.0):
+    if signed_divergence >= 15 and ev >= 3.0 and model_edge >= 2.0:
         return "SMART_MONEY"
 
-    if signed_divergence <= -15 and 70 <= bets <= 95 and 40 <= handle <= 55:
+    if signed_divergence <= -15:
         return "PUBLIC_HEAVY"
 
-    if -5 <= signed_divergence <= 5 and 75 <= bets <= 95 and 75 <= handle <= 95:
-        return "CONSENSUS"
-
-    if -5 <= signed_divergence <= 5 and 45 <= bets <= 55 and 45 <= handle <= 55:
-        return "MIXED"
+    if -10 <= signed_divergence <= 10:
+        avg_volume = (bets + handle) / 2.0
+        if avg_volume >= 70:
+            return "CONSENSUS"
+        if avg_volume >= 50:
+            return "MIXED"
 
     return "NO_ACTION"
 

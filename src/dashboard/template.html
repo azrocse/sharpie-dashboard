@@ -1056,6 +1056,24 @@
             letter-spacing: 0.5px;
         }
 
+        .history-expand-btn {
+            margin-top: 6px;
+            width: 100%;
+            padding: 5px;
+            border-radius: 6px;
+            border: 1px dashed var(--border);
+            background: transparent;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .history-expand-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
         .history-evolution-table {
             width: 100%;
             min-width: 0;
@@ -2012,8 +2030,8 @@ function initCharts() {
         marketChartInstance = new Chart(ctxDoughnut, {
             type: 'doughnut',
             data: {
-                labels: ['Sharp (Smart Money)', 'Consensus / Mixto', 'Fade (Público)'],
-                datasets: [{ data: [0, 0, 0], backgroundColor: ['#2dd4bf', '#fbbf24', '#fb7185'], borderWidth: 0 }]
+                labels: ['Smart Money', 'Public Heavy', 'Consensus', 'Mixed', 'No Action'],
+                datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: ['#2563eb', '#fb7185', '#2dd4bf', '#fbbf24', '#94a3b8'], borderWidth: 0 }]
             },
             options: {
                 responsive: true,
@@ -2033,14 +2051,9 @@ function updateChartsData(activeList) {
     }
 
     if (marketChartInstance) {
-        let sharpCount = 0, consensoCount = 0, fadeCount = 0;
-        activeList.forEach(p => {
-            const b = classifyMarketBucket(p);
-            if (b === "sharp") sharpCount++;
-            else if (b === "consenso") consensoCount++;
-            else if (b === "fade") fadeCount++;
-        });
-        marketChartInstance.data.datasets[0].data = [sharpCount, consensoCount, fadeCount];
+        const counts = { SMART_MONEY: 0, PUBLIC_HEAVY: 0, CONSENSUS: 0, MIXED: 0, NO_ACTION: 0 };
+        activeList.forEach(p => { counts[classifyMarketBucket(p)]++; });
+        marketChartInstance.data.datasets[0].data = [counts.SMART_MONEY, counts.PUBLIC_HEAVY, counts.CONSENSUS, counts.MIXED, counts.NO_ACTION];
         marketChartInstance.update();
     }
 }
@@ -2387,29 +2400,6 @@ function editorChoiceSummary(a) {
     return `🏆 EDITOR'S CHOICE · ${gapTxt} · H/B ${a.ratio.toFixed(2)} · ${trendTxt} · ${a.movementLabel}`;
 }
 
-function editorChoiceReasonHtml(a) {
-    if (!a) return '';
-
-    const signals = [];
-    if (a.betsDelta != null && a.betsDelta < 0) signals.push(`Tickets ↓ ${Math.abs(a.betsDelta).toFixed(1)} pts`);
-    if (a.handleDelta != null && a.handleDelta >= 0) signals.push(`Dinero ↑ ${a.handleDelta.toFixed(1)} pts`);
-    else if (a.handleDelta != null && a.betsDelta != null && a.handleDelta > a.betsDelta) signals.push('Dinero cae menos que Tickets');
-    if (a.gapDelta != null && a.gapDelta >= 0) signals.push(`Gap H-B ${a.gapDelta > 0 ? '↑' : 'estable'}`);
-    if (a.oddsConfirmed) signals.push('Cuota a favor');
-
-    // No se repite el detalle de cada medición (ya está en la Evolución Histórica de arriba);
-    // aquí solo se indica cuántas mediciones con cambios reales sustentan el análisis.
-    return `
-        <div class="editor-analysis">
-            <div class="editor-analysis-head">
-                <strong>🏆 ANÁLISIS DESTACADO · ${a.score}/100</strong>
-                <span>${a.historyPoints} mediciones con cambios sustentan el análisis</span>
-            </div>
-            <div>Tickets <b>${a.bets}%</b> · Dinero <b>${a.handle}%</b> · Gap H-B <b>+${a.gap.toFixed(1)} pts</b> · H/B <b>${a.ratio.toFixed(2)}x</b></div>
-            <div style="margin-top:3px;">${signals.length ? `Señales: <span class="editor-good">${signals.join(' · ')}</span>` : 'Señales de evolución confirmadas'}</div>
-        </div>`;
-}
-
 // Filtro Whale Alerts -- el backend (analyze.py v3) ya calcula esta confirmación
 // con coherencia cuota/dinero + profundidad de historial real, así que si el
 // campo viene presente como booleano es la fuente de verdad y NO se recalcula
@@ -2456,15 +2446,12 @@ function trendArrow(curr, prev) {
     return { arrow: '—', cls: 'evo-flat' };
 }
 
-function buildEvolutionHtml(p) {
-    const filteredHistory = getChangedHistoryEntries(p);
-    if (filteredHistory.length === 0) return '';
+const HISTORY_ROWS_CACHE = {};
 
-    const hasOdds = filteredHistory.some(h => h.odds != null && h.odds !== '');
-
+function buildHistoryRows(list, hasOdds) {
     let rows = '';
-    filteredHistory.forEach((h, i) => {
-        const prev = i > 0 ? filteredHistory[i - 1] : null;
+    list.forEach((h, i) => {
+        const prev = i > 0 ? list[i - 1] : null;
         const betsTrend = prev ? trendArrow(h.betsPct, prev.betsPct) : { arrow: '', cls: '' };
         const handleTrend = prev ? trendArrow(h.handlePct, prev.handlePct) : { arrow: '', cls: '' };
         const oddsTrend = (prev && hasOdds) ? trendArrow(h.odds, prev.odds) : { arrow: '', cls: '' };
@@ -2479,6 +2466,47 @@ function buildEvolutionHtml(p) {
             </tr>
         `;
     });
+    return rows;
+}
+
+function toggleHistoryExpand(uid, total) {
+    const tbody = document.getElementById(uid + '_body');
+    const btn = document.getElementById(uid + '_btn');
+    if (!tbody || !HISTORY_ROWS_CACHE[uid]) return;
+
+    const expanded = tbody.dataset.expanded === '1';
+    if (expanded) {
+        tbody.innerHTML = HISTORY_ROWS_CACHE[uid].collapsed;
+        tbody.dataset.expanded = '0';
+        if (btn) btn.textContent = `Ver historial completo (${total})`;
+    } else {
+        tbody.innerHTML = HISTORY_ROWS_CACHE[uid].full;
+        tbody.dataset.expanded = '1';
+        if (btn) btn.textContent = 'Ver últimos 5';
+    }
+}
+
+function buildEvolutionHtml(p) {
+    const filteredHistory = getChangedHistoryEntries(p);
+    if (filteredHistory.length === 0) return '';
+
+    const hasOdds = filteredHistory.some(h => h.odds != null && h.odds !== '');
+
+    // Por defecto solo los últimos 5 movimientos -- el resto se ve a petición
+    // del usuario (botón "Ver historial completo"), para no saturar la card.
+    const DEFAULT_VISIBLE = 5;
+    const hasMore = filteredHistory.length > DEFAULT_VISIBLE;
+    const collapsedHistory = filteredHistory.slice(-DEFAULT_VISIBLE);
+
+    const collapsedRows = buildHistoryRows(collapsedHistory, hasOdds);
+    const uid = `hist_${p.id != null ? p.id : Math.random().toString(36).slice(2)}`;
+
+    if (hasMore) {
+        HISTORY_ROWS_CACHE[uid] = {
+            collapsed: collapsedRows,
+            full: buildHistoryRows(filteredHistory, hasOdds)
+        };
+    }
 
     return `
         <div class="history-evolution-box">
@@ -2493,10 +2521,11 @@ function buildEvolutionHtml(p) {
                         ${hasOdds ? '<th>Cuota</th>' : ''}
                     </tr>
                 </thead>
-                <tbody>
-                    ${rows}
+                <tbody id="${uid}_body" data-expanded="0">
+                    ${collapsedRows}
                 </tbody>
             </table>
+            ${hasMore ? `<button type="button" class="history-expand-btn" id="${uid}_btn" onclick="toggleHistoryExpand('${uid}', ${filteredHistory.length})">Ver historial completo (${filteredHistory.length})</button>` : ''}
         </div>
     `;
 }
@@ -2530,7 +2559,7 @@ function getCountdownText(isoString) {
     const diffMs = new Date(isoString) - new Date();
     const diffMin = diffMs / 60000;
 
-    if (diffMs <= 0) return { text: "⚽ EN JUEGO / INICIADO", urgent: true, expired: true, diffMin };
+    if (diffMs <= 0) return { text: "⚽ EN JUEGO", urgent: true, expired: true, diffMin };
     
     const hrs = Math.floor(diffMs / 3600000);
     const mins = Math.floor((diffMs % 3600000) / 60000);
@@ -2564,23 +2593,20 @@ const statState = {
     editor: [],
     free: [],
     proximos: [],
-    mercado: { fade: [], sharp: [], consenso: [] },
+    mercado: { SMART_MONEY: [], PUBLIC_HEAVY: [], CONSENSUS: [], MIXED: [], NO_ACTION: [] },
     mejor: []
 };
 
-// Parte 3: el bucket de Análisis de Mercado ahora es un espejo directo de
-// p.marketSignal (backend), sin heurística de respaldo -- ya no hay drift
-// posible entre lo que dice el tag de la card y lo que cuenta esta métrica.
+// Parte 3: el bucket de Análisis de Mercado ahora refleja las 5 señales
+// reales directo desde p.marketSignal (backend) -- sin comprimir a 3 buckets.
 function classifyMarketBucket(p) {
-    if (p.marketSignal === "SMART_MONEY") return "sharp";
-    if (p.marketSignal === "PUBLIC_HEAVY") return "fade";
-    return "consenso"; // CONSENSUS, MIXED, NO_ACTION
+    return p.marketSignal || "NO_ACTION";
 }
 
-function computeConfianzaDelDinero(fadeN, sharpN) {
-    if (fadeN === 0 && sharpN === 0) return { text: "Tranquilo", color: "var(--muted)" };
-    if (sharpN === 0 || fadeN / sharpN >= 2) return { text: "Alerta 🚨", color: "var(--red)" };
-    if (fadeN === 0 || sharpN / fadeN >= 2) return { text: "Consenso ⚡", color: "var(--teal)" };
+function computeConfianzaDelDinero(publicN, smartN) {
+    if (publicN === 0 && smartN === 0) return { text: "Tranquilo", color: "var(--muted)" };
+    if (smartN === 0 || publicN / smartN >= 2) return { text: "Alerta 🚨", color: "var(--red)" };
+    if (publicN === 0 || smartN / publicN >= 2) return { text: "Consenso ⚡", color: "var(--teal)" };
     return { text: "Dividido", color: "var(--amber)" };
 }
 
@@ -2613,16 +2639,16 @@ function updateMetrics(activePicks) {
     if(elProximos) elProximos.innerText = soonPicks.length;
     statState.proximos = soonPicks;
 
-    const buckets = { fade: [], sharp: [], consenso: [] };
+    const buckets = { SMART_MONEY: [], PUBLIC_HEAVY: [], CONSENSUS: [], MIXED: [], NO_ACTION: [] };
     activePicks.forEach(p => buckets[classifyMarketBucket(p)].push(p));
     statState.mercado = buckets;
     
     const elMercado = document.getElementById("statMercado");
     if (elMercado) {
-        elMercado.innerText = `🚨 ${buckets.fade.length} Fade · 🐋 ${buckets.sharp.length} Sharp · ⚪ ${buckets.consenso.length} Cons.`;
+        elMercado.innerText = `🐋 ${buckets.SMART_MONEY.length} · 🚨 ${buckets.PUBLIC_HEAVY.length} · 📊 ${buckets.CONSENSUS.length} · 🔀 ${buckets.MIXED.length} · ⚪ ${buckets.NO_ACTION.length}`;
     }
 
-    const conf = computeConfianzaDelDinero(buckets.fade.length, buckets.sharp.length);
+    const conf = computeConfianzaDelDinero(buckets.PUBLIC_HEAVY.length, buckets.SMART_MONEY.length);
     const elConfianza = document.getElementById("statConfianza");
     if(elConfianza) elConfianza.innerText = conf.text;
     const cardConf = document.getElementById("cardConfianza");
@@ -2704,7 +2730,7 @@ function setupStatPopups() {
                 else if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
                 else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
                 else if (targetId === "detailMercado") {
-                    items = [...statState.mercado.fade, ...statState.mercado.sharp, ...statState.mercado.consenso];
+                    items = [...statState.mercado.SMART_MONEY, ...statState.mercado.PUBLIC_HEAVY, ...statState.mercado.CONSENSUS, ...statState.mercado.MIXED, ...statState.mercado.NO_ACTION];
                     popupTitle = "Picks de Mercado";
                 }
 
@@ -3269,7 +3295,6 @@ function render() {
                             <span class="date-badge">📅 ${dateDisplay}</span>
                             <span class="time-badge">🕒 ${timeDisplay}</span>
                         </div>
-                        <span style="font-weight:700;">${trendTag(p.trendKey)}</span>
                     </div>
 
                     <div class="pick-details">
@@ -3289,7 +3314,6 @@ function render() {
                     </div>
 
                     ${buildEvolutionHtml(p)}
-                    ${isEditor ? editorChoiceReasonHtml(editorEval) : ''}
                     ${unifiedDecisionPanelHtml(p)}
 
                     ${isWhale ? `<div class="whale-banner">🐋 ALERTA WHALE: Movimiento Institucional Detectado</div>` : ''}
