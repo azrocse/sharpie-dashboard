@@ -57501,3 +57501,394 @@ Descargando página 6...
 📊 Calibración CLV actualizada: 113 picks en el log, peso medido = -0.0002
 [OK] Historial del día guardado en: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-22\sharpie.json
 [OK] Dashboard generado con éxito: C:\Users\Administrator\Desktop\sharpie-dashboard\index.html
+[main ec9b12e3] Auto-update: Datos, scripts y assets (2026-08-22 10:02)
+ 381 files changed, 560011 insertions(+), 150948 deletions(-)
+ create mode 100644 data/history/2026-08-19/sharpie.json
+ create mode 100644 data/history/2026-08-20/sharpie.json
+ create mode 100644 data/history/2026-08-21/sharpie.json
+ create mode 100644 data/history/2026-08-22/sharpie.json
+ create mode 100644 data/results/calibration_report.json
+ create mode 100644 data/results/clv_log.json
+ delete mode 100644 data/snapshots/sports/20260813_054004.json
+ delete mode 100644 data/snapshots/sports/20260813_055004.json
+ delete mode 100644 data/snapshots/sports/20260813_060004.json
+ delete mode 100644 data/snapshots/sports/20260813_061004.json
+ delete mode 100644 data/snapshots/sports/20260813_062005.json
+ delete mode 100644 data/snapshots/sports/20260813_063004.json
+ delete mode 100644 data/snapshots/sports/20260813_064004.json
+ delete mode 100644 data/snapshots/sports/20260813_065004.json
+ delete mode 100644 data/snapshots/sports/20260813_070004.json
+ delete mode 100644 data/snapshots/sports/20260813_071005.json
+ delete mode 100644 data/snapshots/sports/20260813_072006.json
+ delete mode 100644 data/snapshots/sports/20260813_073006.json
+ delete mode 100644 data/snapshots/sports/20260813_091003.json
+ delete mode 100644 data/snapshots/sports/20260813_092003.json
+ delete mode 100644 data/snapshots/sports/20260813_093003.json
+ delete mode 100644 data/snapshots/sports/20260813_094006.json
+ delete mode 100644 data/snapshots/sports/20260813_095004.json
+ delete mode 100644 data/snapshots/sports/20260813_100004.json
+ delete mode 100644 data/snapshots/sports/20260813_101004.json
+ delete mode 100644 data/snapshots/sports/20260813_102003.json
+ delete mode 100644 data/snapshots/sports/20260813_103003.json
+ delete mode 100644 data/snapshots/sports/20260813_104004.json
+ delete mode 100644 data/snapshots/sports/20260813_105003.json
+ delete mode 100644 data/snapshots/sports/20260813_110016.json
+ delete mode 100644 data/snapshots/sports/20260813_110222.json
+ delete mode 100644 data/snapshots/sports/20260813_110326.json
+ delete mode 100644 data/snapshots/sports/20260813_110506.json
+ delete mode 100644 data/snapshots/sports/20260813_110640.json
+ delete mode 100644 data/snapshots/sports/20260813_110816.json
+ delete mode 100644 data/snapshots/sports/20260813_111007.json
+ delete mode 100644 data/snapshots/sports/20260813_112007.json
+ delete mode 100644 data/snapshots/sports/20260813_113007.json
+ delete mode 100644 data/snapshots/sports/20260813_114008.json
+ delete mode 100644 data/snapshots/sports/20260813_114844.json
+ delete mode 100644 data/snapshots/sports/20260813_114901.json
+ delete mode 100644 data/snapshots/sports/20260813_114932.json
+ delete mode 100644 data/snapshots/sports/20260813_114954.json
+ delete mode 100644 data/snapshots/sports/20260813_115718.json
+ delete mode 100644 data/snapshots/sports/20260813_120007.json
+ delete mode 100644 data/snapshots/sports/20260813_121006.json
+ delete mode 100644 data/snapshots/sports/20260813_121040.json
+ delete mode 100644 data/snapshots/sports/20260813_122006.json
+ delete mode 100644 data/snapshots/sports/20260813_123005.json
+ delete mode 100644 data/snapshots/sports/20260813_123804.json
+ delete mode 100644 data/snapshots/sports/20260813_124005.json
+ delete mode 100644 data/snapshots/sports/20260813_125005.json
+ delete mode 100644 data/snapshots/sports/20260813_130005.json
+ delete mode 100644 data/snapshots/sports/20260813_131004.json
+ delete mode 100644 data/snapshots/sports/20260813_132003.json
+ delete mode 100644 data/snapshots/sports/20260813_133004.json
+ delete mode 100644 data/snapshots/sports/20260813_134004.json
+ delete mode 100644 data/snapshots/sports/20260813_135004.json
+ delete mode 100644 data/snapshots/sports/20260813_140004.json
+ delete mode 100644 data/snapshots/sports/20260813_141004.json
+ delete mode 100644 data/snapshots/sports/20260813_142004.json
+ delete mode 100644 data/snapshots/sports/20260813_143004.json
+ delete mode 100644 data/snapshots/sports/20260813_144004.json
+ delete mode 100644 data/snapshots/sports/20260813_145004.json
+ delete mode 100644 data/snapshots/sports/20260813_150005.json
+ delete mode 100644 data/snapshots/sports/20260813_152005.json
+ delete mode 100644 data/snapshots/sports/20260813_153005.json
+ delete mode 100644 data/snapshots/sports/20260813_154005.json
+ delete mode 100644 data/snapshots/sports/20260813_155005.json
+ delete mode 100644 data/snapshots/sports/20260813_160005.json
+ delete mode 100644 data/snapshots/sports/20260813_161005.json
+ delete mode 100644 data/snapshots/sports/20260813_162005.json
+ delete mode 100644 data/snapshots/sports/20260813_163004.json
+ delete mode 100644 data/snapshots/sports/20260813_164004.json
+ delete mode 100644 data/snapshots/sports/20260813_165004.json
+ delete mode 100644 data/snapshots/sports/20260813_170004.json
+ delete mode 100644 data/snapshots/sports/20260813_171006.json
+ delete mode 100644 data/snapshots/sports/20260813_172006.json
+ delete mode 100644 data/snapshots/sports/20260813_173008.json
+ delete mode 100644 data/snapshots/sports/20260813_174008.json
+ delete mode 100644 data/snapshots/sports/20260813_175004.json
+ delete mode 100644 data/snapshots/sports/20260813_180004.json
+ delete mode 100644 data/snapshots/sports/20260813_181004.json
+ delete mode 100644 data/snapshots/sports/20260813_182004.json
+ delete mode 100644 data/snapshots/sports/20260813_183004.json
+ delete mode 100644 data/snapshots/sports/20260813_183511.json
+ delete mode 100644 data/snapshots/sports/20260813_183854.json
+ delete mode 100644 data/snapshots/sports/20260813_184005.json
+ delete mode 100644 data/snapshots/sports/20260813_184159.json
+ delete mode 100644 data/snapshots/sports/20260813_184457.json
+ delete mode 100644 data/snapshots/sports/20260813_184725.json
+ delete mode 100644 data/snapshots/sports/20260813_185006.json
+ delete mode 100644 data/snapshots/sports/20260813_185031.json
+ delete mode 100644 data/snapshots/sports/20260813_185101.json
+ delete mode 100644 data/snapshots/sports/20260813_185424.json
+ delete mode 100644 data/snapshots/sports/20260813_202005.json
+ delete mode 100644 data/snapshots/sports/20260813_203005.json
+ delete mode 100644 data/snapshots/sports/20260813_205004.json
+ delete mode 100644 data/snapshots/sports/20260813_210004.json
+ delete mode 100644 data/snapshots/sports/20260813_211004.json
+ delete mode 100644 data/snapshots/sports/20260813_212004.json
+ delete mode 100644 data/snapshots/sports/20260813_213004.json
+ delete mode 100644 data/snapshots/sports/20260813_214004.json
+ delete mode 100644 data/snapshots/sports/20260813_215004.json
+ delete mode 100644 data/snapshots/sports/20260813_220003.json
+ delete mode 100644 data/snapshots/sports/20260813_221003.json
+ delete mode 100644 data/snapshots/sports/20260813_222003.json
+ delete mode 100644 data/snapshots/sports/20260813_223003.json
+ delete mode 100644 data/snapshots/sports/20260813_224003.json
+ delete mode 100644 data/snapshots/sports/20260813_225003.json
+ delete mode 100644 data/snapshots/sports/20260813_230003.json
+ delete mode 100644 data/snapshots/sports/20260813_231003.json
+ delete mode 100644 data/snapshots/sports/20260813_232003.json
+ delete mode 100644 data/snapshots/sports/20260813_233005.json
+ delete mode 100644 data/snapshots/sports/20260813_234005.json
+ delete mode 100644 data/snapshots/sports/20260814_000004.json
+ delete mode 100644 data/snapshots/sports/20260814_012007.json
+ delete mode 100644 data/snapshots/sports/20260814_013003.json
+ delete mode 100644 data/snapshots/sports/20260814_014003.json
+ delete mode 100644 data/snapshots/sports/20260814_015003.json
+ delete mode 100644 data/snapshots/sports/20260814_020003.json
+ delete mode 100644 data/snapshots/sports/20260814_021006.json
+ delete mode 100644 data/snapshots/sports/20260814_123932.json
+ delete mode 100644 data/snapshots/sports/20260814_123946.json
+ delete mode 100644 data/snapshots/sports/20260814_125748.json
+ delete mode 100644 data/snapshots/sports/20260814_130615.json
+ delete mode 100644 data/snapshots/sports/20260814_131001.json
+ delete mode 100644 data/snapshots/sports/20260814_131847.json
+ delete mode 100644 data/snapshots/sports/20260814_133407.json
+ delete mode 100644 data/snapshots/sports/20260814_133810.json
+ delete mode 100644 data/snapshots/sports/20260814_134128.json
+ delete mode 100644 data/snapshots/sports/20260814_135143.json
+ delete mode 100644 data/snapshots/sports/20260814_135208.json
+ delete mode 100644 data/snapshots/sports/20260814_135423.json
+ delete mode 100644 data/snapshots/sports/20260814_135449.json
+ delete mode 100644 data/snapshots/sports/20260814_135527.json
+ delete mode 100644 data/snapshots/sports/20260814_140806.json
+ delete mode 100644 data/snapshots/sports/20260814_141734.json
+ delete mode 100644 data/snapshots/sports/20260814_142104.json
+ delete mode 100644 data/snapshots/sports/20260814_142440.json
+ delete mode 100644 data/snapshots/sports/20260814_142726.json
+ delete mode 100644 data/snapshots/sports/20260814_142814.json
+ delete mode 100644 data/snapshots/sports/20260817_022009.json
+ delete mode 100644 data/snapshots/sports/20260817_122904.json
+ delete mode 100644 data/snapshots/sports/20260817_124241.json
+ delete mode 100644 data/snapshots/sports/20260817_131709.json
+ delete mode 100644 data/snapshots/sports/20260817_212312.json
+ rename data/snapshots/sports/{20260818_093535.json => 20260819_074009.json} (81%)
+ rename data/snapshots/sports/{20260818_093756.json => 20260819_075009.json} (81%)
+ create mode 100644 data/snapshots/sports/20260819_080009.json
+ rename data/snapshots/sports/{20260818_102346.json => 20260819_081009.json} (82%)
+ rename data/snapshots/sports/{20260818_093648.json => 20260819_082009.json} (82%)
+ rename data/snapshots/sports/{20260818_102427.json => 20260819_083009.json} (82%)
+ rename data/snapshots/sports/{20260818_103133.json => 20260819_084009.json} (82%)
+ create mode 100644 data/snapshots/sports/20260819_085009.json
+ create mode 100644 data/snapshots/sports/20260819_090009.json
+ create mode 100644 data/snapshots/sports/20260819_091009.json
+ create mode 100644 data/snapshots/sports/20260819_092009.json
+ create mode 100644 data/snapshots/sports/20260819_093009.json
+ create mode 100644 data/snapshots/sports/20260819_094009.json
+ create mode 100644 data/snapshots/sports/20260819_095009.json
+ create mode 100644 data/snapshots/sports/20260819_100009.json
+ create mode 100644 data/snapshots/sports/20260819_101009.json
+ create mode 100644 data/snapshots/sports/20260819_102010.json
+ create mode 100644 data/snapshots/sports/20260819_103009.json
+ create mode 100644 data/snapshots/sports/20260819_104010.json
+ rename data/snapshots/sports/{20260818_093447.json => 20260819_105010.json} (79%)
+ create mode 100644 data/snapshots/sports/20260819_110010.json
+ create mode 100644 data/snapshots/sports/20260819_110929.json
+ create mode 100644 data/snapshots/sports/20260819_111010.json
+ create mode 100644 data/snapshots/sports/20260819_112011.json
+ create mode 100644 data/snapshots/sports/20260819_113009.json
+ create mode 100644 data/snapshots/sports/20260819_114009.json
+ create mode 100644 data/snapshots/sports/20260819_115009.json
+ create mode 100644 data/snapshots/sports/20260819_120009.json
+ create mode 100644 data/snapshots/sports/20260819_121010.json
+ create mode 100644 data/snapshots/sports/20260819_122011.json
+ create mode 100644 data/snapshots/sports/20260819_123013.json
+ create mode 100644 data/snapshots/sports/20260819_124010.json
+ create mode 100644 data/snapshots/sports/20260819_125010.json
+ create mode 100644 data/snapshots/sports/20260819_130010.json
+ rename data/snapshots/sports/{20260813_030003.json => 20260819_131005.json} (100%)
+ rename data/snapshots/sports/{20260813_031003.json => 20260819_132005.json} (100%)
+ rename data/snapshots/sports/{20260813_032003.json => 20260819_133005.json} (100%)
+ rename data/snapshots/sports/{20260813_033003.json => 20260819_133657.json} (100%)
+ rename data/snapshots/sports/{20260813_034003.json => 20260819_133849.json} (100%)
+ rename data/snapshots/sports/{20260813_035005.json => 20260819_134005.json} (100%)
+ rename data/snapshots/sports/{20260813_040003.json => 20260819_134033.json} (100%)
+ rename data/snapshots/sports/{20260813_041003.json => 20260819_134708.json} (100%)
+ rename data/snapshots/sports/{20260813_042003.json => 20260819_135005.json} (100%)
+ rename data/snapshots/sports/{20260813_043003.json => 20260819_140005.json} (100%)
+ rename data/snapshots/sports/{20260813_044003.json => 20260819_141005.json} (100%)
+ create mode 100644 data/snapshots/sports/20260819_142011.json
+ create mode 100644 data/snapshots/sports/20260819_143012.json
+ create mode 100644 data/snapshots/sports/20260819_144011.json
+ create mode 100644 data/snapshots/sports/20260819_145010.json
+ rename data/snapshots/sports/{20260813_045003.json => 20260819_145415.json} (100%)
+ rename data/snapshots/sports/{20260813_050003.json => 20260819_150004.json} (100%)
+ rename data/snapshots/sports/{20260813_051003.json => 20260819_151004.json} (100%)
+ rename data/snapshots/sports/{20260813_052003.json => 20260819_152005.json} (100%)
+ rename data/snapshots/sports/{20260813_053003.json => 20260819_153004.json} (100%)
+ create mode 100644 data/snapshots/sports/20260819_154016.json
+ rename data/snapshots/sports/{20260813_074003.json => 20260819_155007.json} (100%)
+ create mode 100644 data/snapshots/sports/20260819_161427.json
+ create mode 100644 data/snapshots/sports/20260819_162025.json
+ create mode 100644 data/snapshots/sports/20260819_162438.json
+ create mode 100644 data/snapshots/sports/20260819_163016.json
+ create mode 100644 data/snapshots/sports/20260819_164023.json
+ create mode 100644 data/snapshots/sports/20260819_165028.json
+ create mode 100644 data/snapshots/sports/20260819_170023.json
+ create mode 100644 data/snapshots/sports/20260819_171011.json
+ create mode 100644 data/snapshots/sports/20260819_172010.json
+ create mode 100644 data/snapshots/sports/20260819_173010.json
+ create mode 100644 data/snapshots/sports/20260819_174010.json
+ create mode 100644 data/snapshots/sports/20260819_175010.json
+ create mode 100644 data/snapshots/sports/20260819_180010.json
+ create mode 100644 data/snapshots/sports/20260819_181010.json
+ create mode 100644 data/snapshots/sports/20260819_182010.json
+ create mode 100644 data/snapshots/sports/20260819_183010.json
+ create mode 100644 data/snapshots/sports/20260819_184010.json
+ create mode 100644 data/snapshots/sports/20260819_185010.json
+ rename data/snapshots/sports/{20260817_213902.json => 20260819_190011.json} (77%)
+ rename data/snapshots/sports/{20260818_085631.json => 20260819_191013.json} (77%)
+ rename data/snapshots/sports/{20260816_231753.json => 20260819_192019.json} (72%)
+ create mode 100644 data/snapshots/sports/20260819_193012.json
+ create mode 100644 data/snapshots/sports/20260819_194012.json
+ create mode 100644 data/snapshots/sports/20260819_195014.json
+ create mode 100644 data/snapshots/sports/20260819_200015.json
+ create mode 100644 data/snapshots/sports/20260819_201011.json
+ create mode 100644 data/snapshots/sports/20260819_202011.json
+ create mode 100644 data/snapshots/sports/20260819_203013.json
+ create mode 100644 data/snapshots/sports/20260819_204017.json
+ create mode 100644 data/snapshots/sports/20260819_205012.json
+ create mode 100644 data/snapshots/sports/20260819_210016.json
+ create mode 100644 data/snapshots/sports/20260819_211015.json
+ create mode 100644 data/snapshots/sports/20260819_212012.json
+ create mode 100644 data/snapshots/sports/20260819_213014.json
+ create mode 100644 data/snapshots/sports/20260819_214014.json
+ create mode 100644 data/snapshots/sports/20260819_215012.json
+ create mode 100644 data/snapshots/sports/20260819_220017.json
+ create mode 100644 data/snapshots/sports/20260819_221013.json
+ create mode 100644 data/snapshots/sports/20260819_221808.json
+ create mode 100644 data/snapshots/sports/20260819_222026.json
+ create mode 100644 data/snapshots/sports/20260819_223010.json
+ create mode 100644 data/snapshots/sports/20260819_224012.json
+ create mode 100644 data/snapshots/sports/20260819_224323.json
+ create mode 100644 data/snapshots/sports/20260819_225014.json
+ create mode 100644 data/snapshots/sports/20260819_230013.json
+ create mode 100644 data/snapshots/sports/20260819_231011.json
+ create mode 100644 data/snapshots/sports/20260819_232013.json
+ create mode 100644 data/snapshots/sports/20260819_233012.json
+ create mode 100644 data/snapshots/sports/20260819_234012.json
+ create mode 100644 data/snapshots/sports/20260819_235012.json
+ create mode 100644 data/snapshots/sports/20260820_000011.json
+ create mode 100644 data/snapshots/sports/20260820_001011.json
+ create mode 100644 data/snapshots/sports/20260820_002011.json
+ create mode 100644 data/snapshots/sports/20260820_003010.json
+ create mode 100644 data/snapshots/sports/20260820_004010.json
+ create mode 100644 data/snapshots/sports/20260820_005009.json
+ create mode 100644 data/snapshots/sports/20260820_010009.json
+ create mode 100644 data/snapshots/sports/20260820_011009.json
+ create mode 100644 data/snapshots/sports/20260820_012009.json
+ create mode 100644 data/snapshots/sports/20260820_013009.json
+ create mode 100644 data/snapshots/sports/20260820_014009.json
+ create mode 100644 data/snapshots/sports/20260820_015010.json
+ create mode 100644 data/snapshots/sports/20260820_020009.json
+ rename data/snapshots/sports/{20260813_191010.json => 20260820_021007.json} (56%)
+ rename data/snapshots/sports/{20260813_151005.json => 20260820_022006.json} (57%)
+ create mode 100644 data/snapshots/sports/20260820_023006.json
+ create mode 100644 data/snapshots/sports/20260820_024009.json
+ create mode 100644 data/snapshots/sports/20260820_025010.json
+ rename data/snapshots/sports/{20260813_115008.json => 20260820_030007.json} (56%)
+ rename data/snapshots/sports/{20260814_005006.json => 20260820_031007.json} (56%)
+ create mode 100644 data/snapshots/sports/20260820_032009.json
+ create mode 100644 data/snapshots/sports/20260820_033009.json
+ create mode 100644 data/snapshots/sports/20260820_034010.json
+ rename data/snapshots/sports/{20260813_204005.json => 20260820_035007.json} (53%)
+ rename data/snapshots/sports/{20260813_201006.json => 20260820_040006.json} (53%)
+ create mode 100644 data/snapshots/sports/20260820_041010.json
+ create mode 100644 data/snapshots/sports/20260820_042011.json
+ rename data/snapshots/sports/{20260814_003007.json => 20260820_043007.json} (58%)
+ rename data/snapshots/sports/{20260814_004006.json => 20260820_044007.json} (58%)
+ rename data/snapshots/sports/{20260814_011006.json => 20260820_045007.json} (59%)
+ rename data/snapshots/sports/{20260814_010006.json => 20260820_050007.json} (59%)
+ rename data/snapshots/sports/{20260813_200007.json => 20260820_051007.json} (60%)
+ rename data/snapshots/sports/{20260814_002006.json => 20260820_052007.json} (59%)
+ rename data/snapshots/sports/{20260813_190005.json => 20260820_053007.json} (57%)
+ rename data/snapshots/sports/{20260814_135117.json => 20260820_054008.json} (60%)
+ create mode 100644 data/snapshots/sports/20260820_055010.json
+ rename data/snapshots/sports/{20260813_075003.json => 20260820_060005.json} (100%)
+ rename data/snapshots/sports/{20260813_080003.json => 20260820_061005.json} (100%)
+ rename data/snapshots/sports/{20260813_081003.json => 20260820_062005.json} (100%)
+ rename data/snapshots/sports/{20260813_082003.json => 20260820_063005.json} (100%)
+ create mode 100644 data/snapshots/sports/20260820_064010.json
+ rename data/snapshots/sports/{20260816_090519.json => 20260820_065010.json} (63%)
+ rename data/snapshots/sports/{20260816_095734.json => 20260820_070010.json} (63%)
+ rename data/snapshots/sports/{20260816_092503.json => 20260820_071009.json} (63%)
+ rename data/snapshots/sports/{20260816_092630.json => 20260820_072010.json} (63%)
+ rename data/snapshots/sports/{20260814_124201.json => 20260820_073007.json} (62%)
+ create mode 100644 data/snapshots/sports/20260820_074011.json
+ create mode 100644 data/snapshots/sports/20260820_075011.json
+ create mode 100644 data/snapshots/sports/20260820_080011.json
+ rename data/snapshots/sports/{20260814_120943.json => 20260820_081006.json} (55%)
+ rename data/snapshots/sports/{20260814_001004.json => 20260820_082006.json} (54%)
+ rename data/snapshots/sports/{20260813_235004.json => 20260820_083006.json} (51%)
+ rename data/snapshots/sports/{20260813_083003.json => 20260820_084005.json} (100%)
+ rename data/snapshots/sports/{20260813_084003.json => 20260820_085005.json} (100%)
+ rename data/snapshots/sports/{20260813_085003.json => 20260820_090005.json} (100%)
+ rename data/snapshots/sports/{20260813_090003.json => 20260820_091005.json} (100%)
+ rename data/snapshots/sports/{20260814_124958.json => 20260820_092006.json} (52%)
+ create mode 100644 data/snapshots/sports/20260820_092245.json
+ create mode 100644 data/snapshots/sports/20260820_093009.json
+ create mode 100644 data/snapshots/sports/20260820_094011.json
+ create mode 100644 data/snapshots/sports/20260820_095010.json
+ create mode 100644 data/snapshots/sports/20260820_100009.json
+ create mode 100644 data/snapshots/sports/20260820_101009.json
+ create mode 100644 data/snapshots/sports/20260820_102012.json
+ create mode 100644 data/snapshots/sports/20260820_103013.json
+ create mode 100644 data/snapshots/sports/20260820_104009.json
+ create mode 100644 data/snapshots/sports/20260820_105009.json
+ create mode 100644 data/snapshots/sports/20260820_110011.json
+ create mode 100644 data/snapshots/sports/20260820_111009.json
+ create mode 100644 data/snapshots/sports/20260820_112010.json
+ create mode 100644 data/snapshots/sports/20260820_113009.json
+ create mode 100644 data/snapshots/sports/20260820_114009.json
+ create mode 100644 data/snapshots/sports/20260820_115010.json
+ create mode 100644 data/snapshots/sports/20260820_120010.json
+ create mode 100644 data/snapshots/sports/20260820_121010.json
+ create mode 100644 data/snapshots/sports/20260820_122009.json
+ create mode 100644 data/snapshots/sports/20260820_161123.json
+ create mode 100644 data/snapshots/sports/20260820_161810.json
+ create mode 100644 data/snapshots/sports/20260820_174305.json
+ create mode 100644 data/snapshots/sports/20260820_212328.json
+ create mode 100644 data/snapshots/sports/20260820_215022.json
+ create mode 100644 data/snapshots/sports/20260821_054727.json
+ create mode 100644 data/snapshots/sports/20260821_054840.json
+ create mode 100644 data/snapshots/sports/20260821_094300.json
+ create mode 100644 data/snapshots/sports/20260821_104633.json
+ create mode 100644 data/snapshots/sports/20260821_105819.json
+ create mode 100644 data/snapshots/sports/20260821_111036.json
+ create mode 100644 data/snapshots/sports/20260821_111213.json
+ create mode 100644 data/snapshots/sports/20260821_123012.json
+ create mode 100644 data/snapshots/sports/20260821_140155.json
+ create mode 100644 data/snapshots/sports/20260822_082416.json
+ create mode 100644 data/snapshots/sports/20260822_084102.json
+ create mode 100644 data/snapshots/sports/20260822_091712.json
+ create mode 100644 data/snapshots/sports/20260822_100218.json
+ create mode 100644 debug_page.html
+ create mode 100644 debug_screenshot.png
+ create mode 100644 src/data/parsed/mlb.json
+ create mode 100644 src/data/parsed/nfl.json
+ rename data/snapshots/sports/20260813_110606.json => src/data/parsed/sports.json (100%)
+ create mode 100644 src/data/parsed/wnba.json
+ create mode 100644 src/data/raw/mlb.txt
+ create mode 100644 src/data/raw/nfl.txt
+ create mode 100644 src/data/raw/wnba.txt
+ create mode 100644 src/data/snapshots/mlb/20260819_160137.json
+ create mode 100644 src/data/snapshots/mlb/20260819_160322.json
+ create mode 100644 src/data/snapshots/mlb/20260819_161046.json
+ create mode 100644 src/data/snapshots/nfl/20260819_160137.json
+ create mode 100644 src/data/snapshots/sports/20260819_160010.json
+ create mode 100644 src/data/snapshots/sports/20260819_160013.json
+ create mode 100644 src/data/snapshots/wnba/20260819_160137.json
+ create mode 100644 src/task.log
+ create mode 100644 src/test_dk.py
+[2026-08-22 10:02:33] Proyecto actualizado y publicado con éxito.
+[2026-08-22 10:04:13] Iniciando refresco...
+10:04:14 - [INFO] - Se cargaron 1 ligas desde la configuraciÃ³n.
+10:04:14 - [INFO] - ðŸ”„ Procesando: 'SPORTS' | Slug: 'Sports' | Date Range: 'n30days'
+10:04:20 - [INFO] - âœ… 'SPORTS' descargado con Ã©xito. Elementos/Archivos: 5
+10:04:20 - [INFO] - Proceso finalizado. Ligas procesadas exitosamente: 1
+
+============================================================
+SPORTS
+Rango: n30days
+============================================================
+Descargando pÃ¡gina 1...
+Descargando pÃ¡gina 2...
+Descargando pÃ¡gina 3...
+Descargando pÃ¡gina 4...
+Descargando pÃ¡gina 5...
+Descargando pÃ¡gina 6...
+âœ“ JSON creado: sports.json (Total juegos incluidos: 50)
+
+âœ“ Historial guardado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-22\sharpie.json
+ðŸ“Š CalibraciÃ³n CLV actualizada: 117 picks en el log, peso medido = -0.0004
+ðŸ“Š CalibraciÃ³n CLV actualizada: 117 picks en el log, peso medido = -0.0004
+[OK] Historial del dÃ­a guardado en: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-08-22\sharpie.json
+[OK] Dashboard generado con Ã©xito: C:\Users\Administrator\Desktop\sharpie-dashboard\index.html
