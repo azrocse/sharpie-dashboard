@@ -624,87 +624,6 @@
             gap: 6px;
         }
 
-        /* ===== SLIDER DE RANGO DOBLE (reemplaza los inputs min/max numéricos) ===== */
-        .adv-slider-value {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--muted);
-            font-family: "JetBrains Mono", monospace;
-            white-space: nowrap;
-        }
-
-        .adv-slider-value.adv-slider-value-active {
-            color: var(--teal);
-        }
-
-        .adv-slider-wrap {
-            position: relative;
-            height: 26px;
-            margin: 6px 2px 2px;
-        }
-
-        .adv-slider-track {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 4px;
-            transform: translateY(-50%);
-            background: var(--border);
-            border-radius: 999px;
-        }
-
-        .adv-slider-fill {
-            position: absolute;
-            top: 50%;
-            height: 4px;
-            transform: translateY(-50%);
-            background: var(--teal);
-            border-radius: 999px;
-            pointer-events: none;
-        }
-
-        .adv-range {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 26px;
-            margin: 0;
-            background: transparent;
-            -webkit-appearance: none;
-            appearance: none;
-            pointer-events: none;
-        }
-
-        .adv-range:focus { outline: none; }
-        .adv-range::-webkit-slider-runnable-track { -webkit-appearance: none; background: transparent; height: 26px; }
-        .adv-range::-moz-range-track { background: transparent; border: none; height: 26px; }
-
-        .adv-range::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            pointer-events: auto;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--panel);
-            border: 2px solid var(--teal);
-            cursor: pointer;
-            margin-top: 5px;
-            box-shadow: 0 1px 3px rgba(0,0,0,.35);
-        }
-
-        .adv-range::-moz-range-thumb {
-            pointer-events: auto;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--panel);
-            border: 2px solid var(--teal);
-            cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,.35);
-        }
-
         .adv-inputs {
             display: flex;
             align-items: center;
@@ -1660,7 +1579,7 @@
     <div class="chart-card">
         <div class="chart-header">
             <span>🎯 Tendencias de Mercado</span>
-            <span class="mono" style="font-size:11px; color:var(--muted);">Smart vs Público</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">Señales de flujo</span>
         </div>
         <div class="chart-container">
             <canvas id="marketDoughnutChart"></canvas>
@@ -1724,71 +1643,56 @@
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">🤖 Modelo Prob. (%)</label>
-                <span class="adv-slider-value" id="fModeloValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fModeloFill"></div></div>
-                <input type="range" class="adv-range" id="fModeloMinRange" min="0" max="100" step="1" value="0">
-                <input type="range" class="adv-range" id="fModeloMaxRange" min="0" max="100" step="1" value="100">
+            <div class="adv-inputs">
+                <input type="number" id="fModeloMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fModeloMax" placeholder="Max %" step="1">
             </div>
-            <input type="hidden" id="fModeloMin">
-            <input type="hidden" id="fModeloMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">🔥 Score Integral</label>
-                <span class="adv-slider-value" id="fScoreValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fScoreFill"></div></div>
-                <input type="range" class="adv-range" id="fScoreMinRange" min="0" max="100" step="1" value="0">
-                <input type="range" class="adv-range" id="fScoreMaxRange" min="0" max="100" step="1" value="100">
+            <div class="adv-inputs">
+                <input type="number" id="fScoreMin" placeholder="Min" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fScoreMax" placeholder="Max" step="1">
             </div>
-            <input type="hidden" id="fScoreMin">
-            <input type="hidden" id="fScoreMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">🎲 Prob. Victoria (%)</label>
-                <span class="adv-slider-value" id="fWinProbValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fWinProbFill"></div></div>
-                <input type="range" class="adv-range" id="fWinProbMinRange" min="0" max="100" step="1" value="0">
-                <input type="range" class="adv-range" id="fWinProbMaxRange" min="0" max="100" step="1" value="100">
+            <div class="adv-inputs">
+                <input type="number" id="fWinProbMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fWinProbMax" placeholder="Max %" step="1">
             </div>
-            <input type="hidden" id="fWinProbMin">
-            <input type="hidden" id="fWinProbMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">⚡ Divergencia Flujo (%)</label>
-                <span class="adv-slider-value" id="fDivergenciaValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fDivergenciaFill"></div></div>
-                <input type="range" class="adv-range" id="fDivergenciaMinRange" min="-100" max="100" step="1" value="-100">
-                <input type="range" class="adv-range" id="fDivergenciaMaxRange" min="-100" max="100" step="1" value="100">
+            <div class="adv-inputs">
+                <input type="number" id="fDivergenciaMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fDivergenciaMax" placeholder="Max %" step="1">
             </div>
-            <input type="hidden" id="fDivergenciaMin">
-            <input type="hidden" id="fDivergenciaMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">✅ Confiabilidad (%)</label>
-                <span class="adv-slider-value" id="fConfValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fConfFill"></div></div>
-                <input type="range" class="adv-range" id="fConfMinRange" min="0" max="100" step="1" value="0">
-                <input type="range" class="adv-range" id="fConfMaxRange" min="0" max="100" step="1" value="100">
+            <div class="adv-inputs">
+                <input type="number" id="fConfMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fConfMax" placeholder="Max %" step="1">
             </div>
-            <input type="hidden" id="fConfMin">
-            <input type="hidden" id="fConfMax">
         </div>
 
         <div class="adv-card">
@@ -1804,72 +1708,57 @@
 
         <div class="adv-card">
             <div class="adv-card-header">
-                <label class="adv-label">🎯 Stake Recom.</label>
-                <span class="adv-slider-value" id="fStakeValue">Todos</span>
+                <label class="adv-label">🎯 Stake Recom. (%)</label>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fStakeFill"></div></div>
-                <input type="range" class="adv-range" id="fStakeMinRange" min="0" max="4" step="0.1" value="0">
-                <input type="range" class="adv-range" id="fStakeMaxRange" min="0" max="4" step="0.1" value="4">
+            <div class="adv-inputs">
+                <input type="number" id="fStakeMin" placeholder="Min %" step="0.5">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fStakeMax" placeholder="Max %" step="0.5">
             </div>
-            <input type="hidden" id="fStakeMin">
-            <input type="hidden" id="fStakeMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">🎟️ % Bets (Tickets)</label>
-                <span class="adv-slider-value" id="fBetsValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fBetsFill"></div></div>
-                <input type="range" class="adv-range" id="fBetsMinRange" min="0" max="100" step="1" value="0">
-                <input type="range" class="adv-range" id="fBetsMaxRange" min="0" max="100" step="1" value="100">
+            <div class="adv-inputs">
+                <input type="number" id="fBetsMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fBetsMax" placeholder="Max %" step="1">
             </div>
-            <input type="hidden" id="fBetsMin">
-            <input type="hidden" id="fBetsMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">💵 % Handle (Dinero)</label>
-                <span class="adv-slider-value" id="fHandleValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fHandleFill"></div></div>
-                <input type="range" class="adv-range" id="fHandleMinRange" min="0" max="100" step="1" value="0">
-                <input type="range" class="adv-range" id="fHandleMaxRange" min="0" max="100" step="1" value="100">
+            <div class="adv-inputs">
+                <input type="number" id="fHandleMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fHandleMax" placeholder="Max %" step="1">
             </div>
-            <input type="hidden" id="fHandleMin">
-            <input type="hidden" id="fHandleMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">📈 Edge Modelo (%)</label>
-                <span class="adv-slider-value" id="fEdgeValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fEdgeFill"></div></div>
-                <input type="range" class="adv-range" id="fEdgeMinRange" min="-20" max="20" step="0.5" value="-20">
-                <input type="range" class="adv-range" id="fEdgeMaxRange" min="-20" max="20" step="0.5" value="20">
+            <div class="adv-inputs">
+                <input type="number" id="fEdgeMin" placeholder="Min %" step="0.5">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fEdgeMax" placeholder="Max %" step="0.5">
             </div>
-            <input type="hidden" id="fEdgeMin">
-            <input type="hidden" id="fEdgeMax">
         </div>
 
         <div class="adv-card">
             <div class="adv-card-header">
                 <label class="adv-label">📊 Valor Esperado EV (%)</label>
-                <span class="adv-slider-value" id="fEvValue">Todos</span>
             </div>
-            <div class="adv-slider-wrap">
-                <div class="adv-slider-track"><div class="adv-slider-fill" id="fEvFill"></div></div>
-                <input type="range" class="adv-range" id="fEvMinRange" min="-20" max="20" step="0.5" value="-20">
-                <input type="range" class="adv-range" id="fEvMaxRange" min="-20" max="20" step="0.5" value="20">
+            <div class="adv-inputs">
+                <input type="number" id="fEvMin" placeholder="Min %" step="0.5">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fEvMax" placeholder="Max %" step="0.5">
             </div>
-            <input type="hidden" id="fEvMin">
-            <input type="hidden" id="fEvMax">
         </div>
     </div>
 
@@ -3202,7 +3091,7 @@ function populateSelectOptions() {
 
 function syncAdvCardActiveStates() {
     document.querySelectorAll("#advFiltersPanel .adv-card").forEach(card => {
-        const anyFilled = Array.from(card.querySelectorAll("input:not(.adv-range), select")).some(i => i.value !== "" && i.value != null);
+        const anyFilled = Array.from(card.querySelectorAll("input, select")).some(i => i.value !== "" && i.value != null);
         card.classList.toggle("adv-card-active", anyFilled);
     });
 }
@@ -3441,63 +3330,6 @@ function setupListeners() {
         });
     }
 
-    // Registro global para poder resetear cada slider desde fuera (clear-chip individual y "Limpiar filtros")
-    window.rangeSliders = window.rangeSliders || {};
-
-    const initRangeSlider = (key, prop, { min, max, step, suffix }) => {
-        const minRange = document.getElementById(`f${key}MinRange`);
-        const maxRange = document.getElementById(`f${key}MaxRange`);
-        const fill = document.getElementById(`f${key}Fill`);
-        const valueLabel = document.getElementById(`f${key}Value`);
-        const hiddenMin = document.getElementById(`f${key}Min`);
-        const hiddenMax = document.getElementById(`f${key}Max`);
-        if (!minRange || !maxRange || !fill || !valueLabel) return;
-
-        const card = minRange.closest(".adv-card");
-        const fmt = (v) => (step < 1 ? v.toFixed(2).replace(/\.?0+$/, '') : v);
-
-        const sync = () => {
-            let minVal = parseFloat(minRange.value);
-            let maxVal = parseFloat(maxRange.value);
-
-            // Nunca deja que las manijas se crucen -- empuja la otra en vez de trabarse
-            if (minVal > maxVal) {
-                if (document.activeElement === minRange) { maxVal = minVal; maxRange.value = maxVal; }
-                else { minVal = maxVal; minRange.value = minVal; }
-            }
-
-            const pctMin = ((minVal - min) / (max - min)) * 100;
-            const pctMax = ((maxVal - min) / (max - min)) * 100;
-            fill.style.left = pctMin + '%';
-            fill.style.width = Math.max(0, pctMax - pctMin) + '%';
-
-            const isFullRange = minVal <= min && maxVal >= max;
-            valueLabel.textContent = isFullRange ? 'Todos' : `${fmt(minVal)}${suffix} - ${fmt(maxVal)}${suffix}`;
-            valueLabel.classList.toggle('adv-slider-value-active', !isFullRange);
-
-            if (hiddenMin) hiddenMin.value = isFullRange ? '' : minVal;
-            if (hiddenMax) hiddenMax.value = isFullRange ? '' : maxVal;
-
-            state[prop + 'Min'] = isFullRange ? null : minVal;
-            state[prop + 'Max'] = isFullRange ? null : maxVal;
-
-            if (card) card.classList.toggle('adv-card-active', !isFullRange);
-        };
-
-        minRange.addEventListener('input', () => { sync(); render(); });
-        maxRange.addEventListener('input', () => { sync(); render(); });
-
-        window.rangeSliders[prop] = {
-            reset() {
-                minRange.value = min;
-                maxRange.value = max;
-                sync();
-            }
-        };
-
-        sync();
-    };
-
     // Escuchadores de Filtros Avanzados Cuantitativos
     const bindInput = (id, prop, isFloat = true) => {
         const el = document.getElementById(id);
@@ -3527,17 +3359,26 @@ function setupListeners() {
     bindInput("fCuotaMin", "cuotaMin", false);
     bindInput("fCuotaMax", "cuotaMax", false);
 
-    // Filtros cuantitativos migrados a slider de rango doble (ver initRangeSlider)
-    initRangeSlider("Modelo", "modelo", { min: 0, max: 100, step: 1, suffix: "%" });
-    initRangeSlider("Score", "score", { min: 0, max: 100, step: 1, suffix: "" });
-    initRangeSlider("WinProb", "winProb", { min: 0, max: 100, step: 1, suffix: "%" });
-    initRangeSlider("Divergencia", "divergencia", { min: -100, max: 100, step: 1, suffix: "%" });
-    initRangeSlider("Conf", "conf", { min: 0, max: 100, step: 1, suffix: "%" });
-    initRangeSlider("Stake", "stake", { min: 0, max: 4, step: 0.1, suffix: "%" });
-    initRangeSlider("Bets", "bets", { min: 0, max: 100, step: 1, suffix: "%" });
-    initRangeSlider("Handle", "handle", { min: 0, max: 100, step: 1, suffix: "%" });
-    initRangeSlider("Edge", "edge", { min: -20, max: 20, step: 0.5, suffix: "%" });
-    initRangeSlider("Ev", "ev", { min: -20, max: 20, step: 0.5, suffix: "%" });
+    bindInput("fModeloMin", "modeloMin");
+    bindInput("fModeloMax", "modeloMax");
+    bindInput("fScoreMin", "scoreMin");
+    bindInput("fScoreMax", "scoreMax");
+    bindInput("fWinProbMin", "winProbMin");
+    bindInput("fWinProbMax", "winProbMax");
+    bindInput("fDivergenciaMin", "divergenciaMin");
+    bindInput("fDivergenciaMax", "divergenciaMax");
+    bindInput("fConfMin", "confMin");
+    bindInput("fConfMax", "confMax");
+    bindInput("fStakeMin", "stakeMin");
+    bindInput("fStakeMax", "stakeMax");
+    bindInput("fBetsMin", "betsMin");
+    bindInput("fBetsMax", "betsMax");
+    bindInput("fHandleMin", "handleMin");
+    bindInput("fHandleMax", "handleMax");
+    bindInput("fEdgeMin", "edgeMin");
+    bindInput("fEdgeMax", "edgeMax");
+    bindInput("fEvMin", "evMin");
+    bindInput("fEvMax", "evMax");
 
     const clearBtn = document.getElementById("clearBtn");
     if (clearBtn) {

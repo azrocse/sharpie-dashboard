@@ -15,7 +15,7 @@ SNAPSHOTS_DIR = os.path.join(BASE_DIR, "data", "snapshots")
 HISTORY_DIR = os.path.join(BASE_DIR, "data", "history")
 OUTPUT_DIR = BASE_DIR
 
-MAX_HISTORY_POINTS = 8
+MAX_HISTORY_POINTS = None  # sin tope -- el frontend colapsa a los últimos 5 y expande a pedido
 
 # Mínimo de puntos de historial REALES (bets% y handle% ambos > 0) que debe
 # tener un pick antes de mostrarse en el dashboard. Por debajo de este umbral
@@ -627,12 +627,14 @@ def calculate_signal_stake(market_signal, ev):
     if market_signal == "SMART_MONEY":
         ev_val = ev if ev is not None else 5.0
         if ev_val <= 5.0:
-            return 2.0
-        if ev_val <= 8.5:
-            return round(2.0 + (ev_val - 5.0) / (8.5 - 5.0) * (3.0 - 2.0), 2)
-        if ev_val <= 12.0:
-            return round(3.0 + (ev_val - 8.5) / (12.0 - 8.5) * (4.0 - 3.0), 2)
-        return 4.0
+            raw = 2.0
+        elif ev_val <= 8.5:
+            raw = 2.0 + (ev_val - 5.0) / (8.5 - 5.0) * (3.0 - 2.0)
+        elif ev_val <= 12.0:
+            raw = 3.0 + (ev_val - 8.5) / (12.0 - 8.5) * (4.0 - 3.0)
+        else:
+            raw = 4.0
+        return round(raw * 2) / 2.0  # bloques de 0.5 -- nunca 2.1, 3.7, etc.
 
     if market_signal in ("CONSENSUS", "PUBLIC_HEAVY"):
         return 1.0
