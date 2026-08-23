@@ -1862,6 +1862,41 @@ async function loadData() {
     }
 }
 
+// Auto-refresh: revisa picks.json cada 60s y actualiza el dashboard solo si
+// hay datos nuevos -- sin recargar la página (no pierde filtros ni scroll).
+// Si el archivo se abre como file:// local (sin servidor), el fetch falla y
+// simplemente no hace nada -- el resto del dashboard sigue funcionando igual.
+async function checkForNewPicks() {
+    try {
+        const response = await fetch('picks.json?v=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) return;
+
+        const freshData = await response.json();
+        if (!Array.isArray(freshData)) return;
+
+        const changed = JSON.stringify(freshData) !== JSON.stringify(PICKS);
+        if (!changed) return;
+
+        const prevCount = PICKS.length;
+        PICKS = freshData;
+        populateSelectOptions();
+        render();
+
+        const diff = PICKS.length - prevCount;
+        showAttractiveNotification({
+            title: "🔄 Dashboard actualizado",
+            body: diff > 0 ? `${diff} pick(s) nuevo(s) disponible(s)` : "Los datos se actualizaron",
+            variant: "success"
+        });
+    } catch (e) {
+        // picks.json no accesible (ej. archivo local sin servidor) -- se omite en silencio
+    }
+}
+
+function startAutoRefresh() {
+    setInterval(checkForNewPicks, 60000);
+}
+
 const state = {
     search: "",
     date: "",
@@ -3558,6 +3593,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     setInterval(() => {
         render();
     }, 30000);
+
+    // Auto-refresh: detecta picks nuevos sin necesitar F5
+    startAutoRefresh();
 });
 </script>
 

@@ -1586,6 +1586,13 @@ def generate_dashboard():
     with open(output_file, "w", encoding="utf-8") as file:
         file.write(html_content)
 
+    # picks.json separado -- permite que el frontend haga polling liviano
+    # (sin volver a descargar todo el HTML) para detectar picks nuevos y
+    # refrescarse solo, sin que el usuario tenga que presionar F5.
+    picks_json_path = os.path.join(OUTPUT_DIR, "picks.json")
+    with open(picks_json_path, "w", encoding="utf-8") as file:
+        json.dump(all_events, file, ensure_ascii=False)
+
     print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file
 
