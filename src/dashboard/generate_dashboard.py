@@ -803,6 +803,37 @@ def _load_league_snapshots(league_slug):
     return indexed
 
 
+def _count_changed_points(history_full):
+    """
+    Replica exactamente la deduplicación que hace el frontend
+    (getChangedHistoryEntries en template.html): cuenta solo los puntos donde
+    Bets, Handle o Cuota realmente CAMBIARON respecto al punto anterior. Un
+    pick quieto varios días acumula muchos snapshots idénticos (pipeline cada
+    30 min) que no aportan nada -- contar esos como "puntos de seguimiento"
+    infla el número y ya no coincide con lo que se ve en la tabla expandida.
+    """
+    valid = [h for h in history_full if h.get("betsPct") is not None or h.get("handlePct") is not None or h.get("odds") not in (None, "—")]
+    if not valid:
+        return 0
+
+    has_odds = any(h.get("odds") not in (None, "—") for h in valid)
+
+    count = 0
+    for i, h in enumerate(valid):
+        if i == 0:
+            count += 1
+            continue
+        prev = valid[i - 1]
+        changed = (
+            h.get("betsPct") != prev.get("betsPct")
+            or h.get("handlePct") != prev.get("handlePct")
+            or (has_odds and h.get("odds") != prev.get("odds"))
+        )
+        if changed:
+            count += 1
+    return count
+
+
 def build_real_reason(pattern_tag, coherence, history_count):
     """
     Texto de análisis regenerado con el historial REAL (persistente, cruzando
@@ -1394,7 +1425,7 @@ def build_picks(raw_data):
             continue
 
         coherence = calculate_coherence(pick_history_full)
-        real_reason = build_real_reason(MARKET_SIGNAL_LABELS[market_signal], coherence, len(pick_history_full))
+        real_reason = build_real_reason(MARKET_SIGNAL_LABELS[market_signal], coherence, _count_changed_points(pick_history_full))
         clv = calculate_clv(pick_history_full, iso)
         pick_history = build_pick_history_display(pick_history_full)
 

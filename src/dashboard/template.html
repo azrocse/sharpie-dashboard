@@ -1444,19 +1444,19 @@
             </svg>
         </div>
         <div class="brand-info">
-            <h1>Sharp<span>IE</span> <span class="brand-tag-badge">PRO v2.5</span></h1>
-            <div class="tagline">⚡ Inteligencia Cuantitativa & Rastreo Institucional del Dinero</div>
+            <h1>Sharp<span>IE</span> <span class="brand-tag-badge">DASHBOARD v1.3</span></h1>
+            <div class="tagline">⚡ Encuentra lo que el mercado oculta</div>
         </div>
     </div>
     <div class="header-meta">
         <div class="timestamp-box">
             <div class="time-display">
-                <span class="time-label">⏱️ Reloj Real</span>
+                <span class="time-label">⏱️ Hora</span>
                 <div id="clock" class="mono">--:--:--</div>
             </div>
             <div class="time-divider"></div>
             <div class="updated-display">
-                <span class="time-label">📅 Reporte CDMX</span>
+                <span class="time-label">📅 Reporte (Hora CDMX)</span>
                 <div class="updated-val"><span id="generatedAtVal">__GENERATED_AT__</span></div>
             </div>
         </div>
@@ -1569,8 +1569,8 @@
 <div class="analytics-section">
     <div class="chart-card">
         <div class="chart-header">
-            <span>📈 Distribución de Edge por Encuentro</span>
-            <span class="mono" style="font-size:11px; color:var(--muted);">Edge vs Score del Modelo</span>
+            <span>📈 Distribución por encuentro</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">Edge vs Score</span>
         </div>
         <div class="chart-container">
             <canvas id="edgeScatterChart"></canvas>
@@ -1905,7 +1905,7 @@ function initCharts() {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { title: { display: true, text: 'Score del Modelo', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
+                    x: { title: { display: true, text: 'Score (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
                     y: { title: { display: true, text: 'Edge (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } }
                 },
                 plugins: { legend: { display: false } }
