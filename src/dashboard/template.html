@@ -1894,7 +1894,7 @@ async function checkForNewPicks() {
 }
 
 function startAutoRefresh() {
-    setInterval(checkForNewPicks, 60000);
+    setInterval(checkForNewPicks, 90000); // cada 90s -- proporcional al ciclo de 5 min del scraper
 }
 
 const state = {
