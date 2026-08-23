@@ -1614,6 +1614,8 @@
             <option value="1h">⏳ Próxima 1 hora</option>
             <option value="2h">⏳ Próximas 2 horas</option>
             <option value="today">📅 Eventos de Hoy</option>
+            <option value="tomorrow">📅 Eventos de Mañana</option>
+            <option value="this_week">📆 Eventos de Esta Semana</option>
         </select>
         <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
         <select id="fTrend">
@@ -2756,12 +2758,24 @@ function applyFiltersAndSort(list) {
         if (state.timeRange && p.iso) {
             const timer = getCountdownText(p.iso);
             const nowLocal = new Date();
-            const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
+            const toDateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            const todayStr = toDateStr(nowLocal);
+
+            const tomorrowDate = new Date(nowLocal);
+            tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+            const tomorrowStr = toDateStr(tomorrowDate);
+
+            const weekEndDate = new Date(nowLocal);
+            weekEndDate.setDate(weekEndDate.getDate() + 6);
+            const weekEndStr = toDateStr(weekEndDate);
+
             if (state.timeRange === "in_play" && !timer.expired) return false;
             if (state.timeRange === "30m" && (timer.diffMin < 0 || timer.diffMin > 30)) return false;
             if (state.timeRange === "1h" && (timer.diffMin < 0 || timer.diffMin > 60)) return false;
             if (state.timeRange === "2h" && (timer.diffMin < 0 || timer.diffMin > 120)) return false;
             if (state.timeRange === "today" && p.date !== todayStr) return false;
+            if (state.timeRange === "tomorrow" && p.date !== tomorrowStr) return false;
+            if (state.timeRange === "this_week" && (p.date < todayStr || p.date > weekEndStr)) return false;
         }
 
         if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
@@ -3005,6 +3019,68 @@ function watchlistDeltaArrow(current, snapshot) {
     return diff > 0 ? ` <span class="wl-delta wl-up">▲ +${diff.toFixed(1)}</span>` : ` <span class="wl-delta wl-down">▼ ${diff.toFixed(1)}</span>`;
 }
 
+// Veredicto de seguimiento: compara el momento actual contra el snapshot de
+// cuando se empezó a seguir, y clasifica en APOSTABLE / DESCARTE / MONITOREAR
+// según las reglas de movimiento de línea (no según los umbrales de señal
+// de mercado -- esto es específico del comportamiento DESDE que se sigue).
+function watchlistVerdict(p, snap) {
+    const handleNow = p.handlePct != null ? Number(p.handlePct) : null;
+    const handleSnap = snap.handlePct != null ? Number(snap.handlePct) : null;
+    const betsNow = p.betsPct != null ? Number(p.betsPct) : null;
+    const betsSnap = snap.betsPct != null ? Number(snap.betsPct) : null;
+    const divNow = calculateSmartMoney(p);
+    const divSnap = snap.divergence != null ? Number(snap.divergence) : null;
+
+    if (handleNow == null || handleSnap == null || betsNow == null || betsSnap == null || divSnap == null) {
+        return { verdict: 'MONITOREAR', text: 'datos insuficientes para comparar contra el punto de apertura del seguimiento.' };
+    }
+
+    const handleDelta = handleNow - handleSnap;
+    const betsDelta = betsNow - betsSnap;
+    const divDelta = divNow - divSnap;
+
+    const oddsDecNow = parseOddsToDecimal(p.odds || p.cuota);
+    const oddsDecSnap = parseOddsToDecimal(snap.odds);
+    const oddsGotExpensive = (oddsDecNow != null && oddsDecSnap != null) ? oddsDecNow < oddsDecSnap - 0.01 : false;
+    const oddsGotCheaper = (oddsDecNow != null && oddsDecSnap != null) ? oddsDecNow > oddsDecSnap + 0.01 : false;
+    const oddsFlat = !oddsGotExpensive && !oddsGotCheaper;
+
+    // 2. DESCARTE -- basta con que se cumpla una sola condición
+    if (handleDelta <= -10) {
+        return { verdict: 'DESCARTE', text: `Handle colapsando (${handleDelta.toFixed(1)} pts desde que se sigue) -- la convicción del dinero grande se retiró.` };
+    }
+    if (divNow < 0 || divDelta <= -10) {
+        return { verdict: 'DESCARTE', text: divNow < 0 ? 'Divergencia se volvió negativa -- el % de Bets ya supera al de Handle.' : `Caída severa de divergencia (${divDelta.toFixed(1)} pts) desde que se sigue.` };
+    }
+    if (betsNow >= 85 && divNow < 0 && oddsGotExpensive) {
+        return { verdict: 'DESCARTE', text: 'Posible trap: Bets extremadamente altas con divergencia negativa y cuota encareciendo solo por empuje del público.' };
+    }
+    if (handleDelta > 0 && oddsGotCheaper && Math.abs(oddsDecNow - oddsDecSnap) >= 0.05) {
+        return { verdict: 'DESCARTE', text: 'Reverse line movement inverso: el Handle sube pero la cuota se abarata sin justificación clara.' };
+    }
+
+    // 1. APOSTABLE -- se necesitan al menos 3 de 4
+    const cond1 = handleNow >= 80 && handleDelta >= -0.05;
+    const cond2 = divNow >= 8 && divDelta >= -0.05;
+    const cond3 = betsDelta < 0 || (betsDelta > 0 && betsDelta < handleDelta);
+    const cond4 = oddsGotExpensive || (oddsFlat && handleNow >= 85);
+    const metCount = [cond1, cond2, cond3, cond4].filter(Boolean).length;
+
+    if (metCount >= 3) {
+        return { verdict: 'APOSTABLE', text: `Handle ${handleNow}% sostenido, divergencia ${divNow >= 0 ? '+' : ''}${divNow}% y cuota confirmando -- ${metCount}/4 señales de línea sharp presentes.` };
+    }
+
+    // 3. MONITOREAR -- estado por defecto si no calificó para descarte ni apostable
+    if (handleNow >= 75 && divDelta < 0) {
+        return { verdict: 'MONITOREAR', text: 'Handle alto pero divergencia bajando levemente -- posible entrada de Bets de última hora.' };
+    }
+    const timer = p.iso ? getCountdownText(p.iso) : null;
+    if (timer && !timer.expired && timer.diffMin > 90) {
+        return { verdict: 'MONITOREAR', text: 'Faltan más de 1.5h para el evento y la tendencia todavía no muestra coherencia clara.' };
+    }
+    return { verdict: 'MONITOREAR', text: 'Sin patrón claro todavía -- se necesita más movimiento para confirmar.' };
+}
+
 function watchlistPanelHtml(p) {
     const list = loadWatchlist();
     const entry = list[getWatchlistId(p)];
@@ -3014,6 +3090,9 @@ function watchlistPanelHtml(p) {
     const currentDivergence = calculateSmartMoney(p);
     const followedDate = entry.followedAt ? new Date(entry.followedAt) : null;
     const followedText = followedDate ? followedDate.toLocaleString() : '';
+    const v = watchlistVerdict(p, snap);
+    const verdictCls = v.verdict === 'APOSTABLE' ? 'good' : (v.verdict === 'DESCARTE' ? 'bad' : 'warn');
+    const verdictIcon = v.verdict === 'APOSTABLE' ? '✅' : (v.verdict === 'DESCARTE' ? '🗑️' : '👀');
 
     return `<div class="watchlist-panel">
         <div class="watchlist-panel-title">👁 En seguimiento desde ${escapeHTML(followedText)}</div>
@@ -3023,6 +3102,7 @@ function watchlistPanelHtml(p) {
             <span class="badge-tag neutral">⚡ Divergencia <b>${currentDivergence}%</b>${watchlistDeltaArrow(currentDivergence, snap.divergence)}</span>
             <span class="badge-tag neutral">💰 Cuota apertura <b>${escapeHTML(String(snap.odds ?? '—'))}</b> → <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>
         </div>
+        <div class="reasoning-text"><span class="badge-tag ${verdictCls}" style="margin-right:6px;">${verdictIcon} ${v.verdict}</span>${escapeHTML(v.text)}</div>
     </div>`;
 }
 
