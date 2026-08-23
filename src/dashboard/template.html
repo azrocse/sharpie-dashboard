@@ -736,6 +736,42 @@
             border-color: var(--muted) !important;
         }
 
+        .premium-pick-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            border: 1px solid #a78bfa;
+            border-radius: 999px;
+            background: rgba(167, 139, 250, 0.12);
+            color: #a78bfa;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+        }
+
+        .new-pick-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            border: 1px solid var(--teal);
+            border-radius: 999px;
+            background: var(--teal-soft);
+            color: var(--teal);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+            animation: pulseNew 1.6s ease-in-out infinite;
+        }
+
+        @keyframes pulseNew {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+
         .free-pick-badge {
             display: inline-flex;
             align-items: center;
@@ -1866,6 +1902,8 @@ async function loadData() {
 // hay datos nuevos -- sin recargar la página (no pierde filtros ni scroll).
 // Si el archivo se abre como file:// local (sin servidor), el fetch falla y
 // simplemente no hace nada -- el resto del dashboard sigue funcionando igual.
+let RECENTLY_ADDED_IDS = new Set();
+
 async function checkForNewPicks() {
     try {
         const response = await fetch('picks.json?v=' + Date.now(), { cache: 'no-store' });
@@ -1877,17 +1915,29 @@ async function checkForNewPicks() {
         const changed = JSON.stringify(freshData) !== JSON.stringify(PICKS);
         if (!changed) return;
 
-        const prevCount = PICKS.length;
+        const oldKeys = new Set(PICKS.map(getWatchlistId));
+        const newKeys = new Set(freshData.map(getWatchlistId));
+        const addedKeys = [...newKeys].filter(k => !oldKeys.has(k));
+        const removedCount = [...oldKeys].filter(k => !newKeys.has(k)).length;
+
         PICKS = freshData;
+        RECENTLY_ADDED_IDS = new Set(addedKeys);
         populateSelectOptions();
         render();
 
-        const diff = PICKS.length - prevCount;
+        const parts = [];
+        if (addedKeys.length > 0) parts.push(`${addedKeys.length} nuevo(s)`);
+        if (removedCount > 0) parts.push(`${removedCount} finalizado(s)/fuera de tiempo`);
         showAttractiveNotification({
             title: "🔄 Dashboard actualizado",
-            body: diff > 0 ? `${diff} pick(s) nuevo(s) disponible(s)` : "Los datos se actualizaron",
+            body: parts.length > 0 ? parts.join(" · ") : "Los datos se actualizaron",
             variant: "success"
         });
+
+        // El badge "NUEVO" se muestra 3 min y luego se limpia solo
+        if (addedKeys.length > 0) {
+            setTimeout(() => { RECENTLY_ADDED_IDS.clear(); render(); }, 180000);
+        }
     } catch (e) {
         // picks.json no accesible (ej. archivo local sin servidor) -- se omite en silencio
     }
@@ -2148,13 +2198,7 @@ function unifiedDecisionPanelHtml(p) {
         `<span class="badge-tag ${smartMoneyVal >= 4 ? 'good' : (smartMoneyVal > 0 ? 'warn' : 'neutral')}">💰 Smart Money <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
     ];
 
-    let advExtra = '';
-    if (p.coherence === "confirmada" || p.coherence === "contradictoria") {
-        const ok = p.coherence === "confirmada";
-        advExtra = `<div class="badge-tag-grid" style="margin-top:6px;"><span class="badge-tag ${ok ? 'good' : 'bad'}">${ok ? '✅' : '⚠️'} Coherencia <b>${ok ? 'confirmada' : 'contradictoria'}</b></span></div>`;
-    }
-
-    return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div>${advExtra}</div>`;
+    return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div></div>`;
 }
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
@@ -2189,6 +2233,14 @@ function setupThemeToggle() {
 function isEventPending(p) {
     const status = (p.status || "").toUpperCase();
     if (status === "FINISHED" || status === "WON" || status === "LOST" || status === "CANCELLED") return false;
+
+    if (p.iso) {
+        const kickoff = new Date(p.iso).getTime();
+        if (!isNaN(kickoff)) {
+            const minutesSinceKickoff = (Date.now() - kickoff) / 60000;
+            if (minutesSinceKickoff > 15) return false;
+        }
+    }
     return true;
 }
 
@@ -2953,7 +3005,7 @@ function getHeaderTag(category) {
         case 'FREE':
             return "🔓 FREE PICK";
         default:
-            return "🔥 PICK";
+            return "💎 PREMIUM PICK";
     }
 }
 
@@ -3088,6 +3140,15 @@ function watchlistDeltaArrow(current, snapshot) {
 // cuando se empezó a seguir, y clasifica en APOSTABLE / DESCARTE / MONITOREAR
 // según las reglas de movimiento de línea (no según los umbrales de señal
 // de mercado -- esto es específico del comportamiento DESDE que se sigue).
+function pctChange(current, snapshot) {
+    if (current == null || snapshot == null || snapshot === 0) return null;
+    return ((current - snapshot) / Math.abs(snapshot)) * 100;
+}
+
+// Veredicto de SEGUIMIENTO (distinto de la Señal de la card -- esto compara
+// el movimiento desde que se empezó a seguir, no el estado actual del mercado).
+// Movimiento en % relativo, no en puntos absolutos, para que aplique parejo
+// sin importar el nivel de partida de cada métrica.
 function watchlistVerdict(p, snap) {
     const handleNow = p.handlePct != null ? Number(p.handlePct) : null;
     const handleSnap = snap.handlePct != null ? Number(snap.handlePct) : null;
@@ -3096,54 +3157,45 @@ function watchlistVerdict(p, snap) {
     const divNow = calculateSmartMoney(p);
     const divSnap = snap.divergence != null ? Number(snap.divergence) : null;
 
+    const oddsNowRaw = parseInt(String(p.odds || p.cuota || '').replace('+', ''), 10);
+    const oddsSnapRaw = parseInt(String(snap.odds || '').replace('+', ''), 10);
+    const hasOdds = !isNaN(oddsNowRaw) && !isNaN(oddsSnapRaw);
+    const oddsDelta = hasOdds ? (oddsNowRaw - oddsSnapRaw) : null; // positivo = "sube" (favorable)
+
     if (handleNow == null || handleSnap == null || betsNow == null || betsSnap == null || divSnap == null) {
-        return { verdict: 'MONITOREAR', text: 'datos insuficientes para comparar contra el punto de apertura del seguimiento.' };
+        return { verdict: 'MONITOREAR', text: 'Datos insuficientes para comparar contra el punto de apertura del seguimiento.' };
     }
 
-    const handleDelta = handleNow - handleSnap;
-    const betsDelta = betsNow - betsSnap;
-    const divDelta = divNow - divSnap;
+    const handlePctMove = pctChange(handleNow, handleSnap);
+    const betsPctMove = pctChange(betsNow, betsSnap);
+    const divPctMove = pctChange(divNow, divSnap);
 
-    const oddsDecNow = parseOddsToDecimal(p.odds || p.cuota);
-    const oddsDecSnap = parseOddsToDecimal(snap.odds);
-    const oddsGotExpensive = (oddsDecNow != null && oddsDecSnap != null) ? oddsDecNow < oddsDecSnap - 0.01 : false;
-    const oddsGotCheaper = (oddsDecNow != null && oddsDecSnap != null) ? oddsDecNow > oddsDecSnap + 0.01 : false;
-    const oddsFlat = !oddsGotExpensive && !oddsGotCheaper;
-
-    // 2. DESCARTE -- basta con que se cumpla una sola condición
-    if (handleDelta <= -10) {
-        return { verdict: 'DESCARTE', text: `Handle colapsando (${handleDelta.toFixed(1)} pts desde que se sigue) -- la convicción del dinero grande se retiró.` };
+    // DESCARTE -- basta con que se cumpla UNA condición severa
+    if (handlePctMove !== null && handlePctMove <= -40) {
+        return { verdict: 'DESCARTE', text: `Handle cayó ${handlePctMove.toFixed(0)}% desde que se sigue (${handleSnap}% → ${handleNow}%) -- el dinero grande se retiró.` };
     }
-    if (divNow < 0 || divDelta <= -10) {
-        return { verdict: 'DESCARTE', text: divNow < 0 ? 'Divergencia se volvió negativa -- el % de Bets ya supera al de Handle.' : `Caída severa de divergencia (${divDelta.toFixed(1)} pts) desde que se sigue.` };
+    if (betsPctMove !== null && betsPctMove >= 50) {
+        return { verdict: 'DESCARTE', text: `Bets subió ${betsPctMove.toFixed(0)}% desde que se sigue (${betsSnap}% → ${betsNow}%) -- entrada fuerte del público.` };
     }
-    if (betsNow >= 85 && divNow < 0 && oddsGotExpensive) {
-        return { verdict: 'DESCARTE', text: 'Posible trap: Bets extremadamente altas con divergencia negativa y cuota encareciendo solo por empuje del público.' };
+    if (divNow <= 0 || (divPctMove !== null && divPctMove <= -70)) {
+        return { verdict: 'DESCARTE', text: divNow <= 0 ? 'La divergencia se desplomó a cero o negativa desde que se sigue.' : `Divergencia cayó ${divPctMove.toFixed(0)}% desde que se sigue.` };
     }
-    if (handleDelta > 0 && oddsGotCheaper && Math.abs(oddsDecNow - oddsDecSnap) >= 0.05) {
-        return { verdict: 'DESCARTE', text: 'Reverse line movement inverso: el Handle sube pero la cuota se abarata sin justificación clara.' };
+    if (hasOdds && oddsDelta <= -35) {
+        return { verdict: 'DESCARTE', text: `Cuota se encareció con fuerza (${snap.odds} → ${p.odds || p.cuota}) -- el valor original ya no está.` };
     }
 
-    // 1. APOSTABLE -- se necesitan al menos 3 de 4
-    const cond1 = handleNow >= 80 && handleDelta >= -0.05;
-    const cond2 = divNow >= 8 && divDelta >= -0.05;
-    const cond3 = betsDelta < 0 || (betsDelta > 0 && betsDelta < handleDelta);
-    const cond4 = oddsGotExpensive || (oddsFlat && handleNow >= 85);
-    const metCount = [cond1, cond2, cond3, cond4].filter(Boolean).length;
+    // APOSTABLE -- las 4 métricas se mantienen o mejoran
+    const cond1 = handlePctMove !== null && handlePctMove >= -0.5;   // Handle se mantiene o sube
+    const cond2 = betsPctMove !== null && betsPctMove <= 0.5;        // Bets baja o se mantiene
+    const cond3 = divPctMove !== null && divPctMove >= -0.5;         // Divergencia se mantiene o sube
+    const cond4 = hasOdds && oddsDelta >= 0;                         // Cuota se mantiene o sube
 
-    if (metCount >= 3) {
-        return { verdict: 'APOSTABLE', text: `Handle ${handleNow}% sostenido, divergencia ${divNow >= 0 ? '+' : ''}${divNow}% y cuota confirmando -- ${metCount}/4 señales de línea sharp presentes.` };
+    if (cond1 && cond2 && cond3 && cond4) {
+        return { verdict: 'APOSTABLE', text: `Handle, Divergencia y Cuota se mantienen o mejoran, y Bets no creció -- línea confirmando a favor desde que se sigue.` };
     }
 
-    // 3. MONITOREAR -- estado por defecto si no calificó para descarte ni apostable
-    if (handleNow >= 75 && divDelta < 0) {
-        return { verdict: 'MONITOREAR', text: 'Handle alto pero divergencia bajando levemente -- posible entrada de Bets de última hora.' };
-    }
-    const timer = p.iso ? getCountdownText(p.iso) : null;
-    if (timer && !timer.expired && timer.diffMin > 90) {
-        return { verdict: 'MONITOREAR', text: 'Faltan más de 1.5h para el evento y la tendencia todavía no muestra coherencia clara.' };
-    }
-    return { verdict: 'MONITOREAR', text: 'Sin patrón claro todavía -- se necesita más movimiento para confirmar.' };
+    // MONITOREAR -- movimiento leve en contra, sin cruzar el umbral de descarte
+    return { verdict: 'MONITOREAR', text: 'Movimiento leve en contra desde que se sigue -- todavía dentro de rango normal, sin señal de descarte.' };
 }
 
 function watchlistPanelHtml(p) {
@@ -3167,7 +3219,7 @@ function watchlistPanelHtml(p) {
             <span class="badge-tag neutral">⚡ Divergencia <b>${currentDivergence}%</b>${watchlistDeltaArrow(currentDivergence, snap.divergence)}</span>
             <span class="badge-tag neutral">💰 Cuota apertura <b>${escapeHTML(String(snap.odds ?? '—'))}</b> → <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>
         </div>
-        <div class="reasoning-text"><span class="badge-tag ${verdictCls}" style="margin-right:6px;">${verdictIcon} ${v.verdict}</span>${escapeHTML(v.text)}</div>
+        <div class="reasoning-text"><span class="badge-tag ${verdictCls}" style="margin-right:6px;">${verdictIcon} ${v.verdict} (desde seguimiento)</span>${escapeHTML(v.text)}</div>
     </div>`;
 }
 
@@ -3276,7 +3328,9 @@ function render() {
         const isWhale = p.pickCategory === "WHALE";
         const isEditor = p.pickCategory === "EDITORS";
         const isFree = p.pickCategory === "FREE";
+        const isPremium = !isWhale && !isEditor && !isFree;
         const isFeatured = isFeaturedPick(p);
+        const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
         const editorEval = getEvolutionAnalysis(p);
 
         let cardClasses = "pcard";
@@ -3307,10 +3361,12 @@ function render() {
                             <span class="badge-action" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">
                                 ${config.label}
                             </span>
+                            ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
                             ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
                             ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
                             ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
                             ${isFree ? `<span class="free-pick-badge">🔓 FREE</span>` : ''}
+                            ${isPremium ? `<span class="premium-pick-badge">💎 PREMIUM PICK</span>` : ''}
                         </div>
                         <div class="pcard-header-line2">
                             <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
@@ -3349,8 +3405,6 @@ function render() {
 
                     ${buildEvolutionHtml(p)}
                     ${unifiedDecisionPanelHtml(p)}
-
-                    ${isWhale ? `<div class="whale-banner">🐋 ALERTA WHALE: Movimiento Institucional Detectado</div>` : ''}
 
                     ${p.reason ? `<div class="reasoning-text">💡 <b>Análisis:</b> ${escapeHTML(p.reason)}</div>` : ''}
                 </div>
