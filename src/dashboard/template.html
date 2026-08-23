@@ -1405,23 +1405,53 @@
             to { opacity: 0.5; }
         }
 
-        @media(max-width: 950px) {
+        /* ============================================================
+           RESPONSIVE -- Laptop (default), Tablet (<=1024px), Móvil (<=640px)
+           ============================================================ */
+
+        /* TABLET (incluye laptops chicos e iPads) */
+        @media(max-width: 1024px) {
             .analytics-section { grid-template-columns: 1fr; }
+            .badge-tag-grid-3x3 { grid-template-columns: repeat(2, 1fr); }
+            #cardsView { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
         }
+
+        /* MÓVIL */
         @media(max-width: 640px) {
             body { padding: 14px; }
             .header { flex-direction: column; align-items: flex-start; }
-            .header-meta { width: 100%; justify-content: space-between; }
+            .header-meta { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
             .brand-info h1 { font-size: 22px; }
             .toolbar { padding: 10px; }
             .search-box { min-width: 100%; }
-            #cardsView { gap: 14px; }
+            .filter-row { gap: 6px; }
+            .filter-row select,
+            .filter-row .btn-chip,
+            .filter-row .view-mode-btn,
+            .filter-row .btn-adv-toggle,
+            .filter-row .clear-btn { flex: 1 1 auto; min-width: 0; }
+            #cardsView { grid-template-columns: 1fr; gap: 14px; }
             .pcard { padding: 14px; }
-            .grid-metrics { font-size: 11px; }
+            .grid-metrics { grid-template-columns: 1fr 1fr; font-size: 11px; }
+            .decision-panel-grid { grid-template-columns: 1fr; }
+            .badge-tag-grid-3x3 { grid-template-columns: 1fr 1fr; }
+            .chart-card { padding: 12px; }
+            .chart-container { height: 180px; }
+            .history-evolution-table { min-width: 480px; }
             .history-evolution-table th,
             .history-evolution-table td { font-size: 10px; padding: 2px 4px 2px 0; }
-            .stat-popup { width: 280px; }
+            .stat-popup { width: 280px; max-width: calc(100vw - 32px); }
             .adv-filters-grid { grid-template-columns: 1fr; }
+            .adv-inputs { flex-wrap: wrap; }
+            .pcard-action-row { flex-direction: column; }
+            .pcard-action-row-item { width: 100%; }
+        }
+
+        /* MÓVIL MUY CHICO (iPhone SE y similares) */
+        @media(max-width: 380px) {
+            .grid-metrics { grid-template-columns: 1fr; }
+            .badge-tag-grid-3x3 { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 
@@ -1609,7 +1639,7 @@
         <select id="fDate"><option value="">📆 Todas las fechas</option></select>
         <select id="fTimeRange">
             <option value="">⏱️ Hora / Rango</option>
-            <option value="in_play">🔴 En juego / Iniciados</option>
+            <option value="in_play">🔴 En juego</option>
             <option value="30m">⏳ Próximos 30 min</option>
             <option value="1h">⏳ Próxima 1 hora</option>
             <option value="2h">⏳ Próximas 2 horas</option>
