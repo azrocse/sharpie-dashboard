@@ -772,22 +772,6 @@
             50% { opacity: 0.55; }
         }
 
-        .updated-pick-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 7px;
-            border: 1px solid var(--amber);
-            border-radius: 999px;
-            background: var(--amber-soft);
-            color: var(--amber);
-            font-size: 9px;
-            font-weight: 900;
-            letter-spacing: .25px;
-            white-space: nowrap;
-            animation: pulseNew 1.6s ease-in-out infinite;
-        }
-
         .free-pick-badge {
             display: inline-flex;
             align-items: center;
@@ -1919,8 +1903,6 @@ async function loadData() {
 // Si el archivo se abre como file:// local (sin servidor), el fetch falla y
 // simplemente no hace nada -- el resto del dashboard sigue funcionando igual.
 let RECENTLY_ADDED_IDS = new Set();
-let RECENTLY_UPDATED_IDS = new Set();
-let ACTIVE_FILTER_MATCH_KEYS = new Set();
 
 async function checkForNewPicks() {
     try {
@@ -1933,32 +1915,13 @@ async function checkForNewPicks() {
         const changed = JSON.stringify(freshData) !== JSON.stringify(PICKS);
         if (!changed) return;
 
-        const oldByKey = new Map(PICKS.map(p => [getWatchlistId(p), p]));
+        const oldKeys = new Set(PICKS.map(getWatchlistId));
         const newKeys = new Set(freshData.map(getWatchlistId));
-        const addedKeys = [...newKeys].filter(k => !oldByKey.has(k));
-        const removedCount = [...oldByKey.keys()].filter(k => !newKeys.has(k)).length;
-
-        // Picks que YA existían pero cambiaron de valor (Bets/Handle/Cuota/Stake/etc)
-        const updatedKeys = freshData
-            .filter(p => {
-                const key = getWatchlistId(p);
-                const prev = oldByKey.get(key);
-                return prev && JSON.stringify(prev) !== JSON.stringify(p);
-            })
-            .map(getWatchlistId);
-
-        // Comprobación de filtro activo: si el usuario dejó un filtro puesto
-        // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
-        // revisa en cada refresh qué picks entran o salen de ese filtro
-        // específico -- aviso aparte del genérico de arriba. El snapshot
-        // "antes" se toma justo antes de renderizar (render() resincroniza
-        // ACTIVE_FILTER_MATCH_KEYS siempre, incluso si el usuario cambió el
-        // filtro a mano entre revisiones).
-        const beforeMatchKeys = new Set(ACTIVE_FILTER_MATCH_KEYS);
+        const addedKeys = [...newKeys].filter(k => !oldKeys.has(k));
+        const removedCount = [...oldKeys].filter(k => !newKeys.has(k)).length;
 
         PICKS = freshData;
         RECENTLY_ADDED_IDS = new Set(addedKeys);
-        RECENTLY_UPDATED_IDS = new Set(updatedKeys);
         populateSelectOptions();
         render();
 
@@ -1974,39 +1937,12 @@ async function checkForNewPicks() {
 
         const parts = [];
         if (addedKeys.length > 0) parts.push(`${addedKeys.length} nuevo(s)`);
-        if (updatedKeys.length > 0) parts.push(`${updatedKeys.length} actualizado(s)`);
         if (removedCount > 0) parts.push(`${removedCount} finalizado(s)/fuera de tiempo`);
         showAttractiveNotification({
             title: "🔄 Dashboard actualizado",
             body: parts.length > 0 ? parts.join(" · ") : "Los datos se actualizaron",
             variant: "success"
         });
-
-        // Badges temporales (NUEVO / ACTUALIZADO) se limpian solos a los 3 min
-        if (addedKeys.length > 0 || updatedKeys.length > 0) {
-            setTimeout(() => { RECENTLY_ADDED_IDS.clear(); RECENTLY_UPDATED_IDS.clear(); render(); }, 180000);
-        }
-
-        // Comprobación de filtro activo: si el usuario dejó un filtro puesto
-        // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
-        // revisa en cada refresh qué picks entran o salen de ese filtro
-        // específico -- aviso aparte del genérico de arriba.
-        if (isAnyFilterActive() && beforeMatchKeys.size > 0) {
-            const matchingKeys = new Set(ACTIVE_FILTER_MATCH_KEYS);
-            const enteredCount = [...matchingKeys].filter(k => !beforeMatchKeys.has(k)).length;
-            const exitedCount = [...beforeMatchKeys].filter(k => !matchingKeys.has(k)).length;
-
-            if (enteredCount > 0 || exitedCount > 0) {
-                const fparts = [];
-                if (enteredCount > 0) fparts.push(`${enteredCount} nuevo(s) cumplen`);
-                if (exitedCount > 0) fparts.push(`${exitedCount} ya no cumplen`);
-                showAttractiveNotification({
-                    title: "🎯 Tu filtro activo cambió",
-                    body: fparts.join(" · "),
-                    variant: "info"
-                });
-            }
-        }
 
         // El badge "NUEVO" se muestra 3 min y luego se limpia solo
         if (addedKeys.length > 0) {
@@ -2060,20 +1996,6 @@ const state = {
     winProbMax: null,
     recommendation: ""
 };
-
-function isAnyFilterActive() {
-    const s = state;
-    const numericKeys = [
-        "modeloMin","modeloMax","cuotaMin","cuotaMax","edgeMin","edgeMax",
-        "betsMin","betsMax","handleMin","handleMax","scoreMin","scoreMax",
-        "evMin","evMax","stakeMin","stakeMax","divergenciaMin","divergenciaMax",
-        "confMin","confMax","winProbMin","winProbMax"
-    ];
-    if (numericKeys.some(k => s[k] !== null && s[k] !== undefined)) return true;
-    if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
-    if (s.editorOnly || s.whaleOnly || s.freePickOnly || s.featuredOnly || s.watchlistOnly) return true;
-    return false;
-}
 
 // Parte 3: 5 señales de mercado homologadas a inglés -- únicas, calculadas
 // en el backend (p.marketSignal / p.trendKey). El frontend solo pinta.
@@ -3388,8 +3310,6 @@ function render() {
     const pendingPicks = PICKS.filter(p => isEventPending(p));
     const activeList = applyFiltersAndSort(pendingPicks);
 
-    ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getWatchlistId));
-
     updateMetrics(activeList);
     updateChartsData(activeList);
 
@@ -3421,7 +3341,6 @@ function render() {
         const isPremium = !isWhale && !isEditor && !isFree;
         const isFeatured = isFeaturedPick(p);
         const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
-        const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
         const editorEval = getEvolutionAnalysis(p);
 
         let cardClasses = "pcard";
@@ -3453,7 +3372,6 @@ function render() {
                                 ${config.label}
                             </span>
                             ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
-                            ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
                             ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
                             ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
                             ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
@@ -3498,6 +3416,7 @@ function render() {
                     ${buildEvolutionHtml(p)}
                     ${unifiedDecisionPanelHtml(p)}
 
+                    ${p.reason ? `<div class="reasoning-text">💡 <b>Análisis:</b> ${escapeHTML(p.reason)}</div>` : ''}
                 </div>
 
                 <div style="margin-top: 14px;">
