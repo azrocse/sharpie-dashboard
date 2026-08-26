@@ -2066,6 +2066,7 @@
 
 <script>
 let PICKS = [];
+let STATS_PUBLIC = (typeof __STATS_PUBLIC_JSON__ !== "undefined") ? __STATS_PUBLIC_JSON__ : null;
 
 // Reloj en tiempo real
 function startRealtimeClock() {
@@ -3981,7 +3982,15 @@ function translateFirebaseError(message) {
     if (m.includes("auth/email-already-in-use")) return "Ese correo ya tiene una cuenta -- inicia sesión.";
     if (m.includes("auth/weak-password")) return "La contraseña debe tener al menos 6 caracteres.";
     if (m.includes("auth/popup-closed-by-user")) return "Se cerró la ventana de Google antes de terminar.";
+    if (m.includes("auth/unauthorized-domain")) return "Este dominio no está autorizado en Firebase (Authentication -> Settings -> Authorized domains).";
+    if (m.includes("auth/network-request-failed")) return "Fallo de red -- revisa tu conexión.";
+    if (m.includes("auth/configuration-not-found") || m.includes("auth/invalid-api-key")) return "Firebase mal configurado -- revisa firebaseConfig y que Authentication esté activado.";
     return "No se pudo completar la acción. Intenta de nuevo.";
+}
+
+function reportAuthError(context, e) {
+    console.error(`[Auth:${context}]`, e);
+    showLoginError(e.message);
 }
 
 async function handleEmailSignIn() {
@@ -3991,7 +4000,7 @@ async function handleEmailSignIn() {
     try {
         await fbAuth.signInWithEmailAndPassword(email, pass);
         closeLoginModal();
-    } catch (e) { showLoginError(e.message); }
+    } catch (e) { reportAuthError("signIn", e); }
 }
 
 async function handleEmailSignUp() {
@@ -4001,7 +4010,7 @@ async function handleEmailSignUp() {
     try {
         await fbAuth.createUserWithEmailAndPassword(email, pass);
         closeLoginModal();
-    } catch (e) { showLoginError(e.message); }
+    } catch (e) { reportAuthError("signUp", e); }
 }
 
 async function handleGoogleSignIn() {
@@ -4009,7 +4018,7 @@ async function handleGoogleSignIn() {
     try {
         await fbAuth.signInWithPopup(provider);
         closeLoginModal();
-    } catch (e) { showLoginError(e.message); }
+    } catch (e) { reportAuthError("googleSignIn", e); }
 }
 
 function handleSignOut() {
