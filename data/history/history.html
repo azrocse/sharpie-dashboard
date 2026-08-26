@@ -338,7 +338,7 @@ async function checkDate(date) {
     return null;
 }
 
-/* DESCARGA Y CONSOLIDACIÓN DE TODOS LOS JSON */
+/* DESCARGA Y CONSOLIDACIÓN RESILIENTE */
 async function loadAllHistories() {
     status.textContent = `Descargando mega sábana (${availableDates.length} archivos)...`;
     masterPicksList = [];
@@ -349,11 +349,38 @@ async function loadAllHistories() {
             const res = await fetch(url);
             if (!res.ok) return [];
             const data = await res.json();
-            const picks = Array.isArray(data.picks) ? data.picks : [];
             
-            // Inyectar el origen a cada registro
-            return picks.map(p => ({ ...p, _fileSource: dateStr }));
+            // Extracción ultrasensible de picks (soporta arreglos, objetos anidados o estructuras por liga)
+            let rawPicks = [];
+            if (Array.isArray(data)) {
+                rawPicks = data;
+            } else if (data && typeof data === "object") {
+                if (Array.isArray(data.picks)) rawPicks = data.picks;
+                else if (Array.isArray(data.data)) rawPicks = data.data;
+                else {
+                    // Si viene agrupado por liga {"NBA": [...], "MLB": [...]}
+                    Object.values(data).forEach(val => {
+                        if (Array.isArray(val)) rawPicks.push(...val);
+                    });
+                }
+            }
+
+            // Normalización del objeto pick
+            return rawPicks.map(p => {
+                const gameName = p.game || p.event || p.match || p.encuentro || 
+                                 (p.home_team && p.away_team ? `${p.away_team} vs ${p.home_team}` : null) || 
+                                 "Sin evento";
+                const pickTitle = p.pick || p.selection || p.team || p.bet || "";
+                
+                return {
+                    ...p,
+                    game: gameName,
+                    pick: pickTitle,
+                    _fileSource: dateStr
+                };
+            });
         } catch (e) {
+            console.error(`Error procesando ${dateStr}:`, e);
             return [];
         }
     });
@@ -361,8 +388,11 @@ async function loadAllHistories() {
     const results = await Promise.all(fetchPromises);
     masterPicksList = results.flat();
 
-    fileInfo.textContent = `Mega Sábana Activa · ${availableDates.length} archivos cargados · ${masterPicksList.length} picks totales`;
-    status.textContent = "Mega sábana lista.";
+    fileInfo.textContent = `Mega Sábana Activa · ${availableDates.length} archivos · ${masterPicksList.length} picks totales`;
+    status.textContent = "Mega sábana cargada con éxito.";
+
+    console.log("=== MEGA SÁBANA REPORTE ===");
+    console.log(`Total de picks unificados en memoria: ${masterPicksList.length}`);
 
     filterAndRenderPicks();
 }
@@ -412,7 +442,7 @@ function updateDays() {
     });
 }
 
-/* FILTRADO MULTIVARIABLE Y RENDERIZADO */
+/* FILTRADO MULTIVARIABLE GENERAL */
 function filterAndRenderPicks() {
     const selYear = yearSelect.value;
     const selMonth = monthSelect.value;
@@ -422,7 +452,7 @@ function filterAndRenderPicks() {
     const filterPickTime = pickTimeFilter.value;
 
     const filtered = masterPicksList.filter(p => {
-        // 1. Filtro por origen del archivo (Año / Mes / Día)
+        // 1. Filtro por origen del archivo
         const fileYear = p._fileSource.substring(0, 4);
         const fileMonth = p._fileSource.substring(5, 7);
         const fileDay = p._fileSource.substring(8, 10);
@@ -431,7 +461,7 @@ function filterAndRenderPicks() {
         if (selMonth !== "ALL" && fileMonth !== selMonth) return false;
         if (selDay !== "ALL" && fileDay !== selDay) return false;
 
-        // 2. Extraer fecha/hora propia del pick
+        // 2. Extraer fecha/hora del pick
         const rawDateTime = p.date || p.fecha || p.commence_time || p.time || p.timestamp || p._fileSource;
         const { dateStr, timeStr } = parsePickDateTime(rawDateTime, p.time || p.hora, p._fileSource);
 
@@ -439,11 +469,10 @@ function filterAndRenderPicks() {
         if (filterPickDate && dateStr !== filterPickDate) return false;
         if (filterPickTime && !timeStr.startsWith(filterPickTime)) return false;
 
-        // 4. Filtro por Búsqueda de Texto
+        // 4. Búsqueda profunda por texto (busca la palabra en TODO el objeto)
         if (query) {
-            const gameMatch = (p.game || "").toLowerCase().includes(query);
-            const pickMatch = (p.pick || "").toLowerCase().includes(query);
-            if (!gameMatch && !pickMatch) return false;
+            const fullObjectString = JSON.stringify(p).toLowerCase();
+            if (!fullObjectString.includes(query)) return false;
         }
 
         return true;
