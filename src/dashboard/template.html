@@ -270,12 +270,15 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
+            overflow-y: auto;
         }
 
         .login-modal {
             position: relative;
             width: 100%;
             max-width: 360px;
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
             background: var(--panel-card);
             border: 1px solid var(--border);
             border-radius: 14px;
@@ -1609,7 +1612,11 @@
         @media(max-width: 640px) {
             body { padding: 14px; }
             .header { flex-direction: column; align-items: flex-start; }
-            .header-meta { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+            .header-meta { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
+            .timestamp-box { flex-wrap: wrap; width: 100%; justify-content: space-between; gap: 10px 14px; }
+            .auth-box { width: 100%; justify-content: space-between; }
+            .auth-user-email { max-width: 55vw; }
+            .theme-toggle { align-self: flex-end; }
             .brand-info h1 { font-size: 22px; }
             .toolbar { padding: 10px; }
             .search-box { min-width: 100%; }
@@ -1659,12 +1666,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyCSbvzVKLcOy01ptDVmq9V_r5aWE75O-Sk",
-            authDomain: "sharpie-dashboard.firebaseapp.com",
-            projectId: "sharpie-dashboard",
-            storageBucket: "sharpie-dashboard.firebasestorage.app",
-            messagingSenderId: "767206545709",
-            appId: "G-07E2E0XE06"
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROYECTO.firebaseapp.com",
+            projectId: "TU_PROYECTO",
+            storageBucket: "TU_PROYECTO.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
         };
         firebase.initializeApp(firebaseConfig);
         const fbAuth = firebase.auth();
