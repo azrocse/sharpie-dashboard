@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Sharpie Data Viewer</title>
-
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         :root {
             --bg: #0b0f14;
             --panel: #111820;
@@ -20,7 +15,6 @@
             --muted: #8e9aa7;
             --accent: #4da3ff;
             --green: #35c98a;
-            --yellow: #e4b94f;
             --red: #ef6262;
         }
 
@@ -28,64 +22,38 @@
             margin: 0;
             background: var(--bg);
             color: var(--text);
-            font-family:
-                Inter,
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
-        /* HEADER */
-
         header {
-            min-height: 82px;
-            padding: 20px 30px;
-
+            min-height: 70px;
+            padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             background: #0e141b;
             border-bottom: 1px solid var(--border);
         }
 
-        header h1 {
-            margin: 0;
-
-            font-size: 22px;
-            letter-spacing: 1px;
-        }
-
-        header p {
-            margin: 6px 0 0;
-
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        /* CONTAINER */
+        header h1 { margin: 0; font-size: 20px; letter-spacing: 1px; }
+        header p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
 
         .container {
             width: min(1600px, calc(100% - 40px));
             margin: 20px auto;
         }
 
-        /* FILTERS */
-
+        /* FILTERS & SEARCH */
         .filters {
             display: flex;
-            align-items: end;
+            align-items: flex-end;
             flex-wrap: wrap;
             gap: 12px;
-
-            padding: 18px;
-
+            padding: 16px;
             background: var(--panel);
-
             border: 1px solid var(--border);
             border-radius: 10px;
+            margin-bottom: 20px;
         }
 
         .filter {
@@ -94,2154 +62,462 @@
             gap: 6px;
         }
 
+        .filter.grow {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+
         .filter label {
             color: var(--muted);
             font-size: 12px;
         }
 
-        select {
-            min-width: 130px;
-
-            padding: 10px;
-
+        select, input {
+            padding: 9px 12px;
             background: #0d1319;
             color: var(--text);
-
             border: 1px solid var(--border);
             border-radius: 6px;
-
             outline: none;
-
-            cursor: pointer;
+            font-size: 13px;
         }
+
+        select { cursor: pointer; min-width: 110px; }
+
+        input:focus { border-color: var(--accent); }
 
         button {
             border: 1px solid var(--border);
-
             background: var(--panel2);
             color: var(--text);
-
-            padding: 10px 16px;
-
-            border-radius: 7px;
-
+            padding: 9px 16px;
+            border-radius: 6px;
             cursor: pointer;
-
-            font-size: 14px;
-        }
-
-        button:hover {
-            background: #1b2632;
-        }
-
-        button.primary {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-
-        /* STATUS */
-
-        #status {
-            margin: 15px 0;
-
-            color: var(--muted);
-
             font-size: 13px;
         }
 
-        /* SUMMARY */
+        button:hover { background: #1b2632; }
+        button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-        .summary {
-            display: grid;
-
-            grid-template-columns:
-                repeat(5, 1fr);
-
-            gap: 12px;
-
-            margin-bottom: 25px;
-        }
-
-        .summary-card {
-            padding: 18px;
-
-            background: var(--panel);
-
-            border: 1px solid var(--border);
-
-            border-radius: 10px;
-        }
-
-        .summary-label {
-            display: block;
-
+        #status {
+            margin-bottom: 15px;
             color: var(--muted);
-
-            font-size: 11px;
-
-            margin-bottom: 8px;
+            font-size: 13px;
         }
 
-        .summary-card strong {
-            font-size: 26px;
-        }
-
-        /* SECTION */
-
+        /* SECTION HEADER */
         .section-header {
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             margin-bottom: 12px;
         }
 
-        .section-header h2 {
-            margin: 0;
+        .section-header h2 { margin: 0; font-size: 16px; }
+        .section-header span { color: var(--muted); font-size: 13px; }
 
-            font-size: 18px;
-        }
-
-        .section-header span {
-            color: var(--muted);
-
-            font-size: 13px;
-        }
-
-        /* PICK */
-
-        .pick {
-            margin-bottom: 15px;
-
+        /* TABLE VIEW */
+        .table-card {
             background: var(--panel);
-
             border: 1px solid var(--border);
-
             border-radius: 10px;
-
             overflow: hidden;
         }
 
-        .pick-header {
-            padding: 15px 18px;
-
-            background: var(--panel2);
-
-            display: flex;
-
-            justify-content: space-between;
-
-            gap: 20px;
-        }
-
-        .pick-title {
-            font-weight: 700;
-        }
-
-        .pick-subtitle {
-            margin-top: 5px;
-
-            color: var(--muted);
-
-            font-size: 13px;
-        }
-
-        .pick-id {
-            color: var(--muted);
-
-            font-size: 12px;
-        }
-
-        .pick-body {
-            padding: 18px;
-        }
-
-        /* DATA GRID */
-
-        .data-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(auto-fit, minmax(145px, 1fr));
-
-            gap: 10px;
-        }
-
-        .data-item {
-            padding: 12px;
-
-            background: #0d1319;
-
-            border: 1px solid var(--border);
-
-            border-radius: 7px;
-        }
-
-        .data-label {
-            display: block;
-
-            color: var(--muted);
-
-            font-size: 11px;
-
-            margin-bottom: 5px;
-        }
-
-        .data-value {
-            font-size: 15px;
-
-            font-weight: 600;
-        }
-
-        /* DETAILS */
-
-        details {
-            margin-top: 15px;
-
-            border-top: 1px solid var(--border);
-
-            padding-top: 12px;
-        }
-
-        summary {
-            cursor: pointer;
-
-            color: var(--accent);
-
-            font-size: 13px;
-        }
-
-        /* TABLE */
-
         .table-wrapper {
-            margin-top: 10px;
-
             overflow-x: auto;
-
-            max-height: 450px;
+            max-height: 70vh;
         }
 
         table {
             width: 100%;
-
             border-collapse: collapse;
-
-            font-size: 12px;
+            font-size: 13px;
+            text-align: left;
         }
 
-        th,
-        td {
-            padding: 8px;
-
+        th, td {
+            padding: 12px 14px;
             border-bottom: 1px solid var(--border);
-
-            text-align: left;
-
             white-space: nowrap;
         }
 
         th {
             color: var(--muted);
-
-            background: #0d1319;
-
+            background: #0e141b;
             position: sticky;
-
             top: 0;
+            z-index: 2;
+            font-weight: 600;
         }
 
-        /* REASON */
-
-        .reason {
-            margin-top: 15px;
-
-            padding: 12px;
-
-            background: #0d1319;
-
-            border-left: 3px solid var(--accent);
-
-            border-radius: 5px;
-
-            color: #cbd5df;
-
-            font-size: 13px;
-
-            line-height: 1.5;
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
         }
 
-        /* EMPTY */
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--panel2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .val-positive { color: var(--green); }
+        .val-negative { color: var(--red); }
 
         .empty {
             padding: 40px;
-
             text-align: center;
-
             color: var(--muted);
-
-            background: var(--panel);
-
-            border: 1px solid var(--border);
-
-            border-radius: 10px;
         }
 
-        /* ERROR */
-
-        .error {
-            color: var(--red) !important;
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 1000px) {
-
-            .summary {
-                grid-template-columns:
-                    repeat(3, 1fr);
-            }
-        }
+        .error { color: var(--red) !important; }
 
         @media (max-width: 700px) {
-
-            header {
-                padding: 15px;
-
-                flex-direction: column;
-
-                align-items: flex-start;
-
-                gap: 12px;
-            }
-
-            .container {
-                width: calc(100% - 20px);
-            }
-
-            .summary {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-
+            header { padding: 15px; flex-direction: column; align-items: flex-start; gap: 10px; }
+            .container { width: calc(100% - 20px); }
         }
     </style>
 </head>
-
-
 <body>
 
-
 <header>
-
     <div>
-
         <h1>SHARPIE DATA VIEWER</h1>
-
-        <p id="fileInfo">
-            Detectando históricos...
-        </p>
-
+        <p id="fileInfo">Detectando históricos...</p>
     </div>
-
-    <button id="refreshBtn">
-        ↻ Actualizar
-    </button>
-
+    <button id="refreshBtn">↻ Actualizar</button>
 </header>
-
 
 <main class="container">
 
-
-    <!-- FILTROS -->
-
+    <!-- FILTROS & BUSCADOR -->
     <section class="filters">
-
         <div class="filter">
-
             <label>Año</label>
-
             <select id="yearSelect"></select>
-
         </div>
 
-
         <div class="filter">
-
             <label>Mes</label>
-
             <select id="monthSelect"></select>
-
         </div>
-
 
         <div class="filter">
-
             <label>Día</label>
-
             <select id="daySelect"></select>
-
         </div>
 
+        <button id="loadBtn" class="primary">Cargar Día</button>
 
-        <button
-            id="loadBtn"
-            class="primary"
-        >
-            Cargar
-        </button>
-
+        <!-- FILTRO DE BÚSQUEDA POR EQUIPO/EVENTO -->
+        <div class="filter grow">
+            <label>Buscar Encuentro / Equipo</label>
+            <input type="text" id="searchInput" placeholder="Ej. Lakers, Real Madrid, Over...">
+        </div>
     </section>
 
+    <div id="status">Detectando fechas disponibles...</div>
 
-    <div id="status">
-        Detectando fechas disponibles...
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <section class="summary">
-
-
-        <div class="summary-card">
-
-            <span class="summary-label">
-                PICKS
-            </span>
-
-            <strong id="totalPicks">
-                0
-            </strong>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <span class="summary-label">
-                WHALE
-            </span>
-
-            <strong id="totalWhale">
-                0
-            </strong>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <span class="summary-label">
-                FREE PICKS
-            </span>
-
-            <strong id="totalFree">
-                0
-            </strong>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <span class="summary-label">
-                PENDING
-            </span>
-
-            <strong id="totalPending">
-                0
-            </strong>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <span class="summary-label">
-                SPORTS
-            </span>
-
-            <strong id="totalSports">
-                0
-            </strong>
-
-        </div>
-
-
-    </section>
-
-
-    <!-- PICKS -->
-
+    <!-- MAIN TABLE -->
     <section>
-
         <div class="section-header">
-
-            <h2>
-                Picks del día
-            </h2>
-
-            <span id="pickCounter">
-                0 picks
-            </span>
-
+            <h2>Registros del día</h2>
+            <span id="pickCounter">0 picks</span>
         </div>
 
-
-        <div id="picksContainer">
-
-            <div class="empty">
-                Cargando...
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Evento</th>
+                            <th>Pick</th>
+                            <th>Cuota</th>
+                            <th>Stake</th>
+                            <th>Edge</th>
+                            <th>EV</th>
+                            <th>Win Prob</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="7" class="empty">Cargando datos...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
         </div>
-
     </section>
-
 
 </main>
 
-
 <script>
-
 "use strict";
-
-
-/*
-|--------------------------------------------------------------------------
-| CONFIGURACIÓN
-|--------------------------------------------------------------------------
-|
-| Este HTML está dentro de:
-|
-| data/history/visor.html
-|
-| Por lo tanto:
-|
-| ./2026-08-26/sharpie.json
-|
-*/
-
 
 const HISTORY_PATH = "./";
 
-
-/*
-|--------------------------------------------------------------------------
-| ELEMENTOS
-|--------------------------------------------------------------------------
-*/
-
-const yearSelect =
-    document.getElementById("yearSelect");
-
-const monthSelect =
-    document.getElementById("monthSelect");
-
-const daySelect =
-    document.getElementById("daySelect");
-
-const loadBtn =
-    document.getElementById("loadBtn");
-
-const refreshBtn =
-    document.getElementById("refreshBtn");
-
-const status =
-    document.getElementById("status");
-
-const fileInfo =
-    document.getElementById("fileInfo");
-
-const picksContainer =
-    document.getElementById("picksContainer");
-
-const totalPicks =
-    document.getElementById("totalPicks");
-
-const totalWhale =
-    document.getElementById("totalWhale");
-
-const totalFree =
-    document.getElementById("totalFree");
-
-const totalPending =
-    document.getElementById("totalPending");
-
-const totalSports =
-    document.getElementById("totalSports");
-
-const pickCounter =
-    document.getElementById("pickCounter");
-
-
-/*
-|--------------------------------------------------------------------------
-| FECHAS
-|--------------------------------------------------------------------------
-|
-| No existe ningún index.json.
-|
-| El programa genera todas las fechas posibles desde
-| 2026-01-01 hasta la fecha actual y comprueba cuáles
-| tienen sharpie.json.
-|
-|--------------------------------------------------------------------------
-*/
+/* ELEMENTOS DOM */
+const yearSelect = document.getElementById("yearSelect");
+const monthSelect = document.getElementById("monthSelect");
+const daySelect = document.getElementById("daySelect");
+const loadBtn = document.getElementById("loadBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+const searchInput = document.getElementById("searchInput");
+const status = document.getElementById("status");
+const fileInfo = document.getElementById("fileInfo");
+const tableBody = document.getElementById("tableBody");
+const pickCounter = document.getElementById("pickCounter");
 
 let availableDates = [];
+let currentPicks = []; // Caché de los picks cargados para el filtro en vivo
 
+document.addEventListener("DOMContentLoaded", async () => {
+    await detectAvailableDates();
+    initializeFilters();
+    selectToday();
+});
 
-/*
-|--------------------------------------------------------------------------
-| INICIO
-|--------------------------------------------------------------------------
-*/
+/* INICIALIZACIÓN DE BÚSQUEDA */
+searchInput.addEventListener("input", filterAndRenderPicks);
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
-
-        await detectAvailableDates();
-
-        initializeFilters();
-
-        selectToday();
-
-    }
-);
-
-
-/*
-|--------------------------------------------------------------------------
-| DETECTAR FECHAS
-|--------------------------------------------------------------------------
-|
-| Probamos:
-|
-| ./YYYY-MM-DD/sharpie.json
-|
-| No necesitamos conocer previamente las carpetas.
-|
-|--------------------------------------------------------------------------
-*/
-
+/* DETECCIÓN DE FECHAS */
 async function detectAvailableDates() {
-
-    const today =
-        new Date();
-
-    const start =
-        new Date(
-            2026,
-            0,
-            1
-        );
-
+    const today = new Date();
+    const start = new Date(2026, 0, 1);
     const dates = [];
+    let current = new Date(start);
 
-    let current =
-        new Date(start);
-
-
-    status.textContent =
-        "Buscando históricos...";
-
-
-    /*
-     * Generamos todas las fechas desde
-     * 2026-01-01 hasta hoy.
-     */
-
+    status.textContent = "Buscando históricos...";
     const candidates = [];
 
-
     while (current <= today) {
-
-        const date =
-            formatDate(current);
-
-        candidates.push(date);
-
-        current.setDate(
-            current.getDate() + 1
-        );
-
+        candidates.push(formatDate(current));
+        current.setDate(current.getDate() + 1);
     }
-
-
-    /*
-     * Las comprobamos en grupos para no
-     * lanzar cientos de requests simultáneas.
-     */
 
     const batchSize = 10;
-
-
-    for (
-        let i = 0;
-        i < candidates.length;
-        i += batchSize
-    ) {
-
-        const batch =
-            candidates.slice(
-                i,
-                i + batchSize
-            );
-
-
-        const results =
-            await Promise.all(
-
-                batch.map(
-                    date =>
-                        checkDate(date)
-                )
-
-            );
-
-
-        results.forEach(
-            result => {
-
-                if (result) {
-
-                    dates.push(
-                        result
-                    );
-
-                }
-
-            }
-        );
-
-
-        status.textContent =
-            `Buscando históricos... ` +
-            `${Math.min(
-                i + batchSize,
-                candidates.length
-            )}/${candidates.length}`;
-
+    for (let i = 0; i < candidates.length; i += batchSize) {
+        const batch = candidates.slice(i, i + batchSize);
+        const results = await Promise.all(batch.map(date => checkDate(date)));
+        results.forEach(res => { if (res) dates.push(res); });
+        status.textContent = `Buscando históricos... ${Math.min(i + batchSize, candidates.length)}/${candidates.length}`;
     }
 
-
-    availableDates =
-        dates.sort();
-
+    availableDates = dates.sort();
 
     if (!availableDates.length) {
-
-        status.textContent =
-            "No se encontraron históricos.";
-
+        status.textContent = "No se encontraron históricos.";
         return;
     }
-
-
-    status.textContent =
-        `${availableDates.length} históricos encontrados.`;
-
+    status.textContent = `${availableDates.length} históricos encontrados.`;
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| COMPROBAR FECHA
-|--------------------------------------------------------------------------
-*/
 
 async function checkDate(date) {
-
-    const url =
-        `${HISTORY_PATH}${date}/sharpie.json`;
-
-
+    const url = `${HISTORY_PATH}${date}/sharpie.json`;
     try {
-
-        const response =
-            await fetch(
-                url,
-                {
-                    method: "HEAD",
-                    cache: "no-store"
-                }
-            );
-
-
-        if (
-            response.ok
-        ) {
-
-            return date;
-
-        }
-
-    } catch (error) {
-
-        /*
-         * Si HEAD no funciona en el servidor,
-         * intentamos GET.
-         */
-
+        const response = await fetch(url, { method: "HEAD", cache: "no-store" });
+        if (response.ok) return date;
+    } catch (e) {
         try {
-
-            const response =
-                await fetch(
-                    url,
-                    {
-                        method: "GET",
-                        cache: "no-store"
-                    }
-                );
-
-
-            if (
-                response.ok
-            ) {
-
-                return date;
-
-            }
-
-        } catch (e) {}
-
+            const response = await fetch(url, { method: "GET", cache: "no-store" });
+            if (response.ok) return date;
+        } catch (err) {}
     }
-
-
     return null;
-
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| FILTROS
-|--------------------------------------------------------------------------
-*/
-
+/* MANEJO DE FILTROS DE FECHA */
 function initializeFilters() {
-
-    const years =
-        [
-            ...new Set(
-                availableDates.map(
-                    date =>
-                        date.substring(
-                            0,
-                            4
-                        )
-                )
-            )
-        ];
-
-
+    const years = [...new Set(availableDates.map(d => d.substring(0, 4)))];
     yearSelect.innerHTML = "";
+    years.forEach(y => {
+        const opt = document.createElement("option");
+        opt.value = y; opt.textContent = y;
+        yearSelect.appendChild(opt);
+    });
 
-
-    years.forEach(
-        year => {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-            option.value =
-                year;
-
-            option.textContent =
-                year;
-
-            yearSelect.appendChild(
-                option
-            );
-
-        }
-    );
-
-
-    yearSelect.addEventListener(
-        "change",
-        updateMonths
-    );
-
-
-    monthSelect.addEventListener(
-        "change",
-        updateDays
-    );
-
-
-    loadBtn.addEventListener(
-        "click",
-        loadSelectedDate
-    );
-
-
-    refreshBtn.addEventListener(
-        "click",
-        loadSelectedDate
-    );
-
+    yearSelect.addEventListener("change", updateMonths);
+    monthSelect.addEventListener("change", updateDays);
+    loadBtn.addEventListener("click", loadSelectedDate);
+    refreshBtn.addEventListener("click", loadSelectedDate);
 
     updateMonths();
-
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| SELECCIONAR HOY
-|--------------------------------------------------------------------------
-*/
 
 function selectToday() {
+    const today = formatDate(new Date());
+    let date = availableDates.includes(today) ? today : availableDates[availableDates.length - 1];
+    if (!date) return;
 
-    const today =
-        formatDate(
-            new Date()
-        );
-
-
-    let date =
-        availableDates.includes(
-            today
-        )
-            ? today
-            : availableDates[
-                availableDates.length - 1
-            ];
-
-
-    if (!date) {
-
-        return;
-
-    }
-
-
-    const parts =
-        date.split("-");
-
-
-    yearSelect.value =
-        parts[0];
-
-
+    const parts = date.split("-");
+    yearSelect.value = parts[0];
     updateMonths();
-
-
-    monthSelect.value =
-        parts[1];
-
-
+    monthSelect.value = parts[1];
     updateDays();
-
-
-    daySelect.value =
-        parts[2];
-
+    daySelect.value = parts[2];
 
     loadDate(date);
-
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| MESES
-|--------------------------------------------------------------------------
-*/
 
 function updateMonths() {
-
-    const year =
-        yearSelect.value;
-
-
-    const months =
-        [
-            ...new Set(
-
-                availableDates
-
-                    .filter(
-                        date =>
-                            date.startsWith(
-                                year
-                            )
-                    )
-
-                    .map(
-                        date =>
-                            date.substring(
-                                5,
-                                7
-                            )
-                    )
-
-            )
-        ];
-
-
+    const year = yearSelect.value;
+    const months = [...new Set(availableDates.filter(d => d.startsWith(year)).map(d => d.substring(5, 7)))];
     monthSelect.innerHTML = "";
-
-
-    months.forEach(
-        month => {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-            option.value =
-                month;
-
-            option.textContent =
-                monthName(
-                    month
-                );
-
-            monthSelect.appendChild(
-                option
-            );
-
-        }
-    );
-
-
+    months.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m; opt.textContent = monthName(m);
+        monthSelect.appendChild(opt);
+    });
     updateDays();
-
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| DÍAS
-|--------------------------------------------------------------------------
-*/
 
 function updateDays() {
-
-    const year =
-        yearSelect.value;
-
-    const month =
-        monthSelect.value;
-
-
-    const dates =
-        availableDates.filter(
-            date =>
-                date.startsWith(
-                    `${year}-${month}`
-                )
-        );
-
-
+    const year = yearSelect.value;
+    const month = monthSelect.value;
+    const dates = availableDates.filter(d => d.startsWith(`${year}-${month}`));
     daySelect.innerHTML = "";
-
-
-    dates.forEach(
-        date => {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-            option.value =
-                date.substring(
-                    8,
-                    10
-                );
-
-            option.textContent =
-                Number(
-                    date.substring(
-                        8,
-                        10
-                    )
-                );
-
-            daySelect.appendChild(
-                option
-            );
-
-        }
-    );
-
+    dates.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d.substring(8, 10);
+        opt.textContent = Number(d.substring(8, 10));
+        daySelect.appendChild(opt);
+    });
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| CARGAR FECHA
-|--------------------------------------------------------------------------
-*/
 
 function loadSelectedDate() {
-
-    const date =
-        `${yearSelect.value}-` +
-        `${monthSelect.value}-` +
-        `${daySelect.value}`;
-
-
+    const date = `${yearSelect.value}-${monthSelect.value}-${daySelect.value}`;
     loadDate(date);
-
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| LOAD JSON
-|--------------------------------------------------------------------------
-*/
-
+/* CARGA DE DATOS */
 async function loadDate(date) {
-
-    const url =
-        `${HISTORY_PATH}${date}/sharpie.json`;
-
-
-    status.textContent =
-        `Cargando ${date}...`;
-
-    status.classList.remove(
-        "error"
-    );
-
+    const url = `${HISTORY_PATH}${date}/sharpie.json`;
+    status.textContent = `Cargando ${date}...`;
+    status.classList.remove("error");
 
     try {
+        const response = await fetch(`${url}?t=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        const response =
-            await fetch(
-                `${url}?t=${Date.now()}`
-            );
+        const data = await response.json();
+        fileInfo.textContent = `history/${date}/sharpie.json · Generado: ${data.generated_at || "N/D"}`;
 
+        currentPicks = Array.isArray(data.picks) ? data.picks : [];
+        searchInput.value = ""; // Reiniciar buscador
+        filterAndRenderPicks();
 
-        if (!response.ok) {
-
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        renderData(
-            data,
-            date
-        );
-
-
-        status.textContent =
-            `Datos cargados: ${date}`;
-
+        status.textContent = `Datos cargados: ${date}`;
     } catch (error) {
-
         console.error(error);
-
-
-        status.textContent =
-            `Error cargando ${date}`;
-
-        status.classList.add(
-            "error"
-        );
-
-
-        picksContainer.innerHTML = `
-
-            <div class="empty">
-
-                No se pudo cargar:
-
-                <br><br>
-
-                <strong>
-                    ${escapeHtml(url)}
-                </strong>
-
-                <br><br>
-
-                Verifica que exista
-                sharpie.json.
-
-            </div>
-
-        `;
-
+        status.textContent = `Error cargando ${date}`;
+        status.classList.add("error");
+        currentPicks = [];
+        tableBody.innerHTML = `<tr><td colspan="7" class="empty">No se pudo cargar <strong>${escapeHtml(url)}</strong></td></tr>`;
+        pickCounter.textContent = "0 picks";
     }
-
 }
 
+/* RENDERIZADO Y FILTRADO */
+function filterAndRenderPicks() {
+    const query = searchInput.value.toLowerCase().trim();
 
-/*
-|--------------------------------------------------------------------------
-| RENDER DATA
-|--------------------------------------------------------------------------
-*/
+    // Filtra el evento, equipo o el pick
+    const filtered = currentPicks.filter(p => {
+        const gameMatch = (p.game || "").toLowerCase().includes(query);
+        const pickMatch = (p.pick || "").toLowerCase().includes(query);
+        return gameMatch || pickMatch;
+    });
 
-function renderData(
-    data,
-    date
-) {
+    pickCounter.textContent = `${filtered.length} de ${currentPicks.length} picks`;
 
-    const picks =
-        Array.isArray(
-            data.picks
-        )
-            ? data.picks
-            : [];
-
-
-    fileInfo.textContent =
-        `history/${date}/sharpie.json` +
-        ` · Generado: ` +
-        `${data.generated_at || "N/D"}`;
-
-
-    pickCounter.textContent =
-        `${picks.length} picks`;
-
-
-    updateSummary(
-        picks
-    );
-
-
-    renderPicks(
-        picks
-    );
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| SUMMARY
-|--------------------------------------------------------------------------
-*/
-
-function updateSummary(
-    picks
-) {
-
-    totalPicks.textContent =
-        picks.length;
-
-
-    totalWhale.textContent =
-        picks.filter(
-            pick =>
-                pick.whale === true
-        ).length;
-
-
-    totalFree.textContent =
-        picks.filter(
-            pick =>
-                pick.freePick === true
-        ).length;
-
-
-    totalPending.textContent =
-        picks.filter(
-            pick =>
-                String(
-                    pick.result || ""
-                ).toUpperCase()
-                === "PENDING"
-        ).length;
-
-
-    totalSports.textContent =
-        new Set(
-            picks
-                .map(
-                    pick =>
-                        pick.league
-                )
-                .filter(Boolean)
-        ).size;
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| RENDER PICKS
-|--------------------------------------------------------------------------
-*/
-
-function renderPicks(
-    picks
-) {
-
-    if (!picks.length) {
-
-        picksContainer.innerHTML = `
-
-            <div class="empty">
-
-                No existen picks para esta fecha.
-
-            </div>
-
-        `;
-
+    if (!filtered.length) {
+        tableBody.innerHTML = `<tr><td colspan="7" class="empty">No hay registros que coincidan con la búsqueda.</td></tr>`;
         return;
-
     }
 
-
-    picksContainer.innerHTML =
-        picks
-            .map(
-                pick =>
-                    renderPick(
-                        pick
-                    )
-            )
-            .join("");
-
+    tableBody.innerHTML = filtered.map(pick => renderTableRow(pick)).join("");
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| PICK
-|--------------------------------------------------------------------------
-*/
-
-function renderPick(
-    pick
-) {
+function renderTableRow(pick) {
+    // Extracción de la versión más relevante/reciente de las variables requeridas
+    const stake = pick.stake ?? "N/D";
+    const odds = pick.odds ?? "N/D";
+    const game = pick.game || "Sin evento";
+    const pickName = pick.pick ? `${pick.pick} ${pick.market ? `(${pick.market})` : ''}` : "Sin pick";
+    
+    // Métricas
+    const edgeVal = pick.modelEdge;
+    const evVal = pick.ev;
+    
+    // Win Prob (Prioriza la simulación Monte Carlo si existe, luego la probabilidad del modelo)
+    const winProbVal = (pick.monteCarlo && pick.monteCarlo.win_probability != null) 
+        ? pick.monteCarlo.win_probability 
+        : pick.modelProb;
 
     return `
-
-        <article class="pick">
-
-
-            <div class="pick-header">
-
-                <div>
-
-                    <div class="pick-title">
-
-                        ${escapeHtml(
-                            pick.game ||
-                            "Sin evento"
-                        )}
-
-                    </div>
-
-
-                    <div class="pick-subtitle">
-
-                        ${escapeHtml(
-                            pick.pick ||
-                            "Sin pick"
-                        )}
-
-                        ·
-
-                        ${escapeHtml(
-                            pick.market ||
-                            "N/D"
-                        )}
-
-                        ·
-
-                        ${escapeHtml(
-                            pick.odds ||
-                            "N/D"
-                        )}
-
-                    </div>
-
-                </div>
-
-
-                <div class="pick-id">
-
-                    #${escapeHtml(
-                        pick.id ??
-                        "N/D"
-                    )}
-
-                </div>
-
-            </div>
-
-
-            <div class="pick-body">
-
-
-                <div class="data-grid">
-
-                    ${dataItem(
-                        "Liga",
-                        pick.league
-                    )}
-
-                    ${dataItem(
-                        "Acción",
-                        pick.action
-                    )}
-
-                    ${dataItem(
-                        "Prioridad",
-                        pick.priority
-                    )}
-
-                    ${dataItem(
-                        "Stake",
-                        pick.stake
-                    )}
-
-                    ${dataItem(
-                        "Score",
-                        pick.score
-                    )}
-
-                    ${dataItem(
-                        "Final Score",
-                        pick.finalScore
-                    )}
-
-                    ${dataItem(
-                        "Model Prob",
-                        percent(
-                            pick.modelProb
-                        )
-                    )}
-
-                    ${dataItem(
-                        "Implied Prob",
-                        percent(
-                            pick.impliedProb
-                        )
-                    )}
-
-                    ${dataItem(
-                        "Model Edge",
-                        percent(
-                            pick.modelEdge
-                        )
-                    )}
-
-                    ${dataItem(
-                        "EV",
-                        percent(
-                            pick.ev
-                        )
-                    )}
-
-                    ${dataItem(
-                        "Bets",
-                        percent(
-                            pick.betsPct
-                        )
-                    )}
-
-                    ${dataItem(
-                        "Handle",
-                        percent(
-                            pick.handlePct
-                        )
-                    )}
-
-                    ${dataItem(
-                        "Divergence",
-                        percent(
-                            pick.divergence
-                        )
-                    )}
-
-                    ${dataItem(
-                        "Risk",
-                        pick.risk
-                    )}
-
-                    ${dataItem(
-                        "Whale",
-                        pick.whale
-                            ? "SÍ"
-                            : "NO"
-                    )}
-
-                    ${dataItem(
-                        "Status",
-                        pick.status
-                    )}
-
-                    ${dataItem(
-                        "Result",
-                        pick.result
-                    )}
-
-                    ${dataItem(
-                        "ROI",
-                        pick.roi
-                    )}
-
-                    ${dataItem(
-                        "Free Pick",
-                        pick.freePick
-                            ? "SÍ"
-                            : "NO"
-                    )}
-
-                </div>
-
-
-                ${
-                    pick.reason
-                        ? `
-                            <div class="reason">
-
-                                ${escapeHtml(
-                                    pick.reason
-                                )}
-
-                            </div>
-                        `
-                        : ""
-                }
-
-
-                ${
-                    pick.monteCarlo
-                        ? renderMonteCarlo(
-                            pick.monteCarlo
-                        )
-                        : ""
-                }
-
-
-                ${
-                    pick.clv
-                        ? renderCLV(
-                            pick.clv
-                        )
-                        : ""
-                }
-
-
-                ${
-                    Array.isArray(
-                        pick.history
-                    )
-                        ? renderHistory(
-                            pick.history
-                        )
-                        : ""
-                }
-
-
-            </div>
-
-        </article>
-
+        <tr>
+            <td><strong>${escapeHtml(game)}</strong></td>
+            <td><span class="badge">${escapeHtml(pickName)}</span></td>
+            <td>${escapeHtml(formatValue(odds))}</td>
+            <td>${escapeHtml(formatValue(stake))}</td>
+            <td class="${getValueClass(edgeVal)}">${percent(edgeVal)}</td>
+            <td class="${getValueClass(evVal)}">${percent(evVal)}</td>
+            <td>${percent(winProbVal)}</td>
+        </tr>
     `;
-
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| DATA ITEM
-|--------------------------------------------------------------------------
-*/
-
-function dataItem(
-    label,
-    value
-) {
-
-    return `
-
-        <div class="data-item">
-
-            <span class="data-label">
-
-                ${escapeHtml(
-                    label
-                )}
-
-            </span>
-
-
-            <span class="data-value">
-
-                ${escapeHtml(
-                    formatValue(
-                        value
-                    )
-                )}
-
-            </span>
-
-        </div>
-
-    `;
-
+/* HELPERS DE FORMATO */
+function getValueClass(val) {
+    if (val == null || val === "") return "";
+    const num = Number(val);
+    if (num > 0) return "val-positive";
+    if (num < 0) return "val-negative";
+    return "";
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| MONTE CARLO
-|--------------------------------------------------------------------------
-*/
-
-function renderMonteCarlo(
-    mc
-) {
-
-    return `
-
-        <details>
-
-            <summary>
-                MONTE CARLO
-            </summary>
-
-
-            <div class="data-grid">
-
-                ${dataItem(
-                    "Win Probability",
-                    percent(
-                        mc.win_probability
-                    )
-                )}
-
-                ${dataItem(
-                    "Expected ROI",
-                    percent(
-                        mc.expected_roi
-                    )
-                )}
-
-                ${dataItem(
-                    "Runs",
-                    mc.runs
-                )}
-
-            </div>
-
-        </details>
-
-    `;
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| CLV
-|--------------------------------------------------------------------------
-*/
-
-function renderCLV(
-    clv
-) {
-
-    let html = `
-
-        <details>
-
-            <summary>
-                CLV
-            </summary>
-
-    `;
-
-
-    if (clv.opening) {
-
-        html += `
-
-            <div class="data-grid">
-
-                ${dataItem(
-                    "Opening Odds",
-                    clv.opening.odds
-                )}
-
-                ${dataItem(
-                    "Opening Prob",
-                    percent(
-                        clv.opening.prob
-                    )
-                )}
-
-                ${dataItem(
-                    "Opening Divergence",
-                    percent(
-                        clv.opening.divergence
-                    )
-                )}
-
-            </div>
-
-        `;
-
-    }
-
-
-    if (clv.checkpoints) {
-
-        html += `
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Checkpoint
-                            </th>
-
-                            <th>
-                                Odds
-                            </th>
-
-                            <th>
-                                Prob
-                            </th>
-
-                            <th>
-                                CLV
-                            </th>
-
-                            <th>
-                                Divergence
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-        `;
-
-
-        Object.entries(
-            clv.checkpoints
-        ).forEach(
-            ([key, value]) => {
-
-                if (!value) {
-                    return;
-                }
-
-
-                html += `
-
-                    <tr>
-
-                        <td>
-                            ${escapeHtml(key)}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                value.odds
-                            )}
-                        </td>
-
-                        <td>
-                            ${percent(
-                                value.prob
-                            )}
-                        </td>
-
-                        <td>
-                            ${percent(
-                                value.clv
-                            )}
-                        </td>
-
-                        <td>
-                            ${percent(
-                                value.divergence
-                            )}
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-        );
-
-
-        html += `
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        `;
-
-    }
-
-
-    html += `
-
-        </details>
-
-    `;
-
-
-    return html;
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| HISTORY
-|--------------------------------------------------------------------------
-*/
-
-function renderHistory(
-    history
-) {
-
-    if (
-        !history.length
-    ) {
-
-        return "";
-
-    }
-
-
-    return `
-
-        <details>
-
-            <summary>
-
-                HISTORIAL
-                (${history.length})
-
-            </summary>
-
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Hora
-                            </th>
-
-                            <th>
-                                Bets
-                            </th>
-
-                            <th>
-                                Handle
-                            </th>
-
-                            <th>
-                                Odds
-                            </th>
-
-                            <th>
-                                Timestamp
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        ${history
-                            .map(
-                                item => `
-
-                                    <tr>
-
-                                        <td>
-                                            ${escapeHtml(
-                                                item.time
-                                            )}
-                                        </td>
-
-                                        <td>
-                                            ${percent(
-                                                item.betsPct
-                                            )}
-                                        </td>
-
-                                        <td>
-                                            ${percent(
-                                                item.handlePct
-                                            )}
-                                        </td>
-
-                                        <td>
-                                            ${escapeHtml(
-                                                item.odds
-                                            )}
-                                        </td>
-
-                                        <td>
-                                            ${escapeHtml(
-                                                item.timestamp
-                                            )}
-                                        </td>
-
-                                    </tr>
-
-                                `
-                            )
-                            .join("")}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </details>
-
-    `;
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| FORMAT
-|--------------------------------------------------------------------------
-*/
-
-function percent(
-    value
-) {
-
-    if (
-        value === null ||
-        value === undefined ||
-        value === ""
-    ) {
-
-        return "N/D";
-
-    }
-
-
+function percent(value) {
+    if (value === null || value === undefined || value === "") return "N/D";
     return `${Number(value).toFixed(2)}%`;
-
 }
 
-
-function formatValue(
-    value
-) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return "N/D";
-
-    }
-
-
-    if (
-        typeof value === "boolean"
-    ) {
-
-        return value
-            ? "SÍ"
-            : "NO";
-
-    }
-
-
-    if (
-        typeof value === "number"
-    ) {
-
-        return Number.isInteger(value)
-            ? String(value)
-            : value.toFixed(2);
-
-    }
-
-
-    if (
-        typeof value === "object"
-    ) {
-
-        return JSON.stringify(
-            value
-        );
-
-    }
-
-
+function formatValue(value) {
+    if (value === null || value === undefined) return "N/D";
+    if (typeof value === "number") return Number.isInteger(value) ? String(value) : value.toFixed(2);
     return String(value);
-
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| DATE
-|--------------------------------------------------------------------------
-*/
-
-function formatDate(
-    date
-) {
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
-
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| MONTH NAME
-|--------------------------------------------------------------------------
-*/
-
-function monthName(
-    month
-) {
-
+function monthName(month) {
     const names = {
-
-        "01": "Enero",
-        "02": "Febrero",
-        "03": "Marzo",
-        "04": "Abril",
-        "05": "Mayo",
-        "06": "Junio",
-        "07": "Julio",
-        "08": "Agosto",
-        "09": "Septiembre",
-        "10": "Octubre",
-        "11": "Noviembre",
-        "12": "Diciembre"
-
+        "01": "Enero", "02": "Febrero", "03": "Marzo", "04": "Abril",
+        "05": "Mayo", "06": "Junio", "07": "Julio", "08": "Agosto",
+        "09": "Septiembre", "10": "Octubre", "11": "Noviembre", "12": "Diciembre"
     };
-
-
-    return names[month] ||
-        month;
-
+    return names[month] || month;
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| ESCAPE HTML
-|--------------------------------------------------------------------------
-*/
-
-function escapeHtml(
-    value
-) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return "";
-
-    }
-
-
+function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
     return String(value)
-
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
-
 </script>
-
 
 </body>
 </html>
