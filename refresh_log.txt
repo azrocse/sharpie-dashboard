@@ -18654,3 +18654,30 @@ warning: in the working copy of 'refresh_log.txt', LF will be replaced by CRLF t
 ------------------------------------------------------------
 [2026-08-25 18:20:25] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
 ------------------------------------------------------------
+warning: in the working copy of 'refresh_log.txt', LF will be replaced by CRLF the next time Git touches it
+[INFO] Archivos preparados en el área de stage.
+------------------------------------------------------------
+[2026-08-25 18:20:28] [STEP 3/4] EJECUTANDO: Creación de Commit descriptivo (git commit)
+------------------------------------------------------------
+[main 5066bbae] Auto-update: Datos, scripts y assets (2026-08-25 18:20)
+ 9 files changed, 6688 insertions(+), 3780 deletions(-)
+ rename data/snapshots/sports/{20260825_014008.json => 20260825_182011.json} (78%)
+------------------------------------------------------------
+[2026-08-25 18:20:31] [STEP 4/4] EJECUTANDO: Sincronización con GitHub (git push)
+------------------------------------------------------------
+
+============================================================
+[2026-08-25 18:20:38] PROCESO FINALIZADO: Todo se actualizó y publicó con éxito.
+============================================================
+
+============================================================
+[2026-08-25 18:25:04] INICIANDO SCRIPT DE AUTO-PUBLICACIÓN
+============================================================
+------------------------------------------------------------
+[2026-08-25 18:25:04] [STEP 1/4] EJECUTANDO: Script de Python (src\main.py)
+------------------------------------------------------------
+
+[SUCCESS] Python finalizó correctamente con código de salida 0.
+------------------------------------------------------------
+[2026-08-25 18:25:25] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
+------------------------------------------------------------
