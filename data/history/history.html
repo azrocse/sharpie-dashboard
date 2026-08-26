@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharpie Data Viewer - Mega Sábana</title>
+    <title>Sharpie Data Viewer - ÚLTIMOS 7 DÍAS</title>
     <style>
         * { box-sizing: border-box; }
         :root {
@@ -95,7 +95,6 @@
         }
 
         button:hover { background: #1b2632; }
-        button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 
         #status {
             margin-bottom: 15px;
@@ -145,7 +144,17 @@
             top: 0;
             z-index: 2;
             font-weight: 600;
+            cursor: pointer;
+            user-select: none;
         }
+
+        th:hover {
+            color: var(--accent);
+            background: #131b24;
+        }
+
+        th.sort-asc::after { content: " ▲"; color: var(--accent); }
+        th.sort-desc::after { content: " ▼"; color: var(--accent); }
 
         tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
 
@@ -163,7 +172,6 @@
         .val-positive { color: var(--green); }
         .val-negative { color: var(--red); }
         .empty { padding: 40px; text-align: center; color: var(--muted); }
-        .error { color: var(--red) !important; }
 
         @media (max-width: 700px) {
             header { padding: 15px; flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -175,8 +183,8 @@
 
 <header>
     <div>
-        <h1>SHARPIE DATA VIEWER (MEGA SÁBANA)</h1>
-        <p id="fileInfo">Inicializando base de datos global...</p>
+        <h1>SHARPIE DATA VIEWER</h1>
+        <p id="fileInfo">Inicializando base de datos...</p>
     </div>
     <button id="refreshBtn">↻ Recargar Todo</button>
 </header>
@@ -225,7 +233,7 @@
 
     <section>
         <div class="section-header">
-            <h2>Registros Filtrados</h2>
+            <h2>Registros Filtrados (Últimos 7 días)</h2>
             <span id="pickCounter">0 picks</span>
         </div>
 
@@ -234,16 +242,16 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Origen</th>
-                            <th>Fecha</th>
-                            <th>Hora</th>
-                            <th>Evento</th>
-                            <th>Pick</th>
-                            <th>Cuota</th>
-                            <th>Stake</th>
-                            <th>Edge</th>
-                            <th>EV</th>
-                            <th>Win Prob</th>
+                            <th data-sort="file">Origen</th>
+                            <th data-sort="date">Fecha</th>
+                            <th data-sort="time">Hora</th>
+                            <th data-sort="game">Evento</th>
+                            <th data-sort="pick">Pick</th>
+                            <th data-sort="odds">Cuota</th>
+                            <th data-sort="stake">Stake</th>
+                            <th data-sort="edge">Edge</th>
+                            <th data-sort="ev">EV</th>
+                            <th data-sort="winProb">Win Prob</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -279,7 +287,12 @@ const pickCounter = document.getElementById("pickCounter");
 let availableDates = [];
 let masterPicksList = [];
 
+// Estado del Ordenamiento (Por defecto: Fecha DESC, Hora DESC)
+let currentSortColumn = "date";
+let currentSortDir = "desc";
+
 document.addEventListener("DOMContentLoaded", async () => {
+    setupTableHeaderSorting();
     await initMegaSabana();
 });
 
@@ -298,16 +311,20 @@ async function initMegaSabana() {
     refreshBtn.addEventListener("click", initMegaSabana);
 }
 
-/* DETECCIÓN CORREGIDA: MES ACTUAL COMPLETO HASTA HOY */
+/* DETECCIÓN AJUSTADA: ÚLTIMOS 7 DÍAS */
 async function detectAvailableDates() {
     const today = new Date();
     today.setHours(23, 59, 59, 999);
     
-    const start = new Date(today.getFullYear(), today.getMonth(), 1);
+    // Inicio = hace 6 días (Rango total: 7 días contando hoy)
+    const start = new Date(today);
+    start.setDate(today.getDate() - 6);
+    start.setHours(0, 0, 0, 0);
+
     const dates = [];
     let current = new Date(start);
 
-    status.textContent = "Buscando históricos del mes actual...";
+    status.textContent = "Buscando históricos de los últimos 7 días...";
     const candidates = [];
 
     while (current <= today) {
@@ -325,11 +342,11 @@ async function detectAvailableDates() {
     availableDates = dates.sort();
 
     if (!availableDates.length) {
-        status.textContent = "No se encontraron históricos para este mes.";
+        status.textContent = "No se encontraron históricos para los últimos 7 días.";
         return;
     }
     
-    status.textContent = `${availableDates.length} días detectados este mes.`;
+    status.textContent = `${availableDates.length} días detectados en los últimos 7 días.`;
 }
 
 async function checkDate(date) {
@@ -346,9 +363,9 @@ async function checkDate(date) {
     return null;
 }
 
-/* DESCARGA Y CONSOLIDACIÓN */
+/* DESCARGA Y CONSOLIDACIÓN DE DATOS */
 async function loadAllHistories() {
-    status.textContent = `Descargando mega sábana (${availableDates.length} archivos)...`;
+    status.textContent = `Descargando información (${availableDates.length} archivos)...`;
     masterPicksList = [];
 
     const fetchPromises = availableDates.map(async (dateStr) => {
@@ -377,10 +394,15 @@ async function loadAllHistories() {
                                  "Sin evento";
                 const pickTitle = p.pick || p.selection || p.team || p.bet || "";
                 
+                const rawDateTime = p.date || p.fecha || p.commence_time || p.time || p.timestamp || dateStr;
+                const { dateStr: parsedDate, timeStr: parsedTime } = parsePickDateTime(rawDateTime, p.time || p.hora, dateStr);
+
                 return {
                     ...p,
                     game: gameName,
                     pick: pickTitle,
+                    _parsedDate: parsedDate,
+                    _parsedTime: parsedTime,
                     _fileSource: dateStr
                 };
             });
@@ -393,13 +415,157 @@ async function loadAllHistories() {
     const results = await Promise.all(fetchPromises);
     masterPicksList = results.flat();
 
-    fileInfo.textContent = `Sábana del Mes Actual (${availableDates.length} días) · ${masterPicksList.length} picks en total`;
-    status.textContent = "Mega sábana cargada con éxito.";
+    fileInfo.textContent = `Últimos 7 Días (${availableDates.length} días) · ${masterPicksList.length} picks cargados`;
+    status.textContent = "Datos cargados con éxito.";
 
     filterAndRenderPicks();
 }
 
-/* MANEJO DE SELECTORES ARCHIVO */
+/* SISTEMA DE ORDENAMIENTO POR COLUMNA */
+function setupTableHeaderSorting() {
+    document.querySelectorAll("th[data-sort]").forEach(th => {
+        th.addEventListener("click", () => {
+            const col = th.getAttribute("data-sort");
+            if (currentSortColumn === col) {
+                currentSortDir = currentSortDir === "asc" ? "desc" : "asc";
+            } else {
+                currentSortColumn = col;
+                currentSortDir = (col === "date" || col === "time" || col === "file") ? "desc" : "desc";
+            }
+            updateSortHeaderIcons();
+            filterAndRenderPicks();
+        });
+    });
+    updateSortHeaderIcons();
+}
+
+function updateSortHeaderIcons() {
+    document.querySelectorAll("th[data-sort]").forEach(th => {
+        th.classList.remove("sort-asc", "sort-desc");
+        if (th.getAttribute("data-sort") === currentSortColumn) {
+            th.classList.add(currentSortDir === "asc" ? "sort-asc" : "sort-desc");
+        }
+    });
+}
+
+function sortPicksList(list) {
+    return list.sort((a, b) => {
+        let valA, valB;
+
+        switch (currentSortColumn) {
+            case "file":
+                valA = a._fileSource; valB = b._fileSource;
+                break;
+            case "date":
+                valA = `${a._parsedDate} ${a._parsedTime}`;
+                valB = `${b._parsedDate} ${b._parsedTime}`;
+                break;
+            case "time":
+                valA = a._parsedTime; valB = b._parsedTime;
+                break;
+            case "game":
+                valA = a.game.toLowerCase(); valB = b.game.toLowerCase();
+                break;
+            case "pick":
+                valA = a.pick.toLowerCase(); valB = b.pick.toLowerCase();
+                break;
+            case "odds":
+                valA = Number(a.odds) || -99999; valB = Number(b.odds) || -99999;
+                break;
+            case "stake":
+                valA = Number(a.stake) || -99999; valB = Number(b.stake) || -99999;
+                break;
+            case "edge":
+                valA = Number(a.modelEdge) || -99999; valB = Number(b.modelEdge) || -99999;
+                break;
+            case "ev":
+                valA = Number(a.ev) || -99999; valB = Number(b.ev) || -99999;
+                break;
+            case "winProb":
+                valA = Number((a.monteCarlo && a.monteCarlo.win_probability != null) ? a.monteCarlo.win_probability : a.modelProb) || -99999;
+                valB = Number((b.monteCarlo && b.monteCarlo.win_probability != null) ? b.monteCarlo.win_probability : b.modelProb) || -99999;
+                break;
+            default:
+                valA = a._parsedDate; valB = b._parsedDate;
+        }
+
+        if (valA < valB) return currentSortDir === "asc" ? -1 : 1;
+        if (valA > valB) return currentSortDir === "asc" ? 1 : -1;
+        return 0;
+    });
+}
+
+/* FILTRADO Y RENDER */
+function filterAndRenderPicks() {
+    const selYear = yearSelect.value;
+    const selMonth = monthSelect.value;
+    const selDay = daySelect.value;
+    const query = searchInput.value.toLowerCase().trim();
+    const filterPickDate = pickDateFilter.value;
+    const filterPickTime = pickTimeFilter.value;
+
+    let filtered = masterPicksList.filter(p => {
+        const fileYear = p._fileSource.substring(0, 4);
+        const fileMonth = p._fileSource.substring(5, 7);
+        const fileDay = p._fileSource.substring(8, 10);
+
+        if (selYear !== "ALL" && fileYear !== selYear) return false;
+        if (selMonth !== "ALL" && fileMonth !== selMonth) return false;
+        if (selDay !== "ALL" && fileDay !== selDay) return false;
+
+        if (filterPickDate && p._parsedDate !== filterPickDate) return false;
+        if (filterPickTime && !p._parsedTime.startsWith(filterPickTime)) return false;
+
+        if (query) {
+            const fullObjectString = JSON.stringify(p).toLowerCase();
+            if (!fullObjectString.includes(query)) return false;
+        }
+
+        return true;
+    });
+
+    filtered = sortPicksList(filtered);
+
+    pickCounter.textContent = `${filtered.length} de ${masterPicksList.length} picks`;
+
+    if (!filtered.length) {
+        tableBody.innerHTML = `<tr><td colspan="10" class="empty">No hay registros que coincidan con la búsqueda.</td></tr>`;
+        return;
+    }
+
+    tableBody.innerHTML = filtered.map(pick => renderTableRow(pick)).join("");
+}
+
+function renderTableRow(pick) {
+    const stake = pick.stake ?? "N/D";
+    const odds = pick.odds ?? "N/D";
+    const game = pick.game || "Sin evento";
+    const pickName = pick.pick ? `${pick.pick} ${pick.market ? `(${pick.market})` : ''}` : "Sin pick";
+    
+    const edgeVal = pick.modelEdge;
+    const evVal = pick.ev;
+    
+    const winProbVal = (pick.monteCarlo && pick.monteCarlo.win_probability != null) 
+        ? pick.monteCarlo.win_probability 
+        : pick.modelProb;
+
+    return `
+        <tr>
+            <td><span class="badge">${escapeHtml(pick._fileSource)}</span></td>
+            <td>${escapeHtml(pick._parsedDate)}</td>
+            <td>${escapeHtml(pick._parsedTime)}</td>
+            <td><strong>${escapeHtml(game)}</strong></td>
+            <td><span class="badge">${escapeHtml(pickName)}</span></td>
+            <td>${escapeHtml(formatValue(odds))}</td>
+            <td>${escapeHtml(formatValue(stake))}</td>
+            <td class="${getValueClass(edgeVal)}">${percent(edgeVal)}</td>
+            <td class="${getValueClass(evVal)}">${percent(evVal)}</td>
+            <td>${percent(winProbVal)}</td>
+        </tr>
+    `;
+}
+
+/* MANEJO DE SELECTORES DE ARCHIVO */
 function initializeSelectors() {
     const years = [...new Set(availableDates.map(d => d.substring(0, 4)))];
     yearSelect.innerHTML = '<option value="ALL">Todos los Años</option>';
@@ -444,80 +610,6 @@ function updateDays() {
     });
 }
 
-/* FILTRADO MULTIVARIABLE GENERAL */
-function filterAndRenderPicks() {
-    const selYear = yearSelect.value;
-    const selMonth = monthSelect.value;
-    const selDay = daySelect.value;
-    const query = searchInput.value.toLowerCase().trim();
-    const filterPickDate = pickDateFilter.value;
-    const filterPickTime = pickTimeFilter.value;
-
-    const filtered = masterPicksList.filter(p => {
-        const fileYear = p._fileSource.substring(0, 4);
-        const fileMonth = p._fileSource.substring(5, 7);
-        const fileDay = p._fileSource.substring(8, 10);
-
-        if (selYear !== "ALL" && fileYear !== selYear) return false;
-        if (selMonth !== "ALL" && fileMonth !== selMonth) return false;
-        if (selDay !== "ALL" && fileDay !== selDay) return false;
-
-        const rawDateTime = p.date || p.fecha || p.commence_time || p.time || p.timestamp || p._fileSource;
-        const { dateStr, timeStr } = parsePickDateTime(rawDateTime, p.time || p.hora, p._fileSource);
-
-        if (filterPickDate && dateStr !== filterPickDate) return false;
-        if (filterPickTime && !timeStr.startsWith(filterPickTime)) return false;
-
-        if (query) {
-            const fullObjectString = JSON.stringify(p).toLowerCase();
-            if (!fullObjectString.includes(query)) return false;
-        }
-
-        return true;
-    });
-
-    pickCounter.textContent = `${filtered.length} de ${masterPicksList.length} picks`;
-
-    if (!filtered.length) {
-        tableBody.innerHTML = `<tr><td colspan="10" class="empty">No hay registros que coincidan con la búsqueda.</td></tr>`;
-        return;
-    }
-
-    tableBody.innerHTML = filtered.map(pick => renderTableRow(pick)).join("");
-}
-
-function renderTableRow(pick) {
-    const stake = pick.stake ?? "N/D";
-    const odds = pick.odds ?? "N/D";
-    const game = pick.game || "Sin evento";
-    const pickName = pick.pick ? `${pick.pick} ${pick.market ? `(${pick.market})` : ''}` : "Sin pick";
-    
-    const rawDateTime = pick.date || pick.fecha || pick.commence_time || pick.time || pick.timestamp || pick._fileSource;
-    const { dateStr, timeStr } = parsePickDateTime(rawDateTime, pick.time || pick.hora, pick._fileSource);
-
-    const edgeVal = pick.modelEdge;
-    const evVal = pick.ev;
-    
-    const winProbVal = (pick.monteCarlo && pick.monteCarlo.win_probability != null) 
-        ? pick.monteCarlo.win_probability 
-        : pick.modelProb;
-
-    return `
-        <tr>
-            <td><span class="badge">${escapeHtml(pick._fileSource)}</span></td>
-            <td>${escapeHtml(dateStr)}</td>
-            <td>${escapeHtml(timeStr)}</td>
-            <td><strong>${escapeHtml(game)}</strong></td>
-            <td><span class="badge">${escapeHtml(pickName)}</span></td>
-            <td>${escapeHtml(formatValue(odds))}</td>
-            <td>${escapeHtml(formatValue(stake))}</td>
-            <td class="${getValueClass(edgeVal)}">${percent(edgeVal)}</td>
-            <td class="${getValueClass(evVal)}">${percent(evVal)}</td>
-            <td>${percent(winProbVal)}</td>
-        </tr>
-    `;
-}
-
 /* PARSER DE FECHA Y HORA ULTRA-ROBUSTO */
 function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
     let dateStr = fallbackDate || "N/D";
@@ -527,11 +619,10 @@ function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
 
     const strVal = String(dateTimeVal).trim();
 
-    // 1. Caso ISO UTC (ej. 2026-08-26T03:45:00Z)
     if (strVal.includes("T") || strVal.includes("Z")) {
         const d = new Date(strVal);
         if (!isNaN(d.getTime())) {
-            dateStr = d.toLocaleDateString("en-CA"); // YYYY-MM-DD local
+            dateStr = d.toLocaleDateString("en-CA");
             if (timeStr === "N/D") {
                 timeStr = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false });
             }
@@ -539,7 +630,6 @@ function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
         }
     }
 
-    // 2. Caso Texto "M/D, HH:MM" (ej. "8/26, 03:45")
     if (strVal.includes(",")) {
         const parts = strVal.split(",");
         const datePart = parts[0].trim();
@@ -557,7 +647,6 @@ function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
         return { dateStr, timeStr };
     }
 
-    // 3. Caso "YYYY-MM-DD HH:MM:SS"
     if (strVal.includes(" ") && strVal.includes("-")) {
         const parts = strVal.split(" ");
         dateStr = parts[0];
@@ -567,7 +656,6 @@ function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
         return { dateStr, timeStr };
     }
 
-    // 4. Caso sólo fecha "YYYY-MM-DD"
     if (strVal.includes("-") && strVal.length >= 10) {
         dateStr = strVal.substring(0, 10);
     }
