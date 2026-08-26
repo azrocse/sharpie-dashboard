@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharpie Data Viewer - ÚLTIMOS 7 DÍAS</title>
+    <title>Sharpie Data Viewer - Filtro por Fecha del Pick</title>
     <style>
         * { box-sizing: border-box; }
         :root {
@@ -233,7 +233,7 @@
 
     <section>
         <div class="section-header">
-            <h2>Registros Filtrados (Últimos 7 días)</h2>
+            <h2>Picks Registrados (Fecha pick ≤ Hoy)</h2>
             <span id="pickCounter">0 picks</span>
         </div>
 
@@ -256,7 +256,7 @@
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td colspan="10" class="empty">Cargando mega sábana de información...</td>
+                            <td colspan="10" class="empty">Cargando base de datos...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -271,7 +271,6 @@
 
 const HISTORY_PATH = "./";
 
-/* DOM ELEMENTS */
 const yearSelect = document.getElementById("yearSelect");
 const monthSelect = document.getElementById("monthSelect");
 const daySelect = document.getElementById("daySelect");
@@ -287,7 +286,7 @@ const pickCounter = document.getElementById("pickCounter");
 let availableDates = [];
 let masterPicksList = [];
 
-// Estado del Ordenamiento (Por defecto: Fecha DESC, Hora DESC)
+// Estado global de ordenamiento
 let currentSortColumn = "date";
 let currentSortDir = "desc";
 
@@ -296,7 +295,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await initMegaSabana();
 });
 
-/* INICIALIZACIÓN GLOBAL */
 async function initMegaSabana() {
     await detectAvailableDates();
     initializeSelectors();
@@ -311,12 +309,11 @@ async function initMegaSabana() {
     refreshBtn.addEventListener("click", initMegaSabana);
 }
 
-/* DETECCIÓN AJUSTADA: ÚLTIMOS 7 DÍAS */
+/* BUSCAR ARCHIVOS DE LOS ÚLTIMOS 7 DÍAS */
 async function detectAvailableDates() {
     const today = new Date();
     today.setHours(23, 59, 59, 999);
     
-    // Inicio = hace 6 días (Rango total: 7 días contando hoy)
     const start = new Date(today);
     start.setDate(today.getDate() - 6);
     start.setHours(0, 0, 0, 0);
@@ -324,7 +321,7 @@ async function detectAvailableDates() {
     const dates = [];
     let current = new Date(start);
 
-    status.textContent = "Buscando históricos de los últimos 7 días...";
+    status.textContent = "Buscando históricos disponibles...";
     const candidates = [];
 
     while (current <= today) {
@@ -342,11 +339,11 @@ async function detectAvailableDates() {
     availableDates = dates.sort();
 
     if (!availableDates.length) {
-        status.textContent = "No se encontraron históricos para los últimos 7 días.";
+        status.textContent = "No se encontraron archivos en la ruta.";
         return;
     }
     
-    status.textContent = `${availableDates.length} días detectados en los últimos 7 días.`;
+    status.textContent = `${availableDates.length} archivos de origen detectados.`;
 }
 
 async function checkDate(date) {
@@ -363,10 +360,12 @@ async function checkDate(date) {
     return null;
 }
 
-/* DESCARGA Y CONSOLIDACIÓN DE DATOS */
+/* CARGAR Y FILTRAR SI FECHA DEL PICK > HOY */
 async function loadAllHistories() {
-    status.textContent = `Descargando información (${availableDates.length} archivos)...`;
+    status.textContent = `Descargando picks...`;
     masterPicksList = [];
+
+    const todayStr = formatDate(new Date()); // Ej. "2026-08-26"
 
     const fetchPromises = availableDates.map(async (dateStr) => {
         const url = `${HISTORY_PATH}${dateStr}/sharpie.json?t=${Date.now()}`;
@@ -388,7 +387,8 @@ async function loadAllHistories() {
                 }
             }
 
-            return rawPicks.map(p => {
+            const parsed = [];
+            for (const p of rawPicks) {
                 const gameName = p.game || p.event || p.match || p.encuentro || 
                                  (p.home_team && p.away_team ? `${p.away_team} vs ${p.home_team}` : null) || 
                                  "Sin evento";
@@ -397,15 +397,20 @@ async function loadAllHistories() {
                 const rawDateTime = p.date || p.fecha || p.commence_time || p.time || p.timestamp || dateStr;
                 const { dateStr: parsedDate, timeStr: parsedTime } = parsePickDateTime(rawDateTime, p.time || p.hora, dateStr);
 
-                return {
+                // RESTRICCIÓN CLAVE: Descartar si la fecha interna del JSON es mayor a la fecha de hoy
+                if (parsedDate > todayStr) continue;
+
+                parsed.push({
                     ...p,
                     game: gameName,
                     pick: pickTitle,
                     _parsedDate: parsedDate,
                     _parsedTime: parsedTime,
                     _fileSource: dateStr
-                };
-            });
+                });
+            }
+
+            return parsed;
         } catch (e) {
             console.error(`Error procesando ${dateStr}:`, e);
             return [];
@@ -415,13 +420,13 @@ async function loadAllHistories() {
     const results = await Promise.all(fetchPromises);
     masterPicksList = results.flat();
 
-    fileInfo.textContent = `Últimos 7 Días (${availableDates.length} días) · ${masterPicksList.length} picks cargados`;
-    status.textContent = "Datos cargados con éxito.";
+    fileInfo.textContent = `${availableDates.length} carpetas escaneadas · ${masterPicksList.length} picks válidos (≤ hoy)`;
+    status.textContent = "Carga completada.";
 
     filterAndRenderPicks();
 }
 
-/* SISTEMA DE ORDENAMIENTO POR COLUMNA */
+/* ORDENAMIENTO DE TODAS LAS COLUMNAS */
 function setupTableHeaderSorting() {
     document.querySelectorAll("th[data-sort]").forEach(th => {
         th.addEventListener("click", () => {
@@ -430,7 +435,9 @@ function setupTableHeaderSorting() {
                 currentSortDir = currentSortDir === "asc" ? "desc" : "asc";
             } else {
                 currentSortColumn = col;
-                currentSortDir = (col === "date" || col === "time" || col === "file") ? "desc" : "desc";
+                // Métricas numéricas inician por defecto en orden descendente al cambiar de columna
+                const isNumericCol = ["odds", "stake", "edge", "ev", "winProb"].includes(col);
+                currentSortDir = isNumericCol ? "desc" : "asc";
             }
             updateSortHeaderIcons();
             filterAndRenderPicks();
@@ -454,39 +461,48 @@ function sortPicksList(list) {
 
         switch (currentSortColumn) {
             case "file":
-                valA = a._fileSource; valB = b._fileSource;
+                valA = a._fileSource || "";
+                valB = b._fileSource || "";
                 break;
             case "date":
-                valA = `${a._parsedDate} ${a._parsedTime}`;
-                valB = `${b._parsedDate} ${b._parsedTime}`;
+                valA = `${a._parsedDate || ""} ${a._parsedTime || ""}`;
+                valB = `${b._parsedDate || ""} ${b._parsedTime || ""}`;
                 break;
             case "time":
-                valA = a._parsedTime; valB = b._parsedTime;
+                valA = a._parsedTime || "";
+                valB = b._parsedTime || "";
                 break;
             case "game":
-                valA = a.game.toLowerCase(); valB = b.game.toLowerCase();
+                valA = (a.game || "").toLowerCase();
+                valB = (b.game || "").toLowerCase();
                 break;
             case "pick":
-                valA = a.pick.toLowerCase(); valB = b.pick.toLowerCase();
+                valA = (a.pick || "").toLowerCase();
+                valB = (b.pick || "").toLowerCase();
                 break;
             case "odds":
-                valA = Number(a.odds) || -99999; valB = Number(b.odds) || -99999;
+                valA = a.odds != null ? Number(a.odds) : -999999;
+                valB = b.odds != null ? Number(b.odds) : -999999;
                 break;
             case "stake":
-                valA = Number(a.stake) || -99999; valB = Number(b.stake) || -99999;
+                valA = a.stake != null ? Number(a.stake) : -999999;
+                valB = b.stake != null ? Number(b.stake) : -999999;
                 break;
             case "edge":
-                valA = Number(a.modelEdge) || -99999; valB = Number(b.modelEdge) || -99999;
+                valA = a.modelEdge != null ? Number(a.modelEdge) : -999999;
+                valB = b.modelEdge != null ? Number(b.modelEdge) : -999999;
                 break;
             case "ev":
-                valA = Number(a.ev) || -99999; valB = Number(b.ev) || -99999;
+                valA = a.ev != null ? Number(a.ev) : -999999;
+                valB = b.ev != null ? Number(b.ev) : -999999;
                 break;
             case "winProb":
-                valA = Number((a.monteCarlo && a.monteCarlo.win_probability != null) ? a.monteCarlo.win_probability : a.modelProb) || -99999;
-                valB = Number((b.monteCarlo && b.monteCarlo.win_probability != null) ? b.monteCarlo.win_probability : b.modelProb) || -99999;
+                valA = (a.monteCarlo && a.monteCarlo.win_probability != null) ? Number(a.monteCarlo.win_probability) : (a.modelProb != null ? Number(a.modelProb) : -999999);
+                valB = (b.monteCarlo && b.monteCarlo.win_probability != null) ? Number(b.monteCarlo.win_probability) : (b.modelProb != null ? Number(b.modelProb) : -999999);
                 break;
             default:
-                valA = a._parsedDate; valB = b._parsedDate;
+                valA = a._parsedDate || "";
+                valB = b._parsedDate || "";
         }
 
         if (valA < valB) return currentSortDir === "asc" ? -1 : 1;
@@ -495,7 +511,6 @@ function sortPicksList(list) {
     });
 }
 
-/* FILTRADO Y RENDER */
 function filterAndRenderPicks() {
     const selYear = yearSelect.value;
     const selMonth = monthSelect.value;
@@ -503,8 +518,12 @@ function filterAndRenderPicks() {
     const query = searchInput.value.toLowerCase().trim();
     const filterPickDate = pickDateFilter.value;
     const filterPickTime = pickTimeFilter.value;
+    const todayStr = formatDate(new Date());
 
     let filtered = masterPicksList.filter(p => {
+        // Validación secundaria para asegurar cero registros mayores al día de hoy
+        if (p._parsedDate > todayStr) return false;
+
         const fileYear = p._fileSource.substring(0, 4);
         const fileMonth = p._fileSource.substring(5, 7);
         const fileDay = p._fileSource.substring(8, 10);
@@ -565,7 +584,6 @@ function renderTableRow(pick) {
     `;
 }
 
-/* MANEJO DE SELECTORES DE ARCHIVO */
 function initializeSelectors() {
     const years = [...new Set(availableDates.map(d => d.substring(0, 4)))];
     yearSelect.innerHTML = '<option value="ALL">Todos los Años</option>';
@@ -610,7 +628,6 @@ function updateDays() {
     });
 }
 
-/* PARSER DE FECHA Y HORA ULTRA-ROBUSTO */
 function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
     let dateStr = fallbackDate || "N/D";
     let timeStr = explicitTime || "N/D";
@@ -663,7 +680,6 @@ function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
     return { dateStr, timeStr };
 }
 
-/* HELPERS */
 function getValueClass(val) {
     if (val == null || val === "") return "";
     const num = Number(val);
