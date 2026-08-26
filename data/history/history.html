@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sharpie Data Viewer</title>
+    <title>Sharpie Data Viewer - Mega Sábana</title>
     <style>
         * { box-sizing: border-box; }
         :root {
@@ -43,7 +43,6 @@
             margin: 20px auto;
         }
 
-        /* FILTERS & SEARCH */
         .filters {
             display: flex;
             align-items: flex-end;
@@ -83,7 +82,6 @@
         }
 
         select { cursor: pointer; min-width: 110px; }
-
         input:focus { border-color: var(--accent); }
 
         button {
@@ -105,7 +103,6 @@
             font-size: 13px;
         }
 
-        /* SECTION HEADER */
         .section-header {
             display: flex;
             align-items: center;
@@ -116,7 +113,6 @@
         .section-header h2 { margin: 0; font-size: 16px; }
         .section-header span { color: var(--muted); font-size: 13px; }
 
-        /* TABLE VIEW */
         .table-card {
             background: var(--panel);
             border: 1px solid var(--border);
@@ -151,9 +147,7 @@
             font-weight: 600;
         }
 
-        tbody tr:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
+        tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
 
         .badge {
             display: inline-block;
@@ -168,13 +162,7 @@
 
         .val-positive { color: var(--green); }
         .val-negative { color: var(--red); }
-
-        .empty {
-            padding: 40px;
-            text-align: center;
-            color: var(--muted);
-        }
-
+        .empty { padding: 40px; text-align: center; color: var(--muted); }
         .error { color: var(--red) !important; }
 
         @media (max-width: 700px) {
@@ -187,46 +175,57 @@
 
 <header>
     <div>
-        <h1>SHARPIE DATA VIEWER</h1>
-        <p id="fileInfo">Detectando históricos...</p>
+        <h1>SHARPIE DATA VIEWER (MEGA SÁBANA)</h1>
+        <p id="fileInfo">Inicializando base de datos global...</p>
     </div>
-    <button id="refreshBtn">↻ Actualizar</button>
+    <button id="refreshBtn">↻ Recargar Todo</button>
 </header>
 
 <main class="container">
 
-    <!-- FILTROS & BUSCADOR -->
     <section class="filters">
         <div class="filter">
-            <label>Año</label>
-            <select id="yearSelect"></select>
+            <label>Año Archivo</label>
+            <select id="yearSelect">
+                <option value="ALL">Todos</option>
+            </select>
         </div>
 
         <div class="filter">
-            <label>Mes</label>
-            <select id="monthSelect"></select>
+            <label>Mes Archivo</label>
+            <select id="monthSelect">
+                <option value="ALL">Todos</option>
+            </select>
         </div>
 
         <div class="filter">
-            <label>Día</label>
-            <select id="daySelect"></select>
+            <label>Día Archivo</label>
+            <select id="daySelect">
+                <option value="ALL">Todos</option>
+            </select>
         </div>
 
-        <button id="loadBtn" class="primary">Cargar Día</button>
+        <div class="filter">
+            <label>Fecha del Pick</label>
+            <input type="date" id="pickDateFilter">
+        </div>
 
-        <!-- FILTRO DE BÚSQUEDA POR EQUIPO/EVENTO -->
+        <div class="filter">
+            <label>Hora del Pick</label>
+            <input type="time" id="pickTimeFilter">
+        </div>
+
         <div class="filter grow">
-            <label>Buscar Encuentro / Equipo</label>
+            <label>Buscar Encuentro / Equipo / Mercado</label>
             <input type="text" id="searchInput" placeholder="Ej. Lakers, Real Madrid, Over...">
         </div>
     </section>
 
-    <div id="status">Detectando fechas disponibles...</div>
+    <div id="status">Detectando archivos...</div>
 
-    <!-- MAIN TABLE -->
     <section>
         <div class="section-header">
-            <h2>Registros del día</h2>
+            <h2>Registros Filtrados</h2>
             <span id="pickCounter">0 picks</span>
         </div>
 
@@ -235,6 +234,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>Origen</th>
                             <th>Fecha</th>
                             <th>Hora</th>
                             <th>Evento</th>
@@ -248,7 +248,7 @@
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td colspan="9" class="empty">Cargando datos...</td>
+                            <td colspan="10" class="empty">Cargando mega sábana de información...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -263,39 +263,50 @@
 
 const HISTORY_PATH = "./";
 
-/* ELEMENTOS DOM */
+/* DOM ELEMENTS */
 const yearSelect = document.getElementById("yearSelect");
 const monthSelect = document.getElementById("monthSelect");
 const daySelect = document.getElementById("daySelect");
-const loadBtn = document.getElementById("loadBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const searchInput = document.getElementById("searchInput");
+const pickDateFilter = document.getElementById("pickDateFilter");
+const pickTimeFilter = document.getElementById("pickTimeFilter");
 const status = document.getElementById("status");
 const fileInfo = document.getElementById("fileInfo");
 const tableBody = document.getElementById("tableBody");
 const pickCounter = document.getElementById("pickCounter");
 
 let availableDates = [];
-let currentPicks = []; // Caché de los picks cargados para el filtro en vivo
-let loadedDateString = ""; // Fecha actualmente cargada en el visor
+let masterPicksList = []; // Mega sábana con todos los picks unificados
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await detectAvailableDates();
-    initializeFilters();
-    selectToday();
+    await initMegaSabana();
 });
 
-/* INICIALIZACIÓN DE BÚSQUEDA */
-searchInput.addEventListener("input", filterAndRenderPicks);
+/* INICIALIZACIÓN GLOBAL */
+async function initMegaSabana() {
+    await detectAvailableDates();
+    initializeSelectors();
+    await loadAllHistories();
+    
+    // Listeners para filtrado dinámico en tiempo real
+    yearSelect.addEventListener("change", () => { updateMonths(); filterAndRenderPicks(); });
+    monthSelect.addEventListener("change", () => { updateDays(); filterAndRenderPicks(); });
+    daySelect.addEventListener("change", filterAndRenderPicks);
+    searchInput.addEventListener("input", filterAndRenderPicks);
+    pickDateFilter.addEventListener("change", filterAndRenderPicks);
+    pickTimeFilter.addEventListener("change", filterAndRenderPicks);
+    refreshBtn.addEventListener("click", initMegaSabana);
+}
 
-/* DETECCIÓN DE FECHAS */
+/* DETECCIÓN DE RUTAS DE FECHAS */
 async function detectAvailableDates() {
     const today = new Date();
     const start = new Date(2026, 0, 1);
     const dates = [];
     let current = new Date(start);
 
-    status.textContent = "Buscando históricos...";
+    status.textContent = "Buscando archivos disponibles...";
     const candidates = [];
 
     while (current <= today) {
@@ -308,16 +319,9 @@ async function detectAvailableDates() {
         const batch = candidates.slice(i, i + batchSize);
         const results = await Promise.all(batch.map(date => checkDate(date)));
         results.forEach(res => { if (res) dates.push(res); });
-        status.textContent = `Buscando históricos... ${Math.min(i + batchSize, candidates.length)}/${candidates.length}`;
     }
 
     availableDates = dates.sort();
-
-    if (!availableDates.length) {
-        status.textContent = "No se encontraron históricos.";
-        return;
-    }
-    status.textContent = `${availableDates.length} históricos encontrados.`;
 }
 
 async function checkDate(date) {
@@ -334,43 +338,55 @@ async function checkDate(date) {
     return null;
 }
 
-/* MANEJO DE FILTROS DE FECHA */
-function initializeFilters() {
+/* DESCARGA Y CONSOLIDACIÓN DE TODOS LOS JSON */
+async function loadAllHistories() {
+    status.textContent = `Descargando mega sábana (${availableDates.length} archivos)...`;
+    masterPicksList = [];
+
+    const fetchPromises = availableDates.map(async (dateStr) => {
+        const url = `${HISTORY_PATH}${dateStr}/sharpie.json?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) return [];
+            const data = await res.json();
+            const picks = Array.isArray(data.picks) ? data.picks : [];
+            
+            // Inyectar el origen a cada registro
+            return picks.map(p => ({ ...p, _fileSource: dateStr }));
+        } catch (e) {
+            return [];
+        }
+    });
+
+    const results = await Promise.all(fetchPromises);
+    masterPicksList = results.flat();
+
+    fileInfo.textContent = `Mega Sábana Activa · ${availableDates.length} archivos cargados · ${masterPicksList.length} picks totales`;
+    status.textContent = "Mega sábana lista.";
+
+    filterAndRenderPicks();
+}
+
+/* MANEJO DE SELECTORES ARCHIVO */
+function initializeSelectors() {
     const years = [...new Set(availableDates.map(d => d.substring(0, 4)))];
-    yearSelect.innerHTML = "";
+    yearSelect.innerHTML = '<option value="ALL">Todos los Años</option>';
     years.forEach(y => {
         const opt = document.createElement("option");
         opt.value = y; opt.textContent = y;
         yearSelect.appendChild(opt);
     });
-
-    yearSelect.addEventListener("change", updateMonths);
-    monthSelect.addEventListener("change", updateDays);
-    loadBtn.addEventListener("click", loadSelectedDate);
-    refreshBtn.addEventListener("click", loadSelectedDate);
-
     updateMonths();
-}
-
-function selectToday() {
-    const today = formatDate(new Date());
-    let date = availableDates.includes(today) ? today : availableDates[availableDates.length - 1];
-    if (!date) return;
-
-    const parts = date.split("-");
-    yearSelect.value = parts[0];
-    updateMonths();
-    monthSelect.value = parts[1];
-    updateDays();
-    daySelect.value = parts[2];
-
-    loadDate(date);
 }
 
 function updateMonths() {
     const year = yearSelect.value;
-    const months = [...new Set(availableDates.filter(d => d.startsWith(year)).map(d => d.substring(5, 7)))];
-    monthSelect.innerHTML = "";
+    monthSelect.innerHTML = '<option value="ALL">Todos los Meses</option>';
+    
+    let filtered = availableDates;
+    if (year !== "ALL") filtered = filtered.filter(d => d.startsWith(year));
+
+    const months = [...new Set(filtered.map(d => d.substring(5, 7)))];
     months.forEach(m => {
         const opt = document.createElement("option");
         opt.value = m; opt.textContent = monthName(m);
@@ -382,65 +398,61 @@ function updateMonths() {
 function updateDays() {
     const year = yearSelect.value;
     const month = monthSelect.value;
-    const dates = availableDates.filter(d => d.startsWith(`${year}-${month}`));
-    daySelect.innerHTML = "";
-    dates.forEach(d => {
+    daySelect.innerHTML = '<option value="ALL">Todos los Días</option>';
+
+    let filtered = availableDates;
+    if (year !== "ALL") filtered = filtered.filter(d => d.startsWith(year));
+    if (month !== "ALL") filtered = filtered.filter(d => d.substring(5, 7) === month);
+
+    const days = [...new Set(filtered.map(d => d.substring(8, 10)))];
+    days.forEach(d => {
         const opt = document.createElement("option");
-        opt.value = d.substring(8, 10);
-        opt.textContent = Number(d.substring(8, 10));
+        opt.value = d; opt.textContent = Number(d);
         daySelect.appendChild(opt);
     });
 }
 
-function loadSelectedDate() {
-    const date = `${yearSelect.value}-${monthSelect.value}-${daySelect.value}`;
-    loadDate(date);
-}
-
-/* CARGA DE DATOS */
-async function loadDate(date) {
-    const url = `${HISTORY_PATH}${date}/sharpie.json`;
-    status.textContent = `Cargando ${date}...`;
-    status.classList.remove("error");
-    loadedDateString = date;
-
-    try {
-        const response = await fetch(`${url}?t=${Date.now()}`);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
-        fileInfo.textContent = `history/${date}/sharpie.json · Generado: ${data.generated_at || "N/D"}`;
-
-        currentPicks = Array.isArray(data.picks) ? data.picks : [];
-        searchInput.value = ""; // Reiniciar buscador
-        filterAndRenderPicks();
-
-        status.textContent = `Datos cargados: ${date}`;
-    } catch (error) {
-        console.error(error);
-        status.textContent = `Error cargando ${date}`;
-        status.classList.add("error");
-        currentPicks = [];
-        tableBody.innerHTML = `<tr><td colspan="9" class="empty">No se pudo cargar <strong>${escapeHtml(url)}</strong></td></tr>`;
-        pickCounter.textContent = "0 picks";
-    }
-}
-
-/* RENDERIZADO Y FILTRADO */
+/* FILTRADO MULTIVARIABLE Y RENDERIZADO */
 function filterAndRenderPicks() {
+    const selYear = yearSelect.value;
+    const selMonth = monthSelect.value;
+    const selDay = daySelect.value;
     const query = searchInput.value.toLowerCase().trim();
+    const filterPickDate = pickDateFilter.value;
+    const filterPickTime = pickTimeFilter.value;
 
-    // Filtra el evento, equipo o el pick
-    const filtered = currentPicks.filter(p => {
-        const gameMatch = (p.game || "").toLowerCase().includes(query);
-        const pickMatch = (p.pick || "").toLowerCase().includes(query);
-        return gameMatch || pickMatch;
+    const filtered = masterPicksList.filter(p => {
+        // 1. Filtro por origen del archivo (Año / Mes / Día)
+        const fileYear = p._fileSource.substring(0, 4);
+        const fileMonth = p._fileSource.substring(5, 7);
+        const fileDay = p._fileSource.substring(8, 10);
+
+        if (selYear !== "ALL" && fileYear !== selYear) return false;
+        if (selMonth !== "ALL" && fileMonth !== selMonth) return false;
+        if (selDay !== "ALL" && fileDay !== selDay) return false;
+
+        // 2. Extraer fecha/hora propia del pick
+        const rawDateTime = p.date || p.fecha || p.commence_time || p.time || p.timestamp || p._fileSource;
+        const { dateStr, timeStr } = parsePickDateTime(rawDateTime, p.time || p.hora, p._fileSource);
+
+        // 3. Filtro por Fecha y Hora de JSON
+        if (filterPickDate && dateStr !== filterPickDate) return false;
+        if (filterPickTime && !timeStr.startsWith(filterPickTime)) return false;
+
+        // 4. Filtro por Búsqueda de Texto
+        if (query) {
+            const gameMatch = (p.game || "").toLowerCase().includes(query);
+            const pickMatch = (p.pick || "").toLowerCase().includes(query);
+            if (!gameMatch && !pickMatch) return false;
+        }
+
+        return true;
     });
 
-    pickCounter.textContent = `${filtered.length} de ${currentPicks.length} picks`;
+    pickCounter.textContent = `${filtered.length} de ${masterPicksList.length} picks`;
 
     if (!filtered.length) {
-        tableBody.innerHTML = `<tr><td colspan="9" class="empty">No hay registros que coincidan con la búsqueda.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="10" class="empty">No hay registros que coincidan con la búsqueda.</td></tr>`;
         return;
     }
 
@@ -448,27 +460,24 @@ function filterAndRenderPicks() {
 }
 
 function renderTableRow(pick) {
-    // Extracción de la versión más relevante/reciente de las variables requeridas
     const stake = pick.stake ?? "N/D";
     const odds = pick.odds ?? "N/D";
     const game = pick.game || "Sin evento";
     const pickName = pick.pick ? `${pick.pick} ${pick.market ? `(${pick.market})` : ''}` : "Sin pick";
     
-    // Extracción de Fecha y Hora del pick
-    const rawDateTime = pick.date || pick.fecha || pick.commence_time || pick.time || pick.timestamp || loadedDateString;
-    const { dateStr, timeStr } = parsePickDateTime(rawDateTime, pick.time || pick.hora);
+    const rawDateTime = pick.date || pick.fecha || pick.commence_time || pick.time || pick.timestamp || pick._fileSource;
+    const { dateStr, timeStr } = parsePickDateTime(rawDateTime, pick.time || pick.hora, pick._fileSource);
 
-    // Métricas
     const edgeVal = pick.modelEdge;
     const evVal = pick.ev;
     
-    // Win Prob (Prioriza la simulación Monte Carlo si existe, luego la probabilidad del modelo)
     const winProbVal = (pick.monteCarlo && pick.monteCarlo.win_probability != null) 
         ? pick.monteCarlo.win_probability 
         : pick.modelProb;
 
     return `
         <tr>
+            <td><span class="badge">${escapeHtml(pick._fileSource)}</span></td>
             <td>${escapeHtml(dateStr)}</td>
             <td>${escapeHtml(timeStr)}</td>
             <td><strong>${escapeHtml(game)}</strong></td>
@@ -482,9 +491,8 @@ function renderTableRow(pick) {
     `;
 }
 
-/* FORMATO DE FECHA Y HORA DE PICK */
-function parsePickDateTime(dateTimeVal, explicitTime) {
-    let dateStr = loadedDateString || "N/D";
+function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
+    let dateStr = fallbackDate || "N/D";
     let timeStr = explicitTime || "N/D";
 
     if (!dateTimeVal) return { dateStr, timeStr };
@@ -492,7 +500,7 @@ function parsePickDateTime(dateTimeVal, explicitTime) {
     const parsedDate = new Date(dateTimeVal);
     if (!isNaN(parsedDate.getTime())) {
         dateStr = parsedDate.toISOString().split("T")[0];
-        if (timeStr === "N/D" && dateTimeVal.includes("T")) {
+        if (timeStr === "N/D" && String(dateTimeVal).includes("T")) {
             timeStr = parsedDate.toTimeString().split(" ")[0].substring(0, 5);
         }
     } else if (typeof dateTimeVal === "string") {
@@ -508,7 +516,7 @@ function parsePickDateTime(dateTimeVal, explicitTime) {
     return { dateStr, timeStr };
 }
 
-/* HELPERS DE FORMATO */
+/* HELPERS */
 function getValueClass(val) {
     if (val == null || val === "") return "";
     const num = Number(val);
