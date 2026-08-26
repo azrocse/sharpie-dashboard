@@ -235,6 +235,8 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
                             <th>Evento</th>
                             <th>Pick</th>
                             <th>Cuota</th>
@@ -246,7 +248,7 @@
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td colspan="7" class="empty">Cargando datos...</td>
+                            <td colspan="9" class="empty">Cargando datos...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -275,6 +277,7 @@ const pickCounter = document.getElementById("pickCounter");
 
 let availableDates = [];
 let currentPicks = []; // Caché de los picks cargados para el filtro en vivo
+let loadedDateString = ""; // Fecha actualmente cargada en el visor
 
 document.addEventListener("DOMContentLoaded", async () => {
     await detectAvailableDates();
@@ -399,6 +402,7 @@ async function loadDate(date) {
     const url = `${HISTORY_PATH}${date}/sharpie.json`;
     status.textContent = `Cargando ${date}...`;
     status.classList.remove("error");
+    loadedDateString = date;
 
     try {
         const response = await fetch(`${url}?t=${Date.now()}`);
@@ -417,7 +421,7 @@ async function loadDate(date) {
         status.textContent = `Error cargando ${date}`;
         status.classList.add("error");
         currentPicks = [];
-        tableBody.innerHTML = `<tr><td colspan="7" class="empty">No se pudo cargar <strong>${escapeHtml(url)}</strong></td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="9" class="empty">No se pudo cargar <strong>${escapeHtml(url)}</strong></td></tr>`;
         pickCounter.textContent = "0 picks";
     }
 }
@@ -436,7 +440,7 @@ function filterAndRenderPicks() {
     pickCounter.textContent = `${filtered.length} de ${currentPicks.length} picks`;
 
     if (!filtered.length) {
-        tableBody.innerHTML = `<tr><td colspan="7" class="empty">No hay registros que coincidan con la búsqueda.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="9" class="empty">No hay registros que coincidan con la búsqueda.</td></tr>`;
         return;
     }
 
@@ -450,6 +454,10 @@ function renderTableRow(pick) {
     const game = pick.game || "Sin evento";
     const pickName = pick.pick ? `${pick.pick} ${pick.market ? `(${pick.market})` : ''}` : "Sin pick";
     
+    // Extracción de Fecha y Hora del pick
+    const rawDateTime = pick.date || pick.fecha || pick.commence_time || pick.time || pick.timestamp || loadedDateString;
+    const { dateStr, timeStr } = parsePickDateTime(rawDateTime, pick.time || pick.hora);
+
     // Métricas
     const edgeVal = pick.modelEdge;
     const evVal = pick.ev;
@@ -461,6 +469,8 @@ function renderTableRow(pick) {
 
     return `
         <tr>
+            <td>${escapeHtml(dateStr)}</td>
+            <td>${escapeHtml(timeStr)}</td>
             <td><strong>${escapeHtml(game)}</strong></td>
             <td><span class="badge">${escapeHtml(pickName)}</span></td>
             <td>${escapeHtml(formatValue(odds))}</td>
@@ -470,6 +480,32 @@ function renderTableRow(pick) {
             <td>${percent(winProbVal)}</td>
         </tr>
     `;
+}
+
+/* FORMATO DE FECHA Y HORA DE PICK */
+function parsePickDateTime(dateTimeVal, explicitTime) {
+    let dateStr = loadedDateString || "N/D";
+    let timeStr = explicitTime || "N/D";
+
+    if (!dateTimeVal) return { dateStr, timeStr };
+
+    const parsedDate = new Date(dateTimeVal);
+    if (!isNaN(parsedDate.getTime())) {
+        dateStr = parsedDate.toISOString().split("T")[0];
+        if (timeStr === "N/D" && dateTimeVal.includes("T")) {
+            timeStr = parsedDate.toTimeString().split(" ")[0].substring(0, 5);
+        }
+    } else if (typeof dateTimeVal === "string") {
+        if (dateTimeVal.includes(" ")) {
+            const parts = dateTimeVal.split(" ");
+            dateStr = parts[0];
+            timeStr = parts[1].substring(0, 5);
+        } else {
+            dateStr = dateTimeVal;
+        }
+    }
+
+    return { dateStr, timeStr };
 }
 
 /* HELPERS DE FORMATO */
