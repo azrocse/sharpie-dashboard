@@ -277,7 +277,7 @@ const tableBody = document.getElementById("tableBody");
 const pickCounter = document.getElementById("pickCounter");
 
 let availableDates = [];
-let masterPicksList = []; // Mega sábana con todos los picks unificados
+let masterPicksList = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
     await initMegaSabana();
@@ -289,7 +289,6 @@ async function initMegaSabana() {
     initializeSelectors();
     await loadAllHistories();
     
-    // Listeners para filtrado dinámico en tiempo real
     yearSelect.addEventListener("change", () => { updateMonths(); filterAndRenderPicks(); });
     monthSelect.addEventListener("change", () => { updateDays(); filterAndRenderPicks(); });
     daySelect.addEventListener("change", filterAndRenderPicks);
@@ -299,10 +298,11 @@ async function initMegaSabana() {
     refreshBtn.addEventListener("click", initMegaSabana);
 }
 
-/* DETECCIÓN OPTIMIZADA: SOLO MES ACTUAL */
+/* DETECCIÓN CORREGIDA: MES ACTUAL COMPLETO HASTA HOY */
 async function detectAvailableDates() {
     const today = new Date();
-    // Forzar el inicio al día 1 del mes y año actual
+    today.setHours(23, 59, 59, 999);
+    
     const start = new Date(today.getFullYear(), today.getMonth(), 1);
     const dates = [];
     let current = new Date(start);
@@ -310,13 +310,11 @@ async function detectAvailableDates() {
     status.textContent = "Buscando históricos del mes actual...";
     const candidates = [];
 
-    // Generar únicamente las fechas del 1 al día de hoy del mes en curso
     while (current <= today) {
         candidates.push(formatDate(current));
         current.setDate(current.getDate() + 1);
     }
 
-    // Peticiones en paralelo para verificar existencia de los JSON
     const batchSize = 10;
     for (let i = 0; i < candidates.length; i += batchSize) {
         const batch = candidates.slice(i, i + batchSize);
@@ -348,7 +346,7 @@ async function checkDate(date) {
     return null;
 }
 
-/* DESCARGA Y CONSOLIDACIÓN RESILIENTE */
+/* DESCARGA Y CONSOLIDACIÓN */
 async function loadAllHistories() {
     status.textContent = `Descargando mega sábana (${availableDates.length} archivos)...`;
     masterPicksList = [];
@@ -360,7 +358,6 @@ async function loadAllHistories() {
             if (!res.ok) return [];
             const data = await res.json();
             
-            // Extracción ultrasensible de picks (soporta arreglos, objetos anidados o estructuras por liga)
             let rawPicks = [];
             if (Array.isArray(data)) {
                 rawPicks = data;
@@ -368,14 +365,12 @@ async function loadAllHistories() {
                 if (Array.isArray(data.picks)) rawPicks = data.picks;
                 else if (Array.isArray(data.data)) rawPicks = data.data;
                 else {
-                    // Si viene agrupado por liga {"NBA": [...], "MLB": [...]}
                     Object.values(data).forEach(val => {
                         if (Array.isArray(val)) rawPicks.push(...val);
                     });
                 }
             }
 
-            // Normalización del objeto pick
             return rawPicks.map(p => {
                 const gameName = p.game || p.event || p.match || p.encuentro || 
                                  (p.home_team && p.away_team ? `${p.away_team} vs ${p.home_team}` : null) || 
@@ -400,9 +395,6 @@ async function loadAllHistories() {
 
     fileInfo.textContent = `Sábana del Mes Actual (${availableDates.length} días) · ${masterPicksList.length} picks en total`;
     status.textContent = "Mega sábana cargada con éxito.";
-
-    console.log("=== MEGA SÁBANA REPORTE ===");
-    console.log(`Total de picks unificados en memoria: ${masterPicksList.length}`);
 
     filterAndRenderPicks();
 }
@@ -462,7 +454,6 @@ function filterAndRenderPicks() {
     const filterPickTime = pickTimeFilter.value;
 
     const filtered = masterPicksList.filter(p => {
-        // 1. Filtro por origen del archivo
         const fileYear = p._fileSource.substring(0, 4);
         const fileMonth = p._fileSource.substring(5, 7);
         const fileDay = p._fileSource.substring(8, 10);
@@ -471,15 +462,12 @@ function filterAndRenderPicks() {
         if (selMonth !== "ALL" && fileMonth !== selMonth) return false;
         if (selDay !== "ALL" && fileDay !== selDay) return false;
 
-        // 2. Extraer fecha/hora del pick
         const rawDateTime = p.date || p.fecha || p.commence_time || p.time || p.timestamp || p._fileSource;
         const { dateStr, timeStr } = parsePickDateTime(rawDateTime, p.time || p.hora, p._fileSource);
 
-        // 3. Filtro por Fecha y Hora de JSON
         if (filterPickDate && dateStr !== filterPickDate) return false;
         if (filterPickTime && !timeStr.startsWith(filterPickTime)) return false;
 
-        // 4. Búsqueda profunda por texto (busca la palabra en TODO el objeto)
         if (query) {
             const fullObjectString = JSON.stringify(p).toLowerCase();
             if (!fullObjectString.includes(query)) return false;
@@ -530,35 +518,63 @@ function renderTableRow(pick) {
     `;
 }
 
+/* PARSER DE FECHA Y HORA ULTRA-ROBUSTO */
 function parsePickDateTime(dateTimeVal, explicitTime, fallbackDate) {
     let dateStr = fallbackDate || "N/D";
     let timeStr = explicitTime || "N/D";
 
     if (!dateTimeVal) return { dateStr, timeStr };
 
-    // Si viene en formato ISO UTC (ej. 2026-08-26T03:45:00Z)
-    if (typeof dateTimeVal === "string" && (dateTimeVal.includes("T") || dateTimeVal.includes("Z"))) {
-        const d = new Date(dateTimeVal);
+    const strVal = String(dateTimeVal).trim();
+
+    // 1. Caso ISO UTC (ej. 2026-08-26T03:45:00Z)
+    if (strVal.includes("T") || strVal.includes("Z")) {
+        const d = new Date(strVal);
         if (!isNaN(d.getTime())) {
-            // Convierte a hora local (ej. CDMX / UTC-6)
-            dateStr = d.toLocaleDateString("en-CA"); // Formato YYYY-MM-DD
-            timeStr = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false });
+            dateStr = d.toLocaleDateString("en-CA"); // YYYY-MM-DD local
+            if (timeStr === "N/D") {
+                timeStr = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", hour12: false });
+            }
             return { dateStr, timeStr };
         }
     }
 
-    // Tratamiento estándar si ya es texto plano
-    const strVal = String(dateTimeVal).trim();
-    if (strVal.includes(" ")) {
+    // 2. Caso Texto "M/D, HH:MM" (ej. "8/26, 03:45")
+    if (strVal.includes(",")) {
+        const parts = strVal.split(",");
+        const datePart = parts[0].trim();
+        const timePart = parts[1] ? parts[1].trim() : "";
+
+        if (timeStr === "N/D" && timePart) {
+            timeStr = timePart.substring(0, 5);
+        }
+
+        if (datePart.includes("/")) {
+            const [m, d] = datePart.split("/");
+            const currentYear = fallbackDate ? fallbackDate.substring(0, 4) : new Date().getFullYear();
+            dateStr = `${currentYear}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+        }
+        return { dateStr, timeStr };
+    }
+
+    // 3. Caso "YYYY-MM-DD HH:MM:SS"
+    if (strVal.includes(" ") && strVal.includes("-")) {
         const parts = strVal.split(" ");
         dateStr = parts[0];
-        timeStr = parts[1].substring(0, 5);
-    } else if (strVal.includes("-")) {
-        dateStr = strVal;
+        if (timeStr === "N/D" && parts[1]) {
+            timeStr = parts[1].substring(0, 5);
+        }
+        return { dateStr, timeStr };
+    }
+
+    // 4. Caso sólo fecha "YYYY-MM-DD"
+    if (strVal.includes("-") && strVal.length >= 10) {
+        dateStr = strVal.substring(0, 10);
     }
 
     return { dateStr, timeStr };
 }
+
 /* HELPERS */
 function getValueClass(val) {
     if (val == null || val === "") return "";
