@@ -1,1665 +1,2247 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Historial de Datos - Sharpie</title>
-
+    <title>Sharpie Data Viewer</title>
 
     <style>
-
-        /* =====================================================
-           VARIABLES
-        ===================================================== */
-
-        :root {
-
-            --bg-color: #0f172a;
-
-            --card-bg: #1e293b;
-
-            --border-color: #334155;
-
-            --text-main: #f8fafc;
-
-            --text-muted: #94a3b8;
-
-            --accent-color: #38bdf8;
-
-            --green: #22c55e;
-
-            --red: #ef4444;
-
+        * {
+            box-sizing: border-box;
         }
 
-
-        /* =====================================================
-           BODY
-        ===================================================== */
+        :root {
+            --bg: #0b0f14;
+            --panel: #111820;
+            --panel2: #151e28;
+            --border: #26313d;
+            --text: #e8edf2;
+            --muted: #8e9aa7;
+            --accent: #4da3ff;
+            --green: #35c98a;
+            --yellow: #e4b94f;
+            --red: #ef6262;
+        }
 
         body {
-
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
             font-family:
+                Inter,
                 system-ui,
                 -apple-system,
                 BlinkMacSystemFont,
                 "Segoe UI",
                 sans-serif;
-
-            background-color:
-                var(--bg-color);
-
-            color:
-                var(--text-main);
-
-            margin:
-                0;
-
-            padding:
-                20px;
-
         }
 
-
-        /* =====================================================
-           CONTENEDOR
-        ===================================================== */
-
-        .container {
-
-            width:
-                100%;
-
-            max-width:
-                1400px;
-
-            margin:
-                0 auto;
-
-        }
-
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
+        /* HEADER */
 
         header {
+            min-height: 82px;
+            padding: 20px 30px;
 
-            display:
-                flex;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-            justify-content:
-                space-between;
-
-            align-items:
-                center;
-
-            gap:
-                20px;
-
-            border-bottom:
-                1px solid var(--border-color);
-
-            padding-bottom:
-                15px;
-
-            margin-bottom:
-                20px;
-
+            background: #0e141b;
+            border-bottom: 1px solid var(--border);
         }
 
+        header h1 {
+            margin: 0;
 
-        h1 {
-
-            margin:
-                0;
-
-            font-size:
-                1.5rem;
-
-            color:
-                var(--accent-color);
-
+            font-size: 22px;
+            letter-spacing: 1px;
         }
 
+        header p {
+            margin: 6px 0 0;
 
-        /* =====================================================
-           CONTROLES
-        ===================================================== */
-
-        .controls {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                10px;
-
+            color: var(--muted);
+            font-size: 13px;
         }
 
+        /* CONTAINER */
 
-        input[type="date"] {
-
-            background-color:
-                var(--card-bg);
-
-            border:
-                1px solid var(--border-color);
-
-            color:
-                var(--text-main);
-
-            padding:
-                8px 12px;
-
-            border-radius:
-                6px;
-
-            outline:
-                none;
-
-            cursor:
-                pointer;
-
-            color-scheme:
-                dark;
-
+        .container {
+            width: min(1600px, calc(100% - 40px));
+            margin: 20px auto;
         }
 
+        /* FILTERS */
+
+        .filters {
+            display: flex;
+            align-items: end;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            padding: 18px;
+
+            background: var(--panel);
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .filter {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        select {
+            min-width: 130px;
+
+            padding: 10px;
+
+            background: #0d1319;
+            color: var(--text);
+
+            border: 1px solid var(--border);
+            border-radius: 6px;
+
+            outline: none;
+
+            cursor: pointer;
+        }
 
         button {
+            border: 1px solid var(--border);
 
-            background-color:
-                #0284c7;
+            background: var(--panel2);
+            color: var(--text);
 
-            border:
-                none;
+            padding: 10px 16px;
 
-            color:
-                white;
+            border-radius: 7px;
 
-            padding:
-                9px 15px;
+            cursor: pointer;
 
-            border-radius:
-                6px;
-
-            font-weight:
-                bold;
-
-            cursor:
-                pointer;
-
+            font-size: 14px;
         }
-
 
         button:hover {
-
-            background-color:
-                #0369a1;
-
+            background: #1b2632;
         }
 
-
-        button:disabled {
-
-            opacity:
-                0.6;
-
-            cursor:
-                not-allowed;
-
+        button.primary {
+            background: var(--accent);
+            border-color: var(--accent);
         }
 
+        /* STATUS */
 
-        /* =====================================================
-           BARRA DE ESTADO
-        ===================================================== */
+        #status {
+            margin: 15px 0;
 
-        .status-bar {
+            color: var(--muted);
 
-            background:
-                var(--card-bg);
-
-            padding:
-                10px 15px;
-
-            border-radius:
-                6px;
-
-            margin-bottom:
-                20px;
-
-            font-size:
-                0.9rem;
-
-            color:
-                var(--text-muted);
-
-            border-left:
-                4px solid var(--accent-color);
-
-            overflow-wrap:
-                anywhere;
-
+            font-size: 13px;
         }
 
+        /* SUMMARY */
 
-        .status-bar code {
+        .summary {
+            display: grid;
 
-            color:
-                var(--accent-color);
+            grid-template-columns:
+                repeat(5, 1fr);
 
+            gap: 12px;
+
+            margin-bottom: 25px;
         }
 
+        .summary-card {
+            padding: 18px;
 
-        /* =====================================================
-           TABLA
-        ===================================================== */
+            background: var(--panel);
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+        }
+
+        .summary-label {
+            display: block;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            margin-bottom: 8px;
+        }
+
+        .summary-card strong {
+            font-size: 26px;
+        }
+
+        /* SECTION */
+
+        .section-header {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 12px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+
+            font-size: 18px;
+        }
+
+        .section-header span {
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        /* PICK */
+
+        .pick {
+            margin-bottom: 15px;
+
+            background: var(--panel);
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .pick-header {
+            padding: 15px 18px;
+
+            background: var(--panel2);
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+        .pick-title {
+            font-weight: 700;
+        }
+
+        .pick-subtitle {
+            margin-top: 5px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        .pick-id {
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+        .pick-body {
+            padding: 18px;
+        }
+
+        /* DATA GRID */
+
+        .data-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(145px, 1fr));
+
+            gap: 10px;
+        }
+
+        .data-item {
+            padding: 12px;
+
+            background: #0d1319;
+
+            border: 1px solid var(--border);
+
+            border-radius: 7px;
+        }
+
+        .data-label {
+            display: block;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            margin-bottom: 5px;
+        }
+
+        .data-value {
+            font-size: 15px;
+
+            font-weight: 600;
+        }
+
+        /* DETAILS */
+
+        details {
+            margin-top: 15px;
+
+            border-top: 1px solid var(--border);
+
+            padding-top: 12px;
+        }
+
+        summary {
+            cursor: pointer;
+
+            color: var(--accent);
+
+            font-size: 13px;
+        }
+
+        /* TABLE */
 
         .table-wrapper {
+            margin-top: 10px;
 
-            width:
-                100%;
+            overflow-x: auto;
 
-            overflow-x:
-                auto;
-
-            background-color:
-                var(--card-bg);
-
-            border:
-                1px solid var(--border-color);
-
-            border-radius:
-                8px;
-
+            max-height: 450px;
         }
 
+        table {
+            width: 100%;
 
-        .data-table {
+            border-collapse: collapse;
 
-            width:
-                100%;
-
-            min-width:
-                max-content;
-
-            border-collapse:
-                collapse;
-
-            font-size:
-                0.85rem;
-
+            font-size: 12px;
         }
 
+        th,
+        td {
+            padding: 8px;
 
-        .data-table th {
+            border-bottom: 1px solid var(--border);
 
-            background-color:
-                #0f172a;
+            text-align: left;
 
-            color:
-                var(--accent-color);
-
-            text-align:
-                left;
-
-            padding:
-                12px;
-
-            border-bottom:
-                2px solid var(--border-color);
-
-            white-space:
-                nowrap;
-
-            position:
-                sticky;
-
-            top:
-                0;
-
-            z-index:
-                2;
-
+            white-space: nowrap;
         }
 
+        th {
+            color: var(--muted);
 
-        .data-table td {
+            background: #0d1319;
 
-            padding:
-                10px 12px;
+            position: sticky;
 
-            border-bottom:
-                1px solid var(--border-color);
-
-            color:
-                var(--text-main);
-
-            white-space:
-                nowrap;
-
-            vertical-align:
-                middle;
-
+            top: 0;
         }
 
+        /* REASON */
 
-        .data-table tbody tr:hover {
+        .reason {
+            margin-top: 15px;
 
-            background-color:
-                rgba(
-                    56,
-                    189,
-                    248,
-                    0.08
-                );
+            padding: 12px;
 
+            background: #0d1319;
+
+            border-left: 3px solid var(--accent);
+
+            border-radius: 5px;
+
+            color: #cbd5df;
+
+            font-size: 13px;
+
+            line-height: 1.5;
         }
 
+        /* EMPTY */
 
-        /* =====================================================
-           STATUS
-        ===================================================== */
+        .empty {
+            padding: 40px;
 
-        .status-win {
+            text-align: center;
 
-            color:
-                var(--green) !important;
+            color: var(--muted);
 
-            font-weight:
-                bold;
+            background: var(--panel);
 
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
         }
 
+        /* ERROR */
 
-        .status-loss {
-
-            color:
-                var(--red) !important;
-
-            font-weight:
-                bold;
-
+        .error {
+            color: var(--red) !important;
         }
 
+        /* RESPONSIVE */
 
-        /* =====================================================
-           OBJETOS JSON INTERNOS
-        ===================================================== */
+        @media (max-width: 1000px) {
 
-        .json-value {
-
-            color:
-                var(--accent-color);
-
-            font-family:
-                monospace;
-
-            font-size:
-                0.8rem;
-
-        }
-
-
-        /* =====================================================
-           MENSAJES
-        ===================================================== */
-
-        .message-card {
-
-            background-color:
-                var(--card-bg);
-
-            border:
-                1px solid var(--border-color);
-
-            border-radius:
-                8px;
-
-            padding:
-                30px;
-
-            text-align:
-                center;
-
-        }
-
-
-        .message-error {
-
-            color:
-                var(--red);
-
-        }
-
-
-        .message-muted {
-
-            color:
-                var(--text-muted);
-
-            font-size:
-                0.85rem;
-
-        }
-
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media (
-            max-width: 700px
-        ) {
-
-            body {
-
-                padding:
-                    10px;
-
+            .summary {
+                grid-template-columns:
+                    repeat(3, 1fr);
             }
+        }
 
+        @media (max-width: 700px) {
 
             header {
+                padding: 15px;
 
-                flex-direction:
-                    column;
+                flex-direction: column;
 
-                align-items:
-                    stretch;
+                align-items: flex-start;
 
+                gap: 12px;
             }
 
-
-            .controls {
-
-                width:
-                    100%;
-
+            .container {
+                width: calc(100% - 20px);
             }
 
-
-            input[type="date"] {
-
-                flex:
-                    1;
-
+            .summary {
+                grid-template-columns:
+                    repeat(2, 1fr);
             }
 
         }
-
     </style>
-
 </head>
 
 
 <body>
 
 
-<div class="container">
+<header>
+
+    <div>
+
+        <h1>SHARPIE DATA VIEWER</h1>
+
+        <p id="fileInfo">
+            Detectando históricos...
+        </p>
+
+    </div>
+
+    <button id="refreshBtn">
+        ↻ Actualizar
+    </button>
+
+</header>
 
 
-    <!-- =====================================================
-         ENCABEZADO
-    ====================================================== -->
-
-    <header>
-
-        <h1>
-            📜 Historial de Registros Sharpie
-        </h1>
+<main class="container">
 
 
-        <div class="controls">
+    <!-- FILTROS -->
 
-            <input
-                type="date"
-                id="datePicker"
-            >
+    <section class="filters">
 
+        <div class="filter">
 
-            <button
-                type="button"
-                id="loadButton"
-            >
-                Cargar Fecha
-            </button>
+            <label>Año</label>
+
+            <select id="yearSelect"></select>
 
         </div>
 
-    </header>
 
+        <div class="filter">
 
-    <!-- =====================================================
-         ESTADO
-    ====================================================== -->
+            <label>Mes</label>
 
-    <div
-        class="status-bar"
-        id="status"
-    >
-
-        Esperando carga...
-
-    </div>
-
-
-    <!-- =====================================================
-         RUTA ACTUAL
-    ====================================================== -->
-
-    <div
-        class="status-bar"
-        id="pathBar"
-        style="
-            border-left-color:
-            #64748b;
-        "
-    >
-
-        Archivo:
-
-        <code id="currentPath">
-            —
-        </code>
-
-    </div>
-
-
-    <!-- =====================================================
-         CONTENIDO
-    ====================================================== -->
-
-    <div id="contentArea">
-
-        <div class="message-card">
-
-            Cargando datos...
+            <select id="monthSelect"></select>
 
         </div>
 
+
+        <div class="filter">
+
+            <label>Día</label>
+
+            <select id="daySelect"></select>
+
+        </div>
+
+
+        <button
+            id="loadBtn"
+            class="primary"
+        >
+            Cargar
+        </button>
+
+    </section>
+
+
+    <div id="status">
+        Detectando fechas disponibles...
     </div>
 
 
-</div>
+    <!-- SUMMARY -->
+
+    <section class="summary">
+
+
+        <div class="summary-card">
+
+            <span class="summary-label">
+                PICKS
+            </span>
+
+            <strong id="totalPicks">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span class="summary-label">
+                WHALE
+            </span>
+
+            <strong id="totalWhale">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span class="summary-label">
+                FREE PICKS
+            </span>
+
+            <strong id="totalFree">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span class="summary-label">
+                PENDING
+            </span>
+
+            <strong id="totalPending">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span class="summary-label">
+                SPORTS
+            </span>
+
+            <strong id="totalSports">
+                0
+            </strong>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- PICKS -->
+
+    <section>
+
+        <div class="section-header">
+
+            <h2>
+                Picks del día
+            </h2>
+
+            <span id="pickCounter">
+                0 picks
+            </span>
+
+        </div>
+
+
+        <div id="picksContainer">
+
+            <div class="empty">
+                Cargando...
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
 
 
 <script>
 
-
-/* ============================================================
-   CONFIGURACIÓN
-
-   IMPORTANTE:
-
-   Este HTML está dentro de:
-
-   data/history/
-
-   Las carpetas están al mismo nivel:
-
-   data/history/2026-07-24/
-   data/history/2026-07-23/
-
-   Por eso la ruta es:
-
-   ./2026-07-24/sharpie.json
-
-============================================================ */
+"use strict";
 
 
-const FILE_NAME =
-    'sharpie.json';
+/*
+|--------------------------------------------------------------------------
+| CONFIGURACIÓN
+|--------------------------------------------------------------------------
+|
+| Este HTML está dentro de:
+|
+| data/history/visor.html
+|
+| Por lo tanto:
+|
+| ./2026-08-26/sharpie.json
+|
+*/
 
 
-
-/* ============================================================
-   OBTENER FECHA ACTUAL
-
-   Devuelve:
-
-   2026-07-24
-
-============================================================ */
+const HISTORY_PATH = "./";
 
 
-function obtenerFechaActual() {
+/*
+|--------------------------------------------------------------------------
+| ELEMENTOS
+|--------------------------------------------------------------------------
+*/
 
-    const hoy =
+const yearSelect =
+    document.getElementById("yearSelect");
+
+const monthSelect =
+    document.getElementById("monthSelect");
+
+const daySelect =
+    document.getElementById("daySelect");
+
+const loadBtn =
+    document.getElementById("loadBtn");
+
+const refreshBtn =
+    document.getElementById("refreshBtn");
+
+const status =
+    document.getElementById("status");
+
+const fileInfo =
+    document.getElementById("fileInfo");
+
+const picksContainer =
+    document.getElementById("picksContainer");
+
+const totalPicks =
+    document.getElementById("totalPicks");
+
+const totalWhale =
+    document.getElementById("totalWhale");
+
+const totalFree =
+    document.getElementById("totalFree");
+
+const totalPending =
+    document.getElementById("totalPending");
+
+const totalSports =
+    document.getElementById("totalSports");
+
+const pickCounter =
+    document.getElementById("pickCounter");
+
+
+/*
+|--------------------------------------------------------------------------
+| FECHAS
+|--------------------------------------------------------------------------
+|
+| No existe ningún index.json.
+|
+| El programa genera todas las fechas posibles desde
+| 2026-01-01 hasta la fecha actual y comprueba cuáles
+| tienen sharpie.json.
+|
+|--------------------------------------------------------------------------
+*/
+
+let availableDates = [];
+
+
+/*
+|--------------------------------------------------------------------------
+| INICIO
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        await detectAvailableDates();
+
+        initializeFilters();
+
+        selectToday();
+
+    }
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| DETECTAR FECHAS
+|--------------------------------------------------------------------------
+|
+| Probamos:
+|
+| ./YYYY-MM-DD/sharpie.json
+|
+| No necesitamos conocer previamente las carpetas.
+|
+|--------------------------------------------------------------------------
+*/
+
+async function detectAvailableDates() {
+
+    const today =
         new Date();
 
+    const start =
+        new Date(
+            2026,
+            0,
+            1
+        );
 
-    const year =
-        hoy.getFullYear();
+    const dates = [];
+
+    let current =
+        new Date(start);
 
 
-    const month =
-        String(
-            hoy.getMonth() + 1
-        ).padStart(
-            2,
-            '0'
+    status.textContent =
+        "Buscando históricos...";
+
+
+    /*
+     * Generamos todas las fechas desde
+     * 2026-01-01 hasta hoy.
+     */
+
+    const candidates = [];
+
+
+    while (current <= today) {
+
+        const date =
+            formatDate(current);
+
+        candidates.push(date);
+
+        current.setDate(
+            current.getDate() + 1
+        );
+
+    }
+
+
+    /*
+     * Las comprobamos en grupos para no
+     * lanzar cientos de requests simultáneas.
+     */
+
+    const batchSize = 10;
+
+
+    for (
+        let i = 0;
+        i < candidates.length;
+        i += batchSize
+    ) {
+
+        const batch =
+            candidates.slice(
+                i,
+                i + batchSize
+            );
+
+
+        const results =
+            await Promise.all(
+
+                batch.map(
+                    date =>
+                        checkDate(date)
+                )
+
+            );
+
+
+        results.forEach(
+            result => {
+
+                if (result) {
+
+                    dates.push(
+                        result
+                    );
+
+                }
+
+            }
         );
 
 
-    const day =
-        String(
-            hoy.getDate()
-        ).padStart(
-            2,
-            '0'
-        );
+        status.textContent =
+            `Buscando históricos... ` +
+            `${Math.min(
+                i + batchSize,
+                candidates.length
+            )}/${candidates.length}`;
+
+    }
 
 
-    return (
+    availableDates =
+        dates.sort();
 
-        year +
-        '-' +
-        month +
-        '-' +
-        day
 
-    );
+    if (!availableDates.length) {
+
+        status.textContent =
+            "No se encontraron históricos.";
+
+        return;
+    }
+
+
+    status.textContent =
+        `${availableDates.length} históricos encontrados.`;
 
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| COMPROBAR FECHA
+|--------------------------------------------------------------------------
+*/
 
-/* ============================================================
-   CONSTRUIR RUTA DEL ARCHIVO
+async function checkDate(date) {
 
-   Ejemplo:
-
-   Fecha:
-   2026-07-24
-
-   Resultado:
-
-   ./2026-07-24/sharpie.json
-
-============================================================ */
+    const url =
+        `${HISTORY_PATH}${date}/sharpie.json`;
 
 
-function construirRuta(
-    fecha
-) {
+    try {
 
-    return (
+        const response =
+            await fetch(
+                url,
+                {
+                    method: "HEAD",
+                    cache: "no-store"
+                }
+            );
 
-        './' +
-        fecha +
-        '/' +
-        FILE_NAME
 
-    );
+        if (
+            response.ok
+        ) {
+
+            return date;
+
+        }
+
+    } catch (error) {
+
+        /*
+         * Si HEAD no funciona en el servidor,
+         * intentamos GET.
+         */
+
+        try {
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (
+                response.ok
+            ) {
+
+                return date;
+
+            }
+
+        } catch (e) {}
+
+    }
+
+
+    return null;
 
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| FILTROS
+|--------------------------------------------------------------------------
+*/
 
-/* ============================================================
-   CARGAR JSON
+function initializeFilters() {
 
-   Esta función se ejecuta:
+    const years =
+        [
+            ...new Set(
+                availableDates.map(
+                    date =>
+                        date.substring(
+                            0,
+                            4
+                        )
+                )
+            )
+        ];
 
-   1. Al abrir la página.
-   2. Al pulsar "Cargar Fecha".
 
-============================================================ */
+    yearSelect.innerHTML = "";
 
 
-async function cargarJSON() {
+    years.forEach(
+        year => {
 
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-    console.log(
-        '===================================='
+            option.value =
+                year;
+
+            option.textContent =
+                year;
+
+            yearSelect.appendChild(
+                option
+            );
+
+        }
     );
 
 
-    console.log(
-        '🚀 INICIANDO CARGA'
+    yearSelect.addEventListener(
+        "change",
+        updateMonths
     );
 
 
-    /* ========================================================
-       OBTENER ELEMENTOS
-    ======================================================== */
-
-
-    const datePicker =
-        document.getElementById(
-            'datePicker'
-        );
-
-
-    const status =
-        document.getElementById(
-            'status'
-        );
-
-
-    const currentPath =
-        document.getElementById(
-            'currentPath'
-        );
-
-
-    const contentArea =
-        document.getElementById(
-            'contentArea'
-        );
-
-
-    const loadButton =
-        document.getElementById(
-            'loadButton'
-        );
-
-
-    /* ========================================================
-       OBTENER FECHA SELECCIONADA
-
-       IMPORTANTE:
-
-       Siempre toma el valor actual
-       del datepicker.
-
-    ======================================================== */
-
-
-    const fecha =
-        datePicker.value;
-
-
-    console.log(
-        '📅 Fecha seleccionada:',
-        fecha
+    monthSelect.addEventListener(
+        "change",
+        updateDays
     );
 
 
-    /* ========================================================
-       VALIDAR FECHA
-    ======================================================== */
+    loadBtn.addEventListener(
+        "click",
+        loadSelectedDate
+    );
 
 
-    if (!fecha) {
+    refreshBtn.addEventListener(
+        "click",
+        loadSelectedDate
+    );
 
-        console.error(
-            '❌ No hay fecha seleccionada'
+
+    updateMonths();
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| SELECCIONAR HOY
+|--------------------------------------------------------------------------
+*/
+
+function selectToday() {
+
+    const today =
+        formatDate(
+            new Date()
         );
 
 
-        status.innerHTML =
-            '❌ Selecciona una fecha.';
+    let date =
+        availableDates.includes(
+            today
+        )
+            ? today
+            : availableDates[
+                availableDates.length - 1
+            ];
 
+
+    if (!date) {
 
         return;
 
     }
 
 
-    /* ========================================================
-       CONSTRUIR RUTA
-    ======================================================== */
+    const parts =
+        date.split("-");
 
 
-    const fileUrl =
-        construirRuta(
-            fecha
-        );
+    yearSelect.value =
+        parts[0];
 
 
-    console.log(
-        '📂 Ruta:',
-        fileUrl
+    updateMonths();
+
+
+    monthSelect.value =
+        parts[1];
+
+
+    updateDays();
+
+
+    daySelect.value =
+        parts[2];
+
+
+    loadDate(date);
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| MESES
+|--------------------------------------------------------------------------
+*/
+
+function updateMonths() {
+
+    const year =
+        yearSelect.value;
+
+
+    const months =
+        [
+            ...new Set(
+
+                availableDates
+
+                    .filter(
+                        date =>
+                            date.startsWith(
+                                year
+                            )
+                    )
+
+                    .map(
+                        date =>
+                            date.substring(
+                                5,
+                                7
+                            )
+                    )
+
+            )
+        ];
+
+
+    monthSelect.innerHTML = "";
+
+
+    months.forEach(
+        month => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                month;
+
+            option.textContent =
+                monthName(
+                    month
+                );
+
+            monthSelect.appendChild(
+                option
+            );
+
+        }
     );
 
 
-    /* ========================================================
-       MOSTRAR RUTA
-    ======================================================== */
+    updateDays();
+
+}
 
 
-    currentPath.textContent =
-        fileUrl;
+/*
+|--------------------------------------------------------------------------
+| DÍAS
+|--------------------------------------------------------------------------
+*/
+
+function updateDays() {
+
+    const year =
+        yearSelect.value;
+
+    const month =
+        monthSelect.value;
 
 
-    /* ========================================================
-       ESTADO DE CARGA
-    ======================================================== */
+    const dates =
+        availableDates.filter(
+            date =>
+                date.startsWith(
+                    `${year}-${month}`
+                )
+        );
 
 
-    status.style.borderLeftColor =
-        '#38bdf8';
+    daySelect.innerHTML = "";
 
 
-    status.innerHTML =
-        '⏳ Cargando datos de <strong>' +
-        fecha +
-        '</strong>...';
+    dates.forEach(
+        date => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                date.substring(
+                    8,
+                    10
+                );
+
+            option.textContent =
+                Number(
+                    date.substring(
+                        8,
+                        10
+                    )
+                );
+
+            daySelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
 
 
-    /* ========================================================
-       DESACTIVAR BOTÓN
-    ======================================================== */
+/*
+|--------------------------------------------------------------------------
+| CARGAR FECHA
+|--------------------------------------------------------------------------
+*/
+
+function loadSelectedDate() {
+
+    const date =
+        `${yearSelect.value}-` +
+        `${monthSelect.value}-` +
+        `${daySelect.value}`;
 
 
-    loadButton.disabled =
-        true;
+    loadDate(date);
+
+}
 
 
-    loadButton.textContent =
-        'Cargando...';
+/*
+|--------------------------------------------------------------------------
+| LOAD JSON
+|--------------------------------------------------------------------------
+*/
+
+async function loadDate(date) {
+
+    const url =
+        `${HISTORY_PATH}${date}/sharpie.json`;
+
+
+    status.textContent =
+        `Cargando ${date}...`;
+
+    status.classList.remove(
+        "error"
+    );
 
 
     try {
 
-
-        /* ====================================================
-           FETCH
-
-           EJEMPLO:
-
-           ./2026-07-24/sharpie.json
-
-        ==================================================== */
-
-
-        console.log(
-            '🌐 Ejecutando fetch:',
-            fileUrl
-        );
-
-
         const response =
             await fetch(
-                fileUrl +
-                '?t=' +
-                Date.now()
+                `${url}?t=${Date.now()}`
             );
-
-
-        /* ====================================================
-           RESPUESTA HTTP
-        ==================================================== */
-
-
-        console.log(
-            '📡 HTTP:',
-            response.status
-        );
-
-
-        /* ====================================================
-           VALIDAR RESPUESTA
-        ==================================================== */
 
 
         if (!response.ok) {
 
             throw new Error(
-
-                'HTTP ' +
-                response.status +
-                ' - Archivo no encontrado'
-
+                `HTTP ${response.status}`
             );
 
         }
-
-
-        /* ====================================================
-           CONVERTIR JSON
-        ==================================================== */
 
 
         const data =
             await response.json();
 
 
-        console.log(
-            '✅ JSON cargado correctamente'
-        );
-
-
-        console.log(
-            '📦 Datos:',
-            data
-        );
-
-
-        /* ====================================================
-           ESTADO ÉXITO
-        ==================================================== */
-
-
-        status.style.borderLeftColor =
-            '#22c55e';
-
-
-        status.innerHTML =
-
-            '✅ Datos cargados correctamente para ' +
-
-            '<strong>' +
-
-            fecha +
-
-            '</strong>';
-
-
-        /* ====================================================
-           RENDERIZAR TABLA
-        ==================================================== */
-
-
         renderData(
-            data
+            data,
+            date
         );
 
 
-    }
+        status.textContent =
+            `Datos cargados: ${date}`;
 
-    catch (
-        error
-    ) {
+    } catch (error) {
 
-
-        /* ====================================================
-           ERROR
-        ==================================================== */
+        console.error(error);
 
 
-        console.error(
-            '❌ ERROR:',
-            error
+        status.textContent =
+            `Error cargando ${date}`;
+
+        status.classList.add(
+            "error"
         );
 
 
-        status.style.borderLeftColor =
-            '#ef4444';
+        picksContainer.innerHTML = `
 
+            <div class="empty">
 
-        status.innerHTML =
+                No se pudo cargar:
 
-            '❌ No se pudieron cargar los datos de ' +
+                <br><br>
 
-            '<strong>' +
+                <strong>
+                    ${escapeHtml(url)}
+                </strong>
 
-            fecha +
+                <br><br>
 
-            '</strong>';
-
-
-        contentArea.innerHTML = `
-
-            <div class="message-card">
-
-                <p class="message-error">
-
-                    ❌ No se pudo cargar el archivo.
-
-                </p>
-
-
-                <p class="message-muted">
-
-                    Archivo buscado:
-
-                </p>
-
-
-                <p>
-
-                    <code>
-                        ${fileUrl}
-                    </code>
-
-                </p>
-
-
-                <p class="message-muted">
-
-                    Error:
-
-                    ${error.message}
-
-                </p>
+                Verifica que exista
+                sharpie.json.
 
             </div>
 
         `;
-
-    }
-
-
-    finally {
-
-
-        /* ====================================================
-           REACTIVAR BOTÓN
-        ==================================================== */
-
-
-        loadButton.disabled =
-            false;
-
-
-        loadButton.textContent =
-            'Cargar Fecha';
 
     }
 
 }
 
 
-
-/* ============================================================
-   RENDERIZAR TABLA
-
-   Convierte el JSON recibido
-   en una tabla HTML.
-
-============================================================ */
-
+/*
+|--------------------------------------------------------------------------
+| RENDER DATA
+|--------------------------------------------------------------------------
+*/
 
 function renderData(
-    data
+    data,
+    date
 ) {
 
-
-    const contentArea =
-        document.getElementById(
-            'contentArea'
-        );
-
-
-    /* ========================================================
-       LIMPIAR TABLA ANTERIOR
-    ======================================================== */
-
-
-    contentArea.innerHTML =
-        '';
-
-
-    /* ========================================================
-       NORMALIZAR REGISTROS
-    ======================================================== */
-
-
-    let registros =
-        [];
-
-
-    /* ========================================================
-       SI EL JSON ES UN ARRAY
-
-       [
-           {...},
-           {...}
-       ]
-
-    ======================================================== */
-
-
-    if (
+    const picks =
         Array.isArray(
-            data
+            data.picks
         )
-    ) {
-
-        registros =
-            data;
-
-    }
+            ? data.picks
+            : [];
 
 
-    /* ========================================================
-       SI EL JSON ES UN OBJETO
-    ======================================================== */
+    fileInfo.textContent =
+        `history/${date}/sharpie.json` +
+        ` · Generado: ` +
+        `${data.generated_at || "N/D"}`;
 
 
-    else if (
-
-        typeof data ===
-        'object' &&
-
-        data !== null
-
-    ) {
+    pickCounter.textContent =
+        `${picks.length} picks`;
 
 
-        /* ====================================================
-           BUSCAR UN ARRAY DENTRO DEL OBJETO
-
-           Ejemplo:
-
-           {
-               "picks": [
-                   {...},
-                   {...}
-               ]
-           }
-
-        ==================================================== */
+    updateSummary(
+        picks
+    );
 
 
-        const arraysEncontrados =
+    renderPicks(
+        picks
+    );
 
-            Object.values(
-                data
-            ).filter(
-
-                valor =>
-                    Array.isArray(
-                        valor
-                    )
-
-            );
+}
 
 
-        if (
-            arraysEncontrados.length > 0
-        ) {
+/*
+|--------------------------------------------------------------------------
+| SUMMARY
+|--------------------------------------------------------------------------
+*/
 
-            registros =
-                arraysEncontrados[0];
+function updateSummary(
+    picks
+) {
 
-        }
-
-        else {
-
-            registros =
-                [data];
-
-        }
-
-    }
+    totalPicks.textContent =
+        picks.length;
 
 
-    /* ========================================================
-       VALIDAR DATOS
-    ======================================================== */
+    totalWhale.textContent =
+        picks.filter(
+            pick =>
+                pick.whale === true
+        ).length;
 
 
-    if (
-        registros.length === 0
-    ) {
+    totalFree.textContent =
+        picks.filter(
+            pick =>
+                pick.freePick === true
+        ).length;
 
-        contentArea.innerHTML = `
 
-            <div class="message-card">
+    totalPending.textContent =
+        picks.filter(
+            pick =>
+                String(
+                    pick.result || ""
+                ).toUpperCase()
+                === "PENDING"
+        ).length;
 
-                <p>
-                    No hay registros
-                    para mostrar.
-                </p>
+
+    totalSports.textContent =
+        new Set(
+            picks
+                .map(
+                    pick =>
+                        pick.league
+                )
+                .filter(Boolean)
+        ).size;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| RENDER PICKS
+|--------------------------------------------------------------------------
+*/
+
+function renderPicks(
+    picks
+) {
+
+    if (!picks.length) {
+
+        picksContainer.innerHTML = `
+
+            <div class="empty">
+
+                No existen picks para esta fecha.
 
             </div>
 
         `;
-
 
         return;
 
     }
 
 
-    /* ========================================================
-       OBTENER TODAS LAS COLUMNAS
-    ======================================================== */
-
-
-    const columnas = [
-
-        ...new Set(
-
-            registros.flatMap(
-
-                registro =>
-
-                    (
-
-                        typeof registro ===
-                        'object' &&
-
-                        registro !== null
-
+    picksContainer.innerHTML =
+        picks
+            .map(
+                pick =>
+                    renderPick(
+                        pick
                     )
-
-                    ?
-
-                    Object.keys(
-                        registro
-                    )
-
-                    :
-
-                    []
-
             )
-
-        )
-
-    ];
-
-
-    /* ========================================================
-       CREAR WRAPPER
-    ======================================================== */
-
-
-    const wrapper =
-        document.createElement(
-            'div'
-        );
-
-
-    wrapper.className =
-        'table-wrapper';
-
-
-    /* ========================================================
-       CREAR TABLA
-    ======================================================== */
-
-
-    const table =
-        document.createElement(
-            'table'
-        );
-
-
-    table.className =
-        'data-table';
-
-
-    /* ========================================================
-       CREAR CABECERA
-    ======================================================== */
-
-
-    const thead =
-        document.createElement(
-            'thead'
-        );
-
-
-    const headerRow =
-        document.createElement(
-            'tr'
-        );
-
-
-    columnas.forEach(
-
-        columna => {
-
-
-            const th =
-                document.createElement(
-                    'th'
-                );
-
-
-            th.textContent =
-                columna;
-
-
-            headerRow.appendChild(
-                th
-            );
-
-        }
-
-    );
-
-
-    thead.appendChild(
-        headerRow
-    );
-
-
-    /* ========================================================
-       CREAR CUERPO
-    ======================================================== */
-
-
-    const tbody =
-        document.createElement(
-            'tbody'
-        );
-
-
-    registros.forEach(
-
-        registro => {
-
-
-            const tr =
-                document.createElement(
-                    'tr'
-                );
-
-
-            columnas.forEach(
-
-                columna => {
-
-
-                    const td =
-                        document.createElement(
-                            'td'
-                        );
-
-
-                    let valor =
-
-                        registro &&
-                        typeof registro ===
-                        'object'
-
-                        ?
-
-                        registro[
-                            columna
-                        ]
-
-                        :
-
-                        '';
-
-
-                    /* ========================================
-                       VALORES VACÍOS
-                    ======================================== */
-
-
-                    if (
-
-                        valor ===
-                        undefined ||
-
-                        valor ===
-                        null ||
-
-                        valor ===
-                        ''
-
-                    ) {
-
-                        valor =
-                            '—';
-
-                    }
-
-
-                    /* ========================================
-                       OBJETOS / ARRAYS
-                    ======================================== */
-
-
-                    if (
-
-                        typeof valor ===
-                        'object' &&
-
-                        valor !== null
-
-                    ) {
-
-
-                        valor =
-
-                            JSON.stringify(
-                                valor
-                            );
-
-
-                        td.classList.add(
-                            'json-value'
-                        );
-
-                    }
-
-
-                    /* ========================================
-                       INSERTAR VALOR
-                    ======================================== */
-
-
-                    td.textContent =
-                        valor;
-
-
-                    /* ========================================
-                       STATUS WIN
-                    ======================================== */
-
-
-                    if (
-
-                        columna.toLowerCase() ===
-                        'status'
-
-                    ) {
-
-
-                        const estado =
-
-                            String(
-                                valor
-                            ).toUpperCase();
-
-
-                        if (
-
-                            estado ===
-                            'WIN' ||
-
-                            estado ===
-                            'WON'
-
-                        ) {
-
-                            td.classList.add(
-                                'status-win'
-                            );
-
-                        }
-
-
-                        if (
-
-                            estado ===
-                            'LOSS' ||
-
-                            estado ===
-                            'LOST'
-
-                        ) {
-
-                            td.classList.add(
-                                'status-loss'
-                            );
-
-                        }
-
-                    }
-
-
-                    /* ========================================
-                       AGREGAR CELDA
-                    ======================================== */
-
-
-                    tr.appendChild(
-                        td
-                    );
-
-                }
-
-            );
-
-
-            /* ================================================
-               AGREGAR FILA
-            ================================================= */
-
-
-            tbody.appendChild(
-                tr
-            );
-
-        }
-
-    );
-
-
-    /* ========================================================
-       ARMAR TABLA
-    ======================================================== */
-
-
-    table.appendChild(
-        thead
-    );
-
-
-    table.appendChild(
-        tbody
-    );
-
-
-    wrapper.appendChild(
-        table
-    );
-
-
-    contentArea.appendChild(
-        wrapper
-    );
+            .join("");
 
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| PICK
+|--------------------------------------------------------------------------
+*/
 
-/* ============================================================
-   INICIALIZACIÓN
+function renderPick(
+    pick
+) {
 
-   ESTE ES EL ÚNICO DOMContentLoaded
-   DE TODO EL ARCHIVO.
+    return `
 
-============================================================ */
-
-
-document.addEventListener(
-    'DOMContentLoaded',
-    function () {
-
-
-        console.log(
-            '✅ Sharpie History iniciado'
-        );
+        <article class="pick">
 
 
-        /* ====================================================
-           OBTENER ELEMENTOS
-        ==================================================== */
+            <div class="pick-header">
+
+                <div>
+
+                    <div class="pick-title">
+
+                        ${escapeHtml(
+                            pick.game ||
+                            "Sin evento"
+                        )}
+
+                    </div>
 
 
-        const datePicker =
-            document.getElementById(
-                'datePicker'
-            );
+                    <div class="pick-subtitle">
+
+                        ${escapeHtml(
+                            pick.pick ||
+                            "Sin pick"
+                        )}
+
+                        ·
+
+                        ${escapeHtml(
+                            pick.market ||
+                            "N/D"
+                        )}
+
+                        ·
+
+                        ${escapeHtml(
+                            pick.odds ||
+                            "N/D"
+                        )}
+
+                    </div>
+
+                </div>
 
 
-        const loadButton =
-            document.getElementById(
-                'loadButton'
-            );
+                <div class="pick-id">
+
+                    #${escapeHtml(
+                        pick.id ??
+                        "N/D"
+                    )}
+
+                </div>
+
+            </div>
 
 
-        /* ====================================================
-           ASIGNAR FECHA ACTUAL
-        ==================================================== */
+            <div class="pick-body">
 
 
-        datePicker.value =
-            obtenerFechaActual();
+                <div class="data-grid">
+
+                    ${dataItem(
+                        "Liga",
+                        pick.league
+                    )}
+
+                    ${dataItem(
+                        "Acción",
+                        pick.action
+                    )}
+
+                    ${dataItem(
+                        "Prioridad",
+                        pick.priority
+                    )}
+
+                    ${dataItem(
+                        "Stake",
+                        pick.stake
+                    )}
+
+                    ${dataItem(
+                        "Score",
+                        pick.score
+                    )}
+
+                    ${dataItem(
+                        "Final Score",
+                        pick.finalScore
+                    )}
+
+                    ${dataItem(
+                        "Model Prob",
+                        percent(
+                            pick.modelProb
+                        )
+                    )}
+
+                    ${dataItem(
+                        "Implied Prob",
+                        percent(
+                            pick.impliedProb
+                        )
+                    )}
+
+                    ${dataItem(
+                        "Model Edge",
+                        percent(
+                            pick.modelEdge
+                        )
+                    )}
+
+                    ${dataItem(
+                        "EV",
+                        percent(
+                            pick.ev
+                        )
+                    )}
+
+                    ${dataItem(
+                        "Bets",
+                        percent(
+                            pick.betsPct
+                        )
+                    )}
+
+                    ${dataItem(
+                        "Handle",
+                        percent(
+                            pick.handlePct
+                        )
+                    )}
+
+                    ${dataItem(
+                        "Divergence",
+                        percent(
+                            pick.divergence
+                        )
+                    )}
+
+                    ${dataItem(
+                        "Risk",
+                        pick.risk
+                    )}
+
+                    ${dataItem(
+                        "Whale",
+                        pick.whale
+                            ? "SÍ"
+                            : "NO"
+                    )}
+
+                    ${dataItem(
+                        "Status",
+                        pick.status
+                    )}
+
+                    ${dataItem(
+                        "Result",
+                        pick.result
+                    )}
+
+                    ${dataItem(
+                        "ROI",
+                        pick.roi
+                    )}
+
+                    ${dataItem(
+                        "Free Pick",
+                        pick.freePick
+                            ? "SÍ"
+                            : "NO"
+                    )}
+
+                </div>
 
 
-        console.log(
+                ${
+                    pick.reason
+                        ? `
+                            <div class="reason">
 
-            '📅 Fecha inicial:',
+                                ${escapeHtml(
+                                    pick.reason
+                                )}
 
-            datePicker.value
-
-        );
-
-
-        /* ====================================================
-           EVENTO DEL BOTÓN
-
-           IMPORTANTE:
-
-           Este evento se registra UNA SOLA VEZ.
-
-        ==================================================== */
+                            </div>
+                        `
+                        : ""
+                }
 
 
-        loadButton.addEventListener(
-            'click',
-            function () {
+                ${
+                    pick.monteCarlo
+                        ? renderMonteCarlo(
+                            pick.monteCarlo
+                        )
+                        : ""
+                }
 
 
-                console.log(
-                    '🖱️ BOTÓN PRESIONADO'
-                );
+                ${
+                    pick.clv
+                        ? renderCLV(
+                            pick.clv
+                        )
+                        : ""
+                }
 
 
-                console.log(
+                ${
+                    Array.isArray(
+                        pick.history
+                    )
+                        ? renderHistory(
+                            pick.history
+                        )
+                        : ""
+                }
 
-                    '📅 Fecha seleccionada:',
 
-                    datePicker.value
+            </div>
 
-                );
+        </article>
+
+    `;
+
+}
 
 
-                cargarJSON();
+/*
+|--------------------------------------------------------------------------
+| DATA ITEM
+|--------------------------------------------------------------------------
+*/
+
+function dataItem(
+    label,
+    value
+) {
+
+    return `
+
+        <div class="data-item">
+
+            <span class="data-label">
+
+                ${escapeHtml(
+                    label
+                )}
+
+            </span>
+
+
+            <span class="data-value">
+
+                ${escapeHtml(
+                    formatValue(
+                        value
+                    )
+                )}
+
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| MONTE CARLO
+|--------------------------------------------------------------------------
+*/
+
+function renderMonteCarlo(
+    mc
+) {
+
+    return `
+
+        <details>
+
+            <summary>
+                MONTE CARLO
+            </summary>
+
+
+            <div class="data-grid">
+
+                ${dataItem(
+                    "Win Probability",
+                    percent(
+                        mc.win_probability
+                    )
+                )}
+
+                ${dataItem(
+                    "Expected ROI",
+                    percent(
+                        mc.expected_roi
+                    )
+                )}
+
+                ${dataItem(
+                    "Runs",
+                    mc.runs
+                )}
+
+            </div>
+
+        </details>
+
+    `;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| CLV
+|--------------------------------------------------------------------------
+*/
+
+function renderCLV(
+    clv
+) {
+
+    let html = `
+
+        <details>
+
+            <summary>
+                CLV
+            </summary>
+
+    `;
+
+
+    if (clv.opening) {
+
+        html += `
+
+            <div class="data-grid">
+
+                ${dataItem(
+                    "Opening Odds",
+                    clv.opening.odds
+                )}
+
+                ${dataItem(
+                    "Opening Prob",
+                    percent(
+                        clv.opening.prob
+                    )
+                )}
+
+                ${dataItem(
+                    "Opening Divergence",
+                    percent(
+                        clv.opening.divergence
+                    )
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (clv.checkpoints) {
+
+        html += `
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Checkpoint
+                            </th>
+
+                            <th>
+                                Odds
+                            </th>
+
+                            <th>
+                                Prob
+                            </th>
+
+                            <th>
+                                CLV
+                            </th>
+
+                            <th>
+                                Divergence
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+        `;
+
+
+        Object.entries(
+            clv.checkpoints
+        ).forEach(
+            ([key, value]) => {
+
+                if (!value) {
+                    return;
+                }
+
+
+                html += `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(key)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                value.odds
+                            )}
+                        </td>
+
+                        <td>
+                            ${percent(
+                                value.prob
+                            )}
+                        </td>
+
+                        <td>
+                            ${percent(
+                                value.clv
+                            )}
+                        </td>
+
+                        <td>
+                            ${percent(
+                                value.divergence
+                            )}
+                        </td>
+
+                    </tr>
+
+                `;
 
             }
         );
 
 
-        /* ====================================================
-           CARGAR FECHA ACTUAL AUTOMÁTICAMENTE
-        ==================================================== */
+        html += `
 
+                    </tbody>
 
-        cargarJSON();
+                </table>
+
+            </div>
+
+        `;
 
     }
-);
 
+
+    html += `
+
+        </details>
+
+    `;
+
+
+    return html;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| HISTORY
+|--------------------------------------------------------------------------
+*/
+
+function renderHistory(
+    history
+) {
+
+    if (
+        !history.length
+    ) {
+
+        return "";
+
+    }
+
+
+    return `
+
+        <details>
+
+            <summary>
+
+                HISTORIAL
+                (${history.length})
+
+            </summary>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Hora
+                            </th>
+
+                            <th>
+                                Bets
+                            </th>
+
+                            <th>
+                                Handle
+                            </th>
+
+                            <th>
+                                Odds
+                            </th>
+
+                            <th>
+                                Timestamp
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${history
+                            .map(
+                                item => `
+
+                                    <tr>
+
+                                        <td>
+                                            ${escapeHtml(
+                                                item.time
+                                            )}
+                                        </td>
+
+                                        <td>
+                                            ${percent(
+                                                item.betsPct
+                                            )}
+                                        </td>
+
+                                        <td>
+                                            ${percent(
+                                                item.handlePct
+                                            )}
+                                        </td>
+
+                                        <td>
+                                            ${escapeHtml(
+                                                item.odds
+                                            )}
+                                        </td>
+
+                                        <td>
+                                            ${escapeHtml(
+                                                item.timestamp
+                                            )}
+                                        </td>
+
+                                    </tr>
+
+                                `
+                            )
+                            .join("")}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </details>
+
+    `;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| FORMAT
+|--------------------------------------------------------------------------
+*/
+
+function percent(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return "N/D";
+
+    }
+
+
+    return `${Number(value).toFixed(2)}%`;
+
+}
+
+
+function formatValue(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "N/D";
+
+    }
+
+
+    if (
+        typeof value === "boolean"
+    ) {
+
+        return value
+            ? "SÍ"
+            : "NO";
+
+    }
+
+
+    if (
+        typeof value === "number"
+    ) {
+
+        return Number.isInteger(value)
+            ? String(value)
+            : value.toFixed(2);
+
+    }
+
+
+    if (
+        typeof value === "object"
+    ) {
+
+        return JSON.stringify(
+            value
+        );
+
+    }
+
+
+    return String(value);
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| DATE
+|--------------------------------------------------------------------------
+*/
+
+function formatDate(
+    date
+) {
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| MONTH NAME
+|--------------------------------------------------------------------------
+*/
+
+function monthName(
+    month
+) {
+
+    const names = {
+
+        "01": "Enero",
+        "02": "Febrero",
+        "03": "Marzo",
+        "04": "Abril",
+        "05": "Mayo",
+        "06": "Junio",
+        "07": "Julio",
+        "08": "Agosto",
+        "09": "Septiembre",
+        "10": "Octubre",
+        "11": "Noviembre",
+        "12": "Diciembre"
+
+    };
+
+
+    return names[month] ||
+        month;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ESCAPE HTML
+|--------------------------------------------------------------------------
+*/
+
+function escapeHtml(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
 
 </script>
 
 
 </body>
-
 </html>
