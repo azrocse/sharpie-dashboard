@@ -1575,10 +1575,64 @@ def generate_dashboard():
 
     save_daily_history(all_events, cdmx_now)
 
-    json_data = json.dumps(all_events, ensure_ascii=False)
+    # ------------------------------------------------------------
+    # Split público/privado: el HTML se hornea con datos PÚBLICOS
+    # solamente (fecha/hora/evento/liga) -- el dato completo (Bets,
+    # Handle, Modelo, EV, Stake, etc.) NUNCA se hornea en el HTML ni
+    # se manda a un visitante sin sesión. Antes __PICKS_JSON__ tenía
+    # TODO el detalle horneado en el código fuente de la página,
+    # visible con "Ver código fuente" sin login alguno -- ese era el
+    # hueco real, no el CSS.
+    # ------------------------------------------------------------
+    PUBLIC_FIELDS = ("game", "date", "time", "iso", "league")
+
+    def to_public_pick(item):
+        return {k: item.get(k) for k in PUBLIC_FIELDS}
+
+    def build_public_stats(items):
+        free_n = sum(1 for p in items if p.get("pickCategory") == "FREE")
+        editor_n = sum(1 for p in items if p.get("pickCategory") == "EDITORS")
+        whale_n = sum(1 for p in items if p.get("pickCategory") == "WHALE")
+
+        signal_counts = {"SMART_MONEY": 0, "PUBLIC_HEAVY": 0, "CONSENSUS": 0, "MIXED": 0, "NO_ACTION": 0}
+        for p in items:
+            sig = p.get("marketSignal", "NO_ACTION")
+            if sig in signal_counts:
+                signal_counts[sig] += 1
+
+        proximos_30 = 0
+        now_ts = datetime.now()
+        for p in items:
+            kd = _parse_iso(p.get("iso"))
+            if kd is not None:
+                diff_min = (kd - now_ts).total_seconds() / 60.0
+                if 0 <= diff_min <= 30:
+                    proximos_30 += 1
+
+        edge_ev_points = [
+            {"edge": p.get("modelEdge"), "ev": p.get("ev")}
+            for p in items if p.get("modelEdge") is not None and p.get("ev") is not None
+        ]
+
+        return {
+            "totalAnalyzed": len(items),
+            "free": free_n,
+            "editor": editor_n,
+            "whale": whale_n,
+            "proximos30": proximos_30,
+            "signalCounts": signal_counts,
+            "edgeEvPoints": edge_ev_points
+        }
+
+    public_picks = [to_public_pick(item) for item in all_events]
+    public_stats = build_public_stats(all_events)
+    public_json_data = json.dumps(public_picks, ensure_ascii=False)
 
     html_content = html_template.replace("__GENERATED_AT__", now_str)
-    html_content = html_content.replace("__PICKS_JSON__", json_data)
+    html_content = html_content.replace("__PICKS_JSON__", public_json_data)
+    html_content = html_content.replace(
+        "__STATS_PUBLIC_JSON__", json.dumps(public_stats, ensure_ascii=False)
+    )
 
     output_file = os.path.join(OUTPUT_DIR, "index.html")
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -1586,12 +1640,24 @@ def generate_dashboard():
     with open(output_file, "w", encoding="utf-8") as file:
         file.write(html_content)
 
-    # picks.json separado -- permite que el frontend haga polling liviano
-    # (sin volver a descargar todo el HTML) para detectar picks nuevos y
-    # refrescarse solo, sin que el usuario tenga que presionar F5.
+    # picks.json = dato COMPLETO -- solo lo pide el frontend después de un
+    # login exitoso (ver checkAuth en template.html). Sigue siendo un
+    # archivo público por URL directa (no hay servidor con auth real
+    # detrás), pero ya no se manda por defecto ni queda horneado en el
+    # código fuente de la página -- cierra el hueco principal.
     picks_json_path = os.path.join(OUTPUT_DIR, "picks.json")
     with open(picks_json_path, "w", encoding="utf-8") as file:
         json.dump(all_events, file, ensure_ascii=False)
+
+    # picks_public.json + stats_public.json -- para el polling de invitados
+    # (sin sesión), mismo principio: solo campos seguros / agregados.
+    public_picks_path = os.path.join(OUTPUT_DIR, "picks_public.json")
+    with open(public_picks_path, "w", encoding="utf-8") as file:
+        json.dump(public_picks, file, ensure_ascii=False)
+
+    public_stats_path = os.path.join(OUTPUT_DIR, "stats_public.json")
+    with open(public_stats_path, "w", encoding="utf-8") as file:
+        json.dump(public_stats, file, ensure_ascii=False)
 
     print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file

@@ -230,6 +230,146 @@
             border-color: var(--teal);
         }
 
+        .auth-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-btn {
+            padding: 9px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--panel2);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .auth-btn:hover { border-color: var(--teal); }
+        .auth-btn-out { color: var(--red); }
+
+        .auth-user-email {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .login-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .login-modal {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            background: var(--panel-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .login-modal h3 { margin: 0; font-size: 18px; }
+        .login-modal-sub { margin: 0 0 6px; font-size: 12px; color: var(--muted); }
+
+        .login-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .login-modal input {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--panel2);
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .login-primary-btn {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: var(--teal);
+            color: #04241f;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .login-secondary-btn {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--muted);
+            font-size: 11px;
+            margin: 4px 0;
+        }
+        .login-divider::before, .login-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+        .login-divider span { padding: 0 8px; }
+
+        .login-google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: #1f1f1f;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .login-error {
+            background: var(--red-soft);
+            border: 1px solid var(--red);
+            color: var(--red);
+            font-size: 11px;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
         /* KPI GRID */
         .stats-grid {
             display: grid;
@@ -770,6 +910,22 @@
         @keyframes pulseNew {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.55; }
+        }
+
+        .updated-pick-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            border: 1px solid var(--amber);
+            border-radius: 999px;
+            background: var(--amber-soft);
+            color: var(--amber);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+            animation: pulseNew 1.6s ease-in-out infinite;
         }
 
         .free-pick-badge {
@@ -1456,7 +1612,11 @@
         @media(max-width: 640px) {
             body { padding: 14px; }
             .header { flex-direction: column; align-items: flex-start; }
-            .header-meta { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+            .header-meta { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
+            .timestamp-box { flex-wrap: wrap; width: 100%; justify-content: space-between; gap: 10px 14px; }
+            .auth-box { width: 100%; justify-content: space-between; }
+            .auth-user-email { max-width: 55vw; }
+            .theme-toggle { align-self: flex-end; }
             .brand-info h1 { font-size: 22px; }
             .toolbar { padding: 10px; }
             .search-box { min-width: 100%; }
@@ -1498,6 +1658,26 @@
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
+
+    <!-- Firebase (Auth + Firestore) -- reemplaza los valores de firebaseConfig
+         con los de TU proyecto (Firebase Console -> Configuración del proyecto). -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSbvzVKLcOy01ptDVmq9V_r5aWE75O-Sk",
+            authDomain: "sharpie-dashboard.firebaseapp.com",
+            projectId: "sharpie-dashboard",
+            storageBucket: "sharpie-dashboard.firebasestorage.app",
+            messagingSenderId: "767206545709",
+            appId: "1:767206545709:web:cc111c59cba7796b789ba4",
+            measurementId: "G-07E2E0XE06"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const fbAuth = firebase.auth();
+        const fbDb = firebase.firestore();
+    </script>
 </head>
 <body>
 
@@ -1527,6 +1707,38 @@
             </div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
+
+        <div id="authLoggedOut" class="auth-box">
+            <button class="auth-btn" id="btnOpenLogin">🔑 Iniciar sesión</button>
+        </div>
+        <div id="authLoggedIn" class="auth-box" style="display:none;">
+            <span class="auth-user-email" id="authUserEmail"></span>
+            <button class="auth-btn auth-btn-out" id="btnSignOut">Cerrar sesión</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de login (email/password + Google) -->
+<div id="loginModal" class="login-modal-backdrop" style="display:none;">
+    <div class="login-modal">
+        <button class="login-modal-close" id="btnCloseLogin">✕</button>
+        <h3>Inicia sesión</h3>
+        <p class="login-modal-sub">Guarda tu Watchlist en la nube y consúltala desde cualquier dispositivo.</p>
+
+        <input type="email" id="loginEmail" placeholder="Correo electrónico" autocomplete="email">
+        <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="current-password">
+
+        <div id="loginError" class="login-error" style="display:none;"></div>
+
+        <button class="login-primary-btn" id="btnEmailSignIn">Iniciar sesión</button>
+        <button class="login-secondary-btn" id="btnEmailSignUp">Crear cuenta nueva</button>
+
+        <div class="login-divider"><span>o</span></div>
+
+        <button class="login-google-btn" id="btnGoogleSignIn">
+            <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-1.8 14.1-5.1l-6.5-5.5C29.6 35 26.9 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.6 39.7 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.2 5.6l6.5 5.5C41.5 36 44 30.5 44 24c0-1.4-.1-2.7-.4-3.5z"/></svg>
+            Continuar con Google
+        </button>
     </div>
 </div>
 
@@ -1854,6 +2066,7 @@
 
 <script>
 let PICKS = [];
+let STATS_PUBLIC = (typeof __STATS_PUBLIC_JSON__ !== "undefined") ? __STATS_PUBLIC_JSON__ : null;
 
 // Reloj en tiempo real
 function startRealtimeClock() {
@@ -1903,6 +2116,8 @@ async function loadData() {
 // Si el archivo se abre como file:// local (sin servidor), el fetch falla y
 // simplemente no hace nada -- el resto del dashboard sigue funcionando igual.
 let RECENTLY_ADDED_IDS = new Set();
+let RECENTLY_UPDATED_IDS = new Set();
+let ACTIVE_FILTER_MATCH_KEYS = new Set();
 
 async function checkForNewPicks() {
     try {
@@ -1915,13 +2130,32 @@ async function checkForNewPicks() {
         const changed = JSON.stringify(freshData) !== JSON.stringify(PICKS);
         if (!changed) return;
 
-        const oldKeys = new Set(PICKS.map(getWatchlistId));
+        const oldByKey = new Map(PICKS.map(p => [getWatchlistId(p), p]));
         const newKeys = new Set(freshData.map(getWatchlistId));
-        const addedKeys = [...newKeys].filter(k => !oldKeys.has(k));
-        const removedCount = [...oldKeys].filter(k => !newKeys.has(k)).length;
+        const addedKeys = [...newKeys].filter(k => !oldByKey.has(k));
+        const removedCount = [...oldByKey.keys()].filter(k => !newKeys.has(k)).length;
+
+        // Picks que YA existían pero cambiaron de valor (Bets/Handle/Cuota/Stake/etc)
+        const updatedKeys = freshData
+            .filter(p => {
+                const key = getWatchlistId(p);
+                const prev = oldByKey.get(key);
+                return prev && JSON.stringify(prev) !== JSON.stringify(p);
+            })
+            .map(getWatchlistId);
+
+        // Comprobación de filtro activo: si el usuario dejó un filtro puesto
+        // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
+        // revisa en cada refresh qué picks entran o salen de ese filtro
+        // específico -- aviso aparte del genérico de arriba. El snapshot
+        // "antes" se toma justo antes de renderizar (render() resincroniza
+        // ACTIVE_FILTER_MATCH_KEYS siempre, incluso si el usuario cambió el
+        // filtro a mano entre revisiones).
+        const beforeMatchKeys = new Set(ACTIVE_FILTER_MATCH_KEYS);
 
         PICKS = freshData;
         RECENTLY_ADDED_IDS = new Set(addedKeys);
+        RECENTLY_UPDATED_IDS = new Set(updatedKeys);
         populateSelectOptions();
         render();
 
@@ -1937,12 +2171,39 @@ async function checkForNewPicks() {
 
         const parts = [];
         if (addedKeys.length > 0) parts.push(`${addedKeys.length} nuevo(s)`);
+        if (updatedKeys.length > 0) parts.push(`${updatedKeys.length} actualizado(s)`);
         if (removedCount > 0) parts.push(`${removedCount} finalizado(s)/fuera de tiempo`);
         showAttractiveNotification({
             title: "🔄 Dashboard actualizado",
             body: parts.length > 0 ? parts.join(" · ") : "Los datos se actualizaron",
             variant: "success"
         });
+
+        // Badges temporales (NUEVO / ACTUALIZADO) se limpian solos a los 3 min
+        if (addedKeys.length > 0 || updatedKeys.length > 0) {
+            setTimeout(() => { RECENTLY_ADDED_IDS.clear(); RECENTLY_UPDATED_IDS.clear(); render(); }, 180000);
+        }
+
+        // Comprobación de filtro activo: si el usuario dejó un filtro puesto
+        // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
+        // revisa en cada refresh qué picks entran o salen de ese filtro
+        // específico -- aviso aparte del genérico de arriba.
+        if (isAnyFilterActive() && beforeMatchKeys.size > 0) {
+            const matchingKeys = new Set(ACTIVE_FILTER_MATCH_KEYS);
+            const enteredCount = [...matchingKeys].filter(k => !beforeMatchKeys.has(k)).length;
+            const exitedCount = [...beforeMatchKeys].filter(k => !matchingKeys.has(k)).length;
+
+            if (enteredCount > 0 || exitedCount > 0) {
+                const fparts = [];
+                if (enteredCount > 0) fparts.push(`${enteredCount} nuevo(s) cumplen`);
+                if (exitedCount > 0) fparts.push(`${exitedCount} ya no cumplen`);
+                showAttractiveNotification({
+                    title: "🎯 Tu filtro activo cambió",
+                    body: fparts.join(" · "),
+                    variant: "info"
+                });
+            }
+        }
 
         // El badge "NUEVO" se muestra 3 min y luego se limpia solo
         if (addedKeys.length > 0) {
@@ -1996,6 +2257,20 @@ const state = {
     winProbMax: null,
     recommendation: ""
 };
+
+function isAnyFilterActive() {
+    const s = state;
+    const numericKeys = [
+        "modeloMin","modeloMax","cuotaMin","cuotaMax","edgeMin","edgeMax",
+        "betsMin","betsMax","handleMin","handleMax","scoreMin","scoreMax",
+        "evMin","evMax","stakeMin","stakeMax","divergenciaMin","divergenciaMax",
+        "confMin","confMax","winProbMin","winProbMax"
+    ];
+    if (numericKeys.some(k => s[k] !== null && s[k] !== undefined)) return true;
+    if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
+    if (s.editorOnly || s.whaleOnly || s.freePickOnly || s.featuredOnly || s.watchlistOnly) return true;
+    return false;
+}
 
 // Parte 3: 5 señales de mercado homologadas a inglés -- únicas, calculadas
 // en el backend (p.marketSignal / p.trendKey). El frontend solo pinta.
@@ -3075,67 +3350,91 @@ function showToastX() {
 // en localStorage. Cada vez que el dashboard se regenera y se recarga, se
 // compara el dato actual contra ese snapshot para mostrar si la línea
 // mejoró o empeoró desde que se empezó a seguir.
-const WATCHLIST_STORAGE_KEY = "sharpie_watchlist_v1";
+// ============ WATCHLIST EN LA NUBE (Firestore) ============
+// Requiere sesión iniciada. Doc: watchlists/{uid} -> { picks: { [id]: entry } }
+// WATCHLIST_CACHE se mantiene sincronizado en tiempo real via onSnapshot,
+// así que también refleja cambios hechos desde otro dispositivo con la
+// misma cuenta -- por eso isInWatchlist() puede seguir siendo síncrono.
+let firebaseUser = null;
+let WATCHLIST_CACHE = {};
+let watchlistUnsubscribe = null;
 
 function getWatchlistId(p) {
     return `${(p.league || '').toLowerCase()}|${(p.game || '').toLowerCase()}|${(p.market || '').toLowerCase()}|${(p.pick || '').toLowerCase()}`.trim();
 }
 
-function loadWatchlist() {
-    try {
-        return JSON.parse(localStorage.getItem(WATCHLIST_STORAGE_KEY)) || {};
-    } catch (e) {
-        return {};
-    }
+function watchlistDocRef() {
+    return fbDb.collection("watchlists").doc(firebaseUser.uid);
 }
 
-function saveWatchlist(list) {
-    try {
-        localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(list));
-    } catch (e) {
-        console.error("Error al guardar watchlist:", e);
-    }
+function attachWatchlistListener() {
+    if (watchlistUnsubscribe) watchlistUnsubscribe();
+    watchlistUnsubscribe = watchlistDocRef().onSnapshot(
+        (doc) => {
+            WATCHLIST_CACHE = (doc.exists && doc.data().picks) ? doc.data().picks : {};
+            render();
+        },
+        (err) => console.error("Watchlist listener error:", err)
+    );
+}
+
+function detachWatchlistListener() {
+    if (watchlistUnsubscribe) { watchlistUnsubscribe(); watchlistUnsubscribe = null; }
+    WATCHLIST_CACHE = {};
 }
 
 function isInWatchlist(p) {
-    const list = loadWatchlist();
-    return !!list[getWatchlistId(p)];
+    return !!WATCHLIST_CACHE[getWatchlistId(p)];
 }
 
-function toggleWatchlist(p) {
-    const list = loadWatchlist();
-    const id = getWatchlistId(p);
-
-    if (list[id]) {
-        delete list[id];
-        saveWatchlist(list);
+async function toggleWatchlist(p) {
+    if (!firebaseUser) {
+        openLoginModal();
         showAttractiveNotification({
-            title: "👁 Dejaste de seguir",
-            body: `${p.game || 'Evento'} — ${p.pick || ''}`,
+            title: "🔒 Inicia sesión",
+            body: "Necesitas una cuenta para usar My Watchlist",
             variant: "info"
         });
-    } else {
-        list[id] = {
-            followedAt: new Date().toISOString(),
-            league: p.league || '',
-            game: p.game || '',
-            pick: p.pick || '',
-            market: p.market || '',
-            snapshot: {
-                betsPct: p.betsPct != null ? Number(p.betsPct) : null,
-                handlePct: p.handlePct != null ? Number(p.handlePct) : null,
-                divergence: calculateSmartMoney(p),
-                odds: p.odds || p.cuota || null
-            }
-        };
-        saveWatchlist(list);
-        showAttractiveNotification({
-            title: "👁 Ahora sigues este pick",
-            body: `${p.game || 'Evento'} — ${p.pick || ''}`,
-            variant: "success"
-        });
+        return;
     }
-    render();
+
+    const id = getWatchlistId(p);
+    const ref = watchlistDocRef();
+
+    try {
+        if (WATCHLIST_CACHE[id]) {
+            await ref.update({ [`picks.${id}`]: firebase.firestore.FieldValue.delete() });
+            showAttractiveNotification({
+                title: "👁 Dejaste de seguir",
+                body: `${p.game || 'Evento'} — ${p.pick || ''}`,
+                variant: "info"
+            });
+        } else {
+            const entry = {
+                followedAt: new Date().toISOString(),
+                league: p.league || '',
+                game: p.game || '',
+                pick: p.pick || '',
+                market: p.market || '',
+                snapshot: {
+                    betsPct: p.betsPct != null ? Number(p.betsPct) : null,
+                    handlePct: p.handlePct != null ? Number(p.handlePct) : null,
+                    divergence: calculateSmartMoney(p),
+                    odds: p.odds || p.cuota || null
+                }
+            };
+            await ref.set({ picks: { [id]: entry } }, { merge: true });
+            showAttractiveNotification({
+                title: "👁 Ahora sigues este pick",
+                body: `${p.game || 'Evento'} — ${p.pick || ''}`,
+                variant: "success"
+            });
+        }
+        // WATCHLIST_CACHE y render() los actualiza solo el listener onSnapshot
+    } catch (e) {
+        console.error("Error al actualizar watchlist:", e);
+        showAttractiveNotification({ title: "⚠️ Error", body: "No se pudo actualizar tu Watchlist. Intenta de nuevo.", variant: "urgent" });
+    }
 }
 
 // Flecha de comparación actual vs snapshot -- usada en el panel de watchlist
@@ -3209,8 +3508,7 @@ function watchlistVerdict(p, snap) {
 }
 
 function watchlistPanelHtml(p) {
-    const list = loadWatchlist();
-    const entry = list[getWatchlistId(p)];
+    const entry = WATCHLIST_CACHE[getWatchlistId(p)];
     if (!entry) return '';
 
     const snap = entry.snapshot || {};
@@ -3310,6 +3608,8 @@ function render() {
     const pendingPicks = PICKS.filter(p => isEventPending(p));
     const activeList = applyFiltersAndSort(pendingPicks);
 
+    ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getWatchlistId));
+
     updateMetrics(activeList);
     updateChartsData(activeList);
 
@@ -3341,6 +3641,7 @@ function render() {
         const isPremium = !isWhale && !isEditor && !isFree;
         const isFeatured = isFeaturedPick(p);
         const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
+        const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
         const editorEval = getEvolutionAnalysis(p);
 
         let cardClasses = "pcard";
@@ -3372,6 +3673,7 @@ function render() {
                                 ${config.label}
                             </span>
                             ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
+                            ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
                             ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
                             ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
                             ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
@@ -3416,7 +3718,6 @@ function render() {
                     ${buildEvolutionHtml(p)}
                     ${unifiedDecisionPanelHtml(p)}
 
-                    ${p.reason ? `<div class="reasoning-text">💡 <b>Análisis:</b> ${escapeHTML(p.reason)}</div>` : ''}
                 </div>
 
                 <div style="margin-top: 14px;">
@@ -3653,6 +3954,123 @@ function setupListeners() {
     }
 }
 
+// ============ AUTENTICACIÓN (Firebase) ============
+function openLoginModal() {
+    const modal = document.getElementById("loginModal");
+    const errorEl = document.getElementById("loginError");
+    if (errorEl) { errorEl.style.display = "none"; errorEl.textContent = ""; }
+    if (modal) modal.style.display = "flex";
+}
+
+function closeLoginModal() {
+    const modal = document.getElementById("loginModal");
+    if (modal) modal.style.display = "none";
+}
+
+function showLoginError(message) {
+    const errorEl = document.getElementById("loginError");
+    if (!errorEl) return;
+    errorEl.textContent = translateFirebaseError(message);
+    errorEl.style.display = "block";
+}
+
+function translateFirebaseError(message) {
+    const m = String(message || "");
+    if (m.includes("auth/invalid-email")) return "Correo inválido.";
+    if (m.includes("auth/user-not-found")) return "No existe una cuenta con ese correo.";
+    if (m.includes("auth/wrong-password") || m.includes("auth/invalid-credential")) return "Contraseña incorrecta.";
+    if (m.includes("auth/email-already-in-use")) return "Ese correo ya tiene una cuenta -- inicia sesión.";
+    if (m.includes("auth/weak-password")) return "La contraseña debe tener al menos 6 caracteres.";
+    if (m.includes("auth/popup-closed-by-user")) return "Se cerró la ventana de Google antes de terminar.";
+    if (m.includes("auth/unauthorized-domain")) return "Este dominio no está autorizado en Firebase (Authentication -> Settings -> Authorized domains).";
+    if (m.includes("auth/network-request-failed")) return "Fallo de red -- revisa tu conexión.";
+    if (m.includes("auth/configuration-not-found") || m.includes("auth/invalid-api-key")) return "Firebase mal configurado -- revisa firebaseConfig y que Authentication esté activado.";
+    return "No se pudo completar la acción. Intenta de nuevo.";
+}
+
+function reportAuthError(context, e) {
+    console.error(`[Auth:${context}]`, e);
+    showLoginError(e.message);
+}
+
+async function handleEmailSignIn() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const pass = document.getElementById("loginPassword").value;
+    if (!email || !pass) { showLoginError("Completa correo y contraseña."); return; }
+    try {
+        await fbAuth.signInWithEmailAndPassword(email, pass);
+        closeLoginModal();
+    } catch (e) { reportAuthError("signIn", e); }
+}
+
+async function handleEmailSignUp() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const pass = document.getElementById("loginPassword").value;
+    if (!email || !pass) { showLoginError("Completa correo y contraseña."); return; }
+    try {
+        await fbAuth.createUserWithEmailAndPassword(email, pass);
+        closeLoginModal();
+    } catch (e) { reportAuthError("signUp", e); }
+}
+
+async function handleGoogleSignIn() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+        await fbAuth.signInWithPopup(provider);
+        closeLoginModal();
+    } catch (e) { reportAuthError("googleSignIn", e); }
+}
+
+function handleSignOut() {
+    fbAuth.signOut();
+}
+
+function updateAuthUI() {
+    const loggedOutEl = document.getElementById("authLoggedOut");
+    const loggedInEl = document.getElementById("authLoggedIn");
+    const emailEl = document.getElementById("authUserEmail");
+
+    if (firebaseUser) {
+        if (loggedOutEl) loggedOutEl.style.display = "none";
+        if (loggedInEl) loggedInEl.style.display = "flex";
+        if (emailEl) emailEl.textContent = firebaseUser.email || firebaseUser.displayName || "Usuario";
+    } else {
+        if (loggedOutEl) loggedOutEl.style.display = "flex";
+        if (loggedInEl) loggedInEl.style.display = "none";
+    }
+}
+
+function setupAuthListeners() {
+    const btnOpenLogin = document.getElementById("btnOpenLogin");
+    const btnCloseLogin = document.getElementById("btnCloseLogin");
+    const btnSignOut = document.getElementById("btnSignOut");
+    const btnEmailSignIn = document.getElementById("btnEmailSignIn");
+    const btnEmailSignUp = document.getElementById("btnEmailSignUp");
+    const btnGoogleSignIn = document.getElementById("btnGoogleSignIn");
+    const modalBackdrop = document.getElementById("loginModal");
+
+    if (btnOpenLogin) btnOpenLogin.addEventListener("click", openLoginModal);
+    if (btnCloseLogin) btnCloseLogin.addEventListener("click", closeLoginModal);
+    if (btnSignOut) btnSignOut.addEventListener("click", handleSignOut);
+    if (btnEmailSignIn) btnEmailSignIn.addEventListener("click", handleEmailSignIn);
+    if (btnEmailSignUp) btnEmailSignUp.addEventListener("click", handleEmailSignUp);
+    if (btnGoogleSignIn) btnGoogleSignIn.addEventListener("click", handleGoogleSignIn);
+    if (modalBackdrop) modalBackdrop.addEventListener("click", (e) => {
+        if (e.target === modalBackdrop) closeLoginModal();
+    });
+
+    fbAuth.onAuthStateChanged((user) => {
+        firebaseUser = user;
+        updateAuthUI();
+        if (user) {
+            attachWatchlistListener();
+        } else {
+            detachWatchlistListener();
+            render();
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     startRealtimeClock();
     setupThemeToggle();
@@ -3660,6 +4078,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadData();
     populateSelectOptions();
     setupListeners();
+    setupAuthListeners();
     setupStatPopups();
     render();
 
