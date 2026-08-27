@@ -230,146 +230,6 @@
             border-color: var(--teal);
         }
 
-        .auth-box {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .auth-btn {
-            padding: 9px 14px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--panel2);
-            color: var(--text);
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .auth-btn:hover { border-color: var(--teal); }
-        .auth-btn-out { color: var(--red); }
-
-        .auth-user-email {
-            font-size: 11px;
-            color: var(--muted);
-            font-weight: 600;
-            max-width: 160px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .login-modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            overflow-y: auto;
-        }
-
-        .login-modal {
-            position: relative;
-            width: 100%;
-            max-width: 360px;
-            max-height: calc(100vh - 32px);
-            overflow-y: auto;
-            background: var(--panel-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .login-modal h3 { margin: 0; font-size: 18px; }
-        .login-modal-sub { margin: 0 0 6px; font-size: 12px; color: var(--muted); }
-
-        .login-modal-close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: none;
-            border: none;
-            color: var(--muted);
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .login-modal input {
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--panel2);
-            color: var(--text);
-            font-size: 13px;
-        }
-
-        .login-primary-btn {
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            background: var(--teal);
-            color: #04241f;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .login-secondary-btn {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text);
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .login-divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: var(--muted);
-            font-size: 11px;
-            margin: 4px 0;
-        }
-        .login-divider::before, .login-divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid var(--border);
-        }
-        .login-divider span { padding: 0 8px; }
-
-        .login-google-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: #fff;
-            color: #1f1f1f;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .login-error {
-            background: var(--red-soft);
-            border: 1px solid var(--red);
-            color: var(--red);
-            font-size: 11px;
-            padding: 8px 10px;
-            border-radius: 6px;
-        }
-
         /* KPI GRID */
         .stats-grid {
             display: grid;
@@ -910,22 +770,6 @@
         @keyframes pulseNew {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.55; }
-        }
-
-        .updated-pick-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 7px;
-            border: 1px solid var(--amber);
-            border-radius: 999px;
-            background: var(--amber-soft);
-            color: var(--amber);
-            font-size: 9px;
-            font-weight: 900;
-            letter-spacing: .25px;
-            white-space: nowrap;
-            animation: pulseNew 1.6s ease-in-out infinite;
         }
 
         .free-pick-badge {
@@ -1612,11 +1456,7 @@
         @media(max-width: 640px) {
             body { padding: 14px; }
             .header { flex-direction: column; align-items: flex-start; }
-            .header-meta { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
-            .timestamp-box { flex-wrap: wrap; width: 100%; justify-content: space-between; gap: 10px 14px; }
-            .auth-box { width: 100%; justify-content: space-between; }
-            .auth-user-email { max-width: 55vw; }
-            .theme-toggle { align-self: flex-end; }
+            .header-meta { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
             .brand-info h1 { font-size: 22px; }
             .toolbar { padding: 10px; }
             .search-box { min-width: 100%; }
@@ -1658,26 +1498,6 @@
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
-
-    <!-- Firebase (Auth + Firestore) -- reemplaza los valores de firebaseConfig
-         con los de TU proyecto (Firebase Console -> Configuración del proyecto). -->
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCSbvzVKLcOy01ptDVmq9V_r5aWE75O-Sk",
-            authDomain: "sharpie-dashboard.firebaseapp.com",
-            projectId: "sharpie-dashboard",
-            storageBucket: "sharpie-dashboard.firebasestorage.app",
-            messagingSenderId: "767206545709",
-            appId: "1:767206545709:web:cc111c59cba7796b789ba4",
-            measurementId: "G-07E2E0XE06"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const fbAuth = firebase.auth();
-        const fbDb = firebase.firestore();
-    </script>
 </head>
 <body>
 
@@ -1707,38 +1527,6 @@
             </div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
-
-        <div id="authLoggedOut" class="auth-box">
-            <button class="auth-btn" id="btnOpenLogin">🔑 Iniciar sesión</button>
-        </div>
-        <div id="authLoggedIn" class="auth-box" style="display:none;">
-            <span class="auth-user-email" id="authUserEmail"></span>
-            <button class="auth-btn auth-btn-out" id="btnSignOut">Cerrar sesión</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de login (email/password + Google) -->
-<div id="loginModal" class="login-modal-backdrop" style="display:none;">
-    <div class="login-modal">
-        <button class="login-modal-close" id="btnCloseLogin">✕</button>
-        <h3>Inicia sesión</h3>
-        <p class="login-modal-sub">Guarda tu Watchlist en la nube y consúltala desde cualquier dispositivo.</p>
-
-        <input type="email" id="loginEmail" placeholder="Correo electrónico" autocomplete="email">
-        <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="current-password">
-
-        <div id="loginError" class="login-error" style="display:none;"></div>
-
-        <button class="login-primary-btn" id="btnEmailSignIn">Iniciar sesión</button>
-        <button class="login-secondary-btn" id="btnEmailSignUp">Crear cuenta nueva</button>
-
-        <div class="login-divider"><span>o</span></div>
-
-        <button class="login-google-btn" id="btnGoogleSignIn">
-            <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-1.8 14.1-5.1l-6.5-5.5C29.6 35 26.9 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.6 39.7 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.2 5.6l6.5 5.5C41.5 36 44 30.5 44 24c0-1.4-.1-2.7-.4-3.5z"/></svg>
-            Continuar con Google
-        </button>
     </div>
 </div>
 
@@ -2066,7 +1854,6 @@
 
 <script>
 let PICKS = [];
-let STATS_PUBLIC = (typeof __STATS_PUBLIC_JSON__ !== "undefined") ? __STATS_PUBLIC_JSON__ : null;
 
 // Reloj en tiempo real
 function startRealtimeClock() {
@@ -2116,8 +1903,6 @@ async function loadData() {
 // Si el archivo se abre como file:// local (sin servidor), el fetch falla y
 // simplemente no hace nada -- el resto del dashboard sigue funcionando igual.
 let RECENTLY_ADDED_IDS = new Set();
-let RECENTLY_UPDATED_IDS = new Set();
-let ACTIVE_FILTER_MATCH_KEYS = new Set();
 
 async function checkForNewPicks() {
     try {
@@ -2130,80 +1915,24 @@ async function checkForNewPicks() {
         const changed = JSON.stringify(freshData) !== JSON.stringify(PICKS);
         if (!changed) return;
 
-        const oldByKey = new Map(PICKS.map(p => [getWatchlistId(p), p]));
+        const oldKeys = new Set(PICKS.map(getWatchlistId));
         const newKeys = new Set(freshData.map(getWatchlistId));
-        const addedKeys = [...newKeys].filter(k => !oldByKey.has(k));
-        const removedCount = [...oldByKey.keys()].filter(k => !newKeys.has(k)).length;
-
-        // Picks que YA existían pero cambiaron de valor (Bets/Handle/Cuota/Stake/etc)
-        const updatedKeys = freshData
-            .filter(p => {
-                const key = getWatchlistId(p);
-                const prev = oldByKey.get(key);
-                return prev && JSON.stringify(prev) !== JSON.stringify(p);
-            })
-            .map(getWatchlistId);
-
-        // Comprobación de filtro activo: si el usuario dejó un filtro puesto
-        // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
-        // revisa en cada refresh qué picks entran o salen de ese filtro
-        // específico -- aviso aparte del genérico de arriba. El snapshot
-        // "antes" se toma justo antes de renderizar (render() resincroniza
-        // ACTIVE_FILTER_MATCH_KEYS siempre, incluso si el usuario cambió el
-        // filtro a mano entre revisiones).
-        const beforeMatchKeys = new Set(ACTIVE_FILTER_MATCH_KEYS);
+        const addedKeys = [...newKeys].filter(k => !oldKeys.has(k));
+        const removedCount = [...oldKeys].filter(k => !newKeys.has(k)).length;
 
         PICKS = freshData;
         RECENTLY_ADDED_IDS = new Set(addedKeys);
-        RECENTLY_UPDATED_IDS = new Set(updatedKeys);
         populateSelectOptions();
         render();
 
-        // La hora de "Última actualización" del header estaba horneada al
-        // generar el HTML y nunca se movía aunque el polling trajera datos
-        // nuevos -- ahora se refresca cada vez que se detecta un cambio real.
-        const generatedAtEl = document.getElementById("generatedAtVal");
-        if (generatedAtEl) {
-            const now = new Date();
-            const pad = (n) => String(n).padStart(2, '0');
-            generatedAtEl.textContent = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-        }
-
         const parts = [];
         if (addedKeys.length > 0) parts.push(`${addedKeys.length} nuevo(s)`);
-        if (updatedKeys.length > 0) parts.push(`${updatedKeys.length} actualizado(s)`);
         if (removedCount > 0) parts.push(`${removedCount} finalizado(s)/fuera de tiempo`);
         showAttractiveNotification({
             title: "🔄 Dashboard actualizado",
             body: parts.length > 0 ? parts.join(" · ") : "Los datos se actualizaron",
             variant: "success"
         });
-
-        // Badges temporales (NUEVO / ACTUALIZADO) se limpian solos a los 3 min
-        if (addedKeys.length > 0 || updatedKeys.length > 0) {
-            setTimeout(() => { RECENTLY_ADDED_IDS.clear(); RECENTLY_UPDATED_IDS.clear(); render(); }, 180000);
-        }
-
-        // Comprobación de filtro activo: si el usuario dejó un filtro puesto
-        // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
-        // revisa en cada refresh qué picks entran o salen de ese filtro
-        // específico -- aviso aparte del genérico de arriba.
-        if (isAnyFilterActive() && beforeMatchKeys.size > 0) {
-            const matchingKeys = new Set(ACTIVE_FILTER_MATCH_KEYS);
-            const enteredCount = [...matchingKeys].filter(k => !beforeMatchKeys.has(k)).length;
-            const exitedCount = [...beforeMatchKeys].filter(k => !matchingKeys.has(k)).length;
-
-            if (enteredCount > 0 || exitedCount > 0) {
-                const fparts = [];
-                if (enteredCount > 0) fparts.push(`${enteredCount} nuevo(s) cumplen`);
-                if (exitedCount > 0) fparts.push(`${exitedCount} ya no cumplen`);
-                showAttractiveNotification({
-                    title: "🎯 Tu filtro activo cambió",
-                    body: fparts.join(" · "),
-                    variant: "info"
-                });
-            }
-        }
 
         // El badge "NUEVO" se muestra 3 min y luego se limpia solo
         if (addedKeys.length > 0) {
@@ -2257,20 +1986,6 @@ const state = {
     winProbMax: null,
     recommendation: ""
 };
-
-function isAnyFilterActive() {
-    const s = state;
-    const numericKeys = [
-        "modeloMin","modeloMax","cuotaMin","cuotaMax","edgeMin","edgeMax",
-        "betsMin","betsMax","handleMin","handleMax","scoreMin","scoreMax",
-        "evMin","evMax","stakeMin","stakeMax","divergenciaMin","divergenciaMax",
-        "confMin","confMax","winProbMin","winProbMax"
-    ];
-    if (numericKeys.some(k => s[k] !== null && s[k] !== undefined)) return true;
-    if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
-    if (s.editorOnly || s.whaleOnly || s.freePickOnly || s.featuredOnly || s.watchlistOnly) return true;
-    return false;
-}
 
 // Parte 3: 5 señales de mercado homologadas a inglés -- únicas, calculadas
 // en el backend (p.marketSignal / p.trendKey). El frontend solo pinta.
@@ -2445,6 +2160,7 @@ function edgeModBadgeClass(edge) {
 function unifiedDecisionPanelHtml(p) {
     const displayStake = Number(p.stake) || 0;
     const stakeText = displayStake.toFixed(1) + '%';
+    const winProb = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
 
     if (!state.advancedView) {
         // Modo Simple: solo 3 datos -- Modelo, Cuota, Stake.
@@ -2458,12 +2174,24 @@ function unifiedDecisionPanelHtml(p) {
 
     const modelEdgeVal = p.modelEdge != null ? Number(p.modelEdge) : null;
     const smartMoneyVal = calculateSmartMoney(p);
+    const reliabilityVal = p.reliability != null ? Number(p.reliability) : (p.confidence != null ? Number(p.confidence) : null);
 
-    // Grid 3 columnas (2 filas): Modelo / Edge Modelo / EV -- Cuota / Stake / Smart Money
+    // Grid fija 3x3, en este orden exacto:
+    // Modelo   -> Edge Modelo -> EV
+    // Victoria -> Score       -> Confiabilidad
+    // Cuota    -> Stake       -> Smart Money
     const advGrid = [
         `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`,
+
+        winProb != null
+            ? `<span class="badge-tag ${winProbBadgeClass(winProb)}">🎲 Prob. Victoria <b>${winProb}%</b></span>`
+            : `<span class="badge-tag neutral">🎲 Prob. Victoria <b>—</b></span>`,
+        `<span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score <b>${p.score != null ? p.score : '—'}</b></span>`,
+        reliabilityVal != null
+            ? `<span class="badge-tag ${reliabilityBadgeClass(reliabilityVal)}">✅ Confiabilidad <b>${(reliabilityVal * 100).toFixed(0)}%</b></span>`
+            : `<span class="badge-tag neutral">✅ Confiabilidad <b>—</b></span>`,
 
         `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
         `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
@@ -2510,7 +2238,7 @@ function isEventPending(p) {
         const kickoff = new Date(p.iso).getTime();
         if (!isNaN(kickoff)) {
             const minutesSinceKickoff = (Date.now() - kickoff) / 60000;
-            if (minutesSinceKickoff > 0) return false;
+            if (minutesSinceKickoff > 15) return false;
         }
     }
     return true;
@@ -3337,102 +3065,67 @@ function showToastX() {
 // en localStorage. Cada vez que el dashboard se regenera y se recarga, se
 // compara el dato actual contra ese snapshot para mostrar si la línea
 // mejoró o empeoró desde que se empezó a seguir.
-// ============ WATCHLIST EN LA NUBE (Firestore) ============
-// Requiere sesión iniciada. Doc: watchlists/{uid} -> { picks: { [id]: entry } }
-// WATCHLIST_CACHE se mantiene sincronizado en tiempo real via onSnapshot,
-// así que también refleja cambios hechos desde otro dispositivo con la
-// misma cuenta -- por eso isInWatchlist() puede seguir siendo síncrono.
-let firebaseUser = null;
-let WATCHLIST_CACHE = {};
-let watchlistUnsubscribe = null;
+const WATCHLIST_STORAGE_KEY = "sharpie_watchlist_v1";
 
 function getWatchlistId(p) {
     return `${(p.league || '').toLowerCase()}|${(p.game || '').toLowerCase()}|${(p.market || '').toLowerCase()}|${(p.pick || '').toLowerCase()}`.trim();
 }
 
-function watchlistDocRef() {
-    return fbDb.collection("watchlists").doc(firebaseUser.uid);
+function loadWatchlist() {
+    try {
+        return JSON.parse(localStorage.getItem(WATCHLIST_STORAGE_KEY)) || {};
+    } catch (e) {
+        return {};
+    }
 }
 
-function attachWatchlistListener() {
-    if (watchlistUnsubscribe) watchlistUnsubscribe();
-    watchlistUnsubscribe = watchlistDocRef().onSnapshot(
-        (doc) => {
-            WATCHLIST_CACHE = (doc.exists && doc.data().picks) ? doc.data().picks : {};
-            render();
-        },
-        (err) => console.error("Watchlist listener error:", err)
-    );
-}
-
-function detachWatchlistListener() {
-    if (watchlistUnsubscribe) { watchlistUnsubscribe(); watchlistUnsubscribe = null; }
-    WATCHLIST_CACHE = {};
+function saveWatchlist(list) {
+    try {
+        localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {
+        console.error("Error al guardar watchlist:", e);
+    }
 }
 
 function isInWatchlist(p) {
-    return !!WATCHLIST_CACHE[getWatchlistId(p)];
+    const list = loadWatchlist();
+    return !!list[getWatchlistId(p)];
 }
 
-async function toggleWatchlist(p) {
-    if (!firebaseUser) {
-        openLoginModal();
+function toggleWatchlist(p) {
+    const list = loadWatchlist();
+    const id = getWatchlistId(p);
+
+    if (list[id]) {
+        delete list[id];
+        saveWatchlist(list);
         showAttractiveNotification({
-            title: "🔒 Inicia sesión",
-            body: "Necesitas una cuenta para usar My Watchlist",
+            title: "👁 Dejaste de seguir",
+            body: `${p.game || 'Evento'} — ${p.pick || ''}`,
             variant: "info"
         });
-        return;
+    } else {
+        list[id] = {
+            followedAt: new Date().toISOString(),
+            league: p.league || '',
+            game: p.game || '',
+            pick: p.pick || '',
+            market: p.market || '',
+            snapshot: {
+                betsPct: p.betsPct != null ? Number(p.betsPct) : null,
+                handlePct: p.handlePct != null ? Number(p.handlePct) : null,
+                divergence: calculateSmartMoney(p),
+                odds: p.odds || p.cuota || null
+            }
+        };
+        saveWatchlist(list);
+        showAttractiveNotification({
+            title: "👁 Ahora sigues este pick",
+            body: `${p.game || 'Evento'} — ${p.pick || ''}`,
+            variant: "success"
+        });
     }
-
-    const id = getWatchlistId(p);
-    const ref = watchlistDocRef();
-    const previousEntry = WATCHLIST_CACHE[id]; // para poder revertir si falla la escritura
-
-    try {
-        if (previousEntry) {
-            delete WATCHLIST_CACHE[id];
-            render(); // optimista -- no espera la confirmación de red
-
-            await ref.update({ [`picks.${id}`]: firebase.firestore.FieldValue.delete() });
-            showAttractiveNotification({
-                title: "👁 Dejaste de seguir",
-                body: `${p.game || 'Evento'} — ${p.pick || ''}`,
-                variant: "info"
-            });
-        } else {
-            const entry = {
-                followedAt: new Date().toISOString(),
-                league: p.league || '',
-                game: p.game || '',
-                pick: p.pick || '',
-                market: p.market || '',
-                snapshot: {
-                    odds: p.odds || p.cuota || null,
-                    stake: p.stake != null ? Number(p.stake) : null,
-                    ev: p.ev != null ? Number(p.ev) : null
-                }
-            };
-            WATCHLIST_CACHE[id] = entry;
-            render(); // optimista -- no espera la confirmación de red
-
-            await ref.set({ picks: { [id]: entry } }, { merge: true });
-            showAttractiveNotification({
-                title: "👁 Ahora sigues este pick",
-                body: `${p.game || 'Evento'} — ${p.pick || ''}`,
-                variant: "success"
-            });
-        }
-        // El listener onSnapshot vuelve a confirmar/resincronizar después --
-        // inofensivo si ya coincide con lo que se pintó de forma optimista.
-    } catch (e) {
-        // Rollback: la escritura falló, se revierte lo pintado de forma
-        // optimista para no dejar la UI mostrando algo que no se guardó.
-        if (previousEntry) { WATCHLIST_CACHE[id] = previousEntry; } else { delete WATCHLIST_CACHE[id]; }
-        render();
-        console.error("Error al actualizar watchlist:", e);
-        showAttractiveNotification({ title: "⚠️ Error", body: "No se pudo actualizar tu Watchlist. Intenta de nuevo.", variant: "urgent" });
-    }
+    render();
 }
 
 // Flecha de comparación actual vs snapshot -- usada en el panel de watchlist
@@ -3443,60 +3136,62 @@ function watchlistDeltaArrow(current, snapshot) {
     return diff > 0 ? ` <span class="wl-delta wl-up">▲ +${diff.toFixed(1)}</span>` : ` <span class="wl-delta wl-down">▼ ${diff.toFixed(1)}</span>`;
 }
 
-// Veredicto de SEGUIMIENTO (distinto de la Señal de la card -- esto compara
-// el movimiento desde que se empezó a seguir, no el estado actual del
-// mercado). Solo 3 métricas: Cuota, Stake y EV.
-//
-// Umbrales de descarte:
-//  - Cuota se abarata >=35 pts americanos (ej. -110 -> -145) -- el valor
-//    original ya no está.
-//  - EV cae a 0 o negativo -- ya no hay ventaja matemática.
-//  - EV cae >=50% respecto al de apertura -- la ventaja se redujo a la mitad.
-//  - Stake pasa a 0 habiendo empezado en positivo -- el modelo ya no
-//    recomienda apostar nada.
+// Veredicto de seguimiento: compara el momento actual contra el snapshot de
+// cuando se empezó a seguir, y clasifica en APOSTABLE / DESCARTE / MONITOREAR
+// según las reglas de movimiento de línea (no según los umbrales de señal
+// de mercado -- esto es específico del comportamiento DESDE que se sigue).
 function pctChange(current, snapshot) {
     if (current == null || snapshot == null || snapshot === 0) return null;
     return ((current - snapshot) / Math.abs(snapshot)) * 100;
 }
 
+// Veredicto de SEGUIMIENTO (distinto de la Señal de la card -- esto compara
+// el movimiento desde que se empezó a seguir, no el estado actual del mercado).
+// Movimiento en % relativo, no en puntos absolutos, para que aplique parejo
+// sin importar el nivel de partida de cada métrica.
 function watchlistVerdict(p, snap) {
+    const handleNow = p.handlePct != null ? Number(p.handlePct) : null;
+    const handleSnap = snap.handlePct != null ? Number(snap.handlePct) : null;
+    const betsNow = p.betsPct != null ? Number(p.betsPct) : null;
+    const betsSnap = snap.betsPct != null ? Number(snap.betsPct) : null;
+    const divNow = calculateSmartMoney(p);
+    const divSnap = snap.divergence != null ? Number(snap.divergence) : null;
+
     const oddsNowRaw = parseInt(String(p.odds || p.cuota || '').replace('+', ''), 10);
     const oddsSnapRaw = parseInt(String(snap.odds || '').replace('+', ''), 10);
     const hasOdds = !isNaN(oddsNowRaw) && !isNaN(oddsSnapRaw);
     const oddsDelta = hasOdds ? (oddsNowRaw - oddsSnapRaw) : null; // positivo = "sube" (favorable)
 
-    const evNow = p.ev != null ? Number(p.ev) : null;
-    const evSnap = snap.ev != null ? Number(snap.ev) : null;
-    const stakeNow = p.stake != null ? Number(p.stake) : null;
-    const stakeSnap = snap.stake != null ? Number(snap.stake) : null;
-
-    if (evSnap == null || stakeSnap == null) {
+    if (handleNow == null || handleSnap == null || betsNow == null || betsSnap == null || divSnap == null) {
         return { verdict: 'MONITOREAR', text: 'Datos insuficientes para comparar contra el punto de apertura del seguimiento.' };
     }
 
-    const evPctMove = pctChange(evNow, evSnap);
+    const handlePctMove = pctChange(handleNow, handleSnap);
+    const betsPctMove = pctChange(betsNow, betsSnap);
+    const divPctMove = pctChange(divNow, divSnap);
 
     // DESCARTE -- basta con que se cumpla UNA condición severa
+    if (handlePctMove !== null && handlePctMove <= -40) {
+        return { verdict: 'DESCARTE', text: `Handle cayó ${handlePctMove.toFixed(0)}% desde que se sigue (${handleSnap}% → ${handleNow}%) -- el dinero grande se retiró.` };
+    }
+    if (betsPctMove !== null && betsPctMove >= 50) {
+        return { verdict: 'DESCARTE', text: `Bets subió ${betsPctMove.toFixed(0)}% desde que se sigue (${betsSnap}% → ${betsNow}%) -- entrada fuerte del público.` };
+    }
+    if (divNow <= 0 || (divPctMove !== null && divPctMove <= -70)) {
+        return { verdict: 'DESCARTE', text: divNow <= 0 ? 'La divergencia se desplomó a cero o negativa desde que se sigue.' : `Divergencia cayó ${divPctMove.toFixed(0)}% desde que se sigue.` };
+    }
     if (hasOdds && oddsDelta <= -35) {
-        return { verdict: 'DESCARTE', text: `Cuota se abarató con fuerza (${snap.odds} → ${p.odds || p.cuota}) -- el valor original ya no está.` };
-    }
-    if (evNow == null || evNow <= 0) {
-        return { verdict: 'DESCARTE', text: 'El EV cayó a cero o negativo desde que se sigue -- ya no hay ventaja matemática.' };
-    }
-    if (evPctMove !== null && evPctMove <= -50) {
-        return { verdict: 'DESCARTE', text: `EV cayó ${evPctMove.toFixed(0)}% desde que se sigue (${evSnap}% → ${evNow}%).` };
-    }
-    if (stakeSnap > 0 && stakeNow === 0) {
-        return { verdict: 'DESCARTE', text: 'El modelo ya no recomienda stake -- perdió el respaldo que tenía al momento de seguirlo.' };
+        return { verdict: 'DESCARTE', text: `Cuota se encareció con fuerza (${snap.odds} → ${p.odds || p.cuota}) -- el valor original ya no está.` };
     }
 
-    // APOSTABLE -- las 3 métricas se mantienen o mejoran
-    const cond1 = hasOdds && oddsDelta >= 0;
-    const cond2 = evNow >= evSnap;
-    const cond3 = stakeNow != null && stakeNow >= stakeSnap;
+    // APOSTABLE -- las 4 métricas se mantienen o mejoran
+    const cond1 = handlePctMove !== null && handlePctMove >= -0.5;   // Handle se mantiene o sube
+    const cond2 = betsPctMove !== null && betsPctMove <= 0.5;        // Bets baja o se mantiene
+    const cond3 = divPctMove !== null && divPctMove >= -0.5;         // Divergencia se mantiene o sube
+    const cond4 = hasOdds && oddsDelta >= 0;                         // Cuota se mantiene o sube
 
-    if (cond1 && cond2 && cond3) {
-        return { verdict: 'APOSTABLE', text: `Cuota, EV y Stake se mantienen o mejoran desde que se sigue -- línea confirmando a favor.` };
+    if (cond1 && cond2 && cond3 && cond4) {
+        return { verdict: 'APOSTABLE', text: `Handle, Divergencia y Cuota se mantienen o mejoran, y Bets no creció -- línea confirmando a favor desde que se sigue.` };
     }
 
     // MONITOREAR -- movimiento leve en contra, sin cruzar el umbral de descarte
@@ -3504,10 +3199,12 @@ function watchlistVerdict(p, snap) {
 }
 
 function watchlistPanelHtml(p) {
-    const entry = WATCHLIST_CACHE[getWatchlistId(p)];
+    const list = loadWatchlist();
+    const entry = list[getWatchlistId(p)];
     if (!entry) return '';
 
     const snap = entry.snapshot || {};
+    const currentDivergence = calculateSmartMoney(p);
     const followedDate = entry.followedAt ? new Date(entry.followedAt) : null;
     const followedText = followedDate ? followedDate.toLocaleString() : '';
     const v = watchlistVerdict(p, snap);
@@ -3517,9 +3214,10 @@ function watchlistPanelHtml(p) {
     return `<div class="watchlist-panel">
         <div class="watchlist-panel-title">👁 En seguimiento desde ${escapeHTML(followedText)}</div>
         <div class="badge-tag-grid">
+            <span class="badge-tag neutral">🎟️ Bets <b>${p.betsPct != null ? p.betsPct + '%' : '—'}</b>${watchlistDeltaArrow(p.betsPct, snap.betsPct)}</span>
+            <span class="badge-tag neutral">💵 Handle <b>${p.handlePct != null ? p.handlePct + '%' : '—'}</b>${watchlistDeltaArrow(p.handlePct, snap.handlePct)}</span>
+            <span class="badge-tag neutral">⚡ Divergencia <b>${currentDivergence}%</b>${watchlistDeltaArrow(currentDivergence, snap.divergence)}</span>
             <span class="badge-tag neutral">💰 Cuota apertura <b>${escapeHTML(String(snap.odds ?? '—'))}</b> → <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>
-            <span class="badge-tag neutral">🎯 Stake <b>${snap.stake != null ? snap.stake + '%' : '—'}</b>${watchlistDeltaArrow(p.stake, snap.stake)}</span>
-            <span class="badge-tag neutral">📊 EV <b>${snap.ev != null ? snap.ev + '%' : '—'}</b>${watchlistDeltaArrow(p.ev, snap.ev)}</span>
         </div>
         <div class="reasoning-text"><span class="badge-tag ${verdictCls}" style="margin-right:6px;">${verdictIcon} ${v.verdict} (desde seguimiento)</span>${escapeHTML(v.text)}</div>
     </div>`;
@@ -3537,17 +3235,11 @@ function showAttractiveNotification({ title, body, variant = "info" }) {
         <div class="reminder-notif-body">${escapeHTML(body).replace(/\n/g, '<br>')}</div>
     `;
     el.querySelector(".reminder-notif-close").addEventListener("click", () => dismissNotif(el));
-
-    // Si ya hay notificaciones visibles, se da tiempo extra -- leer 2-3
-    // apiladas necesita más que el tiempo de una sola.
-    const alreadyVisible = container.querySelectorAll(".reminder-notif").length;
     container.appendChild(el);
 
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("show")));
 
-    const baseDuration = variant === "urgent" ? 20000 : 10000;
-    const extraPerStacked = 3000;
-    setTimeout(() => dismissNotif(el), baseDuration + (alreadyVisible * extraPerStacked));
+    setTimeout(() => dismissNotif(el), variant === "urgent" ? 15000 : 5000);
 }
 
 function dismissNotif(el) {
@@ -3601,75 +3293,12 @@ function syncAdvCardActiveStates() {
     });
 }
 
-function updateFilterCounts(pendingPicks) {
-    const fTimeRange = document.getElementById("fTimeRange");
-    if (fTimeRange) {
-        const counts = { in_play: 0, "30m": 0, "1h": 0, "2h": 0, today: 0, tomorrow: 0, this_week: 0 };
-        const nowLocal = new Date();
-        const toDateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        const todayStr = toDateStr(nowLocal);
-        const tomorrowDate = new Date(nowLocal); tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-        const tomorrowStr = toDateStr(tomorrowDate);
-        const weekEndDate = new Date(nowLocal); weekEndDate.setDate(weekEndDate.getDate() + 6);
-        const weekEndStr = toDateStr(weekEndDate);
-
-        pendingPicks.forEach(p => {
-            if (!p.iso) return;
-            const timer = getCountdownText(p.iso);
-            if (timer.expired) counts.in_play++;
-            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 30) counts["30m"]++;
-            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 60) counts["1h"]++;
-            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 120) counts["2h"]++;
-            if (p.date === todayStr) counts.today++;
-            if (p.date === tomorrowStr) counts.tomorrow++;
-            if (p.date >= todayStr && p.date <= weekEndStr) counts.this_week++;
-        });
-
-        const labels = {
-            in_play: "🔴 En juego", "30m": "⏳ Próximos 30 min", "1h": "⏳ Próxima 1 hora",
-            "2h": "⏳ Próximas 2 horas", today: "📅 Eventos de Hoy", tomorrow: "📅 Eventos de Mañana",
-            this_week: "📆 Eventos de Esta Semana"
-        };
-        Array.from(fTimeRange.options).forEach(opt => {
-            if (!opt.value) { opt.textContent = "⏱️ Hora / Rango"; return; }
-            opt.textContent = `${labels[opt.value]} (${counts[opt.value] || 0})`;
-        });
-    }
-
-    const fTrend = document.getElementById("fTrend");
-    if (fTrend) {
-        const counts = { SMART_MONEY: 0, PUBLIC_HEAVY: 0, CONSENSUS: 0, MIXED: 0, NO_ACTION: 0 };
-        pendingPicks.forEach(p => { if (p.marketSignal in counts) counts[p.marketSignal]++; });
-        const labels = {
-            SMART_MONEY: "🐋 SMART MONEY", PUBLIC_HEAVY: "🚨 PUBLIC HEAVY",
-            CONSENSUS: "📊 CONSENSUS", MIXED: "🔀 MIXED", NO_ACTION: "⚪ NO ACTION"
-        };
-        Array.from(fTrend.options).forEach(opt => {
-            if (!opt.value) { opt.textContent = "📊 Todas las señales"; return; }
-            opt.textContent = `${labels[opt.value]} (${counts[opt.value] || 0})`;
-        });
-    }
-
-    const freeBtn = document.getElementById("freePickOnly");
-    const editorBtn = document.getElementById("editorOnly");
-    const whaleBtn = document.getElementById("whaleOnly");
-    const watchlistBtn = document.getElementById("watchlistOnly");
-    if (freeBtn) freeBtn.textContent = `🔓 Free Picks (${pendingPicks.filter(p => p.pickCategory === "FREE").length})`;
-    if (editorBtn) editorBtn.textContent = `🏆 Editor's Choice (${pendingPicks.filter(p => p.pickCategory === "EDITORS").length})`;
-    if (whaleBtn) whaleBtn.textContent = `🐋 Whale Alerts (${pendingPicks.filter(p => p.pickCategory === "WHALE").length})`;
-    if (watchlistBtn) watchlistBtn.textContent = `👁 My Watchlist (${pendingPicks.filter(p => isInWatchlist(p)).length})`;
-}
-
 function render() {
     updateThemeByTime();
     syncAdvCardActiveStates();
 
     const pendingPicks = PICKS.filter(p => isEventPending(p));
     const activeList = applyFiltersAndSort(pendingPicks);
-
-    updateFilterCounts(pendingPicks);
-
-    ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getWatchlistId));
 
     updateMetrics(activeList);
     updateChartsData(activeList);
@@ -3702,7 +3331,6 @@ function render() {
         const isPremium = !isWhale && !isEditor && !isFree;
         const isFeatured = isFeaturedPick(p);
         const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
-        const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
         const editorEval = getEvolutionAnalysis(p);
 
         let cardClasses = "pcard";
@@ -3734,7 +3362,6 @@ function render() {
                                 ${config.label}
                             </span>
                             ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
-                            ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
                             ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
                             ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
                             ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
@@ -3779,6 +3406,7 @@ function render() {
                     ${buildEvolutionHtml(p)}
                     ${unifiedDecisionPanelHtml(p)}
 
+                    ${p.reason ? `<div class="reasoning-text">💡 <b>Análisis:</b> ${escapeHTML(p.reason)}</div>` : ''}
                 </div>
 
                 <div style="margin-top: 14px;">
@@ -3801,12 +3429,7 @@ function render() {
 
 function setupListeners() {
     const searchEl = document.getElementById("search");
-    let searchDebounceTimer = null;
-    if (searchEl) searchEl.addEventListener("input", (e) => {
-        state.search = e.target.value;
-        clearTimeout(searchDebounceTimer);
-        searchDebounceTimer = setTimeout(render, 300);
-    });
+    if (searchEl) searchEl.addEventListener("input", (e) => { state.search = e.target.value; render(); });
 
     const viewModeBtn = document.getElementById("viewModeToggle");
     if (viewModeBtn) {
@@ -3916,7 +3539,6 @@ function setupListeners() {
                 const anyFilled = Array.from(card.querySelectorAll("input, select")).some(i => i.value !== "" && i.value != null);
                 card.classList.toggle("adv-card-active", anyFilled);
             };
-            let debounceTimer = null;
             el.addEventListener("input", (e) => {
                 const val = e.target.value;
                 if (val === "" || val === null) {
@@ -3925,11 +3547,7 @@ function setupListeners() {
                     state[prop] = isFloat ? parseFloat(val) : val;
                 }
                 syncCardActive();
-                // El render completo (recalcula ~todos los picks, gráficas y
-                // métricas) es pesado -- se espera a que el usuario pare de
-                // escribir en vez de dispararlo en cada tecla.
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(render, 300);
+                render();
             });
         }
     };
@@ -4015,123 +3633,6 @@ function setupListeners() {
     }
 }
 
-// ============ AUTENTICACIÓN (Firebase) ============
-function openLoginModal() {
-    const modal = document.getElementById("loginModal");
-    const errorEl = document.getElementById("loginError");
-    if (errorEl) { errorEl.style.display = "none"; errorEl.textContent = ""; }
-    if (modal) modal.style.display = "flex";
-}
-
-function closeLoginModal() {
-    const modal = document.getElementById("loginModal");
-    if (modal) modal.style.display = "none";
-}
-
-function showLoginError(message) {
-    const errorEl = document.getElementById("loginError");
-    if (!errorEl) return;
-    errorEl.textContent = translateFirebaseError(message);
-    errorEl.style.display = "block";
-}
-
-function translateFirebaseError(message) {
-    const m = String(message || "");
-    if (m.includes("auth/invalid-email")) return "Correo inválido.";
-    if (m.includes("auth/user-not-found")) return "No existe una cuenta con ese correo.";
-    if (m.includes("auth/wrong-password") || m.includes("auth/invalid-credential")) return "Contraseña incorrecta.";
-    if (m.includes("auth/email-already-in-use")) return "Ese correo ya tiene una cuenta -- inicia sesión.";
-    if (m.includes("auth/weak-password")) return "La contraseña debe tener al menos 6 caracteres.";
-    if (m.includes("auth/popup-closed-by-user")) return "Se cerró la ventana de Google antes de terminar.";
-    if (m.includes("auth/unauthorized-domain")) return "Este dominio no está autorizado en Firebase (Authentication -> Settings -> Authorized domains).";
-    if (m.includes("auth/network-request-failed")) return "Fallo de red -- revisa tu conexión.";
-    if (m.includes("auth/configuration-not-found") || m.includes("auth/invalid-api-key")) return "Firebase mal configurado -- revisa firebaseConfig y que Authentication esté activado.";
-    return "No se pudo completar la acción. Intenta de nuevo.";
-}
-
-function reportAuthError(context, e) {
-    console.error(`[Auth:${context}]`, e);
-    showLoginError(e.message);
-}
-
-async function handleEmailSignIn() {
-    const email = document.getElementById("loginEmail").value.trim();
-    const pass = document.getElementById("loginPassword").value;
-    if (!email || !pass) { showLoginError("Completa correo y contraseña."); return; }
-    try {
-        await fbAuth.signInWithEmailAndPassword(email, pass);
-        closeLoginModal();
-    } catch (e) { reportAuthError("signIn", e); }
-}
-
-async function handleEmailSignUp() {
-    const email = document.getElementById("loginEmail").value.trim();
-    const pass = document.getElementById("loginPassword").value;
-    if (!email || !pass) { showLoginError("Completa correo y contraseña."); return; }
-    try {
-        await fbAuth.createUserWithEmailAndPassword(email, pass);
-        closeLoginModal();
-    } catch (e) { reportAuthError("signUp", e); }
-}
-
-async function handleGoogleSignIn() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    try {
-        await fbAuth.signInWithPopup(provider);
-        closeLoginModal();
-    } catch (e) { reportAuthError("googleSignIn", e); }
-}
-
-function handleSignOut() {
-    fbAuth.signOut();
-}
-
-function updateAuthUI() {
-    const loggedOutEl = document.getElementById("authLoggedOut");
-    const loggedInEl = document.getElementById("authLoggedIn");
-    const emailEl = document.getElementById("authUserEmail");
-
-    if (firebaseUser) {
-        if (loggedOutEl) loggedOutEl.style.display = "none";
-        if (loggedInEl) loggedInEl.style.display = "flex";
-        if (emailEl) emailEl.textContent = firebaseUser.email || firebaseUser.displayName || "Usuario";
-    } else {
-        if (loggedOutEl) loggedOutEl.style.display = "flex";
-        if (loggedInEl) loggedInEl.style.display = "none";
-    }
-}
-
-function setupAuthListeners() {
-    const btnOpenLogin = document.getElementById("btnOpenLogin");
-    const btnCloseLogin = document.getElementById("btnCloseLogin");
-    const btnSignOut = document.getElementById("btnSignOut");
-    const btnEmailSignIn = document.getElementById("btnEmailSignIn");
-    const btnEmailSignUp = document.getElementById("btnEmailSignUp");
-    const btnGoogleSignIn = document.getElementById("btnGoogleSignIn");
-    const modalBackdrop = document.getElementById("loginModal");
-
-    if (btnOpenLogin) btnOpenLogin.addEventListener("click", openLoginModal);
-    if (btnCloseLogin) btnCloseLogin.addEventListener("click", closeLoginModal);
-    if (btnSignOut) btnSignOut.addEventListener("click", handleSignOut);
-    if (btnEmailSignIn) btnEmailSignIn.addEventListener("click", handleEmailSignIn);
-    if (btnEmailSignUp) btnEmailSignUp.addEventListener("click", handleEmailSignUp);
-    if (btnGoogleSignIn) btnGoogleSignIn.addEventListener("click", handleGoogleSignIn);
-    if (modalBackdrop) modalBackdrop.addEventListener("click", (e) => {
-        if (e.target === modalBackdrop) closeLoginModal();
-    });
-
-    fbAuth.onAuthStateChanged((user) => {
-        firebaseUser = user;
-        updateAuthUI();
-        if (user) {
-            attachWatchlistListener();
-        } else {
-            detachWatchlistListener();
-            render();
-        }
-    });
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
     startRealtimeClock();
     setupThemeToggle();
@@ -4139,7 +3640,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadData();
     populateSelectOptions();
     setupListeners();
-    setupAuthListeners();
     setupStatPopups();
     render();
 
