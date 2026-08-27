@@ -4064,14 +4064,21 @@ async function handleEmailSignIn() {
     } catch (e) { reportAuthError("signIn", e); }
 }
 
-async function handleEmailSignUp() {
-    const email = document.getElementById("loginEmail").value.trim();
-    const pass = document.getElementById("loginPassword").value;
-    if (!email || !pass) { showLoginError("Completa correo y contraseña."); return; }
-    try {
-        await fbAuth.createUserWithEmailAndPassword(email, pass);
-        closeLoginModal();
-    } catch (e) { reportAuthError("signUp", e); }
+async function handleEmailSignIn() {
+    const emailInput = document.getElementById("loginEmail");
+    const passwordInput = document.getElementById("loginPassword");
+    
+    // Asignamos un usuario ficticio directamente sin validar contraseña o correo con Firebase
+    firebaseUser = {
+        uid: "user_sin_validacion",
+        email: emailInput?.value || "usuario@ejemplo.com",
+        displayName: "Usuario Libre"
+    };
+
+    // Cerramos el modal de login y actualizamos la interfaz con acceso total
+    closeLoginModal();
+    updateAuthUI();
+    render();
 }
 
 async function handleGoogleSignIn() {
@@ -4114,22 +4121,22 @@ function setupAuthListeners() {
     if (btnCloseLogin) btnCloseLogin.addEventListener("click", closeLoginModal);
     if (btnSignOut) btnSignOut.addEventListener("click", handleSignOut);
     if (btnEmailSignIn) btnEmailSignIn.addEventListener("click", handleEmailSignIn);
-    if (btnEmailSignUp) btnEmailSignUp.addEventListener("click", handleEmailSignUp);
-    if (btnGoogleSignIn) btnGoogleSignIn.addEventListener("click", handleGoogleSignIn);
+    if (btnEmailSignUp) btnEmailSignUp.addEventListener("click", handleEmailSignIn); // Redirige también sin validar
+    if (btnGoogleSignIn) btnGoogleSignIn.addEventListener("click", handleEmailSignIn); // Redirige también sin validar
+    
     if (modalBackdrop) modalBackdrop.addEventListener("click", (e) => {
         if (e.target === modalBackdrop) closeLoginModal();
     });
 
-    fbAuth.onAuthStateChanged((user) => {
-        firebaseUser = user;
-        updateAuthUI();
-        if (user) {
-            attachWatchlistListener();
-        } else {
-            detachWatchlistListener();
-            render();
-        }
-    });
+    // AUTO-LOGIN: Asigna el usuario en automático al cargar la página sin consultar Firebase
+    firebaseUser = {
+        uid: "user_auto_login",
+        email: "acceso@directo.com",
+        displayName: "Acceso Permitido"
+    };
+    
+    updateAuthUI();
+    render();
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
