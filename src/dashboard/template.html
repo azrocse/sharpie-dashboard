@@ -2445,7 +2445,6 @@ function edgeModBadgeClass(edge) {
 function unifiedDecisionPanelHtml(p) {
     const displayStake = Number(p.stake) || 0;
     const stakeText = displayStake.toFixed(1) + '%';
-    const winProb = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
 
     if (!state.advancedView) {
         // Modo Simple: solo 3 datos -- Modelo, Cuota, Stake.
@@ -2459,24 +2458,12 @@ function unifiedDecisionPanelHtml(p) {
 
     const modelEdgeVal = p.modelEdge != null ? Number(p.modelEdge) : null;
     const smartMoneyVal = calculateSmartMoney(p);
-    const reliabilityVal = p.reliability != null ? Number(p.reliability) : (p.confidence != null ? Number(p.confidence) : null);
 
-    // Grid fija 3x3, en este orden exacto:
-    // Modelo   -> Edge Modelo -> EV
-    // Victoria -> Score       -> Confiabilidad
-    // Cuota    -> Stake       -> Smart Money
+    // Grid 3 columnas (2 filas): Modelo / Edge Modelo / EV -- Cuota / Stake / Smart Money
     const advGrid = [
         `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`,
-
-        winProb != null
-            ? `<span class="badge-tag ${winProbBadgeClass(winProb)}">🎲 Prob. Victoria <b>${winProb}%</b></span>`
-            : `<span class="badge-tag neutral">🎲 Prob. Victoria <b>—</b></span>`,
-        `<span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score <b>${p.score != null ? p.score : '—'}</b></span>`,
-        reliabilityVal != null
-            ? `<span class="badge-tag ${reliabilityBadgeClass(reliabilityVal)}">✅ Confiabilidad <b>${(reliabilityVal * 100).toFixed(0)}%</b></span>`
-            : `<span class="badge-tag neutral">✅ Confiabilidad <b>—</b></span>`,
 
         `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
         `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
@@ -2523,7 +2510,7 @@ function isEventPending(p) {
         const kickoff = new Date(p.iso).getTime();
         if (!isNaN(kickoff)) {
             const minutesSinceKickoff = (Date.now() - kickoff) / 60000;
-            if (minutesSinceKickoff > 15) return false;
+            if (minutesSinceKickoff > 0) return false;
         }
     }
     return true;

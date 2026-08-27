@@ -24,7 +24,7 @@ MIN_HISTORY_POINTS = 2
 
 # Tolerancia tras el inicio del evento antes de ocultarlo del dashboard --
 # pasado este tiempo ya no es una apuesta pregame válida.
-GAME_START_HIDE_TOLERANCE_MINUTES = 15
+GAME_START_HIDE_TOLERANCE_MINUTES = 0  # sin tolerancia -- se oculta apenas inicia el evento
 
 
 # ============================================================
@@ -591,29 +591,20 @@ def _raw_american_odds(odds_raw):
         return None
 
 
-def classify_pick_category(raw_odds, bets, handle, signed_divergence, model_edge, ev):
-    if raw_odds is None:
+def classify_pick_category(ev, market_signal, signed_divergence):
+    if ev is None or market_signal is None:
         return None
 
-    if (-200 <= raw_odds <= -150
-            and 70 <= bets <= 95
-            and 40 <= handle <= 95
-            and -10 <= signed_divergence <= 10):
-        return "FREE"
+    if market_signal == "SMART_MONEY" and ev > 6.0:
+        if signed_divergence is not None and signed_divergence > 30.0:
+            return "WHALE"
+        return "PREMIUM"
 
-    if (-150 <= raw_odds <= 100
-            and model_edge >= 3.0
-            and 15 <= bets <= 40
-            and 55 <= handle <= 85
-            and ev >= 5.0
-            and signed_divergence >= 10):
-        return "EDITORS"
-
-    if (raw_odds >= 100
-            and model_edge >= 4.0
-            and ev >= 8.0
-            and signed_divergence >= 15):
-        return "WHALE"
+    if market_signal in ("CONSENSUS", "PUBLIC_HEAVY"):
+        if 3.0 <= ev <= 6.0:
+            return "EDITORS"
+        if 1.0 <= ev <= 3.0:
+            return "FREE"
 
     return None
 
@@ -623,23 +614,32 @@ def classify_pick_category(raw_odds, bets, handle, signed_divergence, model_edge
 # Determinístico: solo depende de la señal de mercado (y del EV dentro de
 # SMART_MONEY, por interpolación lineal).
 # ============================================================
-def calculate_signal_stake(market_signal, ev):
-    if market_signal == "SMART_MONEY":
-        ev_val = ev if ev is not None else 5.0
-        if ev_val <= 5.0:
-            raw = 2.0
-        elif ev_val <= 8.5:
-            raw = 2.0 + (ev_val - 5.0) / (8.5 - 5.0) * (3.0 - 2.0)
-        elif ev_val <= 12.0:
-            raw = 3.0 + (ev_val - 8.5) / (12.0 - 8.5) * (4.0 - 3.0)
-        else:
-            raw = 4.0
-        return round(raw * 2) / 2.0  # bloques de 0.5 -- nunca 2.1, 3.7, etc.
+def calculate_kelly_stake(ev, model_prob, decimal_odds):
+    """
+    Kelly fraccionado: si no hay ventaja real (EV<=0) o faltan datos para
+    calcularlo, no hay stake. Con ventaja, el tamaño de Kelly completo se
+    reduce a una fracción conservadora y se ajusta a la escala fija
+    1.0-5.0 en bloques de 0.5 (nunca 2.1, 3.7, etc.).
+    """
+    if ev is None or ev <= 0 or model_prob is None or decimal_odds is None or decimal_odds <= 1:
+        return 0.0
 
-    if market_signal in ("CONSENSUS", "PUBLIC_HEAVY"):
-        return 1.0
+    p = model_prob / 100.0
+    q = 1.0 - p
+    b = decimal_odds - 1.0
 
-    return 0.0  # MIXED, NO_ACTION
+    kelly_full = (b * p - q) / b
+    if kelly_full <= 0:
+        return 0.0
+
+    KELLY_FRACTION = 0.5  # medio-Kelly -- estándar conservador de la industria
+    kelly_fraction_pct = kelly_full * KELLY_FRACTION * 100.0
+
+    # Se mapea a la escala fija 1.0-5.0: 0% de Kelly fraccionado -> piso 1.0,
+    # 10%+ de Kelly fraccionado -> techo 5.0, lineal entre medio.
+    raw = 1.0 + min(kelly_fraction_pct, 10.0) / 10.0 * 4.0
+    raw = max(1.0, min(5.0, raw))
+    return round(raw * 2) / 2.0  # bloques de 0.5
 
 
 # ============================================================
@@ -1308,6 +1308,8 @@ def build_picks(raw_data):
         # ----------------------------------------------------
         raw_odds = market.get("odds", "—")
         odds_str = str(raw_odds).strip() if raw_odds is not None else "—"
+        decimal_odds = american_to_decimal(odds_str) if odds_str != "—" else None
+
         implied_prob = market.get("impliedProb")
         if implied_prob is None and odds_str != "—":
             implied_prob = american_implied_probability(odds_str)
@@ -1342,7 +1344,6 @@ def build_picks(raw_data):
             ev = round(safe_float(raw_ev), 2)
             ev_estimated = bool(market.get("evEstimated", False))
         else:
-            decimal_odds = american_to_decimal(odds_str) if odds_str != "—" else None
             if model_prob is not None and decimal_odds is not None:
                 ev = round(((model_prob / 100.0) * decimal_odds - 1.0) * 100.0, 2)
                 ev_estimated = False
@@ -1407,12 +1408,10 @@ def build_picks(raw_data):
 
         risk = calculate_risk(final_score, reliability_multiplier, odds_str, monte_carlo)
 
-        pick_category = classify_pick_category(
-            _raw_american_odds(raw_odds), bets, handle, signed_divergence, model_edge, ev
-        )
+        pick_category = classify_pick_category(ev, market_signal, signed_divergence)
 
         # Stake determinístico por señal (Parte 4) -- reemplaza el Kelly anterior.
-        stake = calculate_signal_stake(market_signal, ev)
+        stake = calculate_kelly_stake(ev, model_prob, decimal_odds)
 
         qualitative_confidence = safe_float(market.get("confidence", 1.0))
 
