@@ -4120,18 +4120,14 @@ function setupAuthListeners() {
         if (e.target === modalBackdrop) closeLoginModal();
     });
 
-    // Reemplazar la lógica de carga al iniciar sesión
-    fbAuth.onAuthStateChanged(async (user) => {
+    fbAuth.onAuthStateChanged((user) => {
+        firebaseUser = user;
+        updateAuthUI();
         if (user) {
-            document.getElementById("authLoggedOut").style.display = "none";
-            document.getElementById("authLoggedIn").style.display = "flex";
-            document.getElementById("authUserEmail").textContent = user.email;
-            
-            // Carga inmediata de datos tras autenticar
-            await loadDataFromFirestoreOrJson();
+            attachWatchlistListener();
         } else {
-            document.getElementById("authLoggedOut").style.display = "flex";
-            document.getElementById("authLoggedIn").style.display = "none";
+            detachWatchlistListener();
+            render();
         }
     });
 }
