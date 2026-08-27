@@ -1703,7 +1703,7 @@
             <div class="time-divider"></div>
             <div class="updated-display">
                 <span class="time-label">📅 Reporte (Hora CDMX)</span>
-                <div class="updated-val"><span id="generatedAtVal">2026-08-27 15:30:20</span></div>
+                <div class="updated-val"><span id="generatedAtVal">2026-08-27 15:33:45</span></div>
             </div>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
@@ -2481,1290 +2481,549 @@ function updateThemeByTime() {
     const hour = new Date().getHours();
     const doc = document.documentElement;
     const targetTheme = (hour >= 6 && hour < 19) ? 'light' : 'dark';
-
-    if (doc.getAttribute('data-theme') !== targetTheme) {
-        doc.setAttribute('data-theme', targetTheme);
-        initCharts(); 
+    
+    if (doc.getAttribute("data-theme") !== targetTheme) {
+        doc.setAttribute("data-theme", targetTheme);
+        initCharts();
     }
 }
 
-function calculateDivergence(p) {
-    if (typeof p.divergence === "number") return p.divergence;
-    if (typeof p.divergencia === "number") return p.divergencia;
-    const h = Number(p.handle) || 0;
-    const b = Number(p.bets) || 0;
-    return Math.abs(h - b);
-}
-
-function calculateSmartMoney(p) {
-    if (typeof p.smartMoney === "number") return p.smartMoney;
-    const h = Number(p.handle) || 0;
-    const b = Number(p.bets) || 0;
-    return Math.max(0, h - b);
-}
-
-function calculateEdge(p) {
-    if (typeof p.edge === "number") return p.edge;
-    const b = Number(p.bets) || 0;
-    const h = Number(p.handle) || 0;
-    return (h - b);
-}
-
-// 5 señales de mercado homologadas -- únicas, calculadas en backend
-// (p.marketSignal o p.trendKey). Si no vienen, se usa el clasificador
-// fallback que replica exactamente la lógica de analyze.py v3.
-function classifyMarketBucket(p) {
-    if (p.marketSignal && TREND_LABEL[p.marketSignal]) return p.marketSignal;
-    if (p.trendKey && TREND_LABEL[p.trendKey]) return p.trendKey;
-
-    const b = Number(p.bets) || 0;
-    const h = Number(p.handle) || 0;
-    const diff = h - b;
-
-    if (diff >= 10 && h >= 55) return "SMART_MONEY";
-    if (b >= 65 && diff <= -10) return "PUBLIC_HEAVY";
-    if (b >= 60 && h >= 60) return "CONSENSUS";
-    if (Math.abs(diff) >= 8) return "MIXED";
-    return "NO_ACTION";
-}
-
-// ============================================================
-// WATCHLIST EN FIRESTORE -- Si el usuario está autenticado, sincroniza
-// los IDs guardados en Firestore (`users/{uid}/watchlist/{pickId}`).
-// Si no hay usuario, cae en localStorage como fallback local (mantiene
-// la misma firma y comportamiento transparente).
-// ============================================================
-let currentUserId = null;
-let remoteWatchlistIds = new Set();
-
-function getWatchlistId(p) {
-    if (p.id) return String(p.id);
-    const dateStr = p.date || p.fecha || '';
-    const gameStr = p.game || p.partido || '';
-    const pickStr = p.pick || '';
-    return `${dateStr}_${gameStr}_${pickStr}`.replace(/\s+/g, '_');
-}
-
-function getLocalWatchlist() {
-    try {
-        const raw = localStorage.getItem("sharpie_watchlist");
-        return raw ? JSON.parse(raw) : [];
-    } catch(e) {
-        return [];
-    }
-}
-
-function saveLocalWatchlist(arr) {
-    try {
-        localStorage.setItem("sharpie_watchlist", JSON.stringify(arr));
-    } catch(e) {}
-}
-
-function isPickInWatchlist(p) {
-    const id = getWatchlistId(p);
-    if (currentUserId) {
-        return remoteWatchlistIds.has(id);
-    }
-    return getLocalWatchlist().includes(id);
-}
-
-async function toggleWatchlist(p) {
-    const id = getWatchlistId(p);
-
-    if (currentUserId) {
-        const docRef = fbDb.collection("users").doc(currentUserId).collection("watchlist").doc(id);
-        if (remoteWatchlistIds.has(id)) {
-            remoteWatchlistIds.delete(id);
-            try { await docRef.delete(); } catch(e) { console.warn("Error borrando Firestore:", e); }
-        } else {
-            remoteWatchlistIds.add(id);
-            try {
-                await docRef.set({
-                    pickId: id,
-                    game: p.game || p.partido || '',
-                    pick: p.pick || '',
-                    addedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            } catch(e) { console.warn("Error guardando Firestore:", e); }
-        }
-    } else {
-        let list = getLocalWatchlist();
-        if (list.includes(id)) {
-            list = list.filter(x => x !== id);
-        } else {
-            list.push(id);
-        }
-        saveLocalWatchlist(list);
-    }
-    render();
-}
-
-function setupAuthListeners() {
-    const btnOpenLogin = document.getElementById("btnOpenLogin");
-    const btnCloseLogin = document.getElementById("btnCloseLogin");
-    const loginModal = document.getElementById("loginModal");
-    const btnEmailSignIn = document.getElementById("btnEmailSignIn");
-    const btnEmailSignUp = document.getElementById("btnEmailSignUp");
-    const btnGoogleSignIn = document.getElementById("btnGoogleSignIn");
-    const btnSignOut = document.getElementById("btnSignOut");
-    const loginError = document.getElementById("loginError");
-
-    function showError(msg) {
-        if (!loginError) return;
-        loginError.textContent = msg;
-        loginError.style.display = "block";
-    }
-
-    function clearError() {
-        if (!loginError) return;
-        loginError.textContent = "";
-        loginError.style.display = "none";
-    }
-
-    if (btnOpenLogin) btnOpenLogin.onclick = () => { clearError(); loginModal.style.display = "flex"; };
-    if (btnCloseLogin) btnCloseLogin.onclick = () => { loginModal.style.display = "none"; };
-
-    if (btnEmailSignIn) {
-        btnEmailSignIn.onclick = async () => {
-            clearError();
-            const email = document.getElementById("loginEmail").value.trim();
-            const pass = document.getElementById("loginPassword").value;
-            try {
-                await fbAuth.signInWithEmailAndPassword(email, pass);
-                loginModal.style.display = "none";
-            } catch(e) {
-                showError(e.message || "Error al iniciar sesión.");
-            }
-        };
-    }
-
-    if (btnEmailSignUp) {
-        btnEmailSignUp.onclick = async () => {
-            clearError();
-            const email = document.getElementById("loginEmail").value.trim();
-            const pass = document.getElementById("loginPassword").value;
-            try {
-                await fbAuth.createUserWithEmailAndPassword(email, pass);
-                loginModal.style.display = "none";
-            } catch(e) {
-                showError(e.message || "Error al crear cuenta.");
-            }
-        };
-    }
-
-    if (btnGoogleSignIn) {
-        btnGoogleSignIn.onclick = async () => {
-            clearError();
-            const provider = new firebase.auth.GoogleAuthProvider();
-            try {
-                await fbAuth.signInWithPopup(provider);
-                loginModal.style.display = "none";
-            } catch(e) {
-                showError(e.message || "Error al autenticar con Google.");
-            }
-        };
-    }
-
-    if (btnSignOut) {
-        btnSignOut.onclick = () => { fbAuth.signOut(); };
-    }
-
-    fbAuth.onAuthStateChanged(async (user) => {
-        const loggedOutBox = document.getElementById("authLoggedOut");
-        const loggedInBox = document.getElementById("authLoggedIn");
-        const emailLabel = document.getElementById("authUserEmail");
-
-        if (user) {
-            currentUserId = user.uid;
-            if (emailLabel) emailLabel.textContent = user.email || "Usuario";
-            if (loggedOutBox) loggedOutBox.style.display = "none";
-            if (loggedInBox) loggedInBox.style.display = "flex";
-
-            // Carga Firestore watchlist
-            try {
-                const snap = await fbDb.collection("users").doc(user.uid).collection("watchlist").get();
-                remoteWatchlistIds = new Set(snap.docs.map(doc => doc.id));
-            } catch(e) {
-                console.warn("Error leyendo Firestore watchlist:", e);
-                remoteWatchlistIds = new Set();
-            }
-        } else {
-            currentUserId = null;
-            remoteWatchlistIds.clear();
-            if (loggedOutBox) loggedOutBox.style.display = "flex";
-            if (loggedInBox) loggedInBox.style.display = "none";
-        }
-        render();
-    });
-}
-
-function parseOddsToDecimal(cuotaStr) {
-    if (!cuotaStr) return 0;
-    const s = String(cuotaStr).trim();
-    if (s.startsWith("+")) {
-        const val = parseFloat(s.substring(1));
-        return isNaN(val) ? 0 : (val / 100) + 1;
-    } else if (s.startsWith("-")) {
-        const val = parseFloat(s.substring(1));
-        return isNaN(val) ? 0 : (100 / val) + 1;
-    } else {
-        const val = parseFloat(s);
-        return isNaN(val) ? 0 : val;
-    }
-}
-
-// Convertidor de cuotas para la copia rápida
-function formatOddsWithAmerican(cuotaStr) {
-    if (!cuotaStr) return "";
-    const s = String(cuotaStr).trim();
-    if (s.startsWith("+") || s.startsWith("-")) return s;
-    const dec = parseFloat(s);
-    if (isNaN(dec) || dec <= 1) return s;
-    if (dec >= 2.0) {
-        const am = Math.round((dec - 1) * 100);
-        return `${dec} (+${am})`;
-    } else {
-        const am = Math.round(100 / (dec - 1));
-        return `${dec} (-${am})`;
-    }
-}
-
-function showToastX() {
-    const toast = document.getElementById("toast-x");
-    if (!toast) return;
-    toast.classList.add("show");
-    setTimeout(() => { toast.classList.remove("show"); }, 3000);
-}
-
-// ============================================================
-// RECORDATORIOS DE PRÓXIMOS EVENTOS (Notificaciones en Navegador)
-// Guarda en localStorage un mapa de IDs programados: { [pickId]: targetTimestampMs }
-// Comprueba cada 30 segundos si falta <= 10 min para el inicio de un evento guardado.
-// ============================================================
-let REMINDER_MAP = {};
-
-function loadReminders() {
-    try {
-        const raw = localStorage.getItem("sharpie_reminders");
-        REMINDER_MAP = raw ? JSON.parse(raw) : {};
-    } catch(e) { REMINDER_MAP = {}; }
-}
-
-function saveReminders() {
-    try {
-        localStorage.setItem("sharpie_reminders", JSON.stringify(REMINDER_MAP));
-    } catch(e) {}
-}
-
-function parseEventStartTimestamp(p) {
-    const dateStr = p.date || p.fecha || '';
-    const timeStr = p.time || p.hora || '';
-    if (!dateStr || !timeStr) return null;
-    const iso = `${dateStr}T${timeStr}:00`;
-    const dt = new Date(iso);
-    return isNaN(dt.getTime()) ? null : dt.getTime();
-}
-
-function toggleReminder(p) {
-    const id = getWatchlistId(p);
-    const ts = parseEventStartTimestamp(p);
-
-    if (REMINDER_MAP[id]) {
-        delete REMINDER_MAP[id];
-        saveReminders();
-        showAttractiveNotification({
-            title: "🔔 Recordatorio cancelado",
-            body: `${p.game || p.partido || 'Evento'} eliminado de tus alertas.`,
-            variant: "info"
-        });
-    } else {
-        if (!ts) {
-            showAttractiveNotification({
-                title: "⚠️ Hora no disponible",
-                body: "Este evento no tiene hora exacta parseable para alarma.",
-                variant: "info"
-            });
-            return;
-        }
-        REMINDER_MAP[id] = {
-            ts,
-            game: p.game || p.partido || 'Evento',
-            pick: p.pick || '',
-            notified: false
-        };
-        saveReminders();
-
-        if ("Notification" in window && Notification.permission === "default") {
-            Notification.requestPermission();
-        }
-
-        showAttractiveNotification({
-            title: "⏰ Recordatorio programado",
-            body: `Te avisaremos 10 min antes del inicio de ${p.game || p.partido || 'este encuentro'}.`,
-            variant: "success"
-        });
-    }
-    render();
-}
-
-function showAttractiveNotification({ title, body, variant = "info" }) {
-    const container = document.getElementById("reminderNotifContainer");
-    if (!container) return;
-
-    const notif = document.createElement("div");
-    const variantClass = variant === "urgent" ? "reminder-notif-urgent"
-                       : variant === "success" ? "reminder-notif-success"
-                       : "reminder-notif-info";
-    notif.className = `reminder-notif ${variantClass}`;
-    notif.innerHTML = `
-        <button class="reminder-notif-close">✕</button>
-        <div class="reminder-notif-title">${escapeHTML(title)}</div>
-        <div class="reminder-notif-body">${escapeHTML(body)}</div>
-    `;
-
-    const closeBtn = notif.querySelector(".reminder-notif-close");
-    if (closeBtn) closeBtn.onclick = () => { notif.remove(); };
-
-    container.appendChild(notif);
-    setTimeout(() => { notif.classList.add("show"); }, 10);
-    setTimeout(() => {
-        notif.classList.remove("show");
-        setTimeout(() => { notif.remove(); }, 300);
-    }, 6000);
-}
-
-function checkRemindersLoop() {
-    const now = Date.now();
-    let changed = false;
-
-    Object.keys(REMINDER_MAP).forEach(id => {
-        const item = REMINDER_MAP[id];
-        if (!item || !item.ts) return;
-
-        const diffMs = item.ts - now;
-        const diffMins = diffMs / 60000;
-
-        // Dispara la alerta cuando faltan entre 0 y 10 minutos
-        if (diffMins <= 10 && diffMins >= -5 && !item.notified) {
-            item.notified = true;
-            changed = true;
-
-            const title = "🚨 SharpIE: ¡Evento por comenzar!";
-            const body = `${item.game} (${item.pick}) inicia en menos de 10 minutos. Revisa las cuotas finales.`;
-
-            // 1. Notificación visual integrada en el dashboard
-            showAttractiveNotification({ title, body, variant: "urgent" });
-
-            // 2. Notificación nativa del sistema operativo (si el usuario otorgó permiso)
-            if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    new Notification(title, { body, icon: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png" });
-                } catch(e) {}
-            }
-        }
-
-        // Limpia eventos que ya pasaron hace más de 2 horas
-        if (diffMins < -120) {
-            delete REMINDER_MAP[id];
-            changed = true;
-        }
-    });
-
-    if (changed) saveReminders();
-}
-
-function populateSelectOptions() {
-    const dates = new Set();
-    const leagues = new Set();
-
-    PICKS.forEach(p => {
-        if (p.date || p.fecha) dates.add(p.date || p.fecha);
-        if (p.league || p.liga) leagues.add(p.league || p.liga);
-    });
-
-    const fDate = document.getElementById("fDate");
-    const fLeague = document.getElementById("fLeague");
-
-    if (fDate) {
-        fDate.innerHTML = '<option value="">📆 Todas las fechas</option>';
-        Array.from(dates).sort().forEach(d => {
-            fDate.innerHTML += `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`;
-        });
-        fDate.value = state.date;
-    }
-
-    if (fLeague) {
-        fLeague.innerHTML = '<option value="">🏆 Todas las ligas</option>';
-        Array.from(leagues).sort().forEach(l => {
-            fLeague.innerHTML += `<option value="${escapeHTML(l)}">${escapeHTML(l)}</option>`;
-        });
-        fLeague.value = state.league;
-    }
-
-    // Auto-sugerencias de búsqueda inteligente (autocompletado único por equipos/ligas/picks)
-    const dl = document.getElementById("searchSuggestions");
-    if (dl) {
-        const items = new Set();
-        PICKS.forEach(p => {
-            if (p.game) items.add(p.game);
-            if (p.league) items.add(p.league);
-            if (p.pick) items.add(p.pick);
-        });
-        dl.innerHTML = Array.from(items).map(i => `<option value="${escapeHTML(i)}">`).join('');
-    }
-}
-
-// Búsqueda inteligente interactiva con dropdown enriquecido
-let searchActiveIndex = -1;
-
-function updateSearchSuggest() {
-    const input = document.getElementById("search");
-    const container = document.getElementById("searchSuggest");
-    if (!input || !container) return;
-
-    const query = input.value.trim().toLowerCase();
-    if (query.length < 2) {
-        container.innerHTML = "";
-        container.classList.remove("open");
-        searchActiveIndex = -1;
-        return;
-    }
-
-    const matches = [];
-    const seen = new Set();
-
-    PICKS.forEach(p => {
-        const game = p.game || p.partido || '';
-        const league = p.league || p.liga || '';
-        const pick = p.pick || '';
-
-        if (game.toLowerCase().includes(query) && !seen.has(game)) {
-            seen.add(game);
-            matches.push({ text: game, meta: league, type: 'game' });
-        }
-        if (pick.toLowerCase().includes(query) && !seen.has(pick)) {
-            seen.add(pick);
-            matches.push({ text: pick, meta: game, type: 'pick' });
-        }
-        if (league.toLowerCase().includes(query) && !seen.has(league)) {
-            seen.add(league);
-            matches.push({ text: league, meta: 'Liga', type: 'league' });
-        }
-    });
-
-    const topMatches = matches.slice(0, 7);
-    if (topMatches.length === 0) {
-        container.innerHTML = "";
-        container.classList.remove("open");
-        searchActiveIndex = -1;
-        return;
-    }
-
-    container.innerHTML = topMatches.map((m, idx) => `
-        <div class="search-suggest-item ${idx === searchActiveIndex ? 'active' : ''}" data-val="${escapeHTML(m.text)}">
-            <span>${m.type === 'league' ? '🏆' : m.type === 'pick' ? '🎯' : '⚽'} ${escapeHTML(m.text)}</span>
-            <span class="ss-meta">${escapeHTML(m.meta)}</span>
-        </div>
-    `).join('');
-
-    container.classList.add("open");
-
-    container.querySelectorAll(".search-suggest-item").forEach(item => {
-        item.onclick = () => {
-            input.value = item.getAttribute("data-val");
-            state.search = input.value;
-            container.classList.remove("open");
-            searchActiveIndex = -1;
+function setupThemeToggle() {
+    const themeToggle = document.getElementById("themeToggle");
+    if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+            state.autoThemeEnabled = false; 
+            const doc = document.documentElement;
+            const currentTheme = doc.getAttribute("data-theme");
+            doc.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
+            initCharts();
             render();
-        };
-    });
-}
-
-function isPickInTimeRange(p, rangeKey) {
-    if (!rangeKey) return true;
-    const dateStr = p.date || p.fecha || '';
-    const timeStr = p.time || p.hora || '';
-    if (!dateStr || !timeStr) return true;
-
-    const eventDt = new Date(`${dateStr}T${timeStr}:00`);
-    if (isNaN(eventDt.getTime())) return true;
-
-    const now = new Date();
-    const diffMins = (eventDt.getTime() - now.getTime()) / 60000;
-
-    switch(rangeKey) {
-        case "in_play":
-            return diffMins <= 0 && diffMins >= -180;
-        case "30m":
-            return diffMins >= 0 && diffMins <= 30;
-        case "1h":
-            return diffMins >= 0 && diffMins <= 60;
-        case "2h":
-            return diffMins >= 0 && diffMins <= 120;
-        case "today":
-            return eventDt.toDateString() === now.toDateString();
-        case "tomorrow":
-            const tom = new Date(now);
-            tom.setDate(tom.getDate() + 1);
-            return eventDt.toDateString() === tom.toDateString();
-        case "this_week":
-            const endWeek = new Date(now);
-            endWeek.setDate(endWeek.getDate() + 7);
-            return eventDt >= now && eventDt <= endWeek;
-        default:
-            return true;
+        });
     }
 }
 
-function applyFilters() {
-    return PICKS.filter(p => {
-        if (state.search) {
-            const s = state.search.toLowerCase();
-            const g = (p.game || p.partido || '').toLowerCase();
-            const l = (p.league || p.liga || '').toLowerCase();
-            const pk = (p.pick || '').toLowerCase();
-            if (!g.includes(s) && !l.includes(s) && !pk.includes(s)) return false;
+function isEventPending(p) {
+    const status = (p.status || "").toUpperCase();
+    if (status === "FINISHED" || status === "WON" || status === "LOST" || status === "CANCELLED") return false;
+
+    if (p.iso) {
+        const kickoff = new Date(p.iso).getTime();
+        if (!isNaN(kickoff)) {
+            const minutesSinceKickoff = (Date.now() - kickoff) / 60000;
+            if (minutesSinceKickoff > 0) return false;
         }
+    }
+    return true;
+}
 
-        if (state.date && (p.date || p.fecha) !== state.date) return false;
-        if (state.league && (p.league || p.liga) !== state.league) return false;
+function calculateEdge(p) { 
+    if (p.modelEdge !== undefined && p.modelEdge !== null) return Number(p.modelEdge);
+    if (p.edge !== undefined && p.edge !== null) return Number(p.edge);
+    return 0; 
+}
 
-        if (state.trend) {
-            const bucket = classifyMarketBucket(p);
-            if (bucket !== state.trend) return false;
-        }
+function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
 
-        if (state.timeRange && !isPickInTimeRange(p, state.timeRange)) return false;
+// ============================================================
+// CLASIFICACIÓN ÚNICA Y EXCLUYENTE: Free / Editor's Choice / Whale Alert
+// Parte 2: la categoría de cada pick (FREE/EDITORS/WHALE) ya viene calculada
+// desde el backend en p.pickCategory -- ya no se recalcula en el frontend
+// (eso era justo la fuente de los bugs de inconsistencia card-vs-filtro que
+// veníamos arrastrando). Se usa directo: p.pickCategory === "FREE", etc.
 
-        if (state.editorOnly && !p.editorChoice) return false;
-        if (state.whaleOnly && !p.whaleAlert) return false;
-        if (state.freePickOnly && !p.freePick) return false;
-        if (state.featuredOnly && !p.featured) return false;
-        if (state.watchlistOnly && !isPickInWatchlist(p)) return false;
+// Equipos mediáticos: si el pick los menciona, es automáticamente "Pick Destacado"
+const FEATURED_TEAMS = [
+    "Cowboys", "Chiefs", "49ers", "Patriots", "Packers", "Steelers",
+    "Lakers", "Warriors", "Celtics", "Bulls", "Knicks",
+    "Yankees", "Dodgers", "Red Sox", "Cubs",
+    "Maple Leafs", "Canadiens", "Rangers", "Bruins",
+    "Inter Miami", "LA Galaxy", "LAFC",
+    "Manchester United", "Liverpool", "Manchester City", "Arsenal", "Chelsea",
+    "Real Madrid", "Barcelona", "Atlético de Madrid", "Atletico de Madrid", "Atletico Madrid",
+    "Juventus", "Inter", "AC Milan", "Milan",
+    "Bayern Munich", "Bayern Múnich", "Borussia Dortmund",
+    "PSG", "Marseille",
+    "América", "America", "Chivas", "Cruz Azul",
+    "River Plate", "Boca Juniors",
+    "Flamengo", "Corinthians", "Palmeiras", "São Paulo", "Sao Paulo"
+];
 
-        // Filtros numéricos
-        if (state.modeloMin !== null && (p.modelProb == null || p.modelProb < state.modeloMin)) return false;
-        if (state.modeloMax !== null && (p.modelProb == null || p.modelProb > state.modeloMax)) return false;
+function isFeaturedPick(p) {
+    const blob = `${p.game || ''} ${p.pick || ''} ${p.team || ''} ${p.home || ''} ${p.away || ''}`;
+    return FEATURED_TEAMS.some(team => blob.includes(team));
+}
 
-        if (state.scoreMin !== null && ((p.score || 0) < state.scoreMin)) return false;
-        if (state.scoreMax !== null && ((p.score || 0) > state.scoreMax)) return false;
+// Devuelve únicamente las mediciones donde Bets, Handle o Cuota realmente cambiaron
+// respecto a la medición anterior. Fuente única usada tanto por la Evolución Histórica
+// como por el Análisis Destacado, para que ninguna de las dos repita mediciones idénticas.
+function getChangedHistoryEntries(p) {
+    const rawHistory = Array.isArray(p.history) ? p.history.filter(h =>
+        h && (h.betsPct != null || h.handlePct != null || h.odds != null)
+    ) : [];
+    if (rawHistory.length === 0) return [];
 
-        if (state.evMin !== null && ((p.ev || 0) < state.evMin)) return false;
-        if (state.evMax !== null && ((p.ev || 0) > state.evMax)) return false;
+    const hasOdds = rawHistory.some(h => h.odds != null && h.odds !== '');
 
-        if (state.betsMin !== null && ((p.bets || 0) < state.betsMin)) return false;
-        if (state.betsMax !== null && ((p.bets || 0) > state.betsMax)) return false;
-
-        if (state.handleMin !== null && ((p.handle || 0) < state.handleMin)) return false;
-        if (state.handleMax !== null && ((p.handle || 0) > state.handleMax)) return false;
-
-        if (state.edgeMin !== null && (calculateEdge(p) < state.edgeMin)) return false;
-        if (state.edgeMax !== null && (calculateEdge(p) > state.edgeMax)) return false;
-
-        if (state.stakeMin !== null && ((p.stake || 0) < state.stakeMin)) return false;
-        if (state.stakeMax !== null && ((p.stake || 0) > state.stakeMax)) return false;
-
-        if (state.divergenciaMin !== null && (calculateDivergence(p) < state.divergenciaMin)) return false;
-        if (state.divergenciaMax !== null && (calculateDivergence(p) > state.divergenciaMax)) return false;
-
-        if (state.confMin !== null && (p.reliability != null && (p.reliability * 100) < state.confMin)) return false;
-        if (state.confMax !== null && (p.reliability != null && (p.reliability * 100) > state.confMax)) return false;
-
-        if (state.winProbMin !== null && (p.winProb != null && (p.winProb * 100) < state.winProbMin)) return false;
-        if (state.winProbMax !== null && (p.winProb != null && (p.winProb * 100) > state.winProbMax)) return false;
-
-        if (state.cuotaMin !== null || state.cuotaMax !== null) {
-            const dec = parseOddsToDecimal(p.odds || p.cuota);
-            if (state.cuotaMin !== null && dec < parseOddsToDecimal(state.cuotaMin)) return false;
-            if (state.cuotaMax !== null && dec > parseOddsToDecimal(state.cuotaMax)) return false;
-        }
-
-        return true;
+    return rawHistory.filter((h, i) => {
+        if (i === 0) return true;
+        const prev = rawHistory[i - 1];
+        const betsChanged = h.betsPct !== prev.betsPct;
+        const handleChanged = h.handlePct !== prev.handlePct;
+        const oddsChanged = hasOdds && h.odds !== prev.odds;
+        return betsChanged || handleChanged || oddsChanged;
     });
 }
 
-function sortPicks(list) {
-    const sorted = [...list];
-    switch (state.sort) {
-        case "score":
-            return sorted.sort((a, b) => (b.score || 0) - (a.score || 0));
-        case "winprob":
-            return sorted.sort((a, b) => (b.winProb || 0) - (a.winProb || 0));
-        case "recommended":
-            return sorted.sort((a, b) => {
-                if (a.editorChoice && !b.editorChoice) return -1;
-                if (!a.editorChoice && b.editorChoice) return 1;
-                return (b.score || 0) - (a.score || 0);
-            });
-        case "time":
-        default:
-            return sorted.sort((a, b) => {
-                const ta = `${a.date || a.fecha || ''}T${a.time || a.hora || '00:00'}`;
-                const tb = `${b.date || b.fecha || ''}T${b.time || b.hora || '00:00'}`;
-                return ta.localeCompare(tb);
-            });
+// Parámetros de análisis de evolución para destacar automáticamente los picks.
+// Se mantienen separados de los filtros/clasificaciones existentes para no alterar su comportamiento.
+const EDITOR_ANALYSIS_CONFIG = Object.freeze({
+    minBets: 25,          // Antes: 30%
+    minHandle: 45,        // Antes: 50%
+    minGap: 8,            // Antes: 10%
+    minRatio: 1.15,       // Antes: 1.20x
+    minHistoryPoints: 1,  // Antes: 2
+    minEditorScore: 55,   // Antes: 65
+    minOdds: -140,        // Antes: -125
+    maxOdds: 115          // Antes: 100
+});
+
+function getEvolutionAnalysis(p) {
+    const bets = Number(p.betsPct || 0);
+    const handle = Number(p.handlePct || 0);
+    const gap = handle - bets;
+    const ratio = bets > 0 ? handle / bets : 0;
+
+    const history = getChangedHistoryEntries(p);
+
+    const previous = history.length >= 2 ? history[history.length - 2] : null;
+    const prevBets = previous && previous.betsPct != null ? Number(previous.betsPct) : null;
+    const prevHandle = previous && previous.handlePct != null ? Number(previous.handlePct) : null;
+    const prevGap = (prevBets != null && prevHandle != null) ? prevHandle - prevBets : null;
+
+    const betsDelta = prevBets != null ? bets - prevBets : null;
+    const handleDelta = prevHandle != null ? handle - prevHandle : null;
+    const gapDelta = prevGap != null ? gap - prevGap : null;
+
+    let oddsMove = null;
+    let oddsConfirmed = false;
+    const currentOdds = p.odds != null && p.odds !== '' ? p.odds : p.cuota;
+    if (previous && previous.odds != null && currentOdds != null && currentOdds !== '') {
+        const prevDec = parseOddsToDecimal(previous.odds);
+        const currentDec = parseOddsToDecimal(currentOdds);
+        if (prevDec > 0 && currentDec > 0) {
+            // En un mismo pick, menor cuota decimal = movimiento a favor del lado seleccionado.
+            oddsMove = prevDec - currentDec;
+            oddsConfirmed = oddsMove > 0.0005;
+        }
     }
-}
 
-function renderActiveFilterChips() {
-    const container = document.getElementById("activeFilterChips");
-    if (!container) return;
+    // Editor's Choice busca cuotas atractivas pero no tan positivas (relación cuota/análisis),
+    // rango -125 a +100: favoritos moderados o paridad, nunca long-shots.
+    const editorOddsVal = getAmericanOddsValue(currentOdds);
+    const oddsInEditorRange = editorOddsVal != null &&
+        editorOddsVal >= EDITOR_ANALYSIS_CONFIG.minOdds && editorOddsVal <= EDITOR_ANALYSIS_CONFIG.maxOdds;
 
-    const chips = [];
-    const addChip = (label, clearFn) => {
-        chips.push({ label, clearFn });
+    // El backend (analyze.py v3 + generate_dashboard.py) ya evaluó confiabilidad real
+    // (Monte Carlo, coherencia cuota/dinero, redundancia de fuentes). Umbral en 0.70:
+    // la confianza arranca en 1.0 y CASI todo pick fresco recibe al menos una
+    // penalización menor (ej. -0.12 por historial corto), así que exigir >=0.95
+    // bloqueaba Editor's Choice incluso en picks limpios sin ninguna señal de alarma real.
+    const backendRiskOk = p.risk == null || p.risk !== "HIGH";
+    const backendConfidenceOk = p.confidence == null || p.confidence >= 0.70;
+    const backendCoherenceOk = p.coherence == null || p.coherence !== "contradictoria";
+
+    const criteria = {
+        bets: bets >= EDITOR_ANALYSIS_CONFIG.minBets,
+        handle: handle >= EDITOR_ANALYSIS_CONFIG.minHandle,
+        gap: gap >= EDITOR_ANALYSIS_CONFIG.minGap,
+        ratio: ratio >= EDITOR_ANALYSIS_CONFIG.minRatio,
+        gapTrend: gapDelta != null && gapDelta >= 0,
+        odds: oddsConfirmed,
+        oddsRange: oddsInEditorRange,
+        backend: backendRiskOk && backendConfidenceOk && backendCoherenceOk
     };
 
-    if (state.search) addChip(`🔍 "${state.search}"`, () => { state.search = ""; document.getElementById("search").value = ""; });
-    if (state.date) addChip(`📆 ${state.date}`, () => { state.date = ""; document.getElementById("fDate").value = ""; });
-    if (state.league) addChip(`🏆 ${state.league}`, () => { state.league = ""; document.getElementById("fLeague").value = ""; });
-    if (state.trend) addChip(`📊 ${TREND_LABEL[state.trend] || state.trend}`, () => { state.trend = ""; document.getElementById("fTrend").value = ""; });
-    if (state.timeRange) addChip(`⏱️ Rango Horario`, () => { state.timeRange = ""; document.getElementById("fTimeRange").value = ""; });
+    let score = 0;
+    if (criteria.bets) score += 20;
+    if (criteria.handle) score += 20;
+    if (criteria.gap) score += 25;
+    if (criteria.ratio) score += 15;
+    if (criteria.gapTrend) score += 10;
+    if (criteria.odds) score += 10;
 
-    if (state.freePickOnly) addChip(`🔓 Solo Free Picks`, () => { state.freePickOnly = false; });
-    if (state.editorOnly) addChip(`🏆 Solo Editor Choice`, () => { state.editorOnly = false; });
-    if (state.whaleOnly) addChip(`🐋 Solo Whale Alerts`, () => { state.whaleOnly = false; });
-    if (state.featuredOnly) addChip(`⭐ Solo Destacados`, () => { state.featuredOnly = false; });
-    if (state.watchlistOnly) addChip(`👁️ Mi Watchlist`, () => { state.watchlistOnly = false; });
+    const enoughHistory = history.length >= EDITOR_ANALYSIS_CONFIG.minHistoryPoints;
+    const isEditorChoice = enoughHistory &&
+        criteria.bets && criteria.handle && criteria.gap && criteria.ratio &&
+        criteria.gapTrend && criteria.oddsRange && criteria.backend &&
+        score >= EDITOR_ANALYSIS_CONFIG.minEditorScore;
 
-    const numFilters = [
-        { key: "modeloMin", name: "Modelo Min" }, { key: "modeloMax", name: "Modelo Max" },
-        { key: "scoreMin", name: "Score Min" }, { key: "scoreMax", name: "Score Max" },
-        { key: "evMin", name: "EV Min" }, { key: "evMax", name: "EV Max" },
-        { key: "edgeMin", name: "Edge Min" }, { key: "edgeMax", name: "Edge Max" },
-        { key: "stakeMin", name: "Stake Min" }, { key: "stakeMax", name: "Stake Max" },
-        { key: "cuotaMin", name: "Cuota Min" }, { key: "cuotaMax", name: "Cuota Max" }
-    ];
+    let movementLabel = 'Sin confirmación de cuota';
+    if (oddsConfirmed) movementLabel = 'Cuota a favor';
+    else if (oddsMove != null && oddsMove < -0.0005) movementLabel = 'Cuota en contra';
 
-    numFilters.forEach(f => {
-        if (state[f.key] !== null) {
-            addChip(`${f.name}: ${state[f.key]}`, () => {
-                state[f.key] = null;
-                const input = document.getElementById(`f${f.key.charAt(0).toUpperCase() + f.key.slice(1)}`);
-                if (input) input.value = "";
-            });
-        }
-    });
-
-    if (chips.length === 0) {
-        container.innerHTML = `<span style="font-size:11px; color:var(--muted);">Sin filtros activos. Mostrando universo completo.</span>`;
-        return;
-    }
-
-    container.innerHTML = chips.map((c, idx) => `
-        <span class="fchip">
-            ${escapeHTML(c.label)}
-            <span class="fchip-remove" data-idx="${idx}">✕</span>
-        </span>
-    `).join('');
-
-    container.querySelectorAll(".fchip-remove").forEach((btn, idx) => {
-        btn.onclick = () => {
-            chips[idx].clearFn();
-            render();
-        };
-    });
+    return {
+        bets, handle, gap, ratio,
+        prevBets, prevHandle, prevGap,
+        betsDelta, handleDelta, gapDelta,
+        oddsMove, oddsConfirmed, movementLabel,
+        historyPoints: history.length,
+        historyDetails: history,
+        hasHistoryOdds: history.some(h => h.odds != null && h.odds !== ''),
+        criteria, score, enoughHistory, isEditorChoice
+    };
 }
 
-function generateHistoryTableHtml(p) {
-    const history = p.history || p.historial;
-    if (!Array.isArray(history) || history.length === 0) {
-        return `<div class="history-evolution-box" style="text-align:center; color:var(--muted); font-size:10px;">Sin historial de evolución registrado.</div>`;
-    }
+function editorChoiceSummary(a) {
+    if (!a) return '';
+    const gapTxt = `${a.gap >= 0 ? '+' : ''}${a.gap.toFixed(1)} pts H-B`;
+    const trendTxt = a.gapDelta != null ? `${a.gapDelta >= 0 ? '+' : ''}${a.gapDelta.toFixed(1)} pts vs anterior` : 'evolución';
+    return `🏆 EDITOR'S CHOICE · ${gapTxt} · H/B ${a.ratio.toFixed(2)} · ${trendTxt} · ${a.movementLabel}`;
+}
 
-    const rows = history.map((h, idx) => {
-        const time = h.time || h.hora || h.timestamp || `--:--`;
-        const bets = h.bets != null ? `${h.bets}%` : `--`;
-        const handle = h.handle != null ? `${h.handle}%` : `--`;
-        const odds = h.odds || h.cuota || `--`;
+// Filtro Whale Alerts -- el backend (analyze.py v3) ya calcula esta confirmación
+// con coherencia cuota/dinero + profundidad de historial real, así que si el
+// campo viene presente como booleano es la fuente de verdad y NO se recalcula
+// con el heurístico numérico crudo de abajo (evita que dos lecturas distintas
+// del mismo pick se contradigan entre sí).
+function isWhalePick(p) {
+    if (typeof p.whale === "boolean") return p.whale;
 
-        let diffBets = '';
-        let diffHandle = '';
-        if (idx > 0) {
-            const prev = history[idx - 1];
-            if (h.bets != null && prev.bets != null) {
-                const db = h.bets - prev.bets;
-                diffBets = db > 0 ? `<span class="evo-up">▲${db}</span>` : db < 0 ? `<span class="evo-down">▼${Math.abs(db)}</span>` : `<span class="evo-flat">●</span>`;
-            }
-            if (h.handle != null && prev.handle != null) {
-                const dh = h.handle - prev.handle;
-                diffHandle = dh > 0 ? `<span class="evo-up">▲${dh}</span>` : dh < 0 ? `<span class="evo-down">▼${Math.abs(dh)}</span>` : `<span class="evo-flat">●</span>`;
-            }
-        }
+    const betsCondition = Number(p.betsPct || 0) <= 35;           // Antes: < 30%
+    const handleCondition = Number(p.handlePct || 0) >= 55;        // Antes: > 60%
+    const scoreCondition = Number(p.score || 0) >= 55;            // Antes: > 65
+    const smartMoneyCondition = calculateSmartMoney(p) >= 20;     // Antes: > 30%
 
-        return `
+    const oddsVal = getAmericanOddsValue(p.odds != null && p.odds !== '' ? p.odds : p.cuota);
+    const oddsCondition = oddsVal != null && oddsVal >= -110;      // Antes: >= +100
+
+    return betsCondition && handleCondition && scoreCondition && smartMoneyCondition && oddsCondition;
+}
+
+// Filtro Free Picks Flexibilizado
+function isFreePick(p) {
+    if (typeof p.freePick === "boolean") return p.freePick;
+
+    const betsCondition = Number(p.betsPct || 0) >= 50;           // Antes: > 60%
+    const handleCondition = Number(p.handlePct || 0) >= 50;         // Antes: > 60%
+
+    const score = Number(p.score || 0);
+    const scoreCondition = score >= 20 && score <= 60;            // Antes: 25 a 44
+
+    const smartMoney = calculateSmartMoney(p);
+    const smartMoneyCondition = smartMoney >= 0 && smartMoney <= 20; // Antes: > 5 y < 15
+
+    const oddsVal = getAmericanOddsValue(p.odds != null && p.odds !== '' ? p.odds : p.cuota);
+    const oddsCondition = oddsVal != null && oddsVal >= -250 && oddsVal <= -110; // Antes: -200 a -125
+
+    return betsCondition && handleCondition && scoreCondition && smartMoneyCondition && oddsCondition;
+}
+
+function trendArrow(curr, prev) {
+    if (curr == null || prev == null || isNaN(curr) || isNaN(prev)) return { arrow: '', cls: '' };
+    const c = parseFloat(curr), pv = parseFloat(prev);
+    if (c > pv) return { arrow: '▲', cls: 'evo-up' };
+    if (c < pv) return { arrow: '▼', cls: 'evo-down' };
+    return { arrow: '—', cls: 'evo-flat' };
+}
+
+const HISTORY_ROWS_CACHE = {};
+
+function buildHistoryRows(list, hasOdds) {
+    let rows = '';
+    list.forEach((h, i) => {
+        const prev = i > 0 ? list[i - 1] : null;
+        const betsTrend = prev ? trendArrow(h.betsPct, prev.betsPct) : { arrow: '', cls: '' };
+        const handleTrend = prev ? trendArrow(h.handlePct, prev.handlePct) : { arrow: '', cls: '' };
+        const oddsTrend = (prev && hasOdds) ? trendArrow(h.odds, prev.odds) : { arrow: '', cls: '' };
+
+        rows += `
             <tr>
-                <td>${escapeHTML(time)}</td>
-                <td>${escapeHTML(bets)} ${diffBets}</td>
-                <td>${escapeHTML(handle)} ${diffHandle}</td>
-                <td>${escapeHTML(odds)}</td>
+                <td>📅 ${h.timestamp ? escapeHTML(h.timestamp.split('T')[0]) : '—'}</td>
+                <td>🕒 ${escapeHTML(h.time) || '—'}</td>
+                <td>${h.betsPct != null ? h.betsPct + '%' : '—'} <span class="${betsTrend.cls}">${betsTrend.arrow}</span></td>
+                <td style="color:var(--teal)">${h.handlePct != null ? h.handlePct + '%' : '—'} <span class="${handleTrend.cls}">${handleTrend.arrow}</span></td>
+                ${hasOdds ? `<td>${h.odds != null ? escapeHTML(h.odds) : '—'} <span class="${oddsTrend.cls}">${oddsTrend.arrow}</span></td>` : ''}
             </tr>
         `;
-    }).join('');
+    });
+    return rows;
+}
 
-    const initialRows = rows;
+function toggleHistoryExpand(uid, total) {
+    const tbody = document.getElementById(uid + '_body');
+    const btn = document.getElementById(uid + '_btn');
+    if (!tbody || !HISTORY_ROWS_CACHE[uid]) return;
+
+    const expanded = tbody.dataset.expanded === '1';
+    if (expanded) {
+        tbody.innerHTML = HISTORY_ROWS_CACHE[uid].collapsed;
+        tbody.dataset.expanded = '0';
+        if (btn) btn.textContent = `Ver historial completo (${total})`;
+    } else {
+        tbody.innerHTML = HISTORY_ROWS_CACHE[uid].full;
+        tbody.dataset.expanded = '1';
+        if (btn) btn.textContent = 'Ver últimos 5';
+    }
+}
+
+function buildEvolutionHtml(p) {
+    const filteredHistory = getChangedHistoryEntries(p);
+    if (filteredHistory.length === 0) return '';
+
+    const hasOdds = filteredHistory.some(h => h.odds != null && h.odds !== '');
+
+    // Por defecto solo los últimos 5 movimientos -- el resto se ve a petición
+    // del usuario (botón "Ver historial completo"), para no saturar la card.
+    const DEFAULT_VISIBLE = 5;
+    const hasMore = filteredHistory.length > DEFAULT_VISIBLE;
+    const collapsedHistory = filteredHistory.slice(-DEFAULT_VISIBLE);
+
+    const collapsedRows = buildHistoryRows(collapsedHistory, hasOdds);
+    const uid = `hist_${p.id != null ? p.id : Math.random().toString(36).slice(2)}`;
+
+    if (hasMore) {
+        HISTORY_ROWS_CACHE[uid] = {
+            collapsed: collapsedRows,
+            full: buildHistoryRows(filteredHistory, hasOdds)
+        };
+    }
 
     return `
         <div class="history-evolution-box">
-            <div class="history-evolution-title">📊 Evolución del Mercado</div>
+            <div class="history-evolution-title">📊 Evolución Histórica (Bets / Handle${hasOdds ? ' / Cuota' : ''})</div>
             <table class="history-evolution-table">
                 <thead>
                     <tr>
+                        <th>Fecha</th>
                         <th>Hora</th>
-                        <th>Bets</th>
-                        <th>Handle</th>
-                        <th>Cuota</th>
+                        <th>Tickets</th>
+                        <th>Dinero</th>
+                        ${hasOdds ? '<th>Cuota</th>' : ''}
                     </tr>
                 </thead>
-                <tbody>
-                    ${initialRows}
+                <tbody id="${uid}_body" data-expanded="0">
+                    ${collapsedRows}
                 </tbody>
             </table>
+            ${hasMore ? `<button type="button" class="history-expand-btn" id="${uid}_btn" onclick="toggleHistoryExpand('${uid}', ${filteredHistory.length})">Ver historial completo (${filteredHistory.length})</button>` : ''}
         </div>
     `;
 }
 
-function generateXCopyText(p) {
-    const game = p.game || p.partido || 'Evento';
-    const pick = p.pick || 'Pick';
-    const cuota = formatOddsWithAmerican(p.odds || p.cuota);
-    const score = p.score || 0;
-    const ev = p.ev != null ? `${p.ev > 0 ? '+' : ''}${p.ev}%` : 'N/A';
-    const stake = p.stake != null ? `${p.stake}%` : '1%';
+// Panel de Decisión unificado (ver unifiedDecisionPanelHtml más abajo) --
+// esta versión anterior por secciones ya no se usa, se deja fuera para no
+// tener dos fuentes de verdad del mismo panel.
 
-    return `⚡ SharpIE Signal Alert ⚡\n\n🎯 ${game}\n📌 Pick: ${pick}\n💵 Cuota: ${cuota}\n🔥 Score: ${score}/100 | EV: ${ev}\n🎯 Stake Sugerido: ${stake}\n\n#SportsBetting #SharpIE #PickOfDay`;
+function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && (p.score || 0) >= 75; }
+
+// Clasificación visual puramente por score (0-100), sin overrides por flags externos
+// (whale, texto de acción del backend) para evitar sesgos: la señal whale y editor's choice
+// ya se muestran con sus propios badges independientes en la card.
+function marketSignalVisualConfig(marketSignal) {
+    switch (marketSignal) {
+        case "SMART_MONEY":
+            return { bg: "var(--blue-soft)", border: "var(--blue)", text: "var(--blue)", label: "🐋 SMART MONEY" };
+        case "PUBLIC_HEAVY":
+            return { bg: "var(--red-soft)", border: "var(--red)", text: "var(--red)", label: "🚨 PUBLIC HEAVY" };
+        case "CONSENSUS":
+            return { bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "📊 CONSENSUS" };
+        case "MIXED":
+            return { bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "🔀 MIXED" };
+        default:
+            return { bg: "var(--panel2)", border: "var(--border)", text: "var(--muted)", label: "⚪ NO ACTION" };
+    }
 }
 
-function renderPicks(list) {
-    const grid = document.getElementById("cardsView");
-    const emptyState = document.getElementById("emptyState");
-    if (!grid) return;
+function getCountdownText(isoString) {
+    if (!isoString) return { text: "--:--:--", urgent: false, expired: false, diffMin: 99999 };
+    const diffMs = new Date(isoString) - new Date();
+    const diffMin = diffMs / 60000;
 
-    if (list.length === 0) {
-        grid.innerHTML = "";
-        if (emptyState) emptyState.style.display = "block";
-        return;
+    if (diffMs <= 0) return { text: "⚽ EN JUEGO", urgent: true, expired: true, diffMin };
+    
+    const hrs = Math.floor(diffMs / 3600000);
+    const mins = Math.floor((diffMs % 3600000) / 60000);
+    const secs = Math.floor((diffMs % 60000) / 1000);
+    const pad = (n) => String(n).padStart(2, '0');
+    
+    let timeStr = "";
+    if (hrs > 0) timeStr += `${pad(hrs)}h `;
+    timeStr += `${pad(mins)}m ${pad(secs)}s`;
+    
+    return { text: `⏳ ${timeStr}`, urgent: diffMs < 900000, expired: false, diffMin };
+}
+
+// Contador dinámico (Parte 1): tick real cada segundo sobre el DOM, sin
+// re-renderizar toda la lista de cards -- solo actualiza el texto/estado de
+// cada timer visible ahora mismo.
+function tickAllCountdowns() {
+    document.querySelectorAll(".countdown-timer[data-iso]").forEach(el => {
+        const iso = el.getAttribute("data-iso");
+        if (!iso) return;
+        const t = getCountdownText(iso);
+        el.textContent = t.text;
+        el.classList.toggle("urgent", t.urgent);
+    });
+}
+
+setInterval(tickAllCountdowns, 1000);
+
+const statState = {
+    whale: [],
+    editor: [],
+    free: [],
+    proximos: [],
+    mercado: { SMART_MONEY: [], PUBLIC_HEAVY: [], CONSENSUS: [], MIXED: [], NO_ACTION: [] },
+    mejor: []
+};
+
+// Parte 3: el bucket de Análisis de Mercado ahora refleja las 5 señales
+// reales directo desde p.marketSignal (backend) -- sin comprimir a 3 buckets.
+function classifyMarketBucket(p) {
+    return p.marketSignal || "NO_ACTION";
+}
+
+function computeConfianzaDelDinero(publicN, smartN) {
+    if (publicN === 0 && smartN === 0) return { text: "Tranquilo", color: "var(--muted)" };
+    if (smartN === 0 || publicN / smartN >= 2) return { text: "Alerta 🚨", color: "var(--red)" };
+    if (publicN === 0 || smartN / publicN >= 2) return { text: "Consenso ⚡", color: "var(--teal)" };
+    return { text: "Dividido", color: "var(--amber)" };
+}
+
+// Métricas de Mercado, Whale y Free Picks precisas y dinámicas
+function updateMetrics(activePicks) {
+    const elAnalizados = document.getElementById("statAnalizados");
+    if(elAnalizados) elAnalizados.innerText = activePicks.length;
+
+    const whalePicks = activePicks.filter(p => p.pickCategory === "WHALE");
+    const elWhale = document.getElementById("statWhale");
+    if(elWhale) elWhale.innerText = whalePicks.length;
+    statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+
+    const editorPicks = activePicks.filter(p => p.pickCategory === "EDITORS");
+    const elEditor = document.getElementById("statEditor");
+    if(elEditor) elEditor.innerText = editorPicks.length;
+    statState.editor = editorPicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+
+    const freePicks = activePicks.filter(p => p.pickCategory === "FREE");
+    const elFree = document.getElementById("statFree");
+    if(elFree) elFree.innerText = freePicks.length;
+    statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+
+    const soonPicks = activePicks.filter(p => {
+        if (!p.iso) return false;
+        const d = (new Date(p.iso) - new Date()) / 60000;
+        return d >= 0 && d <= 30;
+    }).sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
+    const elProximos = document.getElementById("statProximos");
+    if(elProximos) elProximos.innerText = soonPicks.length;
+    statState.proximos = soonPicks;
+
+    const buckets = { SMART_MONEY: [], PUBLIC_HEAVY: [], CONSENSUS: [], MIXED: [], NO_ACTION: [] };
+    activePicks.forEach(p => buckets[classifyMarketBucket(p)].push(p));
+    statState.mercado = buckets;
+    
+    const elMercado = document.getElementById("statMercado");
+    if (elMercado) {
+        elMercado.innerText = `🐋 ${buckets.SMART_MONEY.length} · 🚨 ${buckets.PUBLIC_HEAVY.length} · 📊 ${buckets.CONSENSUS.length} · 🔀 ${buckets.MIXED.length} · ⚪ ${buckets.NO_ACTION.length}`;
     }
 
-    if (emptyState) emptyState.style.display = "none";
+    const conf = computeConfianzaDelDinero(buckets.PUBLIC_HEAVY.length, buckets.SMART_MONEY.length);
+    const elConfianza = document.getElementById("statConfianza");
+    if(elConfianza) elConfianza.innerText = conf.text;
+    const cardConf = document.getElementById("cardConfianza");
+    if(cardConf) cardConf.style.borderLeftColor = conf.color;
 
-    const now = new Date();
-
-    grid.innerHTML = list.map(p => {
-        const id = getWatchlistId(p);
-        const inWatchlist = isPickInWatchlist(p);
-        const isReminderActive = !!REMINDER_MAP[id];
-
-        let cardClass = "pcard";
-        if (p.whaleAlert) cardClass += " whale-alert";
-        else if (p.editorChoice) cardClass += " editor-choice";
-        else if (p.freePick) cardClass += " free-pick";
-
-        const game = escapeHTML(p.game || p.partido || 'Evento');
-        const pick = escapeHTML(p.pick || 'Selección');
-        const league = escapeHTML(p.league || p.liga || 'General');
-        const marketType = escapeHTML(p.marketType || p.tipoMercado || 'Mercado');
-        const odds = escapeHTML(p.odds || p.cuota || '—');
-        const score = p.score || 0;
-
-        // Banderas / Badges de encabezado
-        const headerBadges = [];
-        if (RECENTLY_ADDED_IDS.has(id)) {
-            headerBadges.push(`<span class="new-pick-badge">✨ NUEVO</span>`);
-        }
-        if (RECENTLY_UPDATED_IDS.has(id)) {
-            headerBadges.push(`<span class="updated-pick-badge">🔄 ACTUALIZADO</span>`);
-        }
-        if (p.whaleAlert) {
-            headerBadges.push(`<span class="whale-header-badge">🐋 WHALE ALERT</span>`);
-        }
-        if (p.editorChoice) {
-            headerBadges.push(`<span class="editor-choice-badge">🏆 EDITOR'S CHOICE</span>`);
-        }
-        if (p.featured) {
-            headerBadges.push(`<span class="featured-badge">⭐ DESTACADO</span>`);
-        }
-        if (p.freePick) {
-            headerBadges.push(`<span class="free-pick-badge">🔓 FREE PICK</span>`);
-        } else {
-            headerBadges.push(`<span class="premium-pick-badge">💎 PREMIUM</span>`);
-        }
-
-        // Cuenta regresiva
-        let countdownHtml = "";
-        const eventStartTs = parseEventStartTimestamp(p);
-        if (eventStartTs) {
-            const diffMins = Math.floor((eventStartTs - now.getTime()) / 60000);
-            if (diffMins < 0 && diffMins >= -180) {
-                countdownHtml = `<span class="countdown-timer urgent">🔴 En Juego</span>`;
-            } else if (diffMins >= 0 && diffMins <= 30) {
-                countdownHtml = `<span class="countdown-timer urgent">⏳ Inicia en ${diffMins}m</span>`;
-            } else if (diffMins > 30 && diffMins <= 180) {
-                const hrs = Math.floor(diffMins / 60);
-                const mins = diffMins % 60;
-                countdownHtml = `<span class="countdown-timer">⏳ Inicia en ${hrs}h ${mins}m</span>`;
-            }
-        }
-
-        // Barras de Bets vs Handle
-        const bets = p.bets != null ? p.bets : 50;
-        const handle = p.handle != null ? p.handle : 50;
-
-        // Justificación del Editor
-        let editorAnalysisHtml = "";
-        if (p.editorChoice && p.editorReasoning) {
-            editorAnalysisHtml = `
-                <div class="editor-analysis">
-                    <div class="editor-analysis-head">
-                        <strong>💡 Análisis Editor:</strong>
-                    </div>
-                    <div>${escapeHTML(p.editorReasoning)}</div>
-                </div>
-            `;
-        }
-
-        // Panel de decisión unificado (reemplaza los bloques dispersos)
-        const decisionHtml = unifiedDecisionPanelHtml(p);
-
-        // Tabla de historial de evolución
-        const historyTableHtml = generateHistoryTableHtml(p);
-
-        return `
-            <div class="${cardClass}">
-                <div>
-                    <div class="pcard-header">
-                        <div class="pcard-header-line1">
-                            ${headerBadges.join('')}
-                        </div>
-                        <div class="pcard-header-line2">
-                            <span class="game-title">${game}</span>
-                        </div>
-                    </div>
-
-                    <div class="meta-row">
-                        <span>🏆 ${league}</span>
-                        <div class="datetime-container">
-                            <span class="date-badge">${escapeHTML(p.date || p.fecha || '')}</span>
-                            <span class="time-badge">${escapeHTML(p.time || p.hora || '')}</span>
-                            ${countdownHtml}
-                        </div>
-                    </div>
-
-                    <div class="pick-details">
-                        <div class="pick-name">${pick}</div>
-                        <div class="market-type">${marketType}</div>
-                    </div>
-
-                    <div class="volume-container">
-                        <div class="volume-labels">
-                            <span>🎟️ Tickets (Bets): <b>${bets}%</b></span>
-                            <span>💵 Dinero (Handle): <b>${handle}%</b></span>
-                        </div>
-                        <div class="volume-bar-wrapper">
-                            <div class="v-bets" style="width: ${bets}%;"></div>
-                            <div class="v-handle" style="width: ${handle}%;"></div>
-                        </div>
-                    </div>
-
-                    ${decisionHtml}
-
-                    ${editorAnalysisHtml}
-
-                    <details style="margin-top:10px;">
-                        <summary style="cursor:pointer; font-size:11px; color:var(--muted); font-weight:700;">
-                            📈 Ver Evolución del Mercado
-                        </summary>
-                        ${historyTableHtml}
-                    </details>
-                </div>
-
-                <div>
-                    <div class="pcard-action-row">
-                        <button class="btn-copy-x pcard-action-row-item" data-id="${id}">
-                            <span>🐦 Exportar a X</span>
-                        </button>
-                        <button class="btn-reminder pcard-action-row-item ${isReminderActive ? 'active' : ''}" data-id="${id}">
-                            <span>${isReminderActive ? '⏰ Alarma Activada' : '🔔 Activar Alarma'}</span>
-                        </button>
-                        <button class="btn-reminder pcard-action-row-item ${inWatchlist ? 'active' : ''}" data-watch-id="${id}">
-                            <span>${inWatchlist ? '👁️ En Watchlist' : '👁️ Guardar'}</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    // Bindeo de eventos
-    grid.querySelectorAll(".btn-copy-x").forEach(btn => {
-        btn.onclick = () => {
-            const id = btn.getAttribute("data-id");
-            const p = list.find(x => getWatchlistId(x) === id);
-            if (p) {
-                const text = generateXCopyText(p);
-                navigator.clipboard.writeText(text).then(() => {
-                    showToastX();
-                });
-            }
-        };
-    });
-
-    grid.querySelectorAll(".btn-reminder[data-id]").forEach(btn => {
-        btn.onclick = () => {
-            const id = btn.getAttribute("data-id");
-            const p = list.find(x => getWatchlistId(x) === id);
-            if (p) toggleReminder(p);
-        };
-    });
-
-    grid.querySelectorAll(".btn-reminder[data-watch-id]").forEach(btn => {
-        btn.onclick = () => {
-            const id = btn.getAttribute("data-watch-id");
-            const p = list.find(x => getWatchlistId(x) === id);
-            if (p) toggleWatchlist(p);
-        };
-    });
+    const bestBet = [...activePicks].filter(p => p.actionKey === "bet")
+        .sort((a, b) => {
+            const ea = getEvolutionAnalysis(a), eb = getEvolutionAnalysis(b);
+            const va = (ea.isEditorChoice ? 1000 : 0) + ea.score + Number(a.score || 0);
+            const vb = (eb.isEditorChoice ? 1000 : 0) + eb.score + Number(b.score || 0);
+            return vb - va;
+        })[0];
+    const best = bestBet || [...activePicks].sort((a, b) => {
+        const ea = getEvolutionAnalysis(a), eb = getEvolutionAnalysis(b);
+        const va = (ea.isEditorChoice ? 1000 : 0) + ea.score + Number(a.score || 0);
+        const vb = (eb.isEditorChoice ? 1000 : 0) + eb.score + Number(b.score || 0);
+        return vb - va;
+    })[0];
+    statState.mejor = best ? [best] : [];
+    
+    const elMejor = document.getElementById("statMejor");
+    if (elMejor) {
+        elMejor.innerText = best ? `${best.pick} (${best.game || 'Partido'})` : "Sin datos";
+    }
 }
 
-// KPI Popups desplegables
-function updateKpiPopups(filteredList) {
-    const freePicks = filteredList.filter(p => p.freePick);
-    const editorPicks = filteredList.filter(p => p.editorChoice);
-    const whalePicks = filteredList.filter(p => p.whaleAlert);
+function renderStatRows(items) {
+    if (!items || !items.length) {
+        return `<div class="stat-empty">Sin picks en esta categoría.</div>`;
+    }
+    
+    const sortedUpcoming = [...items]
+        .sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0))
+        .slice(0, 3);
 
-    const now = new Date();
-    const proximosPicks = filteredList.filter(p => {
-        const ts = parseEventStartTimestamp(p);
-        if (!ts) return false;
-        const diffMins = (ts - now.getTime()) / 60000;
-        return diffMins >= 0 && diffMins <= 30;
-    });
-
-    function makeRowsHtml(arr) {
-        if (arr.length === 0) return `<div class="stat-empty">Sin elementos en esta categoría</div>`;
-        return arr.slice(0, 5).map(p => `
+    return sortedUpcoming.map(p => {
+        const e = calculateEdge(p);
+        const formattedEdge = e > 0 ? `+${e}%` : `${e}%`;
+        const edgeColor = e >= 0 ? 'var(--teal)' : 'var(--red)';
+        const cuota = escapeHTML(p.odds || p.cuota || "—");
+        const timeStr = escapeHTML(p.time || "--:--");
+        return `
             <div class="stat-row">
                 <div class="stat-row-main">
-                    <span class="stat-row-game">${escapeHTML(p.game || p.partido || '')}</span>
-                    <span class="stat-row-pick">${escapeHTML(p.pick || '')}</span>
+                    <div class="stat-row-game">🕒 ${timeStr} · ${escapeHTML(p.game) || 'Evento'}</div>
+                    <div class="stat-row-pick"><b>${escapeHTML(p.pick)}</b> (${escapeHTML(p.market) || 'Mercado'}) · ${escapeHTML(p.league) || ''}</div>
                 </div>
                 <div class="stat-row-nums">
-                    <span>${escapeHTML(p.odds || p.cuota || '')}</span>
-                    <span style="color:var(--teal); font-weight:700;">Score: ${p.score || 0}</span>
+                    <span style="color:${edgeColor}">${formattedEdge}</span>
+                    <span style="color:var(--amber)">${cuota}</span>
                 </div>
             </div>
-        `).join('');
-    }
-
-    const detailFree = document.getElementById("detailFree");
-    if (detailFree) {
-        detailFree.innerHTML = `<div class="stat-popup-title"><span>Top Free Picks</span><span>${freePicks.length}</span></div>` + makeRowsHtml(freePicks);
-    }
-
-    const detailEditor = document.getElementById("detailEditor");
-    if (detailEditor) {
-        detailEditor.innerHTML = `<div class="stat-popup-title"><span>Top Editor's Choice</span><span>${editorPicks.length}</span></div>` + makeRowsHtml(editorPicks);
-    }
-
-    const detailWhale = document.getElementById("detailWhale");
-    if (detailWhale) {
-        detailWhale.innerHTML = `<div class="stat-popup-title"><span>Top Whale Alerts</span><span>${whalePicks.length}</span></div>` + makeRowsHtml(whalePicks);
-    }
-
-    const detailProximos = document.getElementById("detailProximos");
-    if (detailProximos) {
-        detailProximos.innerHTML = `<div class="stat-popup-title"><span>Próximos 30 Minutos</span><span>${proximosPicks.length}</span></div>` + makeRowsHtml(proximosPicks);
-    }
-
-    // Análisis de Mercado
-    const counts = { SMART_MONEY: 0, PUBLIC_HEAVY: 0, CONSENSUS: 0, MIXED: 0, NO_ACTION: 0 };
-    filteredList.forEach(p => { counts[classifyMarketBucket(p)]++; });
-
-    const statMercado = document.getElementById("statMercado");
-    if (statMercado) {
-        statMercado.textContent = `🚨 ${counts.PUBLIC_HEAVY} Fade · 🐋 ${counts.SMART_MONEY} Sharp · ⚪ ${counts.CONSENSUS} Cons.`;
-    }
-
-    const detailMercado = document.getElementById("detailMercado");
-    if (detailMercado) {
-        detailMercado.innerHTML = `
-            <div class="stat-popup-title"><span>Distribución de Señales</span></div>
-            <div class="stat-row"><span>🐋 Smart Money (Sharp)</span><strong>${counts.SMART_MONEY}</strong></div>
-            <div class="stat-row"><span>🚨 Public Heavy (Fade)</span><strong>${counts.PUBLIC_HEAVY}</strong></div>
-            <div class="stat-row"><span>📊 Consensus</span><strong>${counts.CONSENSUS}</strong></div>
-            <div class="stat-row"><span>🔀 Mixed</span><strong>${counts.MIXED}</strong></div>
-            <div class="stat-row"><span>⚪ No Action</span><strong>${counts.NO_ACTION}</strong></div>
         `;
-    }
-
-    // Top Pick Destacado
-    const sortedByScore = [...filteredList].sort((a, b) => (b.score || 0) - (a.score || 0));
-    const topPick = sortedByScore[0];
-    const statMejor = document.getElementById("statMejor");
-    const detailMejor = document.getElementById("detailMejor");
-
-    if (topPick && statMejor) {
-        statMejor.textContent = `${topPick.game || topPick.partido} (${topPick.pick}) · Score ${topPick.score}`;
-        if (detailMejor) {
-            detailMejor.innerHTML = `
-                <div class="stat-popup-title"><span>Pick de Mayor Score</span></div>
-                <div class="stat-row"><span>Encuentro</span><strong>${escapeHTML(topPick.game || '')}</strong></div>
-                <div class="stat-row"><span>Selección</span><strong>${escapeHTML(topPick.pick || '')}</strong></div>
-                <div class="stat-row"><span>Cuota</span><strong>${escapeHTML(topPick.odds || topPick.cuota || '')}</strong></div>
-                <div class="stat-row"><span>Score / EV</span><strong>${topPick.score || 0} / ${topPick.ev != null ? topPick.ev + '%' : 'N/A'}</strong></div>
-            `;
-        }
-    } else if (statMejor) {
-        statMejor.textContent = "Sin datos";
-        if (detailMejor) detailMejor.innerHTML = `<div class="stat-empty">Sin picks activos</div>`;
-    }
+    }).join("");
 }
 
-function render() {
-    const filtered = applyFilters();
-    const sorted = sortPicks(filtered);
-
-    // Mantiene un Set con las claves del filtro activo para detectar en el
-    // siguiente ciclo de polling si entran o salen picks de ese criterio.
-    ACTIVE_FILTER_MATCH_KEYS = new Set(sorted.map(getWatchlistId));
-
-    // Indicadores superiores KPI
-    const statAnalizados = document.getElementById("statAnalizados");
-    if (statAnalizados) statAnalizados.textContent = sorted.length;
-
-    const statFree = document.getElementById("statFree");
-    if (statFree) statFree.textContent = sorted.filter(p => p.freePick).length;
-
-    const statEditor = document.getElementById("statEditor");
-    if (statEditor) statEditor.textContent = sorted.filter(p => p.editorChoice).length;
-
-    const statWhale = document.getElementById("statWhale");
-    if (statWhale) statWhale.textContent = sorted.filter(p => p.whaleAlert).length;
-
-    const now = new Date();
-    const prox30 = sorted.filter(p => {
-        const ts = parseEventStartTimestamp(p);
-        if (!ts) return false;
-        const diffMins = (ts - now.getTime()) / 60000;
-        return diffMins >= 0 && diffMins <= 30;
-    });
-    const statProximos = document.getElementById("statProximos");
-    if (statProximos) statProximos.textContent = prox30.length;
-
-    // Resumen de Registros
-    const filteredCount = document.getElementById("filteredCount");
-    const totalCount = document.getElementById("totalCount");
-    if (filteredCount) filteredCount.textContent = sorted.length;
-    if (totalCount) totalCount.textContent = PICKS.length;
-
-    renderActiveFilterChips();
-    renderPicks(sorted);
-    updateChartsData(sorted);
-    updateKpiPopups(sorted);
-}
-
-function setupEventListeners() {
-    startRealtimeClock();
-
-    const themeToggle = document.getElementById("themeToggle");
-    if (themeToggle) {
-        themeToggle.onclick = () => {
-            state.autoThemeEnabled = false; 
-            const doc = document.documentElement;
-            const current = doc.getAttribute("data-theme");
-            const next = current === "dark" ? "light" : "dark";
-            doc.setAttribute("data-theme", next);
-            initCharts();
-        };
-    }
-
-    const searchInput = document.getElementById("search");
-    if (searchInput) {
-        searchInput.oninput = () => {
-            state.search = searchInput.value;
-            updateSearchSuggest();
-            render();
-        };
-        searchInput.onkeydown = (e) => {
-            const container = document.getElementById("searchSuggest");
-            if (!container || !container.classList.contains("open")) return;
-            const items = container.querySelectorAll(".search-suggest-item");
-            if (items.length === 0) return;
-
-            if (e.key === "ArrowDown") {
-                e.preventDefault();
-                searchActiveIndex = (searchActiveIndex + 1) % items.length;
-                updateSearchSuggest();
-            } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                searchActiveIndex = (searchActiveIndex - 1 + items.length) % items.length;
-                updateSearchSuggest();
-            } else if (e.key === "Enter" && searchActiveIndex >= 0) {
-                e.preventDefault();
-                items[searchActiveIndex].click();
-            } else if (e.key === "Escape") {
-                container.classList.remove("open");
-                searchActiveIndex = -1;
-            }
-        };
-    }
-
-    document.addEventListener("click", (e) => {
-        const container = document.getElementById("searchSuggest");
-        const searchBox = document.querySelector(".search-box");
-        if (container && searchBox && !searchBox.contains(e.target)) {
-            container.classList.remove("open");
-            searchActiveIndex = -1;
-        }
-    });
-
-    const fSort = document.getElementById("fSort");
-    if (fSort) fSort.onchange = () => { state.sort = fSort.value; render(); };
-
-    const fDate = document.getElementById("fDate");
-    if (fDate) fDate.onchange = () => { state.date = fDate.value; render(); };
-
-    const fLeague = document.getElementById("fLeague");
-    if (fLeague) fLeague.onchange = () => { state.league = fLeague.value; render(); };
-
-    const fTrend = document.getElementById("fTrend");
-    if (fTrend) fTrend.onchange = () => { state.trend = fTrend.value; render(); };
-
-    const fTimeRange = document.getElementById("fTimeRange");
-    if (fTimeRange) fTimeRange.onchange = () => { state.timeRange = fTimeRange.value; render(); };
-
-    // Botones Chip Toggle
-    const chipButtons = [
-        { id: "freePickOnly", key: "freePickOnly" },
-        { id: "editorOnly", key: "editorOnly" },
-        { id: "whaleOnly", key: "whaleOnly" },
-        { id: "featuredOnly", key: "featuredOnly" },
-        { id: "watchlistOnly", key: "watchlistOnly" }
-    ];
-
-    chipButtons.forEach(btnInfo => {
-        const btn = document.getElementById(btnInfo.id);
-        if (btn) {
-            btn.onclick = () => {
-                state[btnInfo.key] = !state[btnInfo.key];
-                btn.setAttribute("aria-pressed", state[btnInfo.key] ? "true" : "false");
-                render();
-            };
-        }
-    });
-
-    // Toggle Filtros Avanzados
-    const btnAdvToggle = document.getElementById("btnAdvToggle");
-    const advPanel = document.getElementById("advFiltersPanel");
-    if (btnAdvToggle && advPanel) {
-        btnAdvToggle.onclick = () => {
-            const isShow = advPanel.classList.toggle("show");
-            btnAdvToggle.setAttribute("aria-pressed", isShow ? "true" : "false");
-        };
-    }
-
-    // Toggle Modo Vista Simple / Avanzado
-    // NOTA UI: El texto del botón SIEMPRE dice el modo AL QUE CAMBIAS
-    // (si estás en Simple, el botón debe decir "🔬 Modo Avanzado";
-    // si estás en Avanzado, debe decir "🎓 Modo Simple").
-    const viewModeToggle = document.getElementById("viewModeToggle");
-    if (viewModeToggle) {
-        state.advancedView = false;
-        viewModeToggle.textContent = "🔬 Modo Avanzado";
-        viewModeToggle.classList.remove("active");
-
-        viewModeToggle.onclick = () => {
-            state.advancedView = !state.advancedView;
-            if (state.advancedView) {
-                viewModeToggle.textContent = "🎓 Modo Simple";
-                viewModeToggle.classList.add("active");
-            } else {
-                viewModeToggle.textContent = "🔬 Modo Avanzado";
-                viewModeToggle.classList.remove("active");
-            }
-            render();
-        };
-    }
-
-    // Bindeo de Filtros Numéricos
-    const numInputs = [
-        { id: "fModeloMin", key: "modeloMin" }, { id: "fModeloMax", key: "modeloMax" },
-        { id: "fScoreMin", key: "scoreMin" }, { id: "fScoreMax", key: "scoreMax" },
-        { id: "fEvMin", key: "evMin" }, { id: "fEvMax", key: "evMax" },
-        { id: "fBetsMin", key: "betsMin" }, { id: "fBetsMax", key: "betsMax" },
-        { id: "fHandleMin", key: "handleMin" }, { id: "fHandleMax", key: "handleMax" },
-        { id: "fEdgeMin", key: "edgeMin" }, { id: "fEdgeMax", key: "edgeMax" },
-        { id: "fStakeMin", key: "stakeMin" }, { id: "fStakeMax", key: "stakeMax" },
-        { id: "fDivergenciaMin", key: "divergenciaMin" }, { id: "fDivergenciaMax", key: "divergenciaMax" },
-        { id: "fConfMin", key: "confMin" }, { id: "fConfMax", key: "confMax" },
-        { id: "fWinProbMin", key: "winProbMin" }, { id: "fWinProbMax", key: "winProbMax" },
-        { id: "fCuotaMin", key: "cuotaMin", rawStr: true }, { id: "fCuotaMax", key: "cuotaMax", rawStr: true }
-    ];
-
-    numInputs.forEach(item => {
-        const input = document.getElementById(item.id);
-        if (input) {
-            input.oninput = () => {
-                const val = input.value.trim();
-                if (item.rawStr) {
-                    state[item.key] = val !== "" ? val : null;
-                } else {
-                    state[item.key] = val !== "" ? parseFloat(val) : null;
-                }
-                render();
-            };
-        }
-    });
-
-    // Limpiar Filtros
-    const clearBtn = document.getElementById("clearBtn");
-    if (clearBtn) {
-        clearBtn.onclick = () => {
-            state.search = "";
-            state.date = "";
-            state.league = "";
-            state.trend = "";
-            state.timeRange = "";
-            state.editorOnly = false;
-            state.whaleOnly = false;
-            state.freePickOnly = false;
-            state.featuredOnly = false;
-            state.watchlistOnly = false;
-
-            numInputs.forEach(item => { state[item.key] = null; });
-
-            document.querySelectorAll(".toolbar input, .toolbar select, .adv-filters-panel input").forEach(el => {
-                if (el.tagName === "SELECT") el.selectedIndex = 0;
-                else el.value = "";
-            });
-
-            chipButtons.forEach(btnInfo => {
-                const btn = document.getElementById(btnInfo.id);
-                if (btn) btn.setAttribute("aria-pressed", "false");
-            });
-
-            render();
-        };
-    }
-
-    // Toggle de Popups en Cards KPI
+function setupStatPopups() {
     document.querySelectorAll(".stat-card.expandable").forEach(card => {
-        card.onclick = (e) => {
+        card.addEventListener("click", (e) => {
             e.stopPropagation();
-            const targetId = card.getAttribute("data-target");
-            const targetPopup = document.getElementById(targetId);
-            if (!targetPopup) return;
-
-            const isOpen = card.classList.contains("open");
-
+            const targetId = card.dataset.target;
+            const box = document.getElementById(targetId);
+            if(!box) return;
+            
+            const isCurrentlyOpen = card.classList.contains("open");
+            
             document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
             document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
 
-            if (!isOpen) {
+            if (!isCurrentlyOpen) {
                 card.classList.add("open");
-                targetPopup.style.display = "block";
+
+                let items = [];
+                let popupTitle = "Detalle de Eventos";
+                
+                if (targetId === "detailWhale") { items = statState.whale; popupTitle = "Top Whale Picks"; }
+                else if (targetId === "detailEditor") { items = statState.editor; popupTitle = "Top Editor's Choice"; }
+                else if (targetId === "detailFree") { items = statState.free; popupTitle = "Top Free Picks"; }
+                else if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
+                else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
+                else if (targetId === "detailMercado") {
+                    items = [...statState.mercado.SMART_MONEY, ...statState.mercado.PUBLIC_HEAVY, ...statState.mercado.CONSENSUS, ...statState.mercado.MIXED, ...statState.mercado.NO_ACTION];
+                    popupTitle = "Picks de Mercado";
+                }
+
+                box.innerHTML = `
+                    <div class="stat-popup-title">
+                        <span>${popupTitle}</span>
+                        <span>Total: ${items.length}</span>
+                    </div>
+                    ${renderStatRows(items)}
+                `;
+                box.style.display = "block";
             }
-        };
+        });
     });
 
     document.addEventListener("click", () => {
@@ -3773,23 +3032,1123 @@ function setupEventListeners() {
     });
 }
 
-// Inicialización de la aplicación
+function getAmericanOddsValue(oddsRaw) {
+    if (oddsRaw == null || oddsRaw === '') return null;
+    const val = parseFloat(String(oddsRaw).trim());
+    return isNaN(val) ? null : val;
+}
+
+function parseOddsToDecimal(odds) {
+    if (odds == null || odds === "") return 0;
+    
+    let str = String(odds).trim();
+    let val = parseFloat(str);
+    if (isNaN(val)) return 0;
+
+    if (str.startsWith('+') || str.startsWith('-')) {
+        if (val > 0) {
+            return (val / 100) + 1;
+        } else if (val < 0) {
+            return (100 / Math.abs(val)) + 1;
+        }
+    }
+    
+    return val;
+}
+
+function renderActiveChips() {
+    const box = document.getElementById("activeFilterChips");
+    if (!box) return;
+
+    const chips = [];
+
+    if (state.timeRange) {
+        const labels = {
+            in_play: "En Juego",
+            "30m": "Próx. 30m",
+            "1h": "Próx. 1h",
+            "2h": "Próx. 2h",
+            today: "Hoy"
+        };
+        chips.push({ key: "timeRange", label: `⏰ Hora: ${labels[state.timeRange] || state.timeRange}` });
+    }
+    if (state.modeloMin !== null || state.modeloMax !== null) {
+        chips.push({ key: "modelo", label: `🤖 Modelo: ${state.modeloMin ?? 0}% - ${state.modeloMax ?? 100}%` });
+    }
+    if (state.cuotaMin !== null || state.cuotaMax !== null) {
+        chips.push({ key: "cuota", label: `💵 Cuota: ${state.cuotaMin ?? 'Min'} - ${state.cuotaMax ?? 'Max'}` });
+    }
+    if (state.edgeMin !== null || state.edgeMax !== null) {
+        chips.push({ key: "edge", label: `📈 Edge Mod: ${state.edgeMin ?? '-∞'}% - ${state.edgeMax ?? '+∞'}%` });
+    }
+    if (state.betsMin !== null || state.betsMax !== null) {
+        chips.push({ key: "bets", label: `🎟️ Bets: ${state.betsMin ?? 0}% - ${state.betsMax ?? 100}%` });
+    }
+    if (state.handleMin !== null || state.handleMax !== null) {
+        chips.push({ key: "handle", label: `💵 Handle: ${state.handleMin ?? 0}% - ${state.handleMax ?? 100}%` });
+    }
+    if (state.scoreMin !== null || state.scoreMax !== null) {
+        chips.push({ key: "score", label: `🔥 Score: ${state.scoreMin ?? 0} - ${state.scoreMax ?? 100}` });
+    }
+    if (state.evMin !== null || state.evMax !== null) {
+        chips.push({ key: "ev", label: `📊 EV: ${state.evMin ?? '-∞'}% - ${state.evMax ?? '+∞'}%` });
+    }
+    if (state.stakeMin !== null || state.stakeMax !== null) {
+        chips.push({ key: "stake", label: `🎯 Stake: ${state.stakeMin ?? 0}% - ${state.stakeMax ?? 'Max'}%` });
+    }
+    if (state.divergenciaMin !== null || state.divergenciaMax !== null) {
+        chips.push({ key: "divergencia", label: `⚡ Divergencia: ${state.divergenciaMin ?? '-∞'}% - ${state.divergenciaMax ?? '+∞'}%` });
+    }
+    if (state.confMin !== null || state.confMax !== null) {
+        chips.push({ key: "conf", label: `✅ Confiabilidad: ${state.confMin ?? 0}% - ${state.confMax ?? 100}%` });
+    }
+    if (state.winProbMin !== null || state.winProbMax !== null) {
+        chips.push({ key: "winProb", label: `🎲 Prob. Victoria: ${state.winProbMin ?? 0}% - ${state.winProbMax ?? 100}%` });
+    }
+
+    if (chips.length === 0) {
+        box.innerHTML = `<span style="font-size:11px; color:var(--muted);">No hay filtros cuantitativos activos.</span>`;
+        return;
+    }
+
+    box.innerHTML = chips.map(c => `
+        <span class="fchip">
+            ${c.label}
+            <span class="fchip-remove" onclick="clearSpecificAdvFilter('${c.key}')">✕</span>
+        </span>
+    `).join("");
+}
+
+function clearSpecificAdvFilter(type) {
+    if (type === "timeRange") { state.timeRange = ""; const el = document.getElementById("fTimeRange"); if (el) el.value = ""; }
+    if (type === "modelo") { state.modeloMin = null; state.modeloMax = null; document.getElementById("fModeloMin").value = ""; document.getElementById("fModeloMax").value = ""; }
+    if (type === "cuota") { state.cuotaMin = null; state.cuotaMax = null; document.getElementById("fCuotaMin").value = ""; document.getElementById("fCuotaMax").value = ""; }
+    if (type === "edge") { state.edgeMin = null; state.edgeMax = null; document.getElementById("fEdgeMin").value = ""; document.getElementById("fEdgeMax").value = ""; }
+    if (type === "bets") { state.betsMin = null; state.betsMax = null; document.getElementById("fBetsMin").value = ""; document.getElementById("fBetsMax").value = ""; }
+    if (type === "handle") { state.handleMin = null; state.handleMax = null; document.getElementById("fHandleMin").value = ""; document.getElementById("fHandleMax").value = ""; }
+    if (type === "score") { state.scoreMin = null; state.scoreMax = null; document.getElementById("fScoreMin").value = ""; document.getElementById("fScoreMax").value = ""; }
+    if (type === "ev") { state.evMin = null; state.evMax = null; document.getElementById("fEvMin").value = ""; document.getElementById("fEvMax").value = ""; }
+    if (type === "stake") { state.stakeMin = null; state.stakeMax = null; document.getElementById("fStakeMin").value = ""; document.getElementById("fStakeMax").value = ""; }
+    if (type === "divergencia") { state.divergenciaMin = null; state.divergenciaMax = null; document.getElementById("fDivergenciaMin").value = ""; document.getElementById("fDivergenciaMax").value = ""; }
+    if (type === "conf") { state.confMin = null; state.confMax = null; document.getElementById("fConfMin").value = ""; document.getElementById("fConfMax").value = ""; }
+    if (type === "winProb") { state.winProbMin = null; state.winProbMax = null; document.getElementById("fWinProbMin").value = ""; document.getElementById("fWinProbMax").value = ""; }
+    render();
+}
+
+function applyFiltersAndSort(list) {
+    if (!Array.isArray(list)) return [];
+    const text = state.search.toLowerCase().trim();
+
+    let result = list.filter(p => {
+        if (state.league && p.league !== state.league) return false;
+        if (state.date && p.date !== state.date) return false;
+        if (state.trend && p.trendKey !== state.trend) return false;
+
+        if (state.timeRange && p.iso) {
+            const timer = getCountdownText(p.iso);
+            const nowLocal = new Date();
+            const toDateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            const todayStr = toDateStr(nowLocal);
+
+            const tomorrowDate = new Date(nowLocal);
+            tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+            const tomorrowStr = toDateStr(tomorrowDate);
+
+            const weekEndDate = new Date(nowLocal);
+            weekEndDate.setDate(weekEndDate.getDate() + 6);
+            const weekEndStr = toDateStr(weekEndDate);
+
+            if (state.timeRange === "in_play" && !timer.expired) return false;
+            if (state.timeRange === "30m" && (timer.diffMin < 0 || timer.diffMin > 30)) return false;
+            if (state.timeRange === "1h" && (timer.diffMin < 0 || timer.diffMin > 60)) return false;
+            if (state.timeRange === "2h" && (timer.diffMin < 0 || timer.diffMin > 120)) return false;
+            if (state.timeRange === "today" && p.date !== todayStr) return false;
+            if (state.timeRange === "tomorrow" && p.date !== tomorrowStr) return false;
+            if (state.timeRange === "this_week" && (p.date < todayStr || p.date > weekEndStr)) return false;
+        }
+
+        if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
+        if (state.modeloMax !== null && !isNaN(state.modeloMax) && (p.modelProb || 0) > state.modeloMax) return false;
+
+        const itemOddsDec = parseOddsToDecimal(p.odds || p.cuota);
+        if (state.cuotaMin !== null) {
+            const minDec = parseOddsToDecimal(state.cuotaMin);
+            if (minDec > 0 && itemOddsDec < minDec) return false;
+        }
+        if (state.cuotaMax !== null) {
+            const maxDec = parseOddsToDecimal(state.cuotaMax);
+            if (maxDec > 0 && itemOddsDec > maxDec) return false;
+        }
+
+        const edgeVal = calculateEdge(p);
+        if (state.edgeMin !== null && !isNaN(state.edgeMin) && edgeVal < state.edgeMin) return false;
+        if (state.edgeMax !== null && !isNaN(state.edgeMax) && edgeVal > state.edgeMax) return false;
+
+        const betsVal = Number(p.betsPct || 0);
+        if (state.betsMin !== null && !isNaN(state.betsMin) && betsVal < state.betsMin) return false;
+        if (state.betsMax !== null && !isNaN(state.betsMax) && betsVal > state.betsMax) return false;
+
+        const handleVal = Number(p.handlePct || 0);
+        if (state.handleMin !== null && !isNaN(state.handleMin) && handleVal < state.handleMin) return false;
+        if (state.handleMax !== null && !isNaN(state.handleMax) && handleVal > state.handleMax) return false;
+
+        if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
+        if (state.scoreMax !== null && !isNaN(state.scoreMax) && (p.score || 0) > state.scoreMax) return false;
+
+        const evVal = Number(p.ev || 0);
+        if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
+        if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
+
+        const stakeVal = Number(p.stake) || 0;
+        if (state.stakeMin !== null && !isNaN(state.stakeMin) && stakeVal < state.stakeMin) return false;
+        if (state.stakeMax !== null && !isNaN(state.stakeMax) && stakeVal > state.stakeMax) return false;
+
+        const divVal = calculateSmartMoney(p);
+        if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
+        if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
+
+        const relVal = p.reliability != null ? Number(p.reliability) * 100 : (p.confidence != null ? Number(p.confidence) * 100 : null);
+        if (state.confMin !== null && !isNaN(state.confMin) && (relVal === null || relVal < state.confMin)) return false;
+        if (state.confMax !== null && !isNaN(state.confMax) && (relVal === null || relVal > state.confMax)) return false;
+
+        const wpVal = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
+        if (state.winProbMin !== null && !isNaN(state.winProbMin) && (wpVal === null || wpVal < state.winProbMin)) return false;
+        if (state.winProbMax !== null && !isNaN(state.winProbMax) && (wpVal === null || wpVal > state.winProbMax)) return false;
+
+        if (state.freePickOnly && p.pickCategory !== "FREE") return false;
+        if (state.editorOnly && p.pickCategory !== "EDITORS") return false;
+        if (state.whaleOnly && p.pickCategory !== "WHALE") return false;
+        if (state.watchlistOnly && !isInWatchlist(p)) return false;
+
+        if (state.featuredOnly && !isFeaturedPick(p)) return false;
+
+        if (text) {
+            const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
+            if (!blob.includes(text)) return false;
+        }
+        return true;
+    });
+
+    return result.sort((a, b) => {
+        if (state.sort === "time") return new Date(a.iso || 0) - new Date(b.iso || 0);
+        if (state.sort === "score") return (b.score || 0) - (a.score || 0);
+        if (state.sort === "winprob") {
+            const wa = a.monteCarlo && a.monteCarlo.win_probability != null ? a.monteCarlo.win_probability : -1;
+            const wb = b.monteCarlo && b.monteCarlo.win_probability != null ? b.monteCarlo.win_probability : -1;
+            return wb - wa;
+        }
+        if (state.sort === "edge") return calculateEdge(b) - calculateEdge(a);
+        if (state.sort === "recommended") {
+            const editorA = getEvolutionAnalysis(a);
+            const editorB = getEvolutionAnalysis(b);
+            const scoreA = (editorA.isEditorChoice ? 2000 : 0) + (isPremium(a) ? 1000 : 0) + (editorA.score * 5) + (a.score || 0);
+            const scoreB = (editorB.isEditorChoice ? 2000 : 0) + (isPremium(b) ? 1000 : 0) + (editorB.score * 5) + (b.score || 0);
+            return scoreB - scoreA;
+        }
+        return 0;
+    });
+}
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    // Evita desplazamiento en la pantalla al enfocar
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showToastX();
+    } catch (err) {
+        console.error('Error al copiar al portapapeles:', err);
+    }
+    document.body.removeChild(textArea);
+}
+
+function getHeaderTag(category) {
+    switch (category) {
+        case 'EDITORS':
+            return "🎖️ EDITOR'S CHOICE PICK";
+        case 'WHALE':
+            return "🐳 WHALE ALERT PICK";
+        case 'FREE':
+            return "🔓 FREE PICK";
+        default:
+            return "💎 PREMIUM PICK";
+    }
+}
+
+function copyPickForX(p) {
+    // 1. Encabezado dinámico según la categoría real del pick (misma fuente que el borde/etiqueta de la card)
+    const header = getHeaderTag(p.pickCategory);
+
+    // 2. Extracción y formateo de datos
+    const dateStr = p.date || new Date().toISOString().split('T')[0];
+    const timeStr = p.time || "--:--";
+    const league = p.league || p.sport || "SPORTS";
+    const game = p.game || "Evento";
+    
+    const pickName = p.pick || "Selección";
+    const market = p.market ? ` (${p.market})` : "";
+    const odds = p.odds || p.cuota || "Ev";
+
+    // 3. Formateo del Stake -- % directo del backend (Parte 4), ya viene limpio, sin redondeo a escala
+    const displayStake = Number(p.stake) || 0;
+    const stakeStr = `${displayStake.toFixed(1)}%`;
+
+    // 4. Construcción del mensaje con la salida idéntica requerida
+    const tweetText = `${header}\n` +
+        `📅 ${dateStr} | ⏰ ${timeStr}\n` +
+        `🏆 ${league}\n` +
+        `🏟️ ${game}\n` +
+        `🎯 Pick: ${pickName}${market}\n` +
+        `💵 Cuota: ${odds}\n` +
+        `💰 Stake: ${stakeStr}`;
+
+    // 5. Copiar al portapapeles
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(tweetText)
+            .then(() => {
+                showToastX();
+            })
+            .catch(err => {
+                console.error("Error al copiar vía Clipboard API:", err);
+                fallbackCopyText(tweetText);
+            });
+    } else {
+        fallbackCopyText(tweetText);
+    }
+}
+
+function showToastX() {
+    const toast = document.getElementById("toast-x");
+    if (!toast) return;
+    toast.classList.add("show");
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+// ============ MY WATCHLIST (Parte 1: reemplaza el Recordatorio de 60 min) ============
+// Al "Seguir" un pick se guarda un snapshot (bets/handle/divergencia/cuota)
+// en localStorage. Cada vez que el dashboard se regenera y se recarga, se
+// compara el dato actual contra ese snapshot para mostrar si la línea
+// mejoró o empeoró desde que se empezó a seguir.
+// ============ WATCHLIST EN LA NUBE (Firestore) ============
+// Requiere sesión iniciada. Doc: watchlists/{uid} -> { picks: { [id]: entry } }
+// WATCHLIST_CACHE se mantiene sincronizado en tiempo real via onSnapshot,
+// así que también refleja cambios hechos desde otro dispositivo con la
+// misma cuenta -- por eso isInWatchlist() puede seguir siendo síncrono.
+let firebaseUser = null;
+let WATCHLIST_CACHE = {};
+let watchlistUnsubscribe = null;
+
+function getWatchlistId(p) {
+    return `${(p.league || '').toLowerCase()}|${(p.game || '').toLowerCase()}|${(p.market || '').toLowerCase()}|${(p.pick || '').toLowerCase()}`.trim();
+}
+
+function watchlistDocRef() {
+    return fbDb.collection("watchlists").doc(firebaseUser.uid);
+}
+
+function attachWatchlistListener() {
+    if (watchlistUnsubscribe) watchlistUnsubscribe();
+    watchlistUnsubscribe = watchlistDocRef().onSnapshot(
+        (doc) => {
+            WATCHLIST_CACHE = (doc.exists && doc.data().picks) ? doc.data().picks : {};
+            render();
+        },
+        (err) => console.error("Watchlist listener error:", err)
+    );
+}
+
+function detachWatchlistListener() {
+    if (watchlistUnsubscribe) { watchlistUnsubscribe(); watchlistUnsubscribe = null; }
+    WATCHLIST_CACHE = {};
+}
+
+function isInWatchlist(p) {
+    return !!WATCHLIST_CACHE[getWatchlistId(p)];
+}
+
+async function toggleWatchlist(p) {
+    if (!firebaseUser) {
+        openLoginModal();
+        showAttractiveNotification({
+            title: "🔒 Inicia sesión",
+            body: "Necesitas una cuenta para usar My Watchlist",
+            variant: "info"
+        });
+        return;
+    }
+
+    const id = getWatchlistId(p);
+    const ref = watchlistDocRef();
+    const previousEntry = WATCHLIST_CACHE[id]; // para poder revertir si falla la escritura
+
+    try {
+        if (previousEntry) {
+            delete WATCHLIST_CACHE[id];
+            render(); // optimista -- no espera la confirmación de red
+
+            await ref.update({ [`picks.${id}`]: firebase.firestore.FieldValue.delete() });
+            showAttractiveNotification({
+                title: "👁 Dejaste de seguir",
+                body: `${p.game || 'Evento'} — ${p.pick || ''}`,
+                variant: "info"
+            });
+        } else {
+            const entry = {
+                followedAt: new Date().toISOString(),
+                league: p.league || '',
+                game: p.game || '',
+                pick: p.pick || '',
+                market: p.market || '',
+                snapshot: {
+                    odds: p.odds || p.cuota || null,
+                    stake: p.stake != null ? Number(p.stake) : null,
+                    ev: p.ev != null ? Number(p.ev) : null
+                }
+            };
+            WATCHLIST_CACHE[id] = entry;
+            render(); // optimista -- no espera la confirmación de red
+
+            await ref.set({ picks: { [id]: entry } }, { merge: true });
+            showAttractiveNotification({
+                title: "👁 Ahora sigues este pick",
+                body: `${p.game || 'Evento'} — ${p.pick || ''}`,
+                variant: "success"
+            });
+        }
+        // El listener onSnapshot vuelve a confirmar/resincronizar después --
+        // inofensivo si ya coincide con lo que se pintó de forma optimista.
+    } catch (e) {
+        // Rollback: la escritura falló, se revierte lo pintado de forma
+        // optimista para no dejar la UI mostrando algo que no se guardó.
+        if (previousEntry) { WATCHLIST_CACHE[id] = previousEntry; } else { delete WATCHLIST_CACHE[id]; }
+        render();
+        console.error("Error al actualizar watchlist:", e);
+        showAttractiveNotification({ title: "⚠️ Error", body: "No se pudo actualizar tu Watchlist. Intenta de nuevo.", variant: "urgent" });
+    }
+}
+
+// Flecha de comparación actual vs snapshot -- usada en el panel de watchlist
+function watchlistDeltaArrow(current, snapshot) {
+    if (current == null || snapshot == null) return '';
+    const diff = current - snapshot;
+    if (Math.abs(diff) < 0.05) return ' <span class="wl-delta wl-flat">＝</span>';
+    return diff > 0 ? ` <span class="wl-delta wl-up">▲ +${diff.toFixed(1)}</span>` : ` <span class="wl-delta wl-down">▼ ${diff.toFixed(1)}</span>`;
+}
+
+// Veredicto de SEGUIMIENTO (distinto de la Señal de la card -- esto compara
+// el movimiento desde que se empezó a seguir, no el estado actual del
+// mercado). Solo 3 métricas: Cuota, Stake y EV.
+//
+// Umbrales de descarte:
+//  - Cuota se abarata >=35 pts americanos (ej. -110 -> -145) -- el valor
+//    original ya no está.
+//  - EV cae a 0 o negativo -- ya no hay ventaja matemática.
+//  - EV cae >=50% respecto al de apertura -- la ventaja se redujo a la mitad.
+//  - Stake pasa a 0 habiendo empezado en positivo -- el modelo ya no
+//    recomienda apostar nada.
+function pctChange(current, snapshot) {
+    if (current == null || snapshot == null || snapshot === 0) return null;
+    return ((current - snapshot) / Math.abs(snapshot)) * 100;
+}
+
+function watchlistVerdict(p, snap) {
+    const oddsNowRaw = parseInt(String(p.odds || p.cuota || '').replace('+', ''), 10);
+    const oddsSnapRaw = parseInt(String(snap.odds || '').replace('+', ''), 10);
+    const hasOdds = !isNaN(oddsNowRaw) && !isNaN(oddsSnapRaw);
+    const oddsDelta = hasOdds ? (oddsNowRaw - oddsSnapRaw) : null; // positivo = "sube" (favorable)
+
+    const evNow = p.ev != null ? Number(p.ev) : null;
+    const evSnap = snap.ev != null ? Number(snap.ev) : null;
+    const stakeNow = p.stake != null ? Number(p.stake) : null;
+    const stakeSnap = snap.stake != null ? Number(snap.stake) : null;
+
+    if (evSnap == null || stakeSnap == null) {
+        return { verdict: 'MONITOREAR', text: 'Datos insuficientes para comparar contra el punto de apertura del seguimiento.' };
+    }
+
+    const evPctMove = pctChange(evNow, evSnap);
+
+    // DESCARTE -- basta con que se cumpla UNA condición severa
+    if (hasOdds && oddsDelta <= -35) {
+        return { verdict: 'DESCARTE', text: `Cuota se abarató con fuerza (${snap.odds} → ${p.odds || p.cuota}) -- el valor original ya no está.` };
+    }
+    if (evNow == null || evNow <= 0) {
+        return { verdict: 'DESCARTE', text: 'El EV cayó a cero o negativo desde que se sigue -- ya no hay ventaja matemática.' };
+    }
+    if (evPctMove !== null && evPctMove <= -50) {
+        return { verdict: 'DESCARTE', text: `EV cayó ${evPctMove.toFixed(0)}% desde que se sigue (${evSnap}% → ${evNow}%).` };
+    }
+    if (stakeSnap > 0 && stakeNow === 0) {
+        return { verdict: 'DESCARTE', text: 'El modelo ya no recomienda stake -- perdió el respaldo que tenía al momento de seguirlo.' };
+    }
+
+    // APOSTABLE -- las 3 métricas se mantienen o mejoran
+    const cond1 = hasOdds && oddsDelta >= 0;
+    const cond2 = evNow >= evSnap;
+    const cond3 = stakeNow != null && stakeNow >= stakeSnap;
+
+    if (cond1 && cond2 && cond3) {
+        return { verdict: 'APOSTABLE', text: `Cuota, EV y Stake se mantienen o mejoran desde que se sigue -- línea confirmando a favor.` };
+    }
+
+    // MONITOREAR -- movimiento leve en contra, sin cruzar el umbral de descarte
+    return { verdict: 'MONITOREAR', text: 'Movimiento leve en contra desde que se sigue -- todavía dentro de rango normal, sin señal de descarte.' };
+}
+
+function watchlistPanelHtml(p) {
+    const entry = WATCHLIST_CACHE[getWatchlistId(p)];
+    if (!entry) return '';
+
+    const snap = entry.snapshot || {};
+    const followedDate = entry.followedAt ? new Date(entry.followedAt) : null;
+    const followedText = followedDate ? followedDate.toLocaleString() : '';
+    const v = watchlistVerdict(p, snap);
+    const verdictCls = v.verdict === 'APOSTABLE' ? 'good' : (v.verdict === 'DESCARTE' ? 'bad' : 'warn');
+    const verdictIcon = v.verdict === 'APOSTABLE' ? '✅' : (v.verdict === 'DESCARTE' ? '🗑️' : '👀');
+
+    return `<div class="watchlist-panel">
+        <div class="watchlist-panel-title">👁 En seguimiento desde ${escapeHTML(followedText)}</div>
+        <div class="badge-tag-grid">
+            <span class="badge-tag neutral">💰 Cuota apertura <b>${escapeHTML(String(snap.odds ?? '—'))}</b> → <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>
+            <span class="badge-tag neutral">🎯 Stake <b>${snap.stake != null ? snap.stake + '%' : '—'}</b>${watchlistDeltaArrow(p.stake, snap.stake)}</span>
+            <span class="badge-tag neutral">📊 EV <b>${snap.ev != null ? snap.ev + '%' : '—'}</b>${watchlistDeltaArrow(p.ev, snap.ev)}</span>
+        </div>
+        <div class="reasoning-text"><span class="badge-tag ${verdictCls}" style="margin-right:6px;">${verdictIcon} ${v.verdict} (desde seguimiento)</span>${escapeHTML(v.text)}</div>
+    </div>`;
+}
+
+function showAttractiveNotification({ title, body, variant = "info" }) {
+    const container = document.getElementById("reminderNotifContainer");
+    if (!container) return;
+
+    const el = document.createElement("div");
+    el.className = `reminder-notif reminder-notif-${variant}`;
+    el.innerHTML = `
+        <button class="reminder-notif-close" aria-label="Cerrar">&times;</button>
+        <div class="reminder-notif-title">${escapeHTML(title)}</div>
+        <div class="reminder-notif-body">${escapeHTML(body).replace(/\n/g, '<br>')}</div>
+    `;
+    el.querySelector(".reminder-notif-close").addEventListener("click", () => dismissNotif(el));
+
+    // Si ya hay notificaciones visibles, se da tiempo extra -- leer 2-3
+    // apiladas necesita más que el tiempo de una sola.
+    const alreadyVisible = container.querySelectorAll(".reminder-notif").length;
+    container.appendChild(el);
+
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("show")));
+
+    const baseDuration = variant === "urgent" ? 20000 : 10000;
+    const extraPerStacked = 3000;
+    setTimeout(() => dismissNotif(el), baseDuration + (alreadyVisible * extraPerStacked));
+}
+
+function dismissNotif(el) {
+    if (!el || !el.parentNode) return;
+    el.classList.remove("show");
+    setTimeout(() => el.remove(), 300);
+}
+
+function populateSelectOptions() {
+    const dates = new Set();
+    const leagues = new Set();
+    const suggestions = new Set();
+
+    PICKS.forEach(p => {
+        if (p.date) dates.add(p.date);
+        if (p.league) leagues.add(p.league);
+        if (p.league) suggestions.add(p.league);
+        if (p.away) suggestions.add(p.away);
+        if (p.home) suggestions.add(p.home);
+        if (p.pick) suggestions.add(p.pick);
+        if (p.market) suggestions.add(p.market);
+    });
+
+    const searchList = document.getElementById("searchSuggestions");
+    if (searchList) {
+        searchList.innerHTML = Array.from(suggestions).sort()
+            .map(s => `<option value="${escapeHTML(s)}"></option>`).join("");
+    }
+
+    const fDate = document.getElementById("fDate");
+    if (fDate) {
+        const sortedDates = Array.from(dates).sort();
+        fDate.innerHTML = `<option value="">📆 Todas las fechas (${sortedDates.length})</option>` +
+            sortedDates.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join("");
+        fDate.value = state.date;
+    }
+
+    const fLeague = document.getElementById("fLeague");
+    if (fLeague) {
+        const sortedLeagues = Array.from(leagues).sort();
+        fLeague.innerHTML = `<option value="">🏆 Todas las ligas (${sortedLeagues.length})</option>` +
+            sortedLeagues.map(l => `<option value="${escapeHTML(l)}">${escapeHTML(l)}</option>`).join("");
+        fLeague.value = state.league;
+    }
+}
+
+function syncAdvCardActiveStates() {
+    document.querySelectorAll("#advFiltersPanel .adv-card").forEach(card => {
+        const anyFilled = Array.from(card.querySelectorAll("input, select")).some(i => i.value !== "" && i.value != null);
+        card.classList.toggle("adv-card-active", anyFilled);
+    });
+}
+
+function updateFilterCounts(pendingPicks) {
+    const fTimeRange = document.getElementById("fTimeRange");
+    if (fTimeRange) {
+        const counts = { in_play: 0, "30m": 0, "1h": 0, "2h": 0, today: 0, tomorrow: 0, this_week: 0 };
+        const nowLocal = new Date();
+        const toDateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const todayStr = toDateStr(nowLocal);
+        const tomorrowDate = new Date(nowLocal); tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        const tomorrowStr = toDateStr(tomorrowDate);
+        const weekEndDate = new Date(nowLocal); weekEndDate.setDate(weekEndDate.getDate() + 6);
+        const weekEndStr = toDateStr(weekEndDate);
+
+        pendingPicks.forEach(p => {
+            if (!p.iso) return;
+            const timer = getCountdownText(p.iso);
+            if (timer.expired) counts.in_play++;
+            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 30) counts["30m"]++;
+            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 60) counts["1h"]++;
+            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 120) counts["2h"]++;
+            if (p.date === todayStr) counts.today++;
+            if (p.date === tomorrowStr) counts.tomorrow++;
+            if (p.date >= todayStr && p.date <= weekEndStr) counts.this_week++;
+        });
+
+        const labels = {
+            in_play: "🔴 En juego", "30m": "⏳ Próximos 30 min", "1h": "⏳ Próxima 1 hora",
+            "2h": "⏳ Próximas 2 horas", today: "📅 Eventos de Hoy", tomorrow: "📅 Eventos de Mañana",
+            this_week: "📆 Eventos de Esta Semana"
+        };
+        Array.from(fTimeRange.options).forEach(opt => {
+            if (!opt.value) { opt.textContent = "⏱️ Hora / Rango"; return; }
+            opt.textContent = `${labels[opt.value]} (${counts[opt.value] || 0})`;
+        });
+    }
+
+    const fTrend = document.getElementById("fTrend");
+    if (fTrend) {
+        const counts = { SMART_MONEY: 0, PUBLIC_HEAVY: 0, CONSENSUS: 0, MIXED: 0, NO_ACTION: 0 };
+        pendingPicks.forEach(p => { if (p.marketSignal in counts) counts[p.marketSignal]++; });
+        const labels = {
+            SMART_MONEY: "🐋 SMART MONEY", PUBLIC_HEAVY: "🚨 PUBLIC HEAVY",
+            CONSENSUS: "📊 CONSENSUS", MIXED: "🔀 MIXED", NO_ACTION: "⚪ NO ACTION"
+        };
+        Array.from(fTrend.options).forEach(opt => {
+            if (!opt.value) { opt.textContent = "📊 Todas las señales"; return; }
+            opt.textContent = `${labels[opt.value]} (${counts[opt.value] || 0})`;
+        });
+    }
+
+    const freeBtn = document.getElementById("freePickOnly");
+    const editorBtn = document.getElementById("editorOnly");
+    const whaleBtn = document.getElementById("whaleOnly");
+    const watchlistBtn = document.getElementById("watchlistOnly");
+    if (freeBtn) freeBtn.textContent = `🔓 Free Picks (${pendingPicks.filter(p => p.pickCategory === "FREE").length})`;
+    if (editorBtn) editorBtn.textContent = `🏆 Editor's Choice (${pendingPicks.filter(p => p.pickCategory === "EDITORS").length})`;
+    if (whaleBtn) whaleBtn.textContent = `🐋 Whale Alerts (${pendingPicks.filter(p => p.pickCategory === "WHALE").length})`;
+    if (watchlistBtn) watchlistBtn.textContent = `👁 My Watchlist (${pendingPicks.filter(p => isInWatchlist(p)).length})`;
+}
+
+function render() {
+    updateThemeByTime();
+    syncAdvCardActiveStates();
+
+    const pendingPicks = PICKS.filter(p => isEventPending(p));
+    const activeList = applyFiltersAndSort(pendingPicks);
+
+    updateFilterCounts(pendingPicks);
+
+    ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getWatchlistId));
+
+    updateMetrics(activeList);
+    updateChartsData(activeList);
+
+    const filteredCountEl = document.getElementById("filteredCount");
+    const totalCountEl = document.getElementById("totalCount");
+    if (filteredCountEl) filteredCountEl.innerText = activeList.length;
+    if (totalCountEl) totalCountEl.innerText = pendingPicks.length;
+
+    renderActiveChips();
+
+    const cardsView = document.getElementById("cardsView");
+    const emptyState = document.getElementById("emptyState");
+
+    if (!cardsView) return;
+
+    if (activeList.length === 0) {
+        cardsView.style.display = "none";
+        if (emptyState) emptyState.style.display = "block";
+        return;
+    }
+
+    if (emptyState) emptyState.style.display = "none";
+    cardsView.style.display = "grid";
+
+    cardsView.innerHTML = activeList.map(p => {
+        const isWhale = p.pickCategory === "WHALE";
+        const isEditor = p.pickCategory === "EDITORS";
+        const isFree = p.pickCategory === "FREE";
+        const isPremium = !isWhale && !isEditor && !isFree;
+        const isFeatured = isFeaturedPick(p);
+        const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
+        const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
+        const editorEval = getEvolutionAnalysis(p);
+
+        let cardClasses = "pcard";
+        if (isWhale) cardClasses += " whale-alert";
+        else if (isEditor) cardClasses += " editor-choice";
+        else if (isFree) cardClasses += " free-pick";
+
+        const config = marketSignalVisualConfig(p.marketSignal);
+        const timer = getCountdownText(p.iso);
+        const edgeVal = calculateEdge(p);
+        const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
+        const smartMoney = calculateSmartMoney(p);
+
+        const betsPct = p.betsPct != null ? p.betsPct : 50;
+        const handlePct = p.handlePct != null ? p.handlePct : 50;
+
+        const displayStake = Number(p.stake) || 0;
+        const isFollowed = isInWatchlist(p);
+
+        const dateDisplay = escapeHTML(p.date || "--/--/----");
+        const timeDisplay = escapeHTML(p.time || "--:--");
+
+        return `
+            <div class="${cardClasses}">
+                <div>
+                    <div class="pcard-header">
+                        <div class="pcard-header-line1">
+                            <span class="badge-action" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">
+                                ${config.label}
+                            </span>
+                            ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
+                            ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
+                            ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
+                            ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
+                            ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
+                            ${isFree ? `<span class="free-pick-badge">🔓 FREE</span>` : ''}
+                            ${isPremium ? `<span class="premium-pick-badge">💎 PREMIUM PICK</span>` : ''}
+                        </div>
+                        <div class="pcard-header-line2">
+                            <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 8px; margin-bottom: 4px;">
+                        <span style="font-size: 11px; font-weight: 800; color: var(--teal); text-transform: uppercase;">
+                            ${escapeHTML(p.league) || 'LIGA DESCONOCIDA'}
+                        </span>
+                        <h3 class="game-title">${escapeHTML(p.game) || 'Evento no especificado'}</h3>
+                    </div>
+
+                    <div class="meta-row">
+                        <div class="datetime-container">
+                            <span class="date-badge">📅 ${dateDisplay}</span>
+                            <span class="time-badge">🕒 ${timeDisplay}</span>
+                        </div>
+                    </div>
+
+                    <div class="pick-details">
+                        <div class="pick-name">${escapeHTML(p.pick) || 'Selección'}</div>
+                        <div class="market-type">${escapeHTML(p.market) || 'Mercado General'}</div>
+                    </div>
+
+                    <div class="volume-container">
+                        <div class="volume-labels">
+                            <span>🎟️ Tickets (Bets): <b>${p.betsPct != null ? p.betsPct + '%' : '—'}</b></span>
+                            <span>💵 Dinero (Handle): <b>${p.handlePct != null ? p.handlePct + '%' : '—'}</b></span>
+                        </div>
+                        <div class="volume-bar-wrapper">
+                            <div class="v-bets" style="width: ${betsPct}%;"></div>
+                            <div class="v-handle" style="width: ${handlePct}%;"></div>
+                        </div>
+                    </div>
+
+                    ${buildEvolutionHtml(p)}
+                    ${unifiedDecisionPanelHtml(p)}
+
+                </div>
+
+                <div style="margin-top: 14px;">
+                    ${isFollowed ? watchlistPanelHtml(p) : ''}
+                    <div class="pcard-action-row">
+                        <button class="btn-copy-x pcard-action-row-item" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+                            <span>✨</span>
+                            <span>Copiar para X</span>
+                        </button>
+                        <button class="btn-reminder ${isFollowed ? 'active' : ''}" onclick='toggleWatchlist(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+                            <span>${isFollowed ? '👁' : '👁‍🗨'}</span>
+                            <span>${isFollowed ? 'Siguiendo' : 'Seguir'}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function setupListeners() {
+    const searchEl = document.getElementById("search");
+    let searchDebounceTimer = null;
+    if (searchEl) searchEl.addEventListener("input", (e) => {
+        state.search = e.target.value;
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(render, 300);
+    });
+
+    const viewModeBtn = document.getElementById("viewModeToggle");
+    if (viewModeBtn) {
+        const syncViewModeBtn = () => {
+            viewModeBtn.textContent = state.advancedView ? "🎓 Modo Simple" : "🔬 Modo Avanzado";
+            viewModeBtn.classList.toggle("active", state.advancedView);
+        };
+        syncViewModeBtn();
+        viewModeBtn.addEventListener("click", () => {
+            state.advancedView = !state.advancedView;
+            syncViewModeBtn();
+            render();
+        });
+    }
+
+    const fSortEl = document.getElementById("fSort");
+    if (fSortEl) fSortEl.addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+
+    const fDateEl = document.getElementById("fDate");
+    if (fDateEl) fDateEl.addEventListener("change", (e) => { state.date = e.target.value; render(); });
+
+    const fLeagueEl = document.getElementById("fLeague");
+    if (fLeagueEl) fLeagueEl.addEventListener("change", (e) => { state.league = e.target.value; render(); });
+
+    const fTrendEl = document.getElementById("fTrend");
+    if (fTrendEl) fTrendEl.addEventListener("change", (e) => { state.trend = e.target.value; render(); });
+
+    // Filtros básicos directos Free / Editors / Whale -- filtran directo por
+    // p.pickCategory (Parte 2, calculado en el backend). Mutuamente excluyentes.
+    const editorBtn = document.getElementById("editorOnly");
+    const whaleBtn = document.getElementById("whaleOnly");
+    const freeBtn = document.getElementById("freePickOnly");
+    const featuredBtn = document.getElementById("featuredOnly");
+
+    const deactivateBasicButtons = () => {
+        state.editorOnly = false;
+        state.whaleOnly = false;
+        state.freePickOnly = false;
+        if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
+        if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
+        if (freeBtn) freeBtn.setAttribute("aria-pressed", "false");
+    };
+
+    if (freeBtn) freeBtn.addEventListener("click", () => {
+        const activate = !state.freePickOnly;
+        deactivateBasicButtons();
+        state.freePickOnly = activate;
+        freeBtn.setAttribute("aria-pressed", String(activate));
+        render();
+    });
+
+    if (editorBtn) editorBtn.addEventListener("click", () => {
+        const activate = !state.editorOnly;
+        deactivateBasicButtons();
+        state.editorOnly = activate;
+        editorBtn.setAttribute("aria-pressed", String(activate));
+        render();
+    });
+
+    if (whaleBtn) whaleBtn.addEventListener("click", () => {
+        const activate = !state.whaleOnly;
+        deactivateBasicButtons();
+        state.whaleOnly = activate;
+        whaleBtn.setAttribute("aria-pressed", String(activate));
+        render();
+    });
+
+    // Featured Pick -- filtra únicamente por equipo mediático, independiente de la
+    // categoría de valor (Free/Editor/Whale), así que no se limpia junto con ellas.
+    if (featuredBtn) featuredBtn.addEventListener("click", () => {
+        state.featuredOnly = !state.featuredOnly;
+        featuredBtn.setAttribute("aria-pressed", String(state.featuredOnly));
+        render();
+    });
+
+    // My Watchlist -- filtra solo por picks seguidos (localStorage), independiente
+    // de las demás categorías.
+    const watchlistBtn = document.getElementById("watchlistOnly");
+    if (watchlistBtn) watchlistBtn.addEventListener("click", () => {
+        state.watchlistOnly = !state.watchlistOnly;
+        watchlistBtn.setAttribute("aria-pressed", String(state.watchlistOnly));
+        render();
+    });
+
+    const btnAdvToggle = document.getElementById("btnAdvToggle");
+    const advPanel = document.getElementById("advFiltersPanel");
+    if (btnAdvToggle && advPanel) {
+        btnAdvToggle.addEventListener("click", () => {
+            const isShown = advPanel.classList.contains("show");
+            if (isShown) {
+                advPanel.classList.remove("show");
+                btnAdvToggle.setAttribute("aria-pressed", "false");
+            } else {
+                advPanel.classList.add("show");
+                btnAdvToggle.setAttribute("aria-pressed", "true");
+            }
+        });
+    }
+
+    // Escuchadores de Filtros Avanzados Cuantitativos
+    const bindInput = (id, prop, isFloat = true) => {
+        const el = document.getElementById(id);
+        if (el) {
+            const card = el.closest(".adv-card");
+            const syncCardActive = () => {
+                if (!card) return;
+                const anyFilled = Array.from(card.querySelectorAll("input, select")).some(i => i.value !== "" && i.value != null);
+                card.classList.toggle("adv-card-active", anyFilled);
+            };
+            let debounceTimer = null;
+            el.addEventListener("input", (e) => {
+                const val = e.target.value;
+                if (val === "" || val === null) {
+                    state[prop] = null;
+                } else {
+                    state[prop] = isFloat ? parseFloat(val) : val;
+                }
+                syncCardActive();
+                // El render completo (recalcula ~todos los picks, gráficas y
+                // métricas) es pesado -- se espera a que el usuario pare de
+                // escribir en vez de dispararlo en cada tecla.
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(render, 300);
+            });
+        }
+    };
+
+    const fTimeRangeEl = document.getElementById("fTimeRange");
+    if (fTimeRangeEl) fTimeRangeEl.addEventListener("change", (e) => { state.timeRange = e.target.value; render(); });
+
+    bindInput("fCuotaMin", "cuotaMin", false);
+    bindInput("fCuotaMax", "cuotaMax", false);
+
+    bindInput("fModeloMin", "modeloMin");
+    bindInput("fModeloMax", "modeloMax");
+    bindInput("fScoreMin", "scoreMin");
+    bindInput("fScoreMax", "scoreMax");
+    bindInput("fWinProbMin", "winProbMin");
+    bindInput("fWinProbMax", "winProbMax");
+    bindInput("fDivergenciaMin", "divergenciaMin");
+    bindInput("fDivergenciaMax", "divergenciaMax");
+    bindInput("fConfMin", "confMin");
+    bindInput("fConfMax", "confMax");
+    bindInput("fStakeMin", "stakeMin");
+    bindInput("fStakeMax", "stakeMax");
+    bindInput("fBetsMin", "betsMin");
+    bindInput("fBetsMax", "betsMax");
+    bindInput("fHandleMin", "handleMin");
+    bindInput("fHandleMax", "handleMax");
+    bindInput("fEdgeMin", "edgeMin");
+    bindInput("fEdgeMax", "edgeMax");
+    bindInput("fEvMin", "evMin");
+    bindInput("fEvMax", "evMax");
+
+    const clearBtn = document.getElementById("clearBtn");
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            state.search = "";
+            state.date = "";
+            state.league = "";
+            state.trend = "";
+            state.editorOnly = false;
+            state.whaleOnly = false;
+            state.freePickOnly = false;
+            state.featuredOnly = false;
+            state.watchlistOnly = false;
+            state.sort = "time";
+            
+            state.timeRange = "";
+            state.modeloMin = null;
+            state.modeloMax = null;
+            state.cuotaMin = null;
+            state.cuotaMax = null;
+            state.edgeMin = null;
+            state.edgeMax = null;
+            state.betsMin = null;
+            state.betsMax = null;
+            state.handleMin = null;
+            state.handleMax = null;
+            state.scoreMin = null;
+            state.scoreMax = null;
+            state.evMin = null;
+            state.evMax = null;
+            state.stakeMin = null;
+            state.stakeMax = null;
+            state.divergenciaMin = null;
+            state.divergenciaMax = null;
+            state.confMin = null;
+            state.confMax = null;
+            state.winProbMin = null;
+            state.winProbMax = null;
+
+            document.querySelectorAll(".toolbar input, .toolbar select").forEach(i => i.value = "");
+            document.querySelectorAll(".adv-filters-panel input, .adv-filters-panel select").forEach(i => i.value = "");
+            
+            if (fSortEl) fSortEl.value = "time";
+
+            if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
+            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
+            if (freeBtn) freeBtn.setAttribute("aria-pressed", "false");
+            if (featuredBtn) featuredBtn.setAttribute("aria-pressed", "false");
+            if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", "false");
+
+            render();
+        });
+    }
+}
+
+// ============ AUTENTICACIÓN (Firebase) ============
+function openLoginModal() {
+    const modal = document.getElementById("loginModal");
+    const errorEl = document.getElementById("loginError");
+    if (errorEl) { errorEl.style.display = "none"; errorEl.textContent = ""; }
+    if (modal) modal.style.display = "flex";
+}
+
+function closeLoginModal() {
+    const modal = document.getElementById("loginModal");
+    if (modal) modal.style.display = "none";
+}
+
+function showLoginError(message) {
+    const errorEl = document.getElementById("loginError");
+    if (!errorEl) return;
+    errorEl.textContent = translateFirebaseError(message);
+    errorEl.style.display = "block";
+}
+
+function translateFirebaseError(message) {
+    const m = String(message || "");
+    if (m.includes("auth/invalid-email")) return "Correo inválido.";
+    if (m.includes("auth/user-not-found")) return "No existe una cuenta con ese correo.";
+    if (m.includes("auth/wrong-password") || m.includes("auth/invalid-credential")) return "Contraseña incorrecta.";
+    if (m.includes("auth/email-already-in-use")) return "Ese correo ya tiene una cuenta -- inicia sesión.";
+    if (m.includes("auth/weak-password")) return "La contraseña debe tener al menos 6 caracteres.";
+    if (m.includes("auth/popup-closed-by-user")) return "Se cerró la ventana de Google antes de terminar.";
+    if (m.includes("auth/unauthorized-domain")) return "Este dominio no está autorizado en Firebase (Authentication -> Settings -> Authorized domains).";
+    if (m.includes("auth/network-request-failed")) return "Fallo de red -- revisa tu conexión.";
+    if (m.includes("auth/configuration-not-found") || m.includes("auth/invalid-api-key")) return "Firebase mal configurado -- revisa firebaseConfig y que Authentication esté activado.";
+    return "No se pudo completar la acción. Intenta de nuevo.";
+}
+
+function reportAuthError(context, e) {
+    console.error(`[Auth:${context}]`, e);
+    showLoginError(e.message);
+}
+
+async function handleEmailSignIn() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const pass = document.getElementById("loginPassword").value;
+    if (!email || !pass) { showLoginError("Completa correo y contraseña."); return; }
+    try {
+        await fbAuth.signInWithEmailAndPassword(email, pass);
+        closeLoginModal();
+    } catch (e) { reportAuthError("signIn", e); }
+}
+
+async function handleEmailSignUp() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const pass = document.getElementById("loginPassword").value;
+    if (!email || !pass) { showLoginError("Completa correo y contraseña."); return; }
+    try {
+        await fbAuth.createUserWithEmailAndPassword(email, pass);
+        closeLoginModal();
+    } catch (e) { reportAuthError("signUp", e); }
+}
+
+async function handleGoogleSignIn() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+        await fbAuth.signInWithPopup(provider);
+        closeLoginModal();
+    } catch (e) { reportAuthError("googleSignIn", e); }
+}
+
+function handleSignOut() {
+    fbAuth.signOut();
+}
+
+function updateAuthUI() {
+    const loggedOutEl = document.getElementById("authLoggedOut");
+    const loggedInEl = document.getElementById("authLoggedIn");
+    const emailEl = document.getElementById("authUserEmail");
+
+    if (firebaseUser) {
+        if (loggedOutEl) loggedOutEl.style.display = "none";
+        if (loggedInEl) loggedInEl.style.display = "flex";
+        if (emailEl) emailEl.textContent = firebaseUser.email || firebaseUser.displayName || "Usuario";
+    } else {
+        if (loggedOutEl) loggedOutEl.style.display = "flex";
+        if (loggedInEl) loggedInEl.style.display = "none";
+    }
+}
+
+function setupAuthListeners() {
+    const btnOpenLogin = document.getElementById("btnOpenLogin");
+    const btnCloseLogin = document.getElementById("btnCloseLogin");
+    const btnSignOut = document.getElementById("btnSignOut");
+    const btnEmailSignIn = document.getElementById("btnEmailSignIn");
+    const btnEmailSignUp = document.getElementById("btnEmailSignUp");
+    const btnGoogleSignIn = document.getElementById("btnGoogleSignIn");
+    const modalBackdrop = document.getElementById("loginModal");
+
+    if (btnOpenLogin) btnOpenLogin.addEventListener("click", openLoginModal);
+    if (btnCloseLogin) btnCloseLogin.addEventListener("click", closeLoginModal);
+    if (btnSignOut) btnSignOut.addEventListener("click", handleSignOut);
+    if (btnEmailSignIn) btnEmailSignIn.addEventListener("click", handleEmailSignIn);
+    if (btnEmailSignUp) btnEmailSignUp.addEventListener("click", handleEmailSignUp);
+    if (btnGoogleSignIn) btnGoogleSignIn.addEventListener("click", handleGoogleSignIn);
+    if (modalBackdrop) modalBackdrop.addEventListener("click", (e) => {
+        if (e.target === modalBackdrop) closeLoginModal();
+    });
+
+    fbAuth.onAuthStateChanged((user) => {
+        firebaseUser = user;
+        updateAuthUI();
+        if (user) {
+            attachWatchlistListener();
+        } else {
+            detachWatchlistListener();
+            render();
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
-    loadReminders();
+    startRealtimeClock();
+    setupThemeToggle();
+    initCharts();
     await loadData();
     populateSelectOptions();
-    initCharts();
+    setupListeners();
     setupAuthListeners();
-    setupEventListeners();
+    setupStatPopups();
     render();
 
-    // Actualiza el tema según la hora cada 15 minutos
-    setInterval(updateThemeByTime, 15 * 60 * 1000);
+    // Actualización de timers cada 30s
+    setInterval(() => {
+        render();
+    }, 30000);
 
-    // Loop de verificación de alarmas cada 30 segundos
-    setInterval(checkRemindersLoop, 30000);
-
-    // Polling auto-refresh cada 90s
+    // Auto-refresh: detecta picks nuevos sin necesitar F5
     startAutoRefresh();
 });
 </script>
