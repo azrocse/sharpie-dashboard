@@ -1925,6 +1925,16 @@ async function checkForNewPicks() {
         populateSelectOptions();
         render();
 
+        // La hora de "Última actualización" del header estaba horneada al
+        // generar el HTML y nunca se movía aunque el polling trajera datos
+        // nuevos -- ahora se refresca cada vez que se detecta un cambio real.
+        const generatedAtEl = document.getElementById("generatedAtVal");
+        if (generatedAtEl) {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            generatedAtEl.textContent = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        }
+
         const parts = [];
         if (addedKeys.length > 0) parts.push(`${addedKeys.length} nuevo(s)`);
         if (removedCount > 0) parts.push(`${removedCount} finalizado(s)/fuera de tiempo`);
@@ -3429,7 +3439,12 @@ function render() {
 
 function setupListeners() {
     const searchEl = document.getElementById("search");
-    if (searchEl) searchEl.addEventListener("input", (e) => { state.search = e.target.value; render(); });
+    let searchDebounceTimer = null;
+    if (searchEl) searchEl.addEventListener("input", (e) => {
+        state.search = e.target.value;
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(render, 300);
+    });
 
     const viewModeBtn = document.getElementById("viewModeToggle");
     if (viewModeBtn) {
@@ -3539,6 +3554,7 @@ function setupListeners() {
                 const anyFilled = Array.from(card.querySelectorAll("input, select")).some(i => i.value !== "" && i.value != null);
                 card.classList.toggle("adv-card-active", anyFilled);
             };
+            let debounceTimer = null;
             el.addEventListener("input", (e) => {
                 const val = e.target.value;
                 if (val === "" || val === null) {
@@ -3547,7 +3563,11 @@ function setupListeners() {
                     state[prop] = isFloat ? parseFloat(val) : val;
                 }
                 syncCardActive();
-                render();
+                // El render completo (recalcula ~todos los picks, gráficas y
+                // métricas) es pesado -- se espera a que el usuario pare de
+                // escribir en vez de dispararlo en cada tecla.
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(render, 300);
             });
         }
     };
