@@ -2081,38 +2081,6 @@ function scoreBadgeClass(score) {
     return "bad";
 }
 
-function getTrackingStatus(p) {
-    const currentOdds = parseOddsToDecimal(p.odds || p.cuota);
-    const initialOdds = parseOddsToDecimal(p.initialOdds || p.odds || p.cuota);
-    const currentEdge = Number(p.modelEdge != null ? p.modelEdge : (p.edge || 0));
-    const currentEv = Number(p.ev || 0);
-
-    // 1. DESCARTAR: Si el EV o el Edge cayeron por debajo de cero
-    if (currentEv < 0 || currentEdge < 0) {
-        return {
-            status: "🚫 DESCARTAR",
-            class: "bad",
-            msg: "EV o Edge entraron en terreno negativo — descarte inmediato."
-        };
-    }
-
-    // 2. APOSTAR: Si mantiene EV y Edge positivos y la cuota es igual o mejor a la inicial
-    if (currentEv >= 1.0 && currentEdge >= 1.0 && currentOdds >= initialOdds) {
-        return {
-            status: "✅ APOSTAR",
-            class: "good",
-            msg: "Valores óptimos de EV y Edge confirmados con cuota a favor."
-        };
-    }
-
-    // 3. MONITOREAR: Ajuste leve en contra pero aún positivo
-    return {
-        status: "👀 MONITOREAR",
-        class: "warn",
-        msg: "Movimiento leve en contra desde que se sigue — todavía dentro de rango normal, sin señal de descarte."
-    };
-}
-
 // EV real vive en rango de -1% a +2% -- los umbrales viejos (8/3) eran de otra
 // escala y dejaban el badge siempre en rojo aunque el EV fuera positivo.
 function evBadgeClass(ev) {
@@ -2202,6 +2170,7 @@ function edgeModBadgeClass(edge) {
 function unifiedDecisionPanelHtml(p) {
     const displayStake = Number(p.stake) || 0;
     const stakeText = displayStake.toFixed(1) + '%';
+    const winProb = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
 
     if (!state.advancedView) {
         // Modo Simple: solo 3 datos -- Modelo, Cuota, Stake.
@@ -2215,18 +2184,31 @@ function unifiedDecisionPanelHtml(p) {
 
     const modelEdgeVal = p.modelEdge != null ? Number(p.modelEdge) : null;
     const smartMoneyVal = calculateSmartMoney(p);
+    const reliabilityVal = p.reliability != null ? Number(p.reliability) : (p.confidence != null ? Number(p.confidence) : null);
 
-    // Grid reducida (Se eliminaron: Prob. Victoria, Score y Confiabilidad)
+    // Grid fija 3x3, en este orden exacto:
+    // Modelo   -> Edge Modelo -> EV
+    // Victoria -> Score       -> Confiabilidad
+    // Cuota    -> Stake       -> Smart Money
     const advGrid = [
         `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`,
+
+        winProb != null
+            ? `<span class="badge-tag ${winProbBadgeClass(winProb)}">🎲 Prob. Victoria <b>${winProb}%</b></span>`
+            : `<span class="badge-tag neutral">🎲 Prob. Victoria <b>—</b></span>`,
+        `<span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score <b>${p.score != null ? p.score : '—'}</b></span>`,
+        reliabilityVal != null
+            ? `<span class="badge-tag ${reliabilityBadgeClass(reliabilityVal)}">✅ Confiabilidad <b>${(reliabilityVal * 100).toFixed(0)}%</b></span>`
+            : `<span class="badge-tag neutral">✅ Confiabilidad <b>—</b></span>`,
+
         `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
         `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
         `<span class="badge-tag ${smartMoneyVal >= 4 ? 'good' : (smartMoneyVal > 0 ? 'warn' : 'neutral')}">💰 Smart Money <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
     ];
 
-    return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid">${advGrid.join('')}</div></div>`;
+    return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div></div>`;
 }
 
 function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
@@ -3434,7 +3416,7 @@ function render() {
                     ${buildEvolutionHtml(p)}
                     ${unifiedDecisionPanelHtml(p)}
 
-                    
+                    ${p.reason ? `<div class="reasoning-text">💡 <b>Análisis:</b> ${escapeHTML(p.reason)}</div>` : ''}
                 </div>
 
                 <div style="margin-top: 14px;">
