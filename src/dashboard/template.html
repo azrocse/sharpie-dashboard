@@ -772,6 +772,22 @@
             50% { opacity: 0.55; }
         }
 
+        .updated-pick-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            border: 1px solid var(--amber);
+            border-radius: 999px;
+            background: var(--amber-soft);
+            color: var(--amber);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+            animation: pulseNew 1.6s ease-in-out infinite;
+        }
+
         .free-pick-badge {
             display: inline-flex;
             align-items: center;
@@ -1456,7 +1472,9 @@
         @media(max-width: 640px) {
             body { padding: 14px; }
             .header { flex-direction: column; align-items: flex-start; }
-            .header-meta { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+            .header-meta { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
+            .timestamp-box { flex-wrap: wrap; width: 100%; justify-content: space-between; gap: 10px 14px; }
+            .theme-toggle { align-self: flex-end; }
             .brand-info h1 { font-size: 22px; }
             .toolbar { padding: 10px; }
             .search-box { min-width: 100%; }
@@ -1903,6 +1921,8 @@ async function loadData() {
 // Si el archivo se abre como file:// local (sin servidor), el fetch falla y
 // simplemente no hace nada -- el resto del dashboard sigue funcionando igual.
 let RECENTLY_ADDED_IDS = new Set();
+let RECENTLY_UPDATED_IDS = new Set();
+let ACTIVE_FILTER_MATCH_KEYS = new Set();
 
 async function checkForNewPicks() {
     try {
@@ -1915,13 +1935,32 @@ async function checkForNewPicks() {
         const changed = JSON.stringify(freshData) !== JSON.stringify(PICKS);
         if (!changed) return;
 
-        const oldKeys = new Set(PICKS.map(getWatchlistId));
+        const oldByKey = new Map(PICKS.map(p => [getWatchlistId(p), p]));
         const newKeys = new Set(freshData.map(getWatchlistId));
-        const addedKeys = [...newKeys].filter(k => !oldKeys.has(k));
-        const removedCount = [...oldKeys].filter(k => !newKeys.has(k)).length;
+        const addedKeys = [...newKeys].filter(k => !oldByKey.has(k));
+        const removedCount = [...oldByKey.keys()].filter(k => !newKeys.has(k)).length;
+
+        // Picks que YA existían pero cambiaron de valor (Bets/Handle/Cuota/Stake/etc)
+        const updatedKeys = freshData
+            .filter(p => {
+                const key = getWatchlistId(p);
+                const prev = oldByKey.get(key);
+                return prev && JSON.stringify(prev) !== JSON.stringify(p);
+            })
+            .map(getWatchlistId);
+
+        // Comprobación de filtro activo: si el usuario dejó un filtro puesto
+        // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
+        // revisa en cada refresh qué picks entran o salen de ese filtro
+        // específico -- aviso aparte del genérico de arriba. El snapshot
+        // "antes" se toma justo antes de renderizar (render() resincroniza
+        // ACTIVE_FILTER_MATCH_KEYS siempre, incluso si el usuario cambió el
+        // filtro a mano entre revisiones).
+        const beforeMatchKeys = new Set(ACTIVE_FILTER_MATCH_KEYS);
 
         PICKS = freshData;
         RECENTLY_ADDED_IDS = new Set(addedKeys);
+        RECENTLY_UPDATED_IDS = new Set(updatedKeys);
         populateSelectOptions();
         render();
 
@@ -1937,12 +1976,39 @@ async function checkForNewPicks() {
 
         const parts = [];
         if (addedKeys.length > 0) parts.push(`${addedKeys.length} nuevo(s)`);
+        if (updatedKeys.length > 0) parts.push(`${updatedKeys.length} actualizado(s)`);
         if (removedCount > 0) parts.push(`${removedCount} finalizado(s)/fuera de tiempo`);
         showAttractiveNotification({
             title: "🔄 Dashboard actualizado",
             body: parts.length > 0 ? parts.join(" · ") : "Los datos se actualizaron",
             variant: "success"
         });
+
+        // Badges temporales (NUEVO / ACTUALIZADO) se limpian solos a los 3 min
+        if (addedKeys.length > 0 || updatedKeys.length > 0) {
+            setTimeout(() => { RECENTLY_ADDED_IDS.clear(); RECENTLY_UPDATED_IDS.clear(); render(); }, 180000);
+        }
+
+        // Comprobación de filtro activo: si el usuario dejó un filtro puesto
+        // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
+        // revisa en cada refresh qué picks entran o salen de ese filtro
+        // específico -- aviso aparte del genérico de arriba.
+        if (isAnyFilterActive() && beforeMatchKeys.size > 0) {
+            const matchingKeys = new Set(ACTIVE_FILTER_MATCH_KEYS);
+            const enteredCount = [...matchingKeys].filter(k => !beforeMatchKeys.has(k)).length;
+            const exitedCount = [...beforeMatchKeys].filter(k => !matchingKeys.has(k)).length;
+
+            if (enteredCount > 0 || exitedCount > 0) {
+                const fparts = [];
+                if (enteredCount > 0) fparts.push(`${enteredCount} nuevo(s) cumplen`);
+                if (exitedCount > 0) fparts.push(`${exitedCount} ya no cumplen`);
+                showAttractiveNotification({
+                    title: "🎯 Tu filtro activo cambió",
+                    body: fparts.join(" · "),
+                    variant: "info"
+                });
+            }
+        }
 
         // El badge "NUEVO" se muestra 3 min y luego se limpia solo
         if (addedKeys.length > 0) {
@@ -1997,6 +2063,20 @@ const state = {
     recommendation: ""
 };
 
+function isAnyFilterActive() {
+    const s = state;
+    const numericKeys = [
+        "modeloMin","modeloMax","cuotaMin","cuotaMax","edgeMin","edgeMax",
+        "betsMin","betsMax","handleMin","handleMax","scoreMin","scoreMax",
+        "evMin","evMax","stakeMin","stakeMax","divergenciaMin","divergenciaMax",
+        "confMin","confMax","winProbMin","winProbMax"
+    ];
+    if (numericKeys.some(k => s[k] !== null && s[k] !== undefined)) return true;
+    if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
+    if (s.editorOnly || s.whaleOnly || s.freePickOnly || s.featuredOnly || s.watchlistOnly) return true;
+    return false;
+}
+
 // Parte 3: 5 señales de mercado homologadas a inglés -- únicas, calculadas
 // en el backend (p.marketSignal / p.trendKey). El frontend solo pinta.
 const TREND_LABEL = {
@@ -2032,8 +2112,8 @@ function initCharts() {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { title: { display: true, text: 'Score (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
-                    y: { title: { display: true, text: 'Edge (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } }
+                    x: { title: { display: true, text: 'Modelo Prob. (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'EV (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } }
                 },
                 plugins: { legend: { display: false } }
             }
@@ -2062,7 +2142,7 @@ function initCharts() {
 // Sincronización exacta de gráfica con conteos de mercado
 function updateChartsData(activeList) {
     if (edgeChartInstance) {
-        edgeChartInstance.data.datasets[0].data = activeList.map(p => ({ x: p.score || 0, y: calculateEdge(p) }));
+        edgeChartInstance.data.datasets[0].data = activeList.map(p => ({ x: p.modelProb || 0, y: Number(p.ev) || 0 }));
         edgeChartInstance.update();
     }
 
@@ -2170,7 +2250,6 @@ function edgeModBadgeClass(edge) {
 function unifiedDecisionPanelHtml(p) {
     const displayStake = Number(p.stake) || 0;
     const stakeText = displayStake.toFixed(1) + '%';
-    const winProb = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
 
     if (!state.advancedView) {
         // Modo Simple: solo 3 datos -- Modelo, Cuota, Stake.
@@ -2184,24 +2263,12 @@ function unifiedDecisionPanelHtml(p) {
 
     const modelEdgeVal = p.modelEdge != null ? Number(p.modelEdge) : null;
     const smartMoneyVal = calculateSmartMoney(p);
-    const reliabilityVal = p.reliability != null ? Number(p.reliability) : (p.confidence != null ? Number(p.confidence) : null);
 
-    // Grid fija 3x3, en este orden exacto:
-    // Modelo   -> Edge Modelo -> EV
-    // Victoria -> Score       -> Confiabilidad
-    // Cuota    -> Stake       -> Smart Money
+    // Grid 3 columnas (2 filas): Modelo / Edge Modelo / EV -- Cuota / Stake / Smart Money
     const advGrid = [
         `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`,
-
-        winProb != null
-            ? `<span class="badge-tag ${winProbBadgeClass(winProb)}">🎲 Prob. Victoria <b>${winProb}%</b></span>`
-            : `<span class="badge-tag neutral">🎲 Prob. Victoria <b>—</b></span>`,
-        `<span class="badge-tag ${scoreBadgeClass(p.score)}">🔥 Score <b>${p.score != null ? p.score : '—'}</b></span>`,
-        reliabilityVal != null
-            ? `<span class="badge-tag ${reliabilityBadgeClass(reliabilityVal)}">✅ Confiabilidad <b>${(reliabilityVal * 100).toFixed(0)}%</b></span>`
-            : `<span class="badge-tag neutral">✅ Confiabilidad <b>—</b></span>`,
 
         `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
         `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
@@ -2248,7 +2315,7 @@ function isEventPending(p) {
         const kickoff = new Date(p.iso).getTime();
         if (!isNaN(kickoff)) {
             const minutesSinceKickoff = (Date.now() - kickoff) / 60000;
-            if (minutesSinceKickoff > 15) return false;
+            if (minutesSinceKickoff > 0) return false;
         }
     }
     return true;
@@ -3115,19 +3182,19 @@ function toggleWatchlist(p) {
             variant: "info"
         });
     } else {
-        list[id] = {
+        const entry = {
             followedAt: new Date().toISOString(),
             league: p.league || '',
             game: p.game || '',
             pick: p.pick || '',
             market: p.market || '',
             snapshot: {
-                betsPct: p.betsPct != null ? Number(p.betsPct) : null,
-                handlePct: p.handlePct != null ? Number(p.handlePct) : null,
-                divergence: calculateSmartMoney(p),
-                odds: p.odds || p.cuota || null
+                odds: p.odds || p.cuota || null,
+                edge: p.modelEdge != null ? Number(p.modelEdge) : null,
+                ev: p.ev != null ? Number(p.ev) : null
             }
         };
+        list[id] = entry;
         saveWatchlist(list);
         showAttractiveNotification({
             title: "👁 Ahora sigues este pick",
@@ -3146,62 +3213,59 @@ function watchlistDeltaArrow(current, snapshot) {
     return diff > 0 ? ` <span class="wl-delta wl-up">▲ +${diff.toFixed(1)}</span>` : ` <span class="wl-delta wl-down">▼ ${diff.toFixed(1)}</span>`;
 }
 
-// Veredicto de seguimiento: compara el momento actual contra el snapshot de
-// cuando se empezó a seguir, y clasifica en APOSTABLE / DESCARTE / MONITOREAR
-// según las reglas de movimiento de línea (no según los umbrales de señal
-// de mercado -- esto es específico del comportamiento DESDE que se sigue).
+// Veredicto de SEGUIMIENTO (distinto de la Señal de la card -- esto compara
+// el movimiento desde que se empezó a seguir, no el estado actual del
+// mercado). Solo 3 métricas: Cuota, Stake y EV.
+//
+// Umbrales de DESCARTAR:
+//  - Cuota se abarata >=35 pts americanos (ej. -110 -> -145) -- el valor
+//    original ya no está.
+//  - EV cae a 0 o negativo -- ya no hay ventaja matemática.
+//  - EV cae >=50% respecto al de apertura -- la ventaja se redujo a la mitad.
+//  - Edge Modelo cae a 0 o negativo habiendo empezado en positivo.
 function pctChange(current, snapshot) {
     if (current == null || snapshot == null || snapshot === 0) return null;
     return ((current - snapshot) / Math.abs(snapshot)) * 100;
 }
 
-// Veredicto de SEGUIMIENTO (distinto de la Señal de la card -- esto compara
-// el movimiento desde que se empezó a seguir, no el estado actual del mercado).
-// Movimiento en % relativo, no en puntos absolutos, para que aplique parejo
-// sin importar el nivel de partida de cada métrica.
 function watchlistVerdict(p, snap) {
-    const handleNow = p.handlePct != null ? Number(p.handlePct) : null;
-    const handleSnap = snap.handlePct != null ? Number(snap.handlePct) : null;
-    const betsNow = p.betsPct != null ? Number(p.betsPct) : null;
-    const betsSnap = snap.betsPct != null ? Number(snap.betsPct) : null;
-    const divNow = calculateSmartMoney(p);
-    const divSnap = snap.divergence != null ? Number(snap.divergence) : null;
-
     const oddsNowRaw = parseInt(String(p.odds || p.cuota || '').replace('+', ''), 10);
     const oddsSnapRaw = parseInt(String(snap.odds || '').replace('+', ''), 10);
     const hasOdds = !isNaN(oddsNowRaw) && !isNaN(oddsSnapRaw);
     const oddsDelta = hasOdds ? (oddsNowRaw - oddsSnapRaw) : null; // positivo = "sube" (favorable)
 
-    if (handleNow == null || handleSnap == null || betsNow == null || betsSnap == null || divSnap == null) {
+    const evNow = p.ev != null ? Number(p.ev) : null;
+    const evSnap = snap.ev != null ? Number(snap.ev) : null;
+    const edgeNow = p.modelEdge != null ? Number(p.modelEdge) : null;
+    const edgeSnap = snap.edge != null ? Number(snap.edge) : null;
+
+    if (evSnap == null || edgeSnap == null) {
         return { verdict: 'MONITOREAR', text: 'Datos insuficientes para comparar contra el punto de apertura del seguimiento.' };
     }
 
-    const handlePctMove = pctChange(handleNow, handleSnap);
-    const betsPctMove = pctChange(betsNow, betsSnap);
-    const divPctMove = pctChange(divNow, divSnap);
+    const evPctMove = pctChange(evNow, evSnap);
 
-    // DESCARTE -- basta con que se cumpla UNA condición severa
-    if (handlePctMove !== null && handlePctMove <= -40) {
-        return { verdict: 'DESCARTE', text: `Handle cayó ${handlePctMove.toFixed(0)}% desde que se sigue (${handleSnap}% → ${handleNow}%) -- el dinero grande se retiró.` };
-    }
-    if (betsPctMove !== null && betsPctMove >= 50) {
-        return { verdict: 'DESCARTE', text: `Bets subió ${betsPctMove.toFixed(0)}% desde que se sigue (${betsSnap}% → ${betsNow}%) -- entrada fuerte del público.` };
-    }
-    if (divNow <= 0 || (divPctMove !== null && divPctMove <= -70)) {
-        return { verdict: 'DESCARTE', text: divNow <= 0 ? 'La divergencia se desplomó a cero o negativa desde que se sigue.' : `Divergencia cayó ${divPctMove.toFixed(0)}% desde que se sigue.` };
-    }
+    // DESCARTAR -- basta con que se cumpla UNA condición severa
     if (hasOdds && oddsDelta <= -35) {
-        return { verdict: 'DESCARTE', text: `Cuota se encareció con fuerza (${snap.odds} → ${p.odds || p.cuota}) -- el valor original ya no está.` };
+        return { verdict: 'DESCARTAR', text: `Cuota se abarató con fuerza (${snap.odds} → ${p.odds || p.cuota}) -- el valor original ya no está.` };
+    }
+    if (evNow == null || evNow <= 0) {
+        return { verdict: 'DESCARTAR', text: 'El EV cayó a cero o negativo desde que se sigue -- ya no hay ventaja matemática.' };
+    }
+    if (evPctMove !== null && evPctMove <= -50) {
+        return { verdict: 'DESCARTAR', text: `EV cayó ${evPctMove.toFixed(0)}% desde que se sigue (${evSnap}% → ${evNow}%).` };
+    }
+    if (edgeSnap > 0 && (edgeNow == null || edgeNow <= 0)) {
+        return { verdict: 'DESCARTAR', text: 'El Edge Modelo cayó a cero o negativo -- perdió la ventaja que tenía al momento de seguirlo.' };
     }
 
-    // APOSTABLE -- las 4 métricas se mantienen o mejoran
-    const cond1 = handlePctMove !== null && handlePctMove >= -0.5;   // Handle se mantiene o sube
-    const cond2 = betsPctMove !== null && betsPctMove <= 0.5;        // Bets baja o se mantiene
-    const cond3 = divPctMove !== null && divPctMove >= -0.5;         // Divergencia se mantiene o sube
-    const cond4 = hasOdds && oddsDelta >= 0;                         // Cuota se mantiene o sube
+    // APOSTAR -- las 3 métricas se mantienen o mejoran
+    const cond1 = hasOdds && oddsDelta >= 0;
+    const cond2 = evNow >= evSnap;
+    const cond3 = edgeNow != null && edgeNow >= edgeSnap;
 
-    if (cond1 && cond2 && cond3 && cond4) {
-        return { verdict: 'APOSTABLE', text: `Handle, Divergencia y Cuota se mantienen o mejoran, y Bets no creció -- línea confirmando a favor desde que se sigue.` };
+    if (cond1 && cond2 && cond3) {
+        return { verdict: 'APOSTAR', text: `Cuota, EV y Edge Modelo se mantienen o mejoran desde que se sigue -- línea confirmando a favor.` };
     }
 
     // MONITOREAR -- movimiento leve en contra, sin cruzar el umbral de descarte
@@ -3214,20 +3278,18 @@ function watchlistPanelHtml(p) {
     if (!entry) return '';
 
     const snap = entry.snapshot || {};
-    const currentDivergence = calculateSmartMoney(p);
     const followedDate = entry.followedAt ? new Date(entry.followedAt) : null;
     const followedText = followedDate ? followedDate.toLocaleString() : '';
     const v = watchlistVerdict(p, snap);
-    const verdictCls = v.verdict === 'APOSTABLE' ? 'good' : (v.verdict === 'DESCARTE' ? 'bad' : 'warn');
-    const verdictIcon = v.verdict === 'APOSTABLE' ? '✅' : (v.verdict === 'DESCARTE' ? '🗑️' : '👀');
+    const verdictCls = v.verdict === 'APOSTAR' ? 'good' : (v.verdict === 'DESCARTAR' ? 'bad' : 'warn');
+    const verdictIcon = v.verdict === 'APOSTAR' ? '✅' : (v.verdict === 'DESCARTAR' ? '🗑️' : '👀');
 
     return `<div class="watchlist-panel">
         <div class="watchlist-panel-title">👁 En seguimiento desde ${escapeHTML(followedText)}</div>
         <div class="badge-tag-grid">
-            <span class="badge-tag neutral">🎟️ Bets <b>${p.betsPct != null ? p.betsPct + '%' : '—'}</b>${watchlistDeltaArrow(p.betsPct, snap.betsPct)}</span>
-            <span class="badge-tag neutral">💵 Handle <b>${p.handlePct != null ? p.handlePct + '%' : '—'}</b>${watchlistDeltaArrow(p.handlePct, snap.handlePct)}</span>
-            <span class="badge-tag neutral">⚡ Divergencia <b>${currentDivergence}%</b>${watchlistDeltaArrow(currentDivergence, snap.divergence)}</span>
             <span class="badge-tag neutral">💰 Cuota apertura <b>${escapeHTML(String(snap.odds ?? '—'))}</b> → <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>
+            <span class="badge-tag neutral">📈 Edge Modelo <b>${snap.edge != null ? snap.edge + '%' : '—'}</b>${watchlistDeltaArrow(p.modelEdge, snap.edge)}</span>
+            <span class="badge-tag neutral">📊 EV <b>${snap.ev != null ? snap.ev + '%' : '—'}</b>${watchlistDeltaArrow(p.ev, snap.ev)}</span>
         </div>
         <div class="reasoning-text"><span class="badge-tag ${verdictCls}" style="margin-right:6px;">${verdictIcon} ${v.verdict} (desde seguimiento)</span>${escapeHTML(v.text)}</div>
     </div>`;
@@ -3245,11 +3307,17 @@ function showAttractiveNotification({ title, body, variant = "info" }) {
         <div class="reminder-notif-body">${escapeHTML(body).replace(/\n/g, '<br>')}</div>
     `;
     el.querySelector(".reminder-notif-close").addEventListener("click", () => dismissNotif(el));
+
+    // Si ya hay notificaciones visibles, se da tiempo extra -- leer 2-3
+    // apiladas necesita más que el tiempo de una sola.
+    const alreadyVisible = container.querySelectorAll(".reminder-notif").length;
     container.appendChild(el);
 
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("show")));
 
-    setTimeout(() => dismissNotif(el), variant === "urgent" ? 15000 : 5000);
+    const baseDuration = variant === "urgent" ? 20000 : 10000;
+    const extraPerStacked = 3000;
+    setTimeout(() => dismissNotif(el), baseDuration + (alreadyVisible * extraPerStacked));
 }
 
 function dismissNotif(el) {
@@ -3303,12 +3371,75 @@ function syncAdvCardActiveStates() {
     });
 }
 
+function updateFilterCounts(pendingPicks) {
+    const fTimeRange = document.getElementById("fTimeRange");
+    if (fTimeRange) {
+        const counts = { in_play: 0, "30m": 0, "1h": 0, "2h": 0, today: 0, tomorrow: 0, this_week: 0 };
+        const nowLocal = new Date();
+        const toDateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const todayStr = toDateStr(nowLocal);
+        const tomorrowDate = new Date(nowLocal); tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        const tomorrowStr = toDateStr(tomorrowDate);
+        const weekEndDate = new Date(nowLocal); weekEndDate.setDate(weekEndDate.getDate() + 6);
+        const weekEndStr = toDateStr(weekEndDate);
+
+        pendingPicks.forEach(p => {
+            if (!p.iso) return;
+            const timer = getCountdownText(p.iso);
+            if (timer.expired) counts.in_play++;
+            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 30) counts["30m"]++;
+            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 60) counts["1h"]++;
+            if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 120) counts["2h"]++;
+            if (p.date === todayStr) counts.today++;
+            if (p.date === tomorrowStr) counts.tomorrow++;
+            if (p.date >= todayStr && p.date <= weekEndStr) counts.this_week++;
+        });
+
+        const labels = {
+            in_play: "🔴 En juego", "30m": "⏳ Próximos 30 min", "1h": "⏳ Próxima 1 hora",
+            "2h": "⏳ Próximas 2 horas", today: "📅 Eventos de Hoy", tomorrow: "📅 Eventos de Mañana",
+            this_week: "📆 Eventos de Esta Semana"
+        };
+        Array.from(fTimeRange.options).forEach(opt => {
+            if (!opt.value) { opt.textContent = "⏱️ Hora / Rango"; return; }
+            opt.textContent = `${labels[opt.value]} (${counts[opt.value] || 0})`;
+        });
+    }
+
+    const fTrend = document.getElementById("fTrend");
+    if (fTrend) {
+        const counts = { SMART_MONEY: 0, PUBLIC_HEAVY: 0, CONSENSUS: 0, MIXED: 0, NO_ACTION: 0 };
+        pendingPicks.forEach(p => { if (p.marketSignal in counts) counts[p.marketSignal]++; });
+        const labels = {
+            SMART_MONEY: "🐋 SMART MONEY", PUBLIC_HEAVY: "🚨 PUBLIC HEAVY",
+            CONSENSUS: "📊 CONSENSUS", MIXED: "🔀 MIXED", NO_ACTION: "⚪ NO ACTION"
+        };
+        Array.from(fTrend.options).forEach(opt => {
+            if (!opt.value) { opt.textContent = "📊 Todas las señales"; return; }
+            opt.textContent = `${labels[opt.value]} (${counts[opt.value] || 0})`;
+        });
+    }
+
+    const freeBtn = document.getElementById("freePickOnly");
+    const editorBtn = document.getElementById("editorOnly");
+    const whaleBtn = document.getElementById("whaleOnly");
+    const watchlistBtn = document.getElementById("watchlistOnly");
+    if (freeBtn) freeBtn.textContent = `🔓 Free Picks (${pendingPicks.filter(p => p.pickCategory === "FREE").length})`;
+    if (editorBtn) editorBtn.textContent = `🏆 Editor's Choice (${pendingPicks.filter(p => p.pickCategory === "EDITORS").length})`;
+    if (whaleBtn) whaleBtn.textContent = `🐋 Whale Alerts (${pendingPicks.filter(p => p.pickCategory === "WHALE").length})`;
+    if (watchlistBtn) watchlistBtn.textContent = `👁 My Watchlist (${pendingPicks.filter(p => isInWatchlist(p)).length})`;
+}
+
 function render() {
     updateThemeByTime();
     syncAdvCardActiveStates();
 
     const pendingPicks = PICKS.filter(p => isEventPending(p));
     const activeList = applyFiltersAndSort(pendingPicks);
+
+    updateFilterCounts(pendingPicks);
+
+    ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getWatchlistId));
 
     updateMetrics(activeList);
     updateChartsData(activeList);
@@ -3341,6 +3472,7 @@ function render() {
         const isPremium = !isWhale && !isEditor && !isFree;
         const isFeatured = isFeaturedPick(p);
         const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
+        const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
         const editorEval = getEvolutionAnalysis(p);
 
         let cardClasses = "pcard";
@@ -3372,6 +3504,7 @@ function render() {
                                 ${config.label}
                             </span>
                             ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
+                            ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
                             ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
                             ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
                             ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
@@ -3416,7 +3549,6 @@ function render() {
                     ${buildEvolutionHtml(p)}
                     ${unifiedDecisionPanelHtml(p)}
 
-                    ${p.reason ? `<div class="reasoning-text">💡 <b>Análisis:</b> ${escapeHTML(p.reason)}</div>` : ''}
                 </div>
 
                 <div style="margin-top: 14px;">
