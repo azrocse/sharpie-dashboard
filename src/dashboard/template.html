@@ -514,6 +514,47 @@
 
         .clear-btn:hover { color: var(--text); }
 
+        .saved-filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .saved-filter-chip {
+            display: inline-flex;
+            align-items: stretch;
+            border: 1px solid var(--teal);
+            border-radius: 999px;
+            overflow: hidden;
+            background: var(--teal-soft);
+        }
+
+        .saved-filter-apply {
+            border: none;
+            background: transparent;
+            color: var(--teal);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .saved-filter-delete {
+            border: none;
+            border-left: 1px solid var(--teal);
+            background: transparent;
+            color: var(--teal);
+            font-size: 10px;
+            padding: 6px 9px;
+            cursor: pointer;
+        }
+
+        .saved-filter-delete:hover { background: var(--red-soft); color: var(--red); border-left-color: var(--red); }
+
         /* SECCIÓN DE FILTROS AVANZADOS OPTIMIZADA UI/UX */
         .adv-filters-panel {
             width: 100%;
@@ -1713,7 +1754,9 @@
         <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
         <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
         <button class="clear-btn" id="clearBtn">🧹 Limpiar filtros</button>
+        <button class="clear-btn" id="btnSaveFilter" style="border-color: var(--teal); color: var(--teal);">💾 Guardar filtro</button>
     </div>
+    <div class="saved-filters-row" id="savedFiltersRow" style="display:none;"></div>
 </div>
 
 <!-- SECCIÓN DE FILTROS AVANZADOS -->
@@ -2075,6 +2118,123 @@ function isAnyFilterActive() {
     if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
     if (s.editorOnly || s.whaleOnly || s.freePickOnly || s.featuredOnly || s.watchlistOnly) return true;
     return false;
+}
+
+// ============ FILTROS GUARDADOS (localStorage) ============
+const FILTER_KEYS = [
+    "search", "date", "league", "trend", "timeRange", "recommendation",
+    "editorOnly", "whaleOnly", "freePickOnly", "featuredOnly", "watchlistOnly",
+    "modeloMin", "modeloMax", "cuotaMin", "cuotaMax", "edgeMin", "edgeMax",
+    "betsMin", "betsMax", "handleMin", "handleMax", "scoreMin", "scoreMax",
+    "evMin", "evMax", "stakeMin", "stakeMax", "divergenciaMin", "divergenciaMax",
+    "confMin", "confMax", "winProbMin", "winProbMax"
+];
+const SAVED_FILTERS_KEY = "sharpie_saved_filters_v1";
+
+function loadSavedFilters() {
+    try { return JSON.parse(localStorage.getItem(SAVED_FILTERS_KEY)) || []; }
+    catch (e) { return []; }
+}
+
+function saveSavedFilters(list) {
+    try { localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(list)); }
+    catch (e) { console.error("Error al guardar filtros:", e); }
+}
+
+function saveCurrentFilterPreset() {
+    if (!isAnyFilterActive()) {
+        showAttractiveNotification({ title: "⚠️ Sin filtros activos", body: "Aplica al menos un filtro antes de guardarlo.", variant: "info" });
+        return;
+    }
+    const name = prompt("Nombre para este filtro:");
+    if (!name || !name.trim()) return;
+
+    const snapshot = {};
+    FILTER_KEYS.forEach(k => { snapshot[k] = state[k]; });
+
+    const list = loadSavedFilters();
+    list.push({ id: Date.now().toString(36), name: name.trim(), filters: snapshot });
+    saveSavedFilters(list);
+    renderSavedFilterChips();
+    showAttractiveNotification({ title: "💾 Filtro guardado", body: name.trim(), variant: "success" });
+}
+
+function syncFilterInputsFromState() {
+    const idMap = {
+        search: "search", date: "fDate", league: "fLeague", trend: "fTrend", timeRange: "fTimeRange",
+        modeloMin: "fModeloMin", modeloMax: "fModeloMax", cuotaMin: "fCuotaMin", cuotaMax: "fCuotaMax",
+        edgeMin: "fEdgeMin", edgeMax: "fEdgeMax", betsMin: "fBetsMin", betsMax: "fBetsMax",
+        handleMin: "fHandleMin", handleMax: "fHandleMax", scoreMin: "fScoreMin", scoreMax: "fScoreMax",
+        evMin: "fEvMin", evMax: "fEvMax", stakeMin: "fStakeMin", stakeMax: "fStakeMax",
+        divergenciaMin: "fDivergenciaMin", divergenciaMax: "fDivergenciaMax",
+        confMin: "fConfMin", confMax: "fConfMax", winProbMin: "fWinProbMin", winProbMax: "fWinProbMax"
+    };
+    Object.keys(idMap).forEach(key => {
+        const el = document.getElementById(idMap[key]);
+        if (!el) return;
+        const val = state[key];
+        el.value = (val === null || val === undefined) ? "" : val;
+    });
+
+    const editorBtn = document.getElementById("editorOnly");
+    const whaleBtn = document.getElementById("whaleOnly");
+    const freeBtn = document.getElementById("freePickOnly");
+    const featuredBtn = document.getElementById("featuredOnly");
+    const watchlistBtn = document.getElementById("watchlistOnly");
+    if (editorBtn) editorBtn.setAttribute("aria-pressed", String(state.editorOnly));
+    if (whaleBtn) whaleBtn.setAttribute("aria-pressed", String(state.whaleOnly));
+    if (freeBtn) freeBtn.setAttribute("aria-pressed", String(state.freePickOnly));
+    if (featuredBtn) featuredBtn.setAttribute("aria-pressed", String(state.featuredOnly));
+    if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", String(state.watchlistOnly));
+}
+
+function applyFilterPreset(preset) {
+    FILTER_KEYS.forEach(k => {
+        const isToggle = ["editorOnly", "whaleOnly", "freePickOnly", "featuredOnly", "watchlistOnly"].includes(k);
+        const defaultVal = isToggle ? false : (typeof state[k] === "string" ? "" : null);
+        state[k] = (preset.filters[k] !== undefined) ? preset.filters[k] : defaultVal;
+    });
+    syncFilterInputsFromState();
+    render();
+    showAttractiveNotification({ title: "🎯 Filtro aplicado", body: preset.name, variant: "info" });
+}
+
+function deleteFilterPreset(id) {
+    saveSavedFilters(loadSavedFilters().filter(p => p.id !== id));
+    renderSavedFilterChips();
+}
+
+function renderSavedFilterChips() {
+    const container = document.getElementById("savedFiltersRow");
+    if (!container) return;
+    const list = loadSavedFilters();
+
+    if (list.length === 0) {
+        container.style.display = "none";
+        container.innerHTML = "";
+        return;
+    }
+
+    container.style.display = "flex";
+    container.innerHTML = list.map(p => `
+        <span class="saved-filter-chip">
+            <button type="button" class="saved-filter-apply" data-id="${p.id}">🎯 ${escapeHTML(p.name)}</button>
+            <button type="button" class="saved-filter-delete" data-id="${p.id}" aria-label="Eliminar filtro guardado">✕</button>
+        </span>
+    `).join("");
+
+    container.querySelectorAll(".saved-filter-apply").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const preset = list.find(p => p.id === btn.dataset.id);
+            if (preset) applyFilterPreset(preset);
+        });
+    });
+    container.querySelectorAll(".saved-filter-delete").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            deleteFilterPreset(btn.dataset.id);
+        });
+    });
 }
 
 // Parte 3: 5 señales de mercado homologadas a inglés -- únicas, calculadas
@@ -3732,6 +3892,10 @@ function setupListeners() {
     bindInput("fEvMax", "evMax");
 
     const clearBtn = document.getElementById("clearBtn");
+
+    const btnSaveFilter = document.getElementById("btnSaveFilter");
+    if (btnSaveFilter) btnSaveFilter.addEventListener("click", saveCurrentFilterPreset);
+
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
             state.search = "";
@@ -3792,6 +3956,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadData();
     populateSelectOptions();
     setupListeners();
+    renderSavedFilterChips();
     setupStatPopups();
     render();
 

@@ -539,6 +539,10 @@ def classify_evaluation(final_score):
         return "WATCH"
     return "DESCARTAR"
 
+
+# ============================================================
+# STAKE
+# ============================================================
 # ============================================================
 # PARTE 3: SEÑALES DE MERCADO -- 5 categorías exclusivas, homologadas a
 # inglés. Única fuente de verdad (antes se recalculaba distinto en backend
