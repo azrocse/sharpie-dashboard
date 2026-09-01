@@ -245,22 +245,6 @@ def safe_float(val, default=0.0):
         return default
 
 
-def safe_score(value):
-    try:
-        value = float(value)
-
-    except Exception:
-        return 0.0
-
-    return max(
-        0.0,
-        min(
-            100.0,
-            value
-        )
-    )
-
-
 def safe_edge(value):
     try:
         value = float(value)
@@ -355,195 +339,6 @@ def american_implied_probability(american_odds):
 
 
 # ============================================================
-# WHALE / SHARP MONEY
-# ============================================================
-def detect_whale(market):
-    if market.get("whale") is True:
-        return True
-
-    handle = safe_pct(
-        market.get(
-            "handlePct",
-            market.get(
-                "handle_pct",
-                market.get("handle")
-            )
-        )
-    )
-
-    bets = safe_pct(
-        market.get(
-            "betsPct",
-            market.get(
-                "bets_pct",
-                market.get("bets")
-            )
-        )
-    )
-
-    if handle is not None and bets is not None:
-        diff = handle - bets
-
-        if diff >= 30 or (diff >= 15 and handle >= 70):
-            return True
-
-    blob = " ".join(
-        str(market.get(k, ""))
-        for k in [
-            "priority",
-            "action",
-            "reason",
-            "market_trend",
-            "trend",
-            "pattern"
-        ]
-    ).lower()
-
-    return any(
-        k in blob
-        for k in [
-            "whale",
-            "🐋",
-            "divergence",
-            "sharp lean"
-        ]
-    )
-
-
-# ============================================================
-# CONFIABILIDAD DEL DATO (multiplicador continuo)
-# ============================================================
-def calculate_reliability_multiplier(
-    model_is_real,
-    is_valid_price,
-    ev_is_suspicious
-):
-    if model_is_real and is_valid_price and not ev_is_suspicious:
-        return 1.00
-
-    if model_is_real and is_valid_price and ev_is_suspicious:
-        return 0.80
-
-    if not model_is_real and is_valid_price:
-        return 0.65
-
-    return 0.40
-
-
-# ============================================================
-# SCORE DE MODEL EDGE (Sensibilidad Ampliada)
-# ============================================================
-def calculate_model_edge_score(model_edge):
-    if model_edge is None:
-        return 0.0
-    elif model_edge <= 0:
-        return max(0.0, 20.0 + (model_edge * 20.0))
-    elif model_edge < 0.5:
-        score = (model_edge / 0.5) * 40.0
-    elif model_edge < 1.0:
-        score = 40.0 + ((model_edge - 0.5) / 0.5) * 20.0
-    elif model_edge < 2.0:
-        score = 60.0 + ((model_edge - 1.0) / 1.0) * 20.0
-    else:
-        score = 100.0
-
-    return round(max(0.0, min(100.0, score)), 1)
-
-
-# ============================================================
-# SCORE DE EV (Valor Esperado Ampliado)
-# ============================================================
-def calculate_ev_score(ev):
-    if ev is None:
-        return 0.0
-    elif ev <= 0:
-        return max(0.0, 20.0 + (ev * 20.0))
-    elif ev < 0.5:
-        score = (ev / 0.5) * 40.0
-    elif ev < 1.0:
-        score = 40.0 + ((ev - 0.5) / 0.5) * 20.0
-    elif ev < 2.0:
-        score = 60.0 + ((ev - 1.0) / 1.0) * 20.0
-    else:
-        score = 100.0
-
-    return round(max(0.0, min(100.0, score)), 1)
-
-
-# ============================================================
-# VALUE SCORE
-# ============================================================
-def calculate_value_score(
-    model_edge_score,
-    ev_score
-):
-    score = (
-        model_edge_score * 0.60
-        + ev_score * 0.40
-    )
-
-    return round(
-        max(0.0, min(100.0, score)),
-        1
-    )
-
-
-# ============================================================
-# FINAL SCORE (PESO REAL AL SMART MONEY + FALLBACK)
-# ============================================================
-def calculate_final_score(
-    value_score,
-    market_score,
-    reliability_multiplier,
-    edge_dinero,
-    is_whale,
-    is_smart_money,
-    weights=None
-):
-    if edge_dinero is None:
-        dinero_score = 0.0
-    else:
-        dinero_score = min(100.0, max(0.0, 50.0 + (edge_dinero * 1.25)))
-
-    if weights:
-        w_value, w_market, w_dinero = weights
-    elif is_whale or is_smart_money:
-        w_value, w_market, w_dinero = 0.20, 0.20, 0.60
-    else:
-        w_value, w_market, w_dinero = 0.40, 0.30, 0.30
-
-    base_score = (value_score * w_value) + (market_score * w_market) + (dinero_score * w_dinero)
-    if is_whale or is_smart_money:
-        base_score = max(base_score, 55.0)
-
-    base_score = max(0.0, min(100.0, base_score))
-    final = base_score * reliability_multiplier
-
-    return round(
-        max(0.0, min(100.0, final)),
-        1
-    )
-
-
-# ============================================================
-# EVALUACIÓN GENERAL
-# ============================================================
-def classify_evaluation(final_score):
-    if final_score >= 48:
-        return "PREMIUM"
-    if final_score >= 35:
-        return "STRONG"
-    if final_score >= 22:
-        return "LEAN"
-    if final_score >= 12:
-        return "WATCH"
-    return "DESCARTAR"
-
-
-# ============================================================
-# STAKE
-# ============================================================
-# ============================================================
 # PARTE 3: SEÑALES DE MERCADO -- 5 categorías exclusivas, homologadas a
 # inglés. Única fuente de verdad (antes se recalculaba distinto en backend
 # y frontend -- ahora vive solo aquí).
@@ -575,9 +370,8 @@ MARKET_SIGNAL_LABELS = {
 
 
 # ============================================================
-# PARTE 2: CATEGORÍA DE PICK -- FREE / EDITORS / WHALE, exclusivas por
-# construcción (los rangos de bets/handle/divergencia entre las 3 nunca
-# se solapan, aunque el rango de cuota sí toque límites entre ellas).
+# CATEGORÍA DE PICK: reglas directas basadas únicamente en EV, señal y,
+# para Whale Alert, divergencia. No hay puntuaciones ni análisis paralelos.
 # ============================================================
 def _raw_american_odds(odds_raw):
     if odds_raw is None:
@@ -600,11 +394,8 @@ def classify_pick_category(ev, market_signal, signed_divergence):
             return "WHALE"
         return "PREMIUM"
 
-    if market_signal in ("CONSENSUS", "PUBLIC_HEAVY"):
-        if 3.0 <= ev <= 6.0:
-            return "EDITORS"
-        if 1.0 <= ev <= 3.0:
-            return "FREE"
+    if market_signal in ("CONSENSUS", "PUBLIC_HEAVY") and 1.0 <= ev <= 3.0:
+        return "FREE"
 
     return None
 
@@ -632,58 +423,13 @@ def calculate_kelly_stake(ev, model_prob, decimal_odds):
     if kelly_full <= 0:
         return 0.0
 
-    KELLY_FRACTION = 0.5  # medio-Kelly -- estándar conservador de la industria
+    KELLY_FRACTION = 0.5  # medio Kelly: fracción conservadora y explícita
     kelly_fraction_pct = kelly_full * KELLY_FRACTION * 100.0
 
-    # Se mapea a la escala fija 1.0-5.0: 0% de Kelly fraccionado -> piso 1.0,
-    # 10%+ de Kelly fraccionado -> techo 5.0, lineal entre medio.
-    raw = 1.0 + min(kelly_fraction_pct, 10.0) / 10.0 * 4.0
+    # 0-10% de Kelly fraccionado se traduce proporcionalmente a 1-5 unidades.
+    raw = 1.0 + min(kelly_fraction_pct, 10.0) * 0.4
     raw = max(1.0, min(5.0, raw))
     return round(raw * 2) / 2.0  # bloques de 0.5
-
-
-# ============================================================
-# RIESGO (CON MONTE CARLO)
-# ============================================================
-def calculate_risk(
-    final_score,
-    reliability_multiplier,
-    odds_str,
-    monte_carlo=None
-):
-    try:
-        odds_val = int(
-            str(odds_str)
-            .replace("+", "")
-            .strip()
-        )
-    except (ValueError, TypeError):
-        odds_val = -110
-
-    if final_score >= 62:
-        risk = "LOW"
-    elif final_score >= 45:
-        risk = "LOW" if reliability_multiplier >= 0.65 else "MEDIUM"
-    elif final_score >= 28:
-        risk = "MEDIUM"
-    else:
-        risk = "HIGH"
-
-    if risk == "LOW" and odds_val >= 200:
-        risk = "MEDIUM"
-
-    if isinstance(monte_carlo, dict):
-        mc_win = monte_carlo.get("win_probability")
-        if mc_win is not None:
-            order = ["LOW", "MEDIUM", "HIGH"]
-            idx = order.index(risk) if risk in order else 2
-            if mc_win < 20:
-                idx = min(idx + 2, 2)
-            elif mc_win < 35:
-                idx = min(idx + 1, 2)
-            risk = order[idx]
-
-    return risk
 
 
 # ============================================================
@@ -1353,8 +1099,6 @@ def build_picks(raw_data):
 
         action_text = market.get("action", "🔴 PASAR")
 
-        market_score = safe_score(market.get("divergenceScore", market.get("marketScore", market.get("market_score", 0))))
-
         signed_divergence = round(market.get("signedDivergence", handle - bets), 1)
         divergence = round(abs(market.get("divergence", signed_divergence)), 1)
 
@@ -1363,57 +1107,12 @@ def build_picks(raw_data):
         # el frontend ni con el texto viejo en español.
         market_signal = classify_market_signal(signed_divergence, bets, handle, ev, model_edge)
 
-        # generate_dashboard.py es la autoridad única de reliability/score/risk/stake:
-        # ya NO se confía en los valores que traiga analyze.py para estos 4 campos
-        # (antes se usaban tal cual si venían presentes, y como analyze.py siempre
-        # los manda, generate_dashboard.py nunca los recalculaba en la práctica --
-        # eso es lo que rompía la cadena cuando corregimos model_is_real).
-        reliability_multiplier = calculate_reliability_multiplier(
-            model_is_real,
-            bool(market.get("isPrice", market.get("is_price", False))),
-            bool(market.get("evSuspicious", False))
-        )
-        reliability_multiplier = max(0.0, min(1.0, safe_float(reliability_multiplier)))
-
-        model_edge_score = safe_float(market.get("modelEdgeScore", calculate_model_edge_score(model_edge)))
-        ev_score = safe_float(market.get("evScore", calculate_ev_score(ev)))
-        value_score = safe_float(market.get("valueScore", calculate_value_score(model_edge_score, ev_score)))
-        
-        is_whale_flag = detect_whale(market)
-
         model_is_real_flag = bool(market.get("modelIsReal", model_is_real))
-        if not model_is_real_flag:
-            if is_whale_flag or market_signal == "SMART_MONEY":
-                w_value, w_market, w_dinero = 0.10, 0.20, 0.70
-            else:
-                w_value, w_market, w_dinero = 0.15, 0.425, 0.425
-        else:
-            w_value, w_market, w_dinero = (0.20, 0.20, 0.60) if (is_whale_flag or market_signal == "SMART_MONEY") else (0.40, 0.30, 0.30)
-
-        final_score = calculate_final_score(
-            value_score, 
-            market_score, 
-            reliability_multiplier, 
-            signed_divergence, 
-            is_whale_flag, 
-            market_signal == "SMART_MONEY",
-            weights=(w_value, w_market, w_dinero)
-        )
-
-        monte_carlo = market.get("monteCarlo") if isinstance(market.get("monteCarlo"), dict) else None
-        
-        evaluation = classify_evaluation(final_score)
-        if ev <= -0.5 and evaluation in ("PREMIUM", "STRONG"):
-            evaluation = "LEAN"
-
-        risk = calculate_risk(final_score, reliability_multiplier, odds_str, monte_carlo)
 
         pick_category = classify_pick_category(ev, market_signal, signed_divergence)
 
         # Stake determinístico por señal (Parte 4) -- reemplaza el Kelly anterior.
         stake = calculate_kelly_stake(ev, model_prob, decimal_odds)
-
-        qualitative_confidence = safe_float(market.get("confidence", 1.0))
 
         pick_history_full = build_pick_history_full(market.get("league", "Otras Ligas"), game, pick, market_name, kickoff_iso=iso)
 
@@ -1431,9 +1130,8 @@ def build_picks(raw_data):
         register_clv_entry(
             market.get("league", "Otras Ligas"), game, pick, market_name, date, clv,
             extra={
-                "whale": is_whale_flag,
-                "modelIsReal": model_is_real_flag,
-                "finalScore": final_score
+                "whale": pick_category == "WHALE",
+                "modelIsReal": model_is_real_flag
             }
         )
 
@@ -1454,16 +1152,6 @@ def build_picks(raw_data):
             "priority": market.get("priority", "👀 OBSERVAR"),
             "priorityKey": classify_priority(market.get("priority", "")),
             "stake": stake,
-            "score": final_score,
-            "finalScore": final_score,
-            "valueScore": value_score,
-            "sharpScore": market_score,
-            "modelEdgeScore": model_edge_score,
-            "evScore": ev_score,
-            "marketScore": market_score,
-            "divergenceScore": market_score,
-            "confidence": qualitative_confidence,
-
             "modelProb": round(model_prob, 2) if model_prob is not None else None,
             "modelEstimated": not model_is_real,
             "impliedProb": round(implied_prob, 2) if implied_prob is not None else None,
@@ -1471,12 +1159,8 @@ def build_picks(raw_data):
             
             "ev": ev,
             "evEstimated": ev_estimated,
-            "evaluation": evaluation,
-            "risk": risk,
-            "monteCarlo": monte_carlo,
             "coherence": coherence,
-            "reliability": round(reliability_multiplier, 2),
-            "whale": is_whale_flag,
+            "whale": pick_category == "WHALE",
             "handlePct": round(handle, 2),
             "betsPct": round(bets, 2),
             "divergence": divergence,
@@ -1492,12 +1176,6 @@ def build_picks(raw_data):
             "roi": market.get("roi"),
         }
 
-        item["freePick"] = (
-            evaluation in ("PREMIUM", "STRONG", "LEAN")
-            and risk != "HIGH"
-            and ev > -0.5
-            and stake > 0
-        )
         all_items.append(item)
 
     all_items.reverse()

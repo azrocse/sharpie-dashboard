@@ -765,13 +765,7 @@
             border-color: var(--blue) !important;
         }
 
-        /* EDITOR'S CHOICE: selección automática por análisis de evolución */
-        .pcard.editor-choice {
-            box-shadow: var(--shadow), 0 0 0 2px var(--gold), 0 0 18px rgba(251, 191, 36, 0.12) !important;
-            border-color: var(--gold) !important;
-        }
-
-        /* FREE PICK: borde gris -- picks que no califican como Editor's Choice ni Whale Alert */
+        /* Identidad visual de Free Pick */
         .pcard.free-pick {
             box-shadow: var(--shadow), 0 0 0 2px var(--muted) !important;
             border-color: var(--muted) !important;
@@ -874,57 +868,11 @@
             white-space: nowrap;
         }
 
-        .editor-choice-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 7px;
-            border: 1px solid var(--gold);
-            border-radius: 999px;
-            background: var(--amber-soft);
-            color: var(--gold);
-            font-size: 9px;
-            font-weight: 900;
-            letter-spacing: .25px;
-            white-space: nowrap;
-        }
-
-        .editor-analysis {
-            margin-top: 7px;
-            padding: 7px 9px;
-            border-left: 3px solid var(--gold);
-            border-radius: 6px;
-            background: var(--amber-soft);
-            color: var(--text);
-            font-size: 10px;
-            line-height: 1.4;
-        }
-
-        .editor-analysis-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            margin-bottom: 3px;
-        }
-
-        .editor-analysis strong { color: var(--gold); }
-        .editor-analysis .editor-good { color: var(--teal); font-weight: 800; }
-        .editor-analysis .editor-bad { color: var(--red); font-weight: 800; }
-        .editor-analysis details { margin-top: 4px; }
-        .editor-analysis summary { cursor: pointer; color: var(--gold); font-weight: 800; }
-        .editor-observation-list {
-            margin: 5px 0 0 0;
-            padding-left: 17px;
-            display: grid;
-            gap: 2px;
-        }
-
         .pcard-header {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
             margin-bottom: 10px;
             padding: 8px 10px;
             background: var(--panel2);
@@ -936,7 +884,7 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 6px;
             width: 100%;
         }
@@ -944,8 +892,27 @@
         .pcard-header-line2 {
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 100%;
+            justify-content: flex-end;
+            min-width: 0;
+        }
+
+        .pcard-header-status,
+        .pcard-header-category {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .pcard-header-category { margin-top: 6px; }
+
+        @media (max-width: 520px) {
+            .pcard-header { grid-template-columns: 1fr; }
+            .pcard-header-line2 { justify-content: flex-start; }
+            .pcard-header-line1 > span,
+            .pcard-header-status > span,
+            .pcard-header-category > span { max-width: 100%; }
         }
 
         .game-title {
@@ -1601,45 +1568,6 @@
         </div>
     </div>
 
-    <div class="stat-card expandable" id="cardFree" data-target="detailFree" style="border-left-color: var(--blue);">
-        <div class="stat-header">
-            <span class="stat-icon">🔓</span>
-            <div class="stat-body">
-                <div class="label">FREE PICKS</div>
-                <div class="stat-value" id="statFree">0</div>
-                <div class="stat-sub">Para redes</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailFree"></div>
-    </div>
-
-    <div class="stat-card expandable" id="cardEditor" data-target="detailEditor" style="border-left-color: var(--purple, #8b5cf6);">
-        <div class="stat-header">
-            <span class="stat-icon">🏆</span>
-            <div class="stat-body">
-                <div class="label">EDITORS CHOICE</div>
-                <div class="stat-value" id="statEditor">0</div>
-                <div class="stat-sub">Picks de mayor valor</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailEditor"></div>
-    </div>
-
-    <div class="stat-card expandable" id="cardWhale" data-target="detailWhale" style="border-left-color: var(--gold);">
-        <div class="stat-header">
-            <span class="stat-icon">🐋</span>
-            <div class="stat-body">
-                <div class="label">WHALE ALERTS</div>
-                <div class="stat-value" id="statWhale">0</div>
-                <div class="stat-sub">Dinero institucional</div>
-            </div>
-            <span class="stat-chevron">▾</span>
-        </div>
-        <div class="stat-popup" id="detailWhale"></div>
-    </div>
-
     <div class="stat-card expandable" id="cardProximos" data-target="detailProximos" style="border-left-color: var(--amber);">
         <div class="stat-header">
             <span class="stat-icon">⏳</span>
@@ -1651,17 +1579,6 @@
             <span class="stat-chevron">▾</span>
         </div>
         <div class="stat-popup" id="detailProximos"></div>
-    </div>
-
-    <div class="stat-card" id="cardConfianza" style="border-left-color: var(--muted);">
-        <div class="stat-header">
-            <span class="stat-icon">💰</span>
-            <div class="stat-body">
-                <div class="label">CONFIANZA</div>
-                <div class="stat-value textline" id="statConfianza">—</div>
-                <div class="stat-sub">Respaldo dinero</div>
-            </div>
-        </div>
     </div>
 
     <div class="stat-card expandable card-featured" id="cardMercado" data-target="detailMercado" style="border-left-color: var(--teal);">
@@ -1695,7 +1612,7 @@
     <div class="chart-card">
         <div class="chart-header">
             <span>📈 Distribución por encuentro</span>
-            <span class="mono" style="font-size:11px; color:var(--muted);">Edge vs Score</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">Edge por encuentro</span>
         </div>
         <div class="chart-container">
             <canvas id="edgeScatterChart"></canvas>
@@ -1722,13 +1639,8 @@
         </div>
         <select id="fSort">
             <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
-            <option value="recommended">🏆 Ordenar por: Recomendados / Editor</option>
-            <option value="score">🔥 Ordenar por: Mayor Score</option>
-            <option value="winprob">🎲 Ordenar por: Mayor Prob. de Victoria</option>
+            <option value="ev">📊 Ordenar por: Mayor EV</option>
         </select>
-        <button class="btn-chip" id="freePickOnly" aria-pressed="false">🔓 Free Picks</button>
-        <button class="btn-chip" id="editorOnly" aria-pressed="false">🏆 Editor's Choice</button>
-        <button class="btn-chip" id="whaleOnly" aria-pressed="false">🐋 Whale Alerts</button>
         <button class="btn-chip" id="featuredOnly" aria-pressed="false">⭐ Pick Destacado</button>
         <button class="btn-chip" id="watchlistOnly" aria-pressed="false">👁 My Watchlist</button>
         <select id="fDate"><option value="">📆 Todas las fechas</option></select>
@@ -1782,45 +1694,12 @@
 
         <div class="adv-card">
             <div class="adv-card-header">
-                <label class="adv-label">🔥 Score Integral</label>
-            </div>
-            <div class="adv-inputs">
-                <input type="number" id="fScoreMin" placeholder="Min" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fScoreMax" placeholder="Max" step="1">
-            </div>
-        </div>
-
-        <div class="adv-card">
-            <div class="adv-card-header">
-                <label class="adv-label">🎲 Prob. Victoria (%)</label>
-            </div>
-            <div class="adv-inputs">
-                <input type="number" id="fWinProbMin" placeholder="Min %" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fWinProbMax" placeholder="Max %" step="1">
-            </div>
-        </div>
-
-        <div class="adv-card">
-            <div class="adv-card-header">
                 <label class="adv-label">⚡ Divergencia Flujo (%)</label>
             </div>
             <div class="adv-inputs">
                 <input type="number" id="fDivergenciaMin" placeholder="Min %" step="1">
                 <span class="adv-sep">-</span>
                 <input type="number" id="fDivergenciaMax" placeholder="Max %" step="1">
-            </div>
-        </div>
-
-        <div class="adv-card">
-            <div class="adv-card-header">
-                <label class="adv-label">✅ Confiabilidad (%)</label>
-            </div>
-            <div class="adv-inputs">
-                <input type="number" id="fConfMin" placeholder="Min %" step="1">
-                <span class="adv-sep">-</span>
-                <input type="number" id="fConfMax" placeholder="Max %" step="1">
             </div>
         </div>
 
@@ -1837,12 +1716,12 @@
 
         <div class="adv-card">
             <div class="adv-card-header">
-                <label class="adv-label">🎯 Stake Recom. (%)</label>
+                <label class="adv-label">🎯 Stake Recom. (unidades)</label>
             </div>
             <div class="adv-inputs">
-                <input type="number" id="fStakeMin" placeholder="Min %" step="0.5">
+                <input type="number" id="fStakeMin" placeholder="Min u" min="1" max="5" step="0.5">
                 <span class="adv-sep">-</span>
-                <input type="number" id="fStakeMax" placeholder="Max %" step="0.5">
+                <input type="number" id="fStakeMax" placeholder="Max u" min="1" max="5" step="0.5">
             </div>
         </div>
 
@@ -2071,9 +1950,6 @@ const state = {
     date: "",
     league: "",
     trend: "",
-    editorOnly: false,
-    whaleOnly: false,
-    freePickOnly: false,
     featuredOnly: false,
     watchlistOnly: false,
     sort: "time",
@@ -2091,18 +1967,12 @@ const state = {
     betsMax: null,
     handleMin: null,
     handleMax: null,
-    scoreMin: null,
-    scoreMax: null,
     evMin: null,
     evMax: null,
     stakeMin: null,
     stakeMax: null,
     divergenciaMin: null,
     divergenciaMax: null,
-    confMin: null,
-    confMax: null,
-    winProbMin: null,
-    winProbMax: null,
     recommendation: ""
 };
 
@@ -2110,24 +1980,22 @@ function isAnyFilterActive() {
     const s = state;
     const numericKeys = [
         "modeloMin","modeloMax","cuotaMin","cuotaMax","edgeMin","edgeMax",
-        "betsMin","betsMax","handleMin","handleMax","scoreMin","scoreMax",
+        "betsMin","betsMax","handleMin","handleMax",
         "evMin","evMax","stakeMin","stakeMax","divergenciaMin","divergenciaMax",
-        "confMin","confMax","winProbMin","winProbMax"
     ];
     if (numericKeys.some(k => s[k] !== null && s[k] !== undefined)) return true;
     if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
-    if (s.editorOnly || s.whaleOnly || s.freePickOnly || s.featuredOnly || s.watchlistOnly) return true;
+    if (s.featuredOnly || s.watchlistOnly) return true;
     return false;
 }
 
 // ============ FILTROS GUARDADOS (localStorage) ============
 const FILTER_KEYS = [
     "search", "date", "league", "trend", "timeRange", "recommendation",
-    "editorOnly", "whaleOnly", "freePickOnly", "featuredOnly", "watchlistOnly",
+    "featuredOnly", "watchlistOnly",
     "modeloMin", "modeloMax", "cuotaMin", "cuotaMax", "edgeMin", "edgeMax",
-    "betsMin", "betsMax", "handleMin", "handleMax", "scoreMin", "scoreMax",
+    "betsMin", "betsMax", "handleMin", "handleMax",
     "evMin", "evMax", "stakeMin", "stakeMax", "divergenciaMin", "divergenciaMax",
-    "confMin", "confMax", "winProbMin", "winProbMax"
 ];
 const SAVED_FILTERS_KEY = "sharpie_saved_filters_v1";
 
@@ -2164,10 +2032,9 @@ function syncFilterInputsFromState() {
         search: "search", date: "fDate", league: "fLeague", trend: "fTrend", timeRange: "fTimeRange",
         modeloMin: "fModeloMin", modeloMax: "fModeloMax", cuotaMin: "fCuotaMin", cuotaMax: "fCuotaMax",
         edgeMin: "fEdgeMin", edgeMax: "fEdgeMax", betsMin: "fBetsMin", betsMax: "fBetsMax",
-        handleMin: "fHandleMin", handleMax: "fHandleMax", scoreMin: "fScoreMin", scoreMax: "fScoreMax",
+        handleMin: "fHandleMin", handleMax: "fHandleMax",
         evMin: "fEvMin", evMax: "fEvMax", stakeMin: "fStakeMin", stakeMax: "fStakeMax",
-        divergenciaMin: "fDivergenciaMin", divergenciaMax: "fDivergenciaMax",
-        confMin: "fConfMin", confMax: "fConfMax", winProbMin: "fWinProbMin", winProbMax: "fWinProbMax"
+        divergenciaMin: "fDivergenciaMin", divergenciaMax: "fDivergenciaMax"
     };
     Object.keys(idMap).forEach(key => {
         const el = document.getElementById(idMap[key]);
@@ -2176,21 +2043,15 @@ function syncFilterInputsFromState() {
         el.value = (val === null || val === undefined) ? "" : val;
     });
 
-    const editorBtn = document.getElementById("editorOnly");
-    const whaleBtn = document.getElementById("whaleOnly");
-    const freeBtn = document.getElementById("freePickOnly");
     const featuredBtn = document.getElementById("featuredOnly");
     const watchlistBtn = document.getElementById("watchlistOnly");
-    if (editorBtn) editorBtn.setAttribute("aria-pressed", String(state.editorOnly));
-    if (whaleBtn) whaleBtn.setAttribute("aria-pressed", String(state.whaleOnly));
-    if (freeBtn) freeBtn.setAttribute("aria-pressed", String(state.freePickOnly));
     if (featuredBtn) featuredBtn.setAttribute("aria-pressed", String(state.featuredOnly));
     if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", String(state.watchlistOnly));
 }
 
 function applyFilterPreset(preset) {
     FILTER_KEYS.forEach(k => {
-        const isToggle = ["editorOnly", "whaleOnly", "freePickOnly", "featuredOnly", "watchlistOnly"].includes(k);
+        const isToggle = ["featuredOnly", "watchlistOnly"].includes(k);
         const defaultVal = isToggle ? false : (typeof state[k] === "string" ? "" : null);
         state[k] = (preset.filters[k] !== undefined) ? preset.filters[k] : defaultVal;
     });
@@ -2314,13 +2175,6 @@ function updateChartsData(activeList) {
     }
 }
 
-function scoreBadgeClass(score) {
-    const s = Number(score || 0);
-    if (s >= 48) return "good";   // alineado con umbral PREMIUM real
-    if (s >= 30) return "warn";
-    return "bad";
-}
-
 // EV real vive en rango de -1% a +2% -- los umbrales viejos (8/3) eran de otra
 // escala y dejaban el badge siempre en rojo aunque el EV fuera positivo.
 function evBadgeClass(ev) {
@@ -2359,22 +2213,6 @@ function edgeColorClass(edge) {
     return "var(--red)";
 }
 
-function reliabilityBadgeClass(rel) {
-    const r = Number(rel);
-    if (isNaN(r)) return "neutral";
-    if (r >= 0.80) return "good";
-    if (r >= 0.55) return "warn";
-    return "bad";
-}
-
-function winProbBadgeClass(wp) {
-    const w = Number(wp);
-    if (isNaN(w)) return "neutral";
-    if (w >= 55) return "good";
-    if (w >= 45) return "warn";
-    return "bad";
-}
-
 function modelBadgeClass(prob) {
     const p = Number(prob);
     if (isNaN(p)) return "neutral";
@@ -2392,24 +2230,10 @@ function edgeModBadgeClass(edge) {
 }
 
 // ============================================================
-// PANEL DE DECISIÓN UNIFICADO -- reemplaza los 3 bloques dispersos
-// (grid-metrics arriba, panel de confianza/coherencia en medio, badges
-// de score/ev/stake/riesgo en el footer) por UNA sola grilla semaforizada.
-// Todo lo que informa la decisión vive en un solo lugar, un solo estilo.
-//
-// Modo Simple (default): solo lo que responde "¿apuesto o no, cuánto,
-// qué riesgo?" -- Recomendación, Score, EV, Stake, Riesgo.
-// Modo Avanzado: agrega la evidencia detrás de la decisión -- Modelo,
-// Edge Modelo, Cuota, Smart Money, Confiabilidad, Prob. Victoria, Coherencia.
-// "Confianza cualitativa" ya NO se muestra por separado: en la práctica es
-// casi constante entre picks (88% o 80% en casi todo el dataset real) porque
-// depende de señales que casi nunca cambian (1 punto de historial, Smart
-// Money duplicado del edge) -- no aporta información que distinga un pick
-// de otro, solo ruido. Sigue usándose puertas adentro para ajustar el score.
-// ============================================================
+// Panel compacto. No recalcula categorías ni métricas eliminadas.
 function unifiedDecisionPanelHtml(p) {
     const displayStake = Number(p.stake) || 0;
-    const stakeText = displayStake.toFixed(1) + '%';
+    const stakeText = displayStake.toFixed(1) + 'u';
 
     if (!state.advancedView) {
         // Modo Simple: solo 3 datos -- Modelo, Cuota, Stake.
@@ -2490,11 +2314,7 @@ function calculateEdge(p) {
 function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
 
 // ============================================================
-// CLASIFICACIÓN ÚNICA Y EXCLUYENTE: Free / Editor's Choice / Whale Alert
-// Parte 2: la categoría de cada pick (FREE/EDITORS/WHALE) ya viene calculada
-// desde el backend en p.pickCategory -- ya no se recalcula en el frontend
-// (eso era justo la fuente de los bugs de inconsistencia card-vs-filtro que
-// veníamos arrastrando). Se usa directo: p.pickCategory === "FREE", etc.
+// La categoría viene resuelta por el backend y solo se presenta aquí.
 
 // Equipos mediáticos: si el pick los menciona, es automáticamente "Pick Destacado"
 const FEATURED_TEAMS = [
@@ -2541,148 +2361,6 @@ function getChangedHistoryEntries(p) {
 
 // Parámetros de análisis de evolución para destacar automáticamente los picks.
 // Se mantienen separados de los filtros/clasificaciones existentes para no alterar su comportamiento.
-const EDITOR_ANALYSIS_CONFIG = Object.freeze({
-    minBets: 25,          // Antes: 30%
-    minHandle: 45,        // Antes: 50%
-    minGap: 8,            // Antes: 10%
-    minRatio: 1.15,       // Antes: 1.20x
-    minHistoryPoints: 1,  // Antes: 2
-    minEditorScore: 55,   // Antes: 65
-    minOdds: -140,        // Antes: -125
-    maxOdds: 115          // Antes: 100
-});
-
-function getEvolutionAnalysis(p) {
-    const bets = Number(p.betsPct || 0);
-    const handle = Number(p.handlePct || 0);
-    const gap = handle - bets;
-    const ratio = bets > 0 ? handle / bets : 0;
-
-    const history = getChangedHistoryEntries(p);
-
-    const previous = history.length >= 2 ? history[history.length - 2] : null;
-    const prevBets = previous && previous.betsPct != null ? Number(previous.betsPct) : null;
-    const prevHandle = previous && previous.handlePct != null ? Number(previous.handlePct) : null;
-    const prevGap = (prevBets != null && prevHandle != null) ? prevHandle - prevBets : null;
-
-    const betsDelta = prevBets != null ? bets - prevBets : null;
-    const handleDelta = prevHandle != null ? handle - prevHandle : null;
-    const gapDelta = prevGap != null ? gap - prevGap : null;
-
-    let oddsMove = null;
-    let oddsConfirmed = false;
-    const currentOdds = p.odds != null && p.odds !== '' ? p.odds : p.cuota;
-    if (previous && previous.odds != null && currentOdds != null && currentOdds !== '') {
-        const prevDec = parseOddsToDecimal(previous.odds);
-        const currentDec = parseOddsToDecimal(currentOdds);
-        if (prevDec > 0 && currentDec > 0) {
-            // En un mismo pick, menor cuota decimal = movimiento a favor del lado seleccionado.
-            oddsMove = prevDec - currentDec;
-            oddsConfirmed = oddsMove > 0.0005;
-        }
-    }
-
-    // Editor's Choice busca cuotas atractivas pero no tan positivas (relación cuota/análisis),
-    // rango -125 a +100: favoritos moderados o paridad, nunca long-shots.
-    const editorOddsVal = getAmericanOddsValue(currentOdds);
-    const oddsInEditorRange = editorOddsVal != null &&
-        editorOddsVal >= EDITOR_ANALYSIS_CONFIG.minOdds && editorOddsVal <= EDITOR_ANALYSIS_CONFIG.maxOdds;
-
-    // El backend (analyze.py v3 + generate_dashboard.py) ya evaluó confiabilidad real
-    // (Monte Carlo, coherencia cuota/dinero, redundancia de fuentes). Umbral en 0.70:
-    // la confianza arranca en 1.0 y CASI todo pick fresco recibe al menos una
-    // penalización menor (ej. -0.12 por historial corto), así que exigir >=0.95
-    // bloqueaba Editor's Choice incluso en picks limpios sin ninguna señal de alarma real.
-    const backendRiskOk = p.risk == null || p.risk !== "HIGH";
-    const backendConfidenceOk = p.confidence == null || p.confidence >= 0.70;
-    const backendCoherenceOk = p.coherence == null || p.coherence !== "contradictoria";
-
-    const criteria = {
-        bets: bets >= EDITOR_ANALYSIS_CONFIG.minBets,
-        handle: handle >= EDITOR_ANALYSIS_CONFIG.minHandle,
-        gap: gap >= EDITOR_ANALYSIS_CONFIG.minGap,
-        ratio: ratio >= EDITOR_ANALYSIS_CONFIG.minRatio,
-        gapTrend: gapDelta != null && gapDelta >= 0,
-        odds: oddsConfirmed,
-        oddsRange: oddsInEditorRange,
-        backend: backendRiskOk && backendConfidenceOk && backendCoherenceOk
-    };
-
-    let score = 0;
-    if (criteria.bets) score += 20;
-    if (criteria.handle) score += 20;
-    if (criteria.gap) score += 25;
-    if (criteria.ratio) score += 15;
-    if (criteria.gapTrend) score += 10;
-    if (criteria.odds) score += 10;
-
-    const enoughHistory = history.length >= EDITOR_ANALYSIS_CONFIG.minHistoryPoints;
-    const isEditorChoice = enoughHistory &&
-        criteria.bets && criteria.handle && criteria.gap && criteria.ratio &&
-        criteria.gapTrend && criteria.oddsRange && criteria.backend &&
-        score >= EDITOR_ANALYSIS_CONFIG.minEditorScore;
-
-    let movementLabel = 'Sin confirmación de cuota';
-    if (oddsConfirmed) movementLabel = 'Cuota a favor';
-    else if (oddsMove != null && oddsMove < -0.0005) movementLabel = 'Cuota en contra';
-
-    return {
-        bets, handle, gap, ratio,
-        prevBets, prevHandle, prevGap,
-        betsDelta, handleDelta, gapDelta,
-        oddsMove, oddsConfirmed, movementLabel,
-        historyPoints: history.length,
-        historyDetails: history,
-        hasHistoryOdds: history.some(h => h.odds != null && h.odds !== ''),
-        criteria, score, enoughHistory, isEditorChoice
-    };
-}
-
-function editorChoiceSummary(a) {
-    if (!a) return '';
-    const gapTxt = `${a.gap >= 0 ? '+' : ''}${a.gap.toFixed(1)} pts H-B`;
-    const trendTxt = a.gapDelta != null ? `${a.gapDelta >= 0 ? '+' : ''}${a.gapDelta.toFixed(1)} pts vs anterior` : 'evolución';
-    return `🏆 EDITOR'S CHOICE · ${gapTxt} · H/B ${a.ratio.toFixed(2)} · ${trendTxt} · ${a.movementLabel}`;
-}
-
-// Filtro Whale Alerts -- el backend (analyze.py v3) ya calcula esta confirmación
-// con coherencia cuota/dinero + profundidad de historial real, así que si el
-// campo viene presente como booleano es la fuente de verdad y NO se recalcula
-// con el heurístico numérico crudo de abajo (evita que dos lecturas distintas
-// del mismo pick se contradigan entre sí).
-function isWhalePick(p) {
-    if (typeof p.whale === "boolean") return p.whale;
-
-    const betsCondition = Number(p.betsPct || 0) <= 35;           // Antes: < 30%
-    const handleCondition = Number(p.handlePct || 0) >= 55;        // Antes: > 60%
-    const scoreCondition = Number(p.score || 0) >= 55;            // Antes: > 65
-    const smartMoneyCondition = calculateSmartMoney(p) >= 20;     // Antes: > 30%
-
-    const oddsVal = getAmericanOddsValue(p.odds != null && p.odds !== '' ? p.odds : p.cuota);
-    const oddsCondition = oddsVal != null && oddsVal >= -110;      // Antes: >= +100
-
-    return betsCondition && handleCondition && scoreCondition && smartMoneyCondition && oddsCondition;
-}
-
-// Filtro Free Picks Flexibilizado
-function isFreePick(p) {
-    if (typeof p.freePick === "boolean") return p.freePick;
-
-    const betsCondition = Number(p.betsPct || 0) >= 50;           // Antes: > 60%
-    const handleCondition = Number(p.handlePct || 0) >= 50;         // Antes: > 60%
-
-    const score = Number(p.score || 0);
-    const scoreCondition = score >= 20 && score <= 60;            // Antes: 25 a 44
-
-    const smartMoney = calculateSmartMoney(p);
-    const smartMoneyCondition = smartMoney >= 0 && smartMoney <= 20; // Antes: > 5 y < 15
-
-    const oddsVal = getAmericanOddsValue(p.odds != null && p.odds !== '' ? p.odds : p.cuota);
-    const oddsCondition = oddsVal != null && oddsVal >= -250 && oddsVal <= -110; // Antes: -200 a -125
-
-    return betsCondition && handleCondition && scoreCondition && smartMoneyCondition && oddsCondition;
-}
-
 function trendArrow(curr, prev) {
     if (curr == null || prev == null || isNaN(curr) || isNaN(prev)) return { arrow: '', cls: '' };
     const c = parseFloat(curr), pv = parseFloat(prev);
@@ -2779,11 +2457,7 @@ function buildEvolutionHtml(p) {
 // esta versión anterior por secciones ya no se usa, se deja fuera para no
 // tener dos fuentes de verdad del mismo panel.
 
-function isPremium(p) { return p.actionKey === "bet" && calculateEdge(p) >= 5 && (p.score || 0) >= 75; }
-
-// Clasificación visual puramente por score (0-100), sin overrides por flags externos
-// (whale, texto de acción del backend) para evitar sesgos: la señal whale y editor's choice
-// ya se muestran con sus propios badges independientes en la card.
+// Presentación de la señal calculada por el backend.
 function marketSignalVisualConfig(marketSignal) {
     switch (marketSignal) {
         case "SMART_MONEY":
@@ -2834,9 +2508,6 @@ function tickAllCountdowns() {
 setInterval(tickAllCountdowns, 1000);
 
 const statState = {
-    whale: [],
-    editor: [],
-    free: [],
     proximos: [],
     mercado: { SMART_MONEY: [], PUBLIC_HEAVY: [], CONSENSUS: [], MIXED: [], NO_ACTION: [] },
     mejor: []
@@ -2848,32 +2519,9 @@ function classifyMarketBucket(p) {
     return p.marketSignal || "NO_ACTION";
 }
 
-function computeConfianzaDelDinero(publicN, smartN) {
-    if (publicN === 0 && smartN === 0) return { text: "Tranquilo", color: "var(--muted)" };
-    if (smartN === 0 || publicN / smartN >= 2) return { text: "Alerta 🚨", color: "var(--red)" };
-    if (publicN === 0 || smartN / publicN >= 2) return { text: "Consenso ⚡", color: "var(--teal)" };
-    return { text: "Dividido", color: "var(--amber)" };
-}
-
-// Métricas de Mercado, Whale y Free Picks precisas y dinámicas
 function updateMetrics(activePicks) {
     const elAnalizados = document.getElementById("statAnalizados");
     if(elAnalizados) elAnalizados.innerText = activePicks.length;
-
-    const whalePicks = activePicks.filter(p => p.pickCategory === "WHALE");
-    const elWhale = document.getElementById("statWhale");
-    if(elWhale) elWhale.innerText = whalePicks.length;
-    statState.whale = whalePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
-
-    const editorPicks = activePicks.filter(p => p.pickCategory === "EDITORS");
-    const elEditor = document.getElementById("statEditor");
-    if(elEditor) elEditor.innerText = editorPicks.length;
-    statState.editor = editorPicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
-
-    const freePicks = activePicks.filter(p => p.pickCategory === "FREE");
-    const elFree = document.getElementById("statFree");
-    if(elFree) elFree.innerText = freePicks.length;
-    statState.free = freePicks.sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
 
     const soonPicks = activePicks.filter(p => {
         if (!p.iso) return false;
@@ -2893,25 +2541,10 @@ function updateMetrics(activePicks) {
         elMercado.innerText = `🐋 ${buckets.SMART_MONEY.length} · 🚨 ${buckets.PUBLIC_HEAVY.length} · 📊 ${buckets.CONSENSUS.length} · 🔀 ${buckets.MIXED.length} · ⚪ ${buckets.NO_ACTION.length}`;
     }
 
-    const conf = computeConfianzaDelDinero(buckets.PUBLIC_HEAVY.length, buckets.SMART_MONEY.length);
-    const elConfianza = document.getElementById("statConfianza");
-    if(elConfianza) elConfianza.innerText = conf.text;
-    const cardConf = document.getElementById("cardConfianza");
-    if(cardConf) cardConf.style.borderLeftColor = conf.color;
-
     const bestBet = [...activePicks].filter(p => p.actionKey === "bet")
-        .sort((a, b) => {
-            const ea = getEvolutionAnalysis(a), eb = getEvolutionAnalysis(b);
-            const va = (ea.isEditorChoice ? 1000 : 0) + ea.score + Number(a.score || 0);
-            const vb = (eb.isEditorChoice ? 1000 : 0) + eb.score + Number(b.score || 0);
-            return vb - va;
-        })[0];
-    const best = bestBet || [...activePicks].sort((a, b) => {
-        const ea = getEvolutionAnalysis(a), eb = getEvolutionAnalysis(b);
-        const va = (ea.isEditorChoice ? 1000 : 0) + ea.score + Number(a.score || 0);
-        const vb = (eb.isEditorChoice ? 1000 : 0) + eb.score + Number(b.score || 0);
-        return vb - va;
-    })[0];
+        .sort((a, b) => Number(b.ev || 0) - Number(a.ev || 0))[0];
+    const best = bestBet || [...activePicks]
+        .sort((a, b) => Number(b.ev || 0) - Number(a.ev || 0))[0];
     statState.mejor = best ? [best] : [];
     
     const elMejor = document.getElementById("statMejor");
@@ -2969,10 +2602,7 @@ function setupStatPopups() {
                 let items = [];
                 let popupTitle = "Detalle de Eventos";
                 
-                if (targetId === "detailWhale") { items = statState.whale; popupTitle = "Top Whale Picks"; }
-                else if (targetId === "detailEditor") { items = statState.editor; popupTitle = "Top Editor's Choice"; }
-                else if (targetId === "detailFree") { items = statState.free; popupTitle = "Top Free Picks"; }
-                else if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
+                if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
                 else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
                 else if (targetId === "detailMercado") {
                     items = [...statState.mercado.SMART_MONEY, ...statState.mercado.PUBLIC_HEAVY, ...statState.mercado.CONSENSUS, ...statState.mercado.MIXED, ...statState.mercado.NO_ACTION];
@@ -3052,23 +2682,14 @@ function renderActiveChips() {
     if (state.handleMin !== null || state.handleMax !== null) {
         chips.push({ key: "handle", label: `💵 Handle: ${state.handleMin ?? 0}% - ${state.handleMax ?? 100}%` });
     }
-    if (state.scoreMin !== null || state.scoreMax !== null) {
-        chips.push({ key: "score", label: `🔥 Score: ${state.scoreMin ?? 0} - ${state.scoreMax ?? 100}` });
-    }
     if (state.evMin !== null || state.evMax !== null) {
         chips.push({ key: "ev", label: `📊 EV: ${state.evMin ?? '-∞'}% - ${state.evMax ?? '+∞'}%` });
     }
     if (state.stakeMin !== null || state.stakeMax !== null) {
-        chips.push({ key: "stake", label: `🎯 Stake: ${state.stakeMin ?? 0}% - ${state.stakeMax ?? 'Max'}%` });
+        chips.push({ key: "stake", label: `🎯 Stake: ${state.stakeMin ?? 1}u - ${state.stakeMax ?? 5}u` });
     }
     if (state.divergenciaMin !== null || state.divergenciaMax !== null) {
         chips.push({ key: "divergencia", label: `⚡ Divergencia: ${state.divergenciaMin ?? '-∞'}% - ${state.divergenciaMax ?? '+∞'}%` });
-    }
-    if (state.confMin !== null || state.confMax !== null) {
-        chips.push({ key: "conf", label: `✅ Confiabilidad: ${state.confMin ?? 0}% - ${state.confMax ?? 100}%` });
-    }
-    if (state.winProbMin !== null || state.winProbMax !== null) {
-        chips.push({ key: "winProb", label: `🎲 Prob. Victoria: ${state.winProbMin ?? 0}% - ${state.winProbMax ?? 100}%` });
     }
 
     if (chips.length === 0) {
@@ -3091,12 +2712,9 @@ function clearSpecificAdvFilter(type) {
     if (type === "edge") { state.edgeMin = null; state.edgeMax = null; document.getElementById("fEdgeMin").value = ""; document.getElementById("fEdgeMax").value = ""; }
     if (type === "bets") { state.betsMin = null; state.betsMax = null; document.getElementById("fBetsMin").value = ""; document.getElementById("fBetsMax").value = ""; }
     if (type === "handle") { state.handleMin = null; state.handleMax = null; document.getElementById("fHandleMin").value = ""; document.getElementById("fHandleMax").value = ""; }
-    if (type === "score") { state.scoreMin = null; state.scoreMax = null; document.getElementById("fScoreMin").value = ""; document.getElementById("fScoreMax").value = ""; }
     if (type === "ev") { state.evMin = null; state.evMax = null; document.getElementById("fEvMin").value = ""; document.getElementById("fEvMax").value = ""; }
     if (type === "stake") { state.stakeMin = null; state.stakeMax = null; document.getElementById("fStakeMin").value = ""; document.getElementById("fStakeMax").value = ""; }
     if (type === "divergencia") { state.divergenciaMin = null; state.divergenciaMax = null; document.getElementById("fDivergenciaMin").value = ""; document.getElementById("fDivergenciaMax").value = ""; }
-    if (type === "conf") { state.confMin = null; state.confMax = null; document.getElementById("fConfMin").value = ""; document.getElementById("fConfMax").value = ""; }
-    if (type === "winProb") { state.winProbMin = null; state.winProbMax = null; document.getElementById("fWinProbMin").value = ""; document.getElementById("fWinProbMax").value = ""; }
     render();
 }
 
@@ -3157,9 +2775,6 @@ function applyFiltersAndSort(list) {
         if (state.handleMin !== null && !isNaN(state.handleMin) && handleVal < state.handleMin) return false;
         if (state.handleMax !== null && !isNaN(state.handleMax) && handleVal > state.handleMax) return false;
 
-        if (state.scoreMin !== null && !isNaN(state.scoreMin) && (p.score || 0) < state.scoreMin) return false;
-        if (state.scoreMax !== null && !isNaN(state.scoreMax) && (p.score || 0) > state.scoreMax) return false;
-
         const evVal = Number(p.ev || 0);
         if (state.evMin !== null && !isNaN(state.evMin) && evVal < state.evMin) return false;
         if (state.evMax !== null && !isNaN(state.evMax) && evVal > state.evMax) return false;
@@ -3172,17 +2787,6 @@ function applyFiltersAndSort(list) {
         if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
         if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
 
-        const relVal = p.reliability != null ? Number(p.reliability) * 100 : (p.confidence != null ? Number(p.confidence) * 100 : null);
-        if (state.confMin !== null && !isNaN(state.confMin) && (relVal === null || relVal < state.confMin)) return false;
-        if (state.confMax !== null && !isNaN(state.confMax) && (relVal === null || relVal > state.confMax)) return false;
-
-        const wpVal = p.monteCarlo && p.monteCarlo.win_probability != null ? Number(p.monteCarlo.win_probability) : null;
-        if (state.winProbMin !== null && !isNaN(state.winProbMin) && (wpVal === null || wpVal < state.winProbMin)) return false;
-        if (state.winProbMax !== null && !isNaN(state.winProbMax) && (wpVal === null || wpVal > state.winProbMax)) return false;
-
-        if (state.freePickOnly && p.pickCategory !== "FREE") return false;
-        if (state.editorOnly && p.pickCategory !== "EDITORS") return false;
-        if (state.whaleOnly && p.pickCategory !== "WHALE") return false;
         if (state.watchlistOnly && !isInWatchlist(p)) return false;
 
         if (state.featuredOnly && !isFeaturedPick(p)) return false;
@@ -3196,20 +2800,8 @@ function applyFiltersAndSort(list) {
 
     return result.sort((a, b) => {
         if (state.sort === "time") return new Date(a.iso || 0) - new Date(b.iso || 0);
-        if (state.sort === "score") return (b.score || 0) - (a.score || 0);
-        if (state.sort === "winprob") {
-            const wa = a.monteCarlo && a.monteCarlo.win_probability != null ? a.monteCarlo.win_probability : -1;
-            const wb = b.monteCarlo && b.monteCarlo.win_probability != null ? b.monteCarlo.win_probability : -1;
-            return wb - wa;
-        }
+        if (state.sort === "ev") return Number(b.ev || 0) - Number(a.ev || 0);
         if (state.sort === "edge") return calculateEdge(b) - calculateEdge(a);
-        if (state.sort === "recommended") {
-            const editorA = getEvolutionAnalysis(a);
-            const editorB = getEvolutionAnalysis(b);
-            const scoreA = (editorA.isEditorChoice ? 2000 : 0) + (isPremium(a) ? 1000 : 0) + (editorA.score * 5) + (a.score || 0);
-            const scoreB = (editorB.isEditorChoice ? 2000 : 0) + (isPremium(b) ? 1000 : 0) + (editorB.score * 5) + (b.score || 0);
-            return scoreB - scoreA;
-        }
         return 0;
     });
 }
@@ -3235,8 +2827,6 @@ function fallbackCopyText(text) {
 
 function getHeaderTag(category) {
     switch (category) {
-        case 'EDITORS':
-            return "🎖️ EDITOR'S CHOICE PICK";
         case 'WHALE':
             return "🐳 WHALE ALERT PICK";
         case 'FREE':
@@ -3260,9 +2850,9 @@ function copyPickForX(p) {
     const market = p.market ? ` (${p.market})` : "";
     const odds = p.odds || p.cuota || "Ev";
 
-    // 3. Formateo del Stake -- % directo del backend (Parte 4), ya viene limpio, sin redondeo a escala
+    // 3. Stake en unidades, ya ajustado a escala de 0.5 por el backend.
     const displayStake = Number(p.stake) || 0;
-    const stakeStr = `${displayStake.toFixed(1)}%`;
+    const stakeStr = `${displayStake.toFixed(1)}u`;
 
     // 4. Construcción del mensaje con la salida idéntica requerida
     const tweetText = `${header}\n` +
@@ -3580,13 +3170,7 @@ function updateFilterCounts(pendingPicks) {
         });
     }
 
-    const freeBtn = document.getElementById("freePickOnly");
-    const editorBtn = document.getElementById("editorOnly");
-    const whaleBtn = document.getElementById("whaleOnly");
     const watchlistBtn = document.getElementById("watchlistOnly");
-    if (freeBtn) freeBtn.textContent = `🔓 Free Picks (${pendingPicks.filter(p => p.pickCategory === "FREE").length})`;
-    if (editorBtn) editorBtn.textContent = `🏆 Editor's Choice (${pendingPicks.filter(p => p.pickCategory === "EDITORS").length})`;
-    if (whaleBtn) whaleBtn.textContent = `🐋 Whale Alerts (${pendingPicks.filter(p => p.pickCategory === "WHALE").length})`;
     if (watchlistBtn) watchlistBtn.textContent = `👁 My Watchlist (${pendingPicks.filter(p => isInWatchlist(p)).length})`;
 }
 
@@ -3627,17 +3211,14 @@ function render() {
 
     cardsView.innerHTML = activeList.map(p => {
         const isWhale = p.pickCategory === "WHALE";
-        const isEditor = p.pickCategory === "EDITORS";
         const isFree = p.pickCategory === "FREE";
-        const isPremium = !isWhale && !isEditor && !isFree;
+        const isPremiumPick = p.pickCategory === "PREMIUM";
         const isFeatured = isFeaturedPick(p);
         const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
         const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
-        const editorEval = getEvolutionAnalysis(p);
 
         let cardClasses = "pcard";
         if (isWhale) cardClasses += " whale-alert";
-        else if (isEditor) cardClasses += " editor-choice";
         else if (isFree) cardClasses += " free-pick";
 
         const config = marketSignalVisualConfig(p.marketSignal);
@@ -3660,16 +3241,17 @@ function render() {
                 <div>
                     <div class="pcard-header">
                         <div class="pcard-header-line1">
-                            <span class="badge-action" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">
-                                ${config.label}
-                            </span>
-                            ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
-                            ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
-                            ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
-                            ${isEditor ? `<span class="editor-choice-badge" title="${editorChoiceSummary(editorEval)}">🏆 EDITOR'S CHOICE</span>` : ''}
-                            ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
-                            ${isFree ? `<span class="free-pick-badge">🔓 FREE</span>` : ''}
-                            ${isPremium ? `<span class="premium-pick-badge">💎 PREMIUM PICK</span>` : ''}
+                            <div class="pcard-header-status">
+                                <span class="badge-action" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">${config.label}</span>
+                                ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
+                                ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
+                            </div>
+                            <div class="pcard-header-category">
+                                ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
+                                ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
+                                ${isFree ? `<span class="free-pick-badge">🔓 FREE PICK</span>` : ''}
+                                ${isPremiumPick ? `<span class="premium-pick-badge">💎 PREMIUM PICK</span>` : ''}
+                            </div>
                         </div>
                         <div class="pcard-header-line2">
                             <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
@@ -3764,48 +3346,9 @@ function setupListeners() {
     const fTrendEl = document.getElementById("fTrend");
     if (fTrendEl) fTrendEl.addEventListener("change", (e) => { state.trend = e.target.value; render(); });
 
-    // Filtros básicos directos Free / Editors / Whale -- filtran directo por
-    // p.pickCategory (Parte 2, calculado en el backend). Mutuamente excluyentes.
-    const editorBtn = document.getElementById("editorOnly");
-    const whaleBtn = document.getElementById("whaleOnly");
-    const freeBtn = document.getElementById("freePickOnly");
     const featuredBtn = document.getElementById("featuredOnly");
 
-    const deactivateBasicButtons = () => {
-        state.editorOnly = false;
-        state.whaleOnly = false;
-        state.freePickOnly = false;
-        if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
-        if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
-        if (freeBtn) freeBtn.setAttribute("aria-pressed", "false");
-    };
-
-    if (freeBtn) freeBtn.addEventListener("click", () => {
-        const activate = !state.freePickOnly;
-        deactivateBasicButtons();
-        state.freePickOnly = activate;
-        freeBtn.setAttribute("aria-pressed", String(activate));
-        render();
-    });
-
-    if (editorBtn) editorBtn.addEventListener("click", () => {
-        const activate = !state.editorOnly;
-        deactivateBasicButtons();
-        state.editorOnly = activate;
-        editorBtn.setAttribute("aria-pressed", String(activate));
-        render();
-    });
-
-    if (whaleBtn) whaleBtn.addEventListener("click", () => {
-        const activate = !state.whaleOnly;
-        deactivateBasicButtons();
-        state.whaleOnly = activate;
-        whaleBtn.setAttribute("aria-pressed", String(activate));
-        render();
-    });
-
-    // Featured Pick -- filtra únicamente por equipo mediático, independiente de la
-    // categoría de valor (Free/Editor/Whale), así que no se limpia junto con ellas.
+    // Pick destacado por equipo mediático.
     if (featuredBtn) featuredBtn.addEventListener("click", () => {
         state.featuredOnly = !state.featuredOnly;
         featuredBtn.setAttribute("aria-pressed", String(state.featuredOnly));
@@ -3872,14 +3415,8 @@ function setupListeners() {
 
     bindInput("fModeloMin", "modeloMin");
     bindInput("fModeloMax", "modeloMax");
-    bindInput("fScoreMin", "scoreMin");
-    bindInput("fScoreMax", "scoreMax");
-    bindInput("fWinProbMin", "winProbMin");
-    bindInput("fWinProbMax", "winProbMax");
     bindInput("fDivergenciaMin", "divergenciaMin");
     bindInput("fDivergenciaMax", "divergenciaMax");
-    bindInput("fConfMin", "confMin");
-    bindInput("fConfMax", "confMax");
     bindInput("fStakeMin", "stakeMin");
     bindInput("fStakeMax", "stakeMax");
     bindInput("fBetsMin", "betsMin");
@@ -3902,9 +3439,6 @@ function setupListeners() {
             state.date = "";
             state.league = "";
             state.trend = "";
-            state.editorOnly = false;
-            state.whaleOnly = false;
-            state.freePickOnly = false;
             state.featuredOnly = false;
             state.watchlistOnly = false;
             state.sort = "time";
@@ -3920,27 +3454,18 @@ function setupListeners() {
             state.betsMax = null;
             state.handleMin = null;
             state.handleMax = null;
-            state.scoreMin = null;
-            state.scoreMax = null;
             state.evMin = null;
             state.evMax = null;
             state.stakeMin = null;
             state.stakeMax = null;
             state.divergenciaMin = null;
             state.divergenciaMax = null;
-            state.confMin = null;
-            state.confMax = null;
-            state.winProbMin = null;
-            state.winProbMax = null;
 
             document.querySelectorAll(".toolbar input, .toolbar select").forEach(i => i.value = "");
             document.querySelectorAll(".adv-filters-panel input, .adv-filters-panel select").forEach(i => i.value = "");
             
             if (fSortEl) fSortEl.value = "time";
 
-            if (editorBtn) editorBtn.setAttribute("aria-pressed", "false");
-            if (whaleBtn) whaleBtn.setAttribute("aria-pressed", "false");
-            if (freeBtn) freeBtn.setAttribute("aria-pressed", "false");
             if (featuredBtn) featuredBtn.setAttribute("aria-pressed", "false");
             if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", "false");
 
