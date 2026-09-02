@@ -1096,6 +1096,93 @@ def build_picks(raw_data):
 
 
 # ============================================================
+# SELECCIÓN EDITORIAL PARA REDES
+# ============================================================
+FREE_RELEASE_LIMIT = 2
+FREE_RELEASE_SIGNALS = {
+    "SMART_MONEY", "REVERSE_LINE_MOVEMENT", "STEAM_MOVE",
+    "SHARP_VS_PUBLIC", "CONSENSUS",
+}
+
+
+def _free_release_score(item):
+    signals = set(item.get("marketSignals") or [item.get("marketSignal")])
+    signal_weight = sum({
+        "REVERSE_LINE_MOVEMENT": 60,
+        "STEAM_MOVE": 50,
+        "SMART_MONEY": 40,
+        "SHARP_VS_PUBLIC": 25,
+        "CONSENSUS": 10,
+    }.get(signal, 0) for signal in signals)
+    return (
+        signal_weight
+        + float(item.get("ev") or 0) * 10
+        + float(item.get("modelEdge") or 0) * 5
+        + float(item.get("stake") or 0) * 20
+    )
+
+
+def assign_free_releases(items, limit=FREE_RELEASE_LIMIT):
+    """Marca hasta dos publicaciones gratuitas sin degradar su categoría.
+
+    Prioriza VALUE y completa con PREMIUM. WHALE nunca se libera de forma
+    automática. Se buscan encuentros distintos para diversificar la muestra.
+    """
+    for item in items:
+        item["freeRelease"] = False
+        item["freeReleaseRank"] = None
+        item["publicationTier"] = None
+
+    eligible = []
+    for item in items:
+        signals = set(item.get("marketSignals") or [item.get("marketSignal")])
+        if item.get("pickCategory") not in {"VALUE", "PREMIUM"}: continue
+        if item.get("actionKey") != "bet": continue
+        if float(item.get("ev") or 0) < 1.0: continue
+        if float(item.get("modelEdge") or 0) <= 0: continue
+        if float(item.get("stake") or 0) < 1.0: continue
+        if not signals.intersection(FREE_RELEASE_SIGNALS): continue
+        eligible.append(item)
+
+    ordered = []
+    for category in ("VALUE", "PREMIUM"):
+        ordered.extend(sorted(
+            (item for item in eligible if item.get("pickCategory") == category),
+            key=_free_release_score,
+            reverse=True,
+        ))
+
+    selected, used_games = [], set()
+    for item in ordered:
+        game_key = str(item.get("game") or "").strip().lower()
+        if game_key and game_key in used_games: continue
+        selected.append(item)
+        if game_key: used_games.add(game_key)
+        if len(selected) >= limit: break
+
+    # Si solo existe valor en un mismo encuentro, permite completar el cupo.
+    if len(selected) < limit:
+        for item in ordered:
+            if item in selected: continue
+            selected.append(item)
+            if len(selected) >= limit: break
+
+    for rank, item in enumerate(selected, start=1):
+        item["freeRelease"] = True
+        item["freeReleaseRank"] = rank
+        item["publicationTier"] = "FREE_RELEASE"
+
+    for item in items:
+        if item.get("publicationTier") is not None: continue
+        if item.get("pickCategory") in {"PREMIUM", "WHALE"}:
+            item["publicationTier"] = "PREMIUM_ONLY"
+        elif item.get("pickCategory") == "VALUE":
+            item["publicationTier"] = "VALUE_POOL"
+
+    return items
+
+
+# ============================================================
 # GUARDAR HISTORIAL DIARIO
 # ============================================================
 def save_daily_history(
@@ -1148,7 +1235,7 @@ def generate_dashboard():
         print(f"[ERROR CRÍTICO] El archivo {source_json_path} está corrupto o truncado: {e}")
         raise SystemExit("Proceso detenido para evitar generar un index.html corrupto.")
 
-    all_events = build_picks(raw_data)
+    all_events = assign_free_releases(build_picks(raw_data))
 
     # ------------------------------------------------------------
     # BARRERA ANTI-SOBREESCRITURA (BLOQUEA VACÍOS)

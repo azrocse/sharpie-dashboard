@@ -133,7 +133,7 @@ def classify_pick_category(ev, market_signals, divergence):
 
     WHALE: oportunidad excepcional con Smart Money, EV > 18% y divergencia > 30.
     PREMIUM: EV > 6% respaldado por al menos una señal profesional.
-    FREE: EV moderado de 1% a 6% con señal válida de valor o consenso.
+    VALUE: EV moderado de 1% a 6% con señal válida de valor o consenso.
 
     PUBLIC_HEAVY, BALANCED_ACTION, LOW_LIQUIDITY y NO_ACTION son señales de
     contexto/precaución; por sí solas no convierten un pick en recomendación.
@@ -149,13 +149,13 @@ def classify_pick_category(ev, market_signals, divergence):
     if ev > 6.0 and signals.intersection(professional_signals):
         return "PREMIUM"
     if 1.0 <= ev <= 6.0 and signals.intersection(free_signals):
-        return "FREE"
+        return "VALUE"
     return None
 
 def action_from_category(category):
     if category == "WHALE": return "🟢 WHALE ALERT", "bet", "🔥 AHORA"
     if category == "PREMIUM": return "🟢 PREMIUM", "bet", "🔥 AHORA"
-    if category == "FREE": return "🟢 FREE PICK", "bet", "⚡ PRONTO"
+    if category == "VALUE": return "🟢 VALUE PICK", "bet", "⚡ PRONTO"
     return "🟡 SEGUIMIENTO", "pass", "👀 OBSERVAR"
 
 def normalize_history(market):

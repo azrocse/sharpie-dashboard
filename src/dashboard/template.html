@@ -850,6 +850,20 @@
             white-space: nowrap;
         }
 
+        .value-pick-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 7px;
+            border: 1px solid var(--teal);
+            border-radius: 999px;
+            background: var(--teal-soft);
+            color: var(--teal);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+        }
+
         .whale-header-badge {
             display: inline-flex;
             align-items: center;
@@ -1701,6 +1715,7 @@
             <option value="NO_ACTION">⚪ NO ACTION</option>
         </select>
         <button class="btn-chip" id="featuredOnly" aria-pressed="false">⭐ Pick Destacado</button>
+        <button class="btn-chip" id="freeReleaseOnly" aria-pressed="false">📣 Free para redes</button>
         <button class="btn-chip" id="watchlistOnly" aria-pressed="false">👁 My Watchlist</button>
         <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
         <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
@@ -1993,6 +2008,7 @@ const state = {
     league: "",
     trend: "",
     featuredOnly: false,
+    freeReleaseOnly: false,
     watchlistOnly: false,
     showFullMarket: false,
     sort: "time",
@@ -2028,14 +2044,14 @@ function isAnyFilterActive() {
     ];
     if (numericKeys.some(k => s[k] !== null && s[k] !== undefined)) return true;
     if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
-    if (s.featuredOnly || s.watchlistOnly) return true;
+    if (s.featuredOnly || s.freeReleaseOnly || s.watchlistOnly) return true;
     return false;
 }
 
 // ============ FILTROS GUARDADOS (localStorage) ============
 const FILTER_KEYS = [
     "search", "date", "league", "trend", "timeRange", "recommendation",
-    "featuredOnly", "watchlistOnly",
+    "featuredOnly", "freeReleaseOnly", "watchlistOnly",
     "modeloMin", "modeloMax", "cuotaMin", "cuotaMax", "edgeMin", "edgeMax",
     "betsMin", "betsMax", "handleMin", "handleMax",
     "evMin", "evMax", "stakeMin", "stakeMax", "divergenciaMin", "divergenciaMax",
@@ -2087,9 +2103,11 @@ function syncFilterInputsFromState() {
     });
 
     const featuredBtn = document.getElementById("featuredOnly");
+    const freeReleaseBtn = document.getElementById("freeReleaseOnly");
     const watchlistBtn = document.getElementById("watchlistOnly");
     const fullMarketBtn = document.getElementById("fullMarketToggle");
     if (featuredBtn) featuredBtn.setAttribute("aria-pressed", String(state.featuredOnly));
+    if (freeReleaseBtn) freeReleaseBtn.setAttribute("aria-pressed", String(state.freeReleaseOnly));
     if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", String(state.watchlistOnly));
     if (fullMarketBtn) {
         fullMarketBtn.setAttribute("aria-pressed", String(state.showFullMarket));
@@ -2099,7 +2117,7 @@ function syncFilterInputsFromState() {
 
 function applyFilterPreset(preset) {
     FILTER_KEYS.forEach(k => {
-        const isToggle = ["featuredOnly", "watchlistOnly"].includes(k);
+        const isToggle = ["featuredOnly", "freeReleaseOnly", "watchlistOnly"].includes(k);
         const defaultVal = isToggle ? false : (typeof state[k] === "string" ? "" : null);
         state[k] = (preset.filters[k] !== undefined) ? preset.filters[k] : defaultVal;
     });
@@ -2382,7 +2400,7 @@ function calculateSmartMoney(p) {
     return p.signedDivergence != null ? Number(p.signedDivergence) : 0;
 }
 
-const RECOMMENDED_CATEGORIES = new Set(["FREE", "PREMIUM", "WHALE"]);
+const RECOMMENDED_CATEGORIES = new Set(["VALUE", "PREMIUM", "WHALE"]);
 
 function isRecommendedPick(p) {
     return Boolean(p && p.actionKey === "bet" && RECOMMENDED_CATEGORIES.has(p.pickCategory));
@@ -2436,7 +2454,7 @@ function isMediaFeaturedPick(p) {
 
 function topPickRank(p) {
     if (!isRecommendedPick(p)) return -Infinity;
-    const categoryWeight = { WHALE: 4000, PREMIUM: 3000, FREE: 1500 }[p.pickCategory] || 0;
+    const categoryWeight = { WHALE: 4000, PREMIUM: 3000, VALUE: 1500 }[p.pickCategory] || 0;
     const signals = new Set(Array.isArray(p.marketSignals) ? p.marketSignals : [p.marketSignal]);
     const signalWeight =
         (signals.has("REVERSE_LINE_MOVEMENT") ? 600 : 0) +
@@ -2917,6 +2935,7 @@ function applyFiltersAndSort(list) {
         if (state.watchlistOnly && !isInWatchlist(p)) return false;
 
         if (state.featuredOnly && !isMediaFeaturedPick(p)) return false;
+        if (state.freeReleaseOnly && !p.freeRelease) return false;
 
         if (text) {
             const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
@@ -2952,14 +2971,15 @@ function fallbackCopyText(text) {
     document.body.removeChild(textArea);
 }
 
-function getHeaderTag(category) {
+function getHeaderTag(category, freeRelease = false) {
+    if (freeRelease) return "🔓 FREE PICK";
     switch (category) {
         case 'WHALE':
             return "🐳 WHALE ALERT PICK";
-        case 'FREE':
-            return "🔓 FREE PICK";
         case 'PREMIUM':
             return "💎 PREMIUM PICK";
+        case 'VALUE':
+            return "📈 VALUE PICK";
         default:
             return "👀 PICK EN OBSERVACIÓN";
     }
@@ -2967,7 +2987,7 @@ function getHeaderTag(category) {
 
 function copyPickForX(p) {
     // 1. Encabezado dinámico según la categoría real del pick (misma fuente que el borde/etiqueta de la card)
-    const header = getHeaderTag(p.pickCategory);
+    const header = getHeaderTag(p.pickCategory, Boolean(p.freeRelease));
 
     // 2. Extracción y formateo de datos
     const dateStr = p.date || new Date().toISOString().split('T')[0];
@@ -3297,6 +3317,8 @@ function updateFilterCounts(pendingPicks) {
 
     const watchlistBtn = document.getElementById("watchlistOnly");
     if (watchlistBtn) watchlistBtn.textContent = `👁 My Watchlist (${pendingPicks.filter(p => isInWatchlist(p)).length})`;
+    const freeReleaseBtn = document.getElementById("freeReleaseOnly");
+    if (freeReleaseBtn) freeReleaseBtn.textContent = `📣 Free para redes (${pendingPicks.filter(p => p.freeRelease).length})`;
 }
 
 function render() {
@@ -3356,8 +3378,9 @@ function render() {
 
     cardsView.innerHTML = activeList.map(p => {
         const isWhale = p.pickCategory === "WHALE";
-        const isFree = p.pickCategory === "FREE";
+        const isValue = p.pickCategory === "VALUE";
         const isPremiumPick = p.pickCategory === "PREMIUM";
+        const isFreeRelease = Boolean(p.freeRelease);
         const isTop = isTopPick(p);
         const isMediaFeatured = isMediaFeaturedPick(p);
         const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
@@ -3365,12 +3388,11 @@ function render() {
 
         let cardClasses = "pcard";
         if (isWhale) cardClasses += " whale-alert";
-        else if (isFree) cardClasses += " free-pick";
+        else if (isFreeRelease) cardClasses += " free-pick";
 
         const config = marketSignalVisualConfig(p.marketSignal);
         const allSignals = Array.isArray(p.marketSignals) && p.marketSignals.length ? p.marketSignals : [p.marketSignal];
         const signalSummary = allSignals.map(key => `${TREND_ICON[key] || ''} ${TREND_LABEL[key] || key}`).join(' · ');
-        const additionalSignals = Math.max(0, allSignals.length - 1);
         const primarySignalIcon = TREND_ICON[p.marketSignal] || '⚪';
         const primarySignalName = TREND_LABEL[p.marketSignal] || 'NO ACTION';
         const timer = getCountdownText(p.iso);
@@ -3395,7 +3417,6 @@ function render() {
                         <div class="signal-copy" title="${escapeHTML(signalSummary)}">
                             <span class="signal-kicker">SEÑAL DE MERCADO</span>
                             <strong class="signal-name">${primarySignalName}</strong>
-                            ${additionalSignals ? `<span class="signal-more">+${additionalSignals} confirmación${additionalSignals > 1 ? 'es' : ''}</span>` : ''}
                         </div>
                         <div class="card-hero-actions">
                             <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
@@ -3405,8 +3426,9 @@ function render() {
                                 ${isTop ? `<span class="status-icon" title="Mejor pick del momento">🏆</span>` : ''}
                                 ${isMediaFeatured ? `<span class="status-icon" title="Equipo mediático destacado">⭐</span>` : ''}
                                 ${isWhale ? `<span class="whale-header-badge">WHALE</span>` : ''}
-                                ${isFree ? `<span class="free-pick-badge">FREE</span>` : ''}
+                                ${isValue ? `<span class="value-pick-badge">VALUE</span>` : ''}
                                 ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
+                                ${isFreeRelease ? `<span class="free-pick-badge" title="Seleccionado para publicación gratuita #${p.freeReleaseRank || ''}">FREE RELEASE${p.freeReleaseRank ? ` #${p.freeReleaseRank}` : ''}</span>` : ''}
                             </div>
                         </div>
                     </div>
@@ -3508,6 +3530,13 @@ function setupListeners() {
         render();
     });
 
+    const freeReleaseBtn = document.getElementById("freeReleaseOnly");
+    if (freeReleaseBtn) freeReleaseBtn.addEventListener("click", () => {
+        state.freeReleaseOnly = !state.freeReleaseOnly;
+        freeReleaseBtn.setAttribute("aria-pressed", String(state.freeReleaseOnly));
+        render();
+    });
+
     const fullMarketBtn = document.getElementById("fullMarketToggle");
     if (fullMarketBtn) fullMarketBtn.addEventListener("click", () => {
         state.showFullMarket = !state.showFullMarket;
@@ -3601,6 +3630,7 @@ function setupListeners() {
             state.league = "";
             state.trend = "";
             state.featuredOnly = false;
+            state.freeReleaseOnly = false;
             state.watchlistOnly = false;
             state.showFullMarket = false;
             state.sort = "time";
@@ -3629,6 +3659,7 @@ function setupListeners() {
             if (fSortEl) fSortEl.value = "time";
 
             if (featuredBtn) featuredBtn.setAttribute("aria-pressed", "false");
+            if (freeReleaseBtn) freeReleaseBtn.setAttribute("aria-pressed", "false");
             if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", "false");
             if (fullMarketBtn) {
                 fullMarketBtn.setAttribute("aria-pressed", "false");
