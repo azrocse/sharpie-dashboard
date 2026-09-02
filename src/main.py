@@ -2,14 +2,41 @@ from pipeline.download import download_all
 from pipeline.parse import parse_all
 from pipeline.analyze import analyze_all
 from pipeline.export import export_all
+from pipeline.settle_history_espn import settle_history
 
-from dashboard.generate_dashboard import (
-    get_latest_file,
-    build_picks,
-    generate_dashboard,
-)
+from dashboard.generate_dashboard import generate_dashboard
 
-import json
+from datetime import datetime, timedelta, timezone
+
+
+CDMX_TIMEZONE = timezone(timedelta(hours=-6))
+
+
+def settle_recent_history(days=2):
+    """Liquida hoy y ayer sin bloquear el pipeline si ESPN no responde."""
+    cdmx_today = datetime.now(CDMX_TIMEZONE).date()
+    totals = {}
+
+    for offset in range(days):
+        date_text = (cdmx_today - timedelta(days=offset)).isoformat()
+        try:
+            summary = settle_history(date_filter=date_text)
+        except Exception as exc:
+            print(f"[AVISO ESPN] No se pudo revisar {date_text}: {exc}")
+            continue
+
+        for key, value in summary.items():
+            totals[key] = totals.get(key, 0) + value
+
+    if totals:
+        outcomes = [
+            f"{key}={totals.get(key, 0)}"
+            for key in ("WIN", "LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "ERROR")
+            if totals.get(key, 0)
+        ]
+        print("[ESPN] " + (" · ".join(outcomes) if outcomes else "Sin liquidaciones pendientes"))
+
+    return totals
 
 
 def main():
@@ -24,30 +51,17 @@ def main():
         parsed
     )
 
-    export_file = export_all(
+    export_all(
         analyzed
     )
 
-    # --------------------------------------------------
-    # Localizar y cargar el JSON generado por export_all
-    # --------------------------------------------------
-
-    filepath = get_latest_file()
-
-    if not filepath:
-        #print("[ERROR] No se encontró sharpie.json en data/analyzed")
-        return
-
-    with open(filepath, "r", encoding="utf-8") as f:
-        raw_data = json.load(f)
-
-    # --------------------------------------------------
-    # Construir eventos y generar dashboard
-    # --------------------------------------------------
-
-    events_data = build_picks(raw_data)
-
+    # generate_dashboard construye los eventos, actualiza el historial de
+    # valor y genera index.html/picks.json. No se reconstruyen dos veces.
     generate_dashboard()
+
+    # La liquidación es independiente: una caída de ESPN nunca debe impedir
+    # que el dashboard principal se genere.
+    settle_recent_history()
 
 
 if __name__ == "__main__":
