@@ -1657,10 +1657,14 @@
         <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
         <select id="fTrend">
             <option value="">📊 Todas las señales</option>
+            <option value="STEAM_MOVE">💨 STEAM MOVE</option>
+            <option value="REVERSE_LINE_MOVEMENT">↩️ REVERSE LINE MOVEMENT</option>
             <option value="SMART_MONEY">🐋 SMART MONEY</option>
             <option value="PUBLIC_HEAVY">🚨 PUBLIC HEAVY</option>
             <option value="CONSENSUS">📊 CONSENSUS</option>
-            <option value="MIXED">🔀 MIXED</option>
+            <option value="SHARP_VS_PUBLIC">⚔️ SHARP VS PUBLIC</option>
+            <option value="BALANCED_ACTION">⚖️ BALANCED ACTION</option>
+            <option value="LOW_LIQUIDITY">💧 LOW LIQUIDITY</option>
             <option value="NO_ACTION">⚪ NO ACTION</option>
         </select>
         <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
@@ -2098,22 +2102,30 @@ function renderSavedFilterChips() {
     });
 }
 
-// Parte 3: 5 señales de mercado homologadas a inglés -- únicas, calculadas
-// en el backend (p.marketSignal / p.trendKey). El frontend solo pinta.
+// Catálogo exclusivo calculado en analyze.py; el frontend solo presenta.
 const TREND_LABEL = {
+    STEAM_MOVE: "STEAM MOVE",
+    REVERSE_LINE_MOVEMENT: "REVERSE LINE MOVEMENT",
     SMART_MONEY: "SMART MONEY",
     PUBLIC_HEAVY: "PUBLIC HEAVY",
     CONSENSUS: "CONSENSUS",
-    MIXED: "MIXED",
+    SHARP_VS_PUBLIC: "SHARP VS PUBLIC",
+    BALANCED_ACTION: "BALANCED ACTION",
+    LOW_LIQUIDITY: "LOW LIQUIDITY",
     NO_ACTION: "NO ACTION"
 };
 const TREND_ICON = {
+    STEAM_MOVE: "💨",
+    REVERSE_LINE_MOVEMENT: "↩️",
     SMART_MONEY: "🐋",
     PUBLIC_HEAVY: "🚨",
     CONSENSUS: "📊",
-    MIXED: "🔀",
+    SHARP_VS_PUBLIC: "⚔️",
+    BALANCED_ACTION: "⚖️",
+    LOW_LIQUIDITY: "💧",
     NO_ACTION: "⚪"
 };
+const MARKET_SIGNAL_KEYS = Object.keys(TREND_LABEL);
 
 let edgeChartInstance = null;
 let marketChartInstance = null;
@@ -2147,8 +2159,8 @@ function initCharts() {
         marketChartInstance = new Chart(ctxDoughnut, {
             type: 'doughnut',
             data: {
-                labels: ['Smart Money', 'Public Heavy', 'Consensus', 'Mixed', 'No Action'],
-                datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: ['#2563eb', '#fb7185', '#2dd4bf', '#fbbf24', '#94a3b8'], borderWidth: 0 }]
+                labels: MARKET_SIGNAL_KEYS.map(key => TREND_LABEL[key]),
+                datasets: [{ data: MARKET_SIGNAL_KEYS.map(() => 0), backgroundColor: ['#06b6d4', '#8b5cf6', '#2563eb', '#fb7185', '#2dd4bf', '#f59e0b', '#64748b', '#38bdf8', '#94a3b8'], borderWidth: 0 }]
             },
             options: {
                 responsive: true,
@@ -2168,15 +2180,13 @@ function updateChartsData(activeList) {
     }
 
     if (marketChartInstance) {
-        const counts = { SMART_MONEY: 0, PUBLIC_HEAVY: 0, CONSENSUS: 0, MIXED: 0, NO_ACTION: 0 };
+        const counts = Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, 0]));
         activeList.forEach(p => { counts[classifyMarketBucket(p)]++; });
-        marketChartInstance.data.datasets[0].data = [counts.SMART_MONEY, counts.PUBLIC_HEAVY, counts.CONSENSUS, counts.MIXED, counts.NO_ACTION];
+        marketChartInstance.data.datasets[0].data = MARKET_SIGNAL_KEYS.map(key => counts[key]);
         marketChartInstance.update();
     }
 }
 
-// EV real vive en rango de -1% a +2% -- los umbrales viejos (8/3) eran de otra
-// escala y dejaban el badge siempre en rojo aunque el EV fuera positivo.
 function evBadgeClass(ev) {
     const v = Number(ev || 0);
     if (v >= 0.5) return "good";
@@ -2248,7 +2258,7 @@ function unifiedDecisionPanelHtml(p) {
     const modelEdgeVal = p.modelEdge != null ? Number(p.modelEdge) : null;
     const smartMoneyVal = calculateSmartMoney(p);
 
-    // Grid 3 columnas (2 filas): Modelo / Edge Modelo / EV -- Cuota / Stake / Smart Money
+    // Métricas calculadas por la única autoridad matemática: analyze.py.
     const advGrid = [
         `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`,
@@ -2256,7 +2266,7 @@ function unifiedDecisionPanelHtml(p) {
 
         `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
         `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
-        `<span class="badge-tag ${smartMoneyVal >= 4 ? 'good' : (smartMoneyVal > 0 ? 'warn' : 'neutral')}">💰 Smart Money <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
+        `<span class="badge-tag ${smartMoneyVal >= 15 ? 'good' : (smartMoneyVal > 0 ? 'warn' : 'neutral')}">⚡ Divergencia <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
     ];
 
     return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div></div>`;
@@ -2306,12 +2316,12 @@ function isEventPending(p) {
 }
 
 function calculateEdge(p) { 
-    if (p.modelEdge !== undefined && p.modelEdge !== null) return Number(p.modelEdge);
-    if (p.edge !== undefined && p.edge !== null) return Number(p.edge);
-    return 0; 
+    return p.modelEdge !== undefined && p.modelEdge !== null ? Number(p.modelEdge) : 0;
 }
 
-function calculateSmartMoney(p) { return (p.handlePct != null && p.betsPct != null) ? (p.handlePct - p.betsPct) : 0; }
+function calculateSmartMoney(p) {
+    return p.signedDivergence != null ? Number(p.signedDivergence) : 0;
+}
 
 // ============================================================
 // La categoría viene resuelta por el backend y solo se presenta aquí.
@@ -2460,14 +2470,22 @@ function buildEvolutionHtml(p) {
 // Presentación de la señal calculada por el backend.
 function marketSignalVisualConfig(marketSignal) {
     switch (marketSignal) {
+        case "STEAM_MOVE":
+            return { bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "💨 STEAM MOVE" };
+        case "REVERSE_LINE_MOVEMENT":
+            return { bg: "rgba(139,92,246,.12)", border: "#8b5cf6", text: "#8b5cf6", label: "↩️ REVERSE LINE MOVEMENT" };
         case "SMART_MONEY":
             return { bg: "var(--blue-soft)", border: "var(--blue)", text: "var(--blue)", label: "🐋 SMART MONEY" };
         case "PUBLIC_HEAVY":
             return { bg: "var(--red-soft)", border: "var(--red)", text: "var(--red)", label: "🚨 PUBLIC HEAVY" };
         case "CONSENSUS":
             return { bg: "var(--teal-soft)", border: "var(--teal)", text: "var(--teal)", label: "📊 CONSENSUS" };
-        case "MIXED":
-            return { bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "🔀 MIXED" };
+        case "SHARP_VS_PUBLIC":
+            return { bg: "var(--amber-soft)", border: "var(--amber)", text: "var(--amber)", label: "⚔️ SHARP VS PUBLIC" };
+        case "BALANCED_ACTION":
+            return { bg: "var(--panel2)", border: "var(--muted)", text: "var(--muted)", label: "⚖️ BALANCED ACTION" };
+        case "LOW_LIQUIDITY":
+            return { bg: "var(--blue-soft)", border: "#38bdf8", text: "#38bdf8", label: "💧 LOW LIQUIDITY" };
         default:
             return { bg: "var(--panel2)", border: "var(--border)", text: "var(--muted)", label: "⚪ NO ACTION" };
     }
@@ -2509,12 +2527,10 @@ setInterval(tickAllCountdowns, 1000);
 
 const statState = {
     proximos: [],
-    mercado: { SMART_MONEY: [], PUBLIC_HEAVY: [], CONSENSUS: [], MIXED: [], NO_ACTION: [] },
+    mercado: Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, []])),
     mejor: []
 };
 
-// Parte 3: el bucket de Análisis de Mercado ahora refleja las 5 señales
-// reales directo desde p.marketSignal (backend) -- sin comprimir a 3 buckets.
 function classifyMarketBucket(p) {
     return p.marketSignal || "NO_ACTION";
 }
@@ -2532,13 +2548,13 @@ function updateMetrics(activePicks) {
     if(elProximos) elProximos.innerText = soonPicks.length;
     statState.proximos = soonPicks;
 
-    const buckets = { SMART_MONEY: [], PUBLIC_HEAVY: [], CONSENSUS: [], MIXED: [], NO_ACTION: [] };
+    const buckets = Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, []]));
     activePicks.forEach(p => buckets[classifyMarketBucket(p)].push(p));
     statState.mercado = buckets;
     
     const elMercado = document.getElementById("statMercado");
     if (elMercado) {
-        elMercado.innerText = `🐋 ${buckets.SMART_MONEY.length} · 🚨 ${buckets.PUBLIC_HEAVY.length} · 📊 ${buckets.CONSENSUS.length} · 🔀 ${buckets.MIXED.length} · ⚪ ${buckets.NO_ACTION.length}`;
+        elMercado.innerText = `💨 ${buckets.STEAM_MOVE.length} · ↩️ ${buckets.REVERSE_LINE_MOVEMENT.length} · 🐋 ${buckets.SMART_MONEY.length} · ⚔️ ${buckets.SHARP_VS_PUBLIC.length} · 🚨 ${buckets.PUBLIC_HEAVY.length}`;
     }
 
     const bestBet = [...activePicks].filter(p => p.actionKey === "bet")
@@ -2605,7 +2621,7 @@ function setupStatPopups() {
                 if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
                 else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
                 else if (targetId === "detailMercado") {
-                    items = [...statState.mercado.SMART_MONEY, ...statState.mercado.PUBLIC_HEAVY, ...statState.mercado.CONSENSUS, ...statState.mercado.MIXED, ...statState.mercado.NO_ACTION];
+                    items = MARKET_SIGNAL_KEYS.flatMap(key => statState.mercado[key] || []);
                     popupTitle = "Picks de Mercado";
                 }
 
@@ -3158,15 +3174,11 @@ function updateFilterCounts(pendingPicks) {
 
     const fTrend = document.getElementById("fTrend");
     if (fTrend) {
-        const counts = { SMART_MONEY: 0, PUBLIC_HEAVY: 0, CONSENSUS: 0, MIXED: 0, NO_ACTION: 0 };
+        const counts = Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, 0]));
         pendingPicks.forEach(p => { if (p.marketSignal in counts) counts[p.marketSignal]++; });
-        const labels = {
-            SMART_MONEY: "🐋 SMART MONEY", PUBLIC_HEAVY: "🚨 PUBLIC HEAVY",
-            CONSENSUS: "📊 CONSENSUS", MIXED: "🔀 MIXED", NO_ACTION: "⚪ NO ACTION"
-        };
         Array.from(fTrend.options).forEach(opt => {
             if (!opt.value) { opt.textContent = "📊 Todas las señales"; return; }
-            opt.textContent = `${labels[opt.value]} (${counts[opt.value] || 0})`;
+            opt.textContent = `${TREND_ICON[opt.value]} ${TREND_LABEL[opt.value]} (${counts[opt.value] || 0})`;
         });
     }
 
@@ -3222,6 +3234,9 @@ function render() {
         else if (isFree) cardClasses += " free-pick";
 
         const config = marketSignalVisualConfig(p.marketSignal);
+        const allSignals = Array.isArray(p.marketSignals) && p.marketSignals.length ? p.marketSignals : [p.marketSignal];
+        const signalSummary = allSignals.map(key => `${TREND_ICON[key] || ''} ${TREND_LABEL[key] || key}`).join(' · ');
+        const additionalSignals = Math.max(0, allSignals.length - 1);
         const timer = getCountdownText(p.iso);
         const edgeVal = calculateEdge(p);
         const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
@@ -3242,7 +3257,8 @@ function render() {
                     <div class="pcard-header">
                         <div class="pcard-header-line1">
                             <div class="pcard-header-status">
-                                <span class="badge-action" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">${config.label}</span>
+                                <span class="badge-action" title="${escapeHTML(signalSummary)}" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">${config.label}</span>
+                                ${additionalSignals ? `<span class="badge-action" title="${escapeHTML(signalSummary)}">+${additionalSignals} señal${additionalSignals > 1 ? 'es' : ''}</span>` : ''}
                                 ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
                                 ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
                             </div>

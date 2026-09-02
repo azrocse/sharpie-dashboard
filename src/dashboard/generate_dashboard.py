@@ -343,93 +343,17 @@ def american_implied_probability(american_odds):
 # inglés. Única fuente de verdad (antes se recalculaba distinto en backend
 # y frontend -- ahora vive solo aquí).
 # ============================================================
-def classify_market_signal(signed_divergence, bets, handle, ev, model_edge):
-    if signed_divergence >= 15 and ev >= 3.0 and model_edge >= 2.0:
-        return "SMART_MONEY"
-
-    if signed_divergence <= -15:
-        return "PUBLIC_HEAVY"
-
-    if -10 <= signed_divergence <= 10:
-        avg_volume = (bets + handle) / 2.0
-        if avg_volume >= 70:
-            return "CONSENSUS"
-        if avg_volume >= 50:
-            return "MIXED"
-
-    return "NO_ACTION"
-
-
 MARKET_SIGNAL_LABELS = {
+    "STEAM_MOVE": "💨 STEAM MOVE",
+    "REVERSE_LINE_MOVEMENT": "↩️ REVERSE LINE MOVEMENT",
     "SMART_MONEY": "🐋 SMART MONEY",
     "PUBLIC_HEAVY": "🚨 PUBLIC HEAVY",
     "CONSENSUS": "📊 CONSENSUS",
-    "MIXED": "🔀 MIXED",
+    "SHARP_VS_PUBLIC": "⚔️ SHARP VS PUBLIC",
+    "BALANCED_ACTION": "⚖️ BALANCED ACTION",
+    "LOW_LIQUIDITY": "💧 LOW LIQUIDITY",
     "NO_ACTION": "⚪ NO ACTION"
 }
-
-
-# ============================================================
-# CATEGORÍA DE PICK: reglas directas basadas únicamente en EV, señal y,
-# para Whale Alert, divergencia. No hay puntuaciones ni análisis paralelos.
-# ============================================================
-def _raw_american_odds(odds_raw):
-    if odds_raw is None:
-        return None
-    s = str(odds_raw).strip().upper()
-    if s in ("EVEN", "PK", "PICK", "—", ""):
-        return 100 if s == "EVEN" or s == "PK" or s == "PICK" else None
-    try:
-        return int(float(s.replace("+", "")))
-    except (TypeError, ValueError):
-        return None
-
-
-def classify_pick_category(ev, market_signal, signed_divergence):
-    if ev is None or market_signal is None:
-        return None
-
-    if market_signal == "SMART_MONEY" and ev > 6.0:
-        if signed_divergence is not None and signed_divergence > 30.0:
-            return "WHALE"
-        return "PREMIUM"
-
-    if market_signal in ("CONSENSUS", "PUBLIC_HEAVY") and 1.0 <= ev <= 3.0:
-        return "FREE"
-
-    return None
-
-
-# ============================================================
-# PARTE 4: STAKE AUTOMÁTICO POR SEÑAL -- reemplaza el stake Kelly anterior.
-# Determinístico: solo depende de la señal de mercado (y del EV dentro de
-# SMART_MONEY, por interpolación lineal).
-# ============================================================
-def calculate_kelly_stake(ev, model_prob, decimal_odds):
-    """
-    Kelly fraccionado: si no hay ventaja real (EV<=0) o faltan datos para
-    calcularlo, no hay stake. Con ventaja, el tamaño de Kelly completo se
-    reduce a una fracción conservadora y se ajusta a la escala fija
-    1.0-5.0 en bloques de 0.5 (nunca 2.1, 3.7, etc.).
-    """
-    if ev is None or ev <= 0 or model_prob is None or decimal_odds is None or decimal_odds <= 1:
-        return 0.0
-
-    p = model_prob / 100.0
-    q = 1.0 - p
-    b = decimal_odds - 1.0
-
-    kelly_full = (b * p - q) / b
-    if kelly_full <= 0:
-        return 0.0
-
-    KELLY_FRACTION = 0.5  # medio Kelly: fracción conservadora y explícita
-    kelly_fraction_pct = kelly_full * KELLY_FRACTION * 100.0
-
-    # 0-10% de Kelly fraccionado se traduce proporcionalmente a 1-5 unidades.
-    raw = 1.0 + min(kelly_fraction_pct, 10.0) * 0.4
-    raw = max(1.0, min(5.0, raw))
-    return round(raw * 2) / 2.0  # bloques de 0.5
 
 
 # ============================================================
@@ -1055,64 +979,46 @@ def build_picks(raw_data):
         raw_odds = market.get("odds", "—")
         odds_str = str(raw_odds).strip() if raw_odds is not None else "—"
         implied_prob = market.get("impliedProb")
-        if implied_prob is None and odds_str != "—":
-            implied_prob = american_implied_probability(odds_str)
 
         # ----------------------------------------------------
         # 3. PROBABILIDAD DEL MODELO Y MODEL EDGE
         # ----------------------------------------------------
-        raw_model = market.get("modelProb")
-        model_prob = None
-
-        if raw_model is not None:
-            try:
-                val = float(raw_model)
-                model_prob = val * 100.0 if 0 < val <= 1.0 else val
-            except (ValueError, TypeError):
-                model_prob = None
-
-        if market.get("modelEdge") is not None:
-            model_edge = safe_float(market.get("modelEdge"))
-        elif model_prob is not None and implied_prob is not None:
-            model_edge = model_prob - implied_prob
-        else:
-            model_edge = 0.0
-
-        model_is_real = bool(market.get("modelIsReal", False))
+        model_prob = market.get("modelProb")
+        model_edge = market.get("modelEdge")
 
         # ----------------------------------------------------
         # 4. EV Y ESTIMACIÓN
         # ----------------------------------------------------
-        decimal_odds = american_to_decimal(odds_str) if odds_str != "—" else None
-
-        raw_ev = market.get("ev")
-        if raw_ev is not None:
-            ev = round(safe_float(raw_ev), 2)
-            ev_estimated = bool(market.get("evEstimated", False))
-        else:
-            if model_prob is not None and decimal_odds is not None:
-                ev = round(((model_prob / 100.0) * decimal_odds - 1.0) * 100.0, 2)
-                ev_estimated = False
-            else:
-                ev = 0.0
-                ev_estimated = True
+        ev = market.get("ev")
 
         action_text = market.get("action", "🔴 PASAR")
 
-        signed_divergence = round(market.get("signedDivergence", handle - bets), 1)
-        divergence = round(abs(market.get("divergence", signed_divergence)), 1)
+        signed_divergence = market.get("signedDivergence")
+        divergence = market.get("divergence")
 
         # Señal de mercado (Parte 3) y categoría de pick (Parte 2): única
         # fuente de verdad en inglés, ya no se recalculan heurísticamente en
         # el frontend ni con el texto viejo en español.
-        market_signal = classify_market_signal(signed_divergence, bets, handle, ev, model_edge)
+        market_signal = market.get("marketSignal")
+        pick_category = market.get("pickCategory")
+        stake = market.get("stake")
 
-        model_is_real_flag = bool(market.get("modelIsReal", model_is_real))
+        required_metrics = (
+            implied_prob, model_prob, model_edge, ev, signed_divergence,
+            divergence, market_signal, stake,
+        )
+        if any(value is None for value in required_metrics):
+            continue
 
-        pick_category = classify_pick_category(ev, market_signal, signed_divergence)
-
-        # Stake determinístico por señal (Parte 4) -- reemplaza el Kelly anterior.
-        stake = calculate_kelly_stake(ev, model_prob, decimal_odds)
+        implied_prob = round(float(implied_prob), 2)
+        model_prob = round(float(model_prob), 2)
+        model_edge = round(float(model_edge), 2)
+        ev = round(float(ev), 2)
+        signed_divergence = round(float(signed_divergence), 2)
+        divergence = round(float(divergence), 2)
+        stake = float(stake)
+        if market_signal not in MARKET_SIGNAL_LABELS:
+            continue
 
         pick_history_full = build_pick_history_full(market.get("league", "Otras Ligas"), game, pick, market_name, kickoff_iso=iso)
 
@@ -1131,7 +1037,7 @@ def build_picks(raw_data):
             market.get("league", "Otras Ligas"), game, pick, market_name, date, clv,
             extra={
                 "whale": pick_category == "WHALE",
-                "modelIsReal": model_is_real_flag
+                "modelSource": market.get("modelSource")
             }
         )
 
@@ -1148,17 +1054,22 @@ def build_picks(raw_data):
             "trend": MARKET_SIGNAL_LABELS[market_signal],
             "trendKey": market_signal,
             "marketSignal": market_signal,
+            "marketSignals": market.get("marketSignals", [market_signal]),
             "pickCategory": pick_category,
             "priority": market.get("priority", "👀 OBSERVAR"),
             "priorityKey": classify_priority(market.get("priority", "")),
             "stake": stake,
             "modelProb": round(model_prob, 2) if model_prob is not None else None,
-            "modelEstimated": not model_is_real,
+            "fairProb": market.get("fairProb"),
+            "flowAdjustment": market.get("flowAdjustment"),
+            "modelSource": market.get("modelSource"),
+            "lineMove": market.get("lineMove"),
+            "lineMoveMinutes": market.get("lineMoveMinutes"),
+            "liquidityStatus": market.get("liquidityStatus"),
             "impliedProb": round(implied_prob, 2) if implied_prob is not None else None,
             "modelEdge": round(model_edge, 2),
             
             "ev": ev,
-            "evEstimated": ev_estimated,
             "coherence": coherence,
             "whale": pick_category == "WHALE",
             "handlePct": round(handle, 2),
