@@ -1598,9 +1598,9 @@
         <div class="stat-header">
             <span class="stat-icon">🎯</span>
             <div class="stat-body">
-                <div class="label">PICKS ANALIZADOS</div>
+                <div class="label">OPORTUNIDADES</div>
                 <div class="stat-value" id="statAnalizados">0</div>
-                <div class="stat-sub">Filtrados activos</div>
+                <div class="stat-sub" id="statAnalizadosSub">0 picks analizados</div>
             </div>
         </div>
     </div>
@@ -1706,6 +1706,7 @@
         <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
         <button class="clear-btn" id="btnSaveFilter" style="border-color: var(--teal); color: var(--teal);">💾 Guardar filtro</button>
         <button class="clear-btn" id="clearBtn">🧹 Limpiar filtros</button>
+        <button class="btn-chip" id="fullMarketToggle" aria-pressed="false">🔎 Mostrar mercado completo</button>
     </div>
     <div class="saved-filters-row" id="savedFiltersRow" style="display:none;"></div>
 </div>
@@ -1814,7 +1815,9 @@
 
 <!-- Indicador de Registros -->
 <div id="recordsSummary" class="records-summary">
-    Mostrando <strong id="filteredCount">0</strong> de <strong id="totalCount">0</strong> registros activos
+    Mostrando <strong id="filteredCount">0</strong> <span id="recordsContext">oportunidades de</span>
+    <strong id="totalCount">0</strong> <span id="recordsTotalLabel">recomendadas</span>
+    <span id="analyzedCountSummary"></span>
 </div>
 
 <div id="cardsView"></div>
@@ -1991,6 +1994,7 @@ const state = {
     trend: "",
     featuredOnly: false,
     watchlistOnly: false,
+    showFullMarket: false,
     sort: "time",
     autoThemeEnabled: true,
     advancedView: false,  // Arranca en Simple -- el botón siempre muestra el modo AL QUE CAMBIAS, no el actual
@@ -2084,8 +2088,13 @@ function syncFilterInputsFromState() {
 
     const featuredBtn = document.getElementById("featuredOnly");
     const watchlistBtn = document.getElementById("watchlistOnly");
+    const fullMarketBtn = document.getElementById("fullMarketToggle");
     if (featuredBtn) featuredBtn.setAttribute("aria-pressed", String(state.featuredOnly));
     if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", String(state.watchlistOnly));
+    if (fullMarketBtn) {
+        fullMarketBtn.setAttribute("aria-pressed", String(state.showFullMarket));
+        fullMarketBtn.textContent = state.showFullMarket ? "🎯 Mostrar solo apuestas" : "🔎 Mostrar mercado completo";
+    }
 }
 
 function applyFilterPreset(preset) {
@@ -2373,6 +2382,12 @@ function calculateSmartMoney(p) {
     return p.signedDivergence != null ? Number(p.signedDivergence) : 0;
 }
 
+const RECOMMENDED_CATEGORIES = new Set(["FREE", "PREMIUM", "WHALE"]);
+
+function isRecommendedPick(p) {
+    return Boolean(p && p.actionKey === "bet" && RECOMMENDED_CATEGORIES.has(p.pickCategory));
+}
+
 // ============================================================
 // La categoría viene resuelta por el backend y solo se presenta aquí.
 
@@ -2420,7 +2435,7 @@ function isMediaFeaturedPick(p) {
 }
 
 function topPickRank(p) {
-    if (!p || p.actionKey !== "bet") return -Infinity;
+    if (!isRecommendedPick(p)) return -Infinity;
     const categoryWeight = { WHALE: 4000, PREMIUM: 3000, FREE: 1500 }[p.pickCategory] || 0;
     const signals = new Set(Array.isArray(p.marketSignals) ? p.marketSignals : [p.marketSignal]);
     const signalWeight =
@@ -2435,7 +2450,7 @@ function topPickRank(p) {
 }
 
 function selectTopPick(picks) {
-    return [...picks].filter(p => p.actionKey === "bet").sort((a, b) => topPickRank(b) - topPickRank(a))[0] || null;
+    return [...picks].filter(isRecommendedPick).sort((a, b) => topPickRank(b) - topPickRank(a))[0] || null;
 }
 
 function isTopPick(p) {
@@ -2630,8 +2645,11 @@ function classifyMarketBucket(p) {
 }
 
 function updateMetrics(activePicks, allPendingPicks = activePicks) {
+    const opportunityCount = allPendingPicks.filter(isRecommendedPick).length;
     const elAnalizados = document.getElementById("statAnalizados");
-    if(elAnalizados) elAnalizados.innerText = activePicks.length;
+    const elAnalizadosSub = document.getElementById("statAnalizadosSub");
+    if(elAnalizados) elAnalizados.innerText = opportunityCount;
+    if(elAnalizadosSub) elAnalizadosSub.innerText = `${allPendingPicks.length} picks analizados`;
 
     const soonPicks = activePicks.filter(p => {
         if (!p.iso) return false;
@@ -3286,9 +3304,11 @@ function render() {
     syncAdvCardActiveStates();
 
     const pendingPicks = PICKS.filter(p => isEventPending(p));
-    const activeList = applyFiltersAndSort(pendingPicks);
+    const recommendedPicks = pendingPicks.filter(isRecommendedPick);
+    const visibleUniverse = state.showFullMarket ? pendingPicks : recommendedPicks;
+    const activeList = applyFiltersAndSort(visibleUniverse);
 
-    updateFilterCounts(pendingPicks);
+    updateFilterCounts(visibleUniverse);
 
     ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getWatchlistId));
 
@@ -3297,8 +3317,18 @@ function render() {
 
     const filteredCountEl = document.getElementById("filteredCount");
     const totalCountEl = document.getElementById("totalCount");
+    const recordsContext = document.getElementById("recordsContext");
+    const recordsTotalLabel = document.getElementById("recordsTotalLabel");
+    const analyzedCountSummary = document.getElementById("analyzedCountSummary");
     if (filteredCountEl) filteredCountEl.innerText = activeList.length;
-    if (totalCountEl) totalCountEl.innerText = pendingPicks.length;
+    if (totalCountEl) totalCountEl.innerText = state.showFullMarket ? pendingPicks.length : recommendedPicks.length;
+    if (recordsContext) recordsContext.textContent = state.showFullMarket ? "picks de" : "oportunidades de";
+    if (recordsTotalLabel) recordsTotalLabel.textContent = state.showFullMarket ? "analizados" : "recomendadas";
+    if (analyzedCountSummary) {
+        analyzedCountSummary.textContent = state.showFullMarket
+            ? " · vista completa"
+            : ` · ${pendingPicks.length} picks analizados`;
+    }
 
     renderActiveChips();
 
@@ -3309,7 +3339,15 @@ function render() {
 
     if (activeList.length === 0) {
         cardsView.style.display = "none";
-        if (emptyState) emptyState.style.display = "block";
+        if (emptyState) {
+            emptyState.style.display = "block";
+            const message = document.getElementById("emptyStateMsg");
+            if (message) {
+                message.textContent = state.showFullMarket
+                    ? "No se encontraron picks con los filtros actuales."
+                    : "No hay apuestas recomendadas en este momento. El mercado completo continúa bajo análisis.";
+            }
+        }
         return;
     }
 
@@ -3470,6 +3508,14 @@ function setupListeners() {
         render();
     });
 
+    const fullMarketBtn = document.getElementById("fullMarketToggle");
+    if (fullMarketBtn) fullMarketBtn.addEventListener("click", () => {
+        state.showFullMarket = !state.showFullMarket;
+        fullMarketBtn.setAttribute("aria-pressed", String(state.showFullMarket));
+        fullMarketBtn.textContent = state.showFullMarket ? "🎯 Mostrar solo apuestas" : "🔎 Mostrar mercado completo";
+        render();
+    });
+
     // My Watchlist -- filtra solo por picks seguidos (localStorage), independiente
     // de las demás categorías.
     const watchlistBtn = document.getElementById("watchlistOnly");
@@ -3556,6 +3602,7 @@ function setupListeners() {
             state.trend = "";
             state.featuredOnly = false;
             state.watchlistOnly = false;
+            state.showFullMarket = false;
             state.sort = "time";
             
             state.timeRange = "";
@@ -3583,6 +3630,10 @@ function setupListeners() {
 
             if (featuredBtn) featuredBtn.setAttribute("aria-pressed", "false");
             if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", "false");
+            if (fullMarketBtn) {
+                fullMarketBtn.setAttribute("aria-pressed", "false");
+                fullMarketBtn.textContent = "🔎 Mostrar mercado completo";
+            }
 
             render();
         });
