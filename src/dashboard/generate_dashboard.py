@@ -1,6 +1,7 @@
 import json
 import os
 import unicodedata
+import hashlib
 from datetime import datetime, timedelta, timezone
 
 
@@ -1044,7 +1045,11 @@ def build_picks(raw_data):
         item = {
             "id": counter,
             "game": game or "Evento desconocido",
+            "away": market.get("away", ""),
+            "home": market.get("home", ""),
             "league": market.get("league", "Otras Ligas"),
+            "sport": market.get("sport", ""),
+            "sourceEventId": market.get("espnEventId") or market.get("eventId"),
             "market": market_name or "Línea estándar",
             "pick": pick or "Sin selección",
             "odds": odds_str,
@@ -1161,28 +1166,211 @@ def assign_free_releases(items):
 
 
 # ============================================================
-# GUARDAR HISTORIAL DIARIO
+# HISTORIAL PERSISTENTE DE PICKS CON VALOR
 # ============================================================
-def save_daily_history(
-    all_events,
-    cdmx_now
-):
-    date_str = cdmx_now.strftime("%Y-%m-%d")
-    day_folder = os.path.join(HISTORY_DIR, date_str)
+VALUE_CATEGORIES = {"VALUE", "PREMIUM", "WHALE"}
+LEGACY_VALUE_CATEGORIES = VALUE_CATEGORIES | {"FREE"}
+HISTORY_SCHEMA_VERSION = 2
 
-    os.makedirs(day_folder, exist_ok=True)
-    history_file = os.path.join(day_folder, "sharpie.json")
 
-    payload = {
-        "generated_at": cdmx_now.strftime("%Y-%m-%d %H:%M:%S"),
-        "count": len(all_events),
-        "picks": all_events
+def _is_qualified_value_pick(item, allow_legacy=False):
+    categories = LEGACY_VALUE_CATEGORIES if allow_legacy else VALUE_CATEGORIES
+    if not isinstance(item, dict) or item.get("pickCategory") not in categories or item.get("actionKey") != "bet":
+        return False
+    try:
+        return (
+            float(item.get("ev") or 0) >= 1.0
+            and float(item.get("modelEdge") or 0) > 0
+            and float(item.get("stake") or 0) >= 1.0
+        )
+    except (TypeError, ValueError):
+        return False
+
+
+def _history_pick_id(item):
+    raw_key = "||".join([
+        _normalize_key_part(item.get("date")),
+        _normalize_key_part(item.get("league")),
+        _market_unique_key(item.get("game"), item.get("pick"), item.get("market")),
+    ])
+    return hashlib.sha256(raw_key.encode("utf-8")).hexdigest()[:24]
+
+
+def _qualification_snapshot(item, observed_at):
+    """Versión compacta para auditar cambios sin duplicar la card completa."""
+    return {
+        "observedAt": observed_at,
+        "pickCategory": item.get("pickCategory"),
+        "publicationTier": item.get("publicationTier"),
+        "freeRelease": bool(item.get("freeRelease")),
+        "odds": item.get("odds"),
+        "stake": item.get("stake"),
+        "modelProb": item.get("modelProb"),
+        "modelEdge": item.get("modelEdge"),
+        "ev": item.get("ev"),
+        "betsPct": item.get("betsPct"),
+        "handlePct": item.get("handlePct"),
+        "signedDivergence": item.get("signedDivergence"),
+        "marketSignal": item.get("marketSignal"),
+        "marketSignals": item.get("marketSignals", []),
+        "lineMove": item.get("lineMove"),
     }
 
-    with open(history_file, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    print(f"[OK] Historial del día guardado en: {history_file}")
+def _snapshot_signature(snapshot):
+    comparable = {key: value for key, value in snapshot.items() if key != "observedAt"}
+    return json.dumps(comparable, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _new_history_record(item, observed_at):
+    normalized = dict(item)
+    if normalized.get("pickCategory") == "FREE":
+        normalized["pickCategory"] = "VALUE"
+        normalized["freeRelease"] = True
+        normalized["publicationTier"] = "FREE_RELEASE"
+
+    history_id = normalized.get("historyId") or _history_pick_id(normalized)
+    first_seen = normalized.get("firstQualifiedAt") or observed_at
+    snapshots = normalized.get("qualificationSnapshots")
+    if not isinstance(snapshots, list) or not snapshots:
+        snapshots = [_qualification_snapshot(normalized, first_seen)]
+
+    normalized.update({
+        "historyId": history_id,
+        "historySchemaVersion": HISTORY_SCHEMA_VERSION,
+        "firstQualifiedAt": first_seen,
+        "lastQualifiedAt": normalized.get("lastQualifiedAt") or observed_at,
+        "qualifiedObservations": int(normalized.get("qualifiedObservations") or 1),
+        "qualificationSnapshots": snapshots,
+        "latestViable": True,
+        "needsSettlement": (normalized.get("settlement") or {}).get("status") not in {"WIN", "LOSS", "PUSH", "VOID"},
+        "settlement": normalized.get("settlement") or {
+            "status": "PENDING",
+            "source": None,
+            "checkedAt": None,
+            "settledAt": None,
+            "homeScore": None,
+            "awayScore": None,
+            "notes": None,
+        },
+        "eventLookup": normalized.get("eventLookup") or {
+            "provider": "ESPN",
+            "eventId": normalized.get("sourceEventId"),
+            "league": normalized.get("league"),
+            "sport": normalized.get("sport"),
+            "away": normalized.get("away"),
+            "home": normalized.get("home"),
+            "scheduledAt": normalized.get("iso"),
+            "matchStatus": "UNMATCHED",
+        },
+    })
+    return normalized
+
+
+def _load_existing_value_records(history_file, observed_at):
+    if not os.path.exists(history_file):
+        return {}
+    try:
+        with open(history_file, "r", encoding="utf-8") as source:
+            payload = json.load(source)
+    except (OSError, json.JSONDecodeError):
+        print(f"[AVISO] Historial ilegible, se conserva sin sobrescribir: {history_file}")
+        return None
+
+    raw_picks = payload.get("picks", []) if isinstance(payload, dict) else payload
+    if not isinstance(raw_picks, list):
+        return {}
+
+    records = {}
+    legacy_time = payload.get("generated_at", observed_at) if isinstance(payload, dict) else observed_at
+    for item in raw_picks:
+        if not _is_qualified_value_pick(item, allow_legacy=True):
+            continue
+        record = _new_history_record(item, legacy_time)
+        records[record["historyId"]] = record
+    return records
+
+
+def _atomic_write_json(path, payload):
+    temp_path = f"{path}.tmp"
+    with open(temp_path, "w", encoding="utf-8") as output:
+        json.dump(payload, output, ensure_ascii=False, indent=2)
+        output.flush()
+        os.fsync(output.fileno())
+    os.replace(temp_path, path)
+
+
+def save_value_history(all_events, cdmx_now):
+    """Upsert por evento: conserva siempre la última versión que tuvo valor.
+
+    Si un pick deja de clasificar en ejecuciones posteriores, no llega a esta
+    función y su último registro viable permanece intacto para liquidación.
+    """
+    observed_at = cdmx_now.strftime("%Y-%m-%dT%H:%M:%S-06:00")
+    qualified = [item for item in all_events if _is_qualified_value_pick(item)]
+    grouped = {}
+    for item in qualified:
+        event_date = str(item.get("date") or cdmx_now.strftime("%Y-%m-%d"))[:10]
+        grouped.setdefault(event_date, []).append(item)
+
+    saved_count = 0
+    for event_date, current_items in grouped.items():
+        day_folder = os.path.join(HISTORY_DIR, event_date)
+        history_file = os.path.join(day_folder, "sharpie.json")
+        os.makedirs(day_folder, exist_ok=True)
+
+        records = _load_existing_value_records(history_file, observed_at)
+        if records is None:
+            continue
+
+        for item in current_items:
+            history_id = _history_pick_id(item)
+            previous = records.get(history_id)
+            if previous is None:
+                records[history_id] = _new_history_record(item, observed_at)
+                saved_count += 1
+                continue
+
+            settlement = previous.get("settlement") or _new_history_record(item, observed_at)["settlement"]
+            snapshots = previous.get("qualificationSnapshots", [])
+            new_snapshot = _qualification_snapshot(item, observed_at)
+            if not snapshots or _snapshot_signature(snapshots[-1]) != _snapshot_signature(new_snapshot):
+                snapshots.append(new_snapshot)
+
+            updated = dict(item)
+            updated.update({
+                "historyId": history_id,
+                "historySchemaVersion": HISTORY_SCHEMA_VERSION,
+                "firstQualifiedAt": previous.get("firstQualifiedAt", observed_at),
+                "lastQualifiedAt": observed_at,
+                "qualifiedObservations": int(previous.get("qualifiedObservations") or 0) + 1,
+                "qualificationSnapshots": snapshots,
+                "latestViable": True,
+                "settlement": settlement,
+                "eventLookup": previous.get("eventLookup") or _new_history_record(item, observed_at)["eventLookup"],
+                "needsSettlement": (settlement or {}).get("status") not in {"WIN", "LOSS", "PUSH", "VOID"},
+            })
+            records[history_id] = updated
+            saved_count += 1
+
+        ordered_records = sorted(
+            records.values(),
+            key=lambda record: (record.get("iso") or "", record.get("historyId") or ""),
+        )
+        payload = {
+            "schemaVersion": HISTORY_SCHEMA_VERSION,
+            "eventDate": event_date,
+            "updatedAt": observed_at,
+            "count": len(ordered_records),
+            "pendingSettlement": sum(1 for record in ordered_records if record.get("needsSettlement")),
+            "picks": ordered_records,
+        }
+        _atomic_write_json(history_file, payload)
+        print(f"[OK] Historial de valor actualizado: {history_file} ({len(ordered_records)} picks)")
+
+    if not qualified:
+        print("[INFO] Sin nuevos picks con valor; el historial existente permanece intacto.")
+    return saved_count
 
 
 # ============================================================
@@ -1226,7 +1414,7 @@ def generate_dashboard():
         print("!" * 70 + "\n")
         return None
 
-    save_daily_history(all_events, cdmx_now)
+    save_value_history(all_events, cdmx_now)
 
     json_data = json.dumps(all_events, ensure_ascii=False)
 
