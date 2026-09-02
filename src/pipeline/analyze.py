@@ -129,11 +129,27 @@ def evaluate_market_signals(divergence, bets, handle, ev, model_edge, line_move,
     return signals or ["NO_ACTION"]
 
 def classify_pick_category(ev, market_signals, divergence):
-    if "SMART_MONEY" in market_signals and ev > 18.0 and divergence > 30.0:
+    """Jerarquía editorial única, evaluada de mayor a menor exigencia.
+
+    WHALE: oportunidad excepcional con Smart Money, EV > 18% y divergencia > 30.
+    PREMIUM: EV > 6% respaldado por al menos una señal profesional.
+    FREE: EV moderado de 1% a 6% con señal válida de valor o consenso.
+
+    PUBLIC_HEAVY, BALANCED_ACTION, LOW_LIQUIDITY y NO_ACTION son señales de
+    contexto/precaución; por sí solas no convierten un pick en recomendación.
+    """
+    signals = set(market_signals or [])
+    professional_signals = {
+        "SMART_MONEY", "REVERSE_LINE_MOVEMENT", "STEAM_MOVE", "SHARP_VS_PUBLIC"
+    }
+    free_signals = professional_signals | {"CONSENSUS"}
+
+    if "SMART_MONEY" in signals and ev > 18.0 and divergence > 30.0:
         return "WHALE"
-    if "SMART_MONEY" in market_signals and ev > 6.0:
+    if ev > 6.0 and signals.intersection(professional_signals):
         return "PREMIUM"
-    if any(signal in market_signals for signal in ("CONSENSUS", "PUBLIC_HEAVY")) and 1.0 <= ev <= 3.0: return "FREE"
+    if 1.0 <= ev <= 6.0 and signals.intersection(free_signals):
+        return "FREE"
     return None
 
 def action_from_category(category):

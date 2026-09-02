@@ -2378,6 +2378,47 @@ function calculateSmartMoney(p) {
 
 let TOP_PICK_ID = null;
 
+// El KPI y el filtro "Pick Destacado" son conceptos distintos:
+// - TOP_PICK_ID: mejor oportunidad operable del momento.
+// - MEDIA_TEAM_ALIASES: equipos/selecciones mediáticos que alimentan el filtro.
+const MEDIA_TEAM_ALIASES = [
+    // Fútbol europeo
+    "real madrid", "barcelona", "atletico madrid", "manchester united", "man united",
+    "manchester city", "man city", "liverpool", "arsenal", "chelsea", "tottenham",
+    "bayern munich", "bayern munchen", "borussia dortmund", "psg", "paris saint germain",
+    "juventus", "inter milan", "internazionale", "ac milan", "napoli", "roma", "lazio",
+    "benfica", "porto", "sporting lisbon", "sporting cp", "ajax", "psv", "feyenoord",
+    "celtic", "rangers", "galatasaray", "fenerbahce", "besiktas",
+    // América y otras regiones
+    "america", "club america", "chivas", "guadalajara", "cruz azul", "pumas",
+    "tigres", "monterrey", "rayados", "boca juniors", "river plate", "flamengo",
+    "palmeiras", "corinthians", "sao paulo", "santos", "gremio", "internacional",
+    "inter miami", "la galaxy", "al nassr", "al hilal",
+    // Selecciones
+    "mexico", "argentina", "brazil", "brasil", "spain", "espana", "france", "francia",
+    "england", "inglaterra", "germany", "alemania", "italy", "italia", "portugal",
+    "netherlands", "paises bajos", "uruguay", "colombia", "united states", "usa",
+    // NBA / WNBA
+    "lakers", "celtics", "warriors", "bulls", "knicks", "nets", "heat", "mavericks",
+    "spurs", "suns", "bucks", "nuggets", "clippers", "76ers", "liberty", "aces",
+    // NFL
+    "cowboys", "chiefs", "patriots", "packers", "49ers", "steelers", "eagles",
+    "giants", "raiders", "broncos", "dolphins", "bills", "ravens", "rams",
+    // MLB / NHL
+    "yankees", "dodgers", "red sox", "cubs", "mets", "braves", "astros", "phillies",
+    "cardinals", "blue jays", "maple leafs", "canadiens", "bruins", "blackhawks",
+    "red wings", "penguins", "oilers", "golden knights"
+];
+
+function normalizeMediaText(value) {
+    return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function isMediaFeaturedPick(p) {
+    const source = normalizeMediaText([p.game, p.away, p.home, p.pick].filter(Boolean).join(" | "));
+    return MEDIA_TEAM_ALIASES.some(alias => source.includes(normalizeMediaText(alias)));
+}
+
 function topPickRank(p) {
     if (!p || p.actionKey !== "bet") return -Infinity;
     const categoryWeight = { WHALE: 4000, PREMIUM: 3000, FREE: 1500 }[p.pickCategory] || 0;
@@ -2397,7 +2438,7 @@ function selectTopPick(picks) {
     return [...picks].filter(p => p.actionKey === "bet").sort((a, b) => topPickRank(b) - topPickRank(a))[0] || null;
 }
 
-function isFeaturedPick(p) {
+function isTopPick(p) {
     return TOP_PICK_ID !== null && getWatchlistId(p) === TOP_PICK_ID;
 }
 
@@ -2588,7 +2629,7 @@ function classifyMarketBucket(p) {
     return p.marketSignal || "NO_ACTION";
 }
 
-function updateMetrics(activePicks) {
+function updateMetrics(activePicks, allPendingPicks = activePicks) {
     const elAnalizados = document.getElementById("statAnalizados");
     if(elAnalizados) elAnalizados.innerText = activePicks.length;
 
@@ -2613,7 +2654,9 @@ function updateMetrics(activePicks) {
         }).join('');
     }
 
-    const best = selectTopPick(activePicks);
+    // El Top Pick es global: los filtros de pantalla no deben sustituir al
+    // mejor pick operativo disponible en este momento.
+    const best = selectTopPick(allPendingPicks);
     TOP_PICK_ID = best ? getWatchlistId(best) : null;
     statState.mejor = best ? [best] : [];
     
@@ -2855,7 +2898,7 @@ function applyFiltersAndSort(list) {
 
         if (state.watchlistOnly && !isInWatchlist(p)) return false;
 
-        if (state.featuredOnly && !isFeaturedPick(p)) return false;
+        if (state.featuredOnly && !isMediaFeaturedPick(p)) return false;
 
         if (text) {
             const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
@@ -2897,8 +2940,10 @@ function getHeaderTag(category) {
             return "🐳 WHALE ALERT PICK";
         case 'FREE':
             return "🔓 FREE PICK";
-        default:
+        case 'PREMIUM':
             return "💎 PREMIUM PICK";
+        default:
+            return "👀 PICK EN OBSERVACIÓN";
     }
 }
 
@@ -3247,7 +3292,7 @@ function render() {
 
     ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getWatchlistId));
 
-    updateMetrics(activeList);
+    updateMetrics(activeList, pendingPicks);
     updateChartsData(activeList);
 
     const filteredCountEl = document.getElementById("filteredCount");
@@ -3275,7 +3320,8 @@ function render() {
         const isWhale = p.pickCategory === "WHALE";
         const isFree = p.pickCategory === "FREE";
         const isPremiumPick = p.pickCategory === "PREMIUM";
-        const isFeatured = isFeaturedPick(p);
+        const isTop = isTopPick(p);
+        const isMediaFeatured = isMediaFeaturedPick(p);
         const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
         const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
 
@@ -3318,7 +3364,8 @@ function render() {
                             <div class="card-hero-tags">
                                 ${isNew ? `<span class="status-icon" title="Pick nuevo">🆕</span>` : ''}
                                 ${isUpdated ? `<span class="status-icon" title="Pick actualizado">🔄</span>` : ''}
-                                ${isFeatured ? `<span class="status-icon" title="Top pick destacado">⭐</span>` : ''}
+                                ${isTop ? `<span class="status-icon" title="Mejor pick del momento">🏆</span>` : ''}
+                                ${isMediaFeatured ? `<span class="status-icon" title="Equipo mediático destacado">⭐</span>` : ''}
                                 ${isWhale ? `<span class="whale-header-badge">WHALE</span>` : ''}
                                 ${isFree ? `<span class="free-pick-badge">FREE</span>` : ''}
                                 ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
