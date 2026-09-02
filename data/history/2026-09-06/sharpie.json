@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-06",
-  "updatedAt": "2026-09-02T13:45:11-06:00",
-  "count": 4,
-  "pendingSettlement": 4,
+  "updatedAt": "2026-09-02T13:50:11-06:00",
+  "count": 5,
+  "pendingSettlement": 5,
   "picks": [
     {
       "id": 103,
@@ -51,13 +51,6 @@
       "time": "17:30",
       "iso": "2026-09-06T17:30:00",
       "history": [
-        {
-          "time": "21:00",
-          "timestamp": "2026-09-01T21:00:10",
-          "betsPct": 33.0,
-          "handlePct": 5.0,
-          "odds": "-112"
-        },
         {
           "time": "21:05",
           "timestamp": "2026-09-01T21:05:16",
@@ -1450,6 +1443,13 @@
           "betsPct": 40.0,
           "handlePct": 90.0,
           "odds": "-112"
+        },
+        {
+          "time": "13:50",
+          "timestamp": "2026-09-02T13:50:11",
+          "betsPct": 40.0,
+          "handlePct": 90.0,
+          "odds": "-112"
         }
       ],
       "clv": {
@@ -1457,7 +1457,7 @@
           "odds": "-112",
           "prob": 52.83,
           "divergence": -28.0,
-          "timestamp": "2026-09-01T21:00:10"
+          "timestamp": "2026-09-01T21:05:16"
         },
         "checkpoints": {
           "4h": null,
@@ -1474,8 +1474,8 @@
       "historyId": "090a1d3c321b728404fc366d",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T10:15:10-06:00",
-      "lastQualifiedAt": "2026-09-02T13:45:11-06:00",
-      "qualifiedObservations": 43,
+      "lastQualifiedAt": "2026-09-02T13:50:11-06:00",
+      "qualifiedObservations": 44,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T10:15:10-06:00",
@@ -1541,6 +1541,133 @@
       "needsSettlement": true
     },
     {
+      "id": 105,
+      "game": "Louisville @ Ole Miss",
+      "away": "Louisville",
+      "home": "Ole Miss",
+      "league": "SPORTS",
+      "sport": "",
+      "sourceEventId": null,
+      "market": "Spread",
+      "pick": "Louisville +6.5",
+      "odds": "-102",
+      "action": "🟢 VALUE PICK",
+      "actionKey": "bet",
+      "pattern": "🐋 SMART MONEY",
+      "trend": "🐋 SMART MONEY",
+      "trendKey": "SMART_MONEY",
+      "marketSignal": "SMART_MONEY",
+      "marketSignals": [
+        "SMART_MONEY"
+      ],
+      "pickCategory": "VALUE",
+      "priority": "⚡ PRONTO",
+      "priorityKey": "soon",
+      "stake": 2.0,
+      "modelProb": 53.51,
+      "fairProb": 48.26,
+      "flowAdjustment": 5.25,
+      "modelSource": "propio_devig_divergencia",
+      "lineMove": 0.0,
+      "lineMoveMinutes": null,
+      "liquidityStatus": null,
+      "impliedProb": 50.5,
+      "modelEdge": 3.01,
+      "ev": 5.97,
+      "coherence": null,
+      "whale": false,
+      "handlePct": 88.0,
+      "betsPct": 53.0,
+      "divergence": 35.0,
+      "signedDivergence": 35.0,
+      "reason": "SMART MONEY. historial insuficiente para evaluar coherencia.",
+      "date": "2026-09-06",
+      "time": "17:30",
+      "iso": "2026-09-06T17:30:00",
+      "history": [
+        {
+          "time": "13:45",
+          "timestamp": "2026-09-02T13:45:10",
+          "betsPct": 53.0,
+          "handlePct": 88.0,
+          "odds": "-102"
+        },
+        {
+          "time": "13:50",
+          "timestamp": "2026-09-02T13:50:11",
+          "betsPct": 53.0,
+          "handlePct": 88.0,
+          "odds": "-102"
+        }
+      ],
+      "clv": {
+        "opening": {
+          "odds": "-102",
+          "prob": 50.5,
+          "divergence": 35.0,
+          "timestamp": "2026-09-02T13:45:10"
+        },
+        "checkpoints": {
+          "4h": null,
+          "2h": null,
+          "1h": null
+        }
+      },
+      "status": "UPCOMING",
+      "result": "PENDING",
+      "roi": null,
+      "freeRelease": true,
+      "freeReleaseRank": 1,
+      "publicationTier": "FREE_RELEASE",
+      "historyId": "4ae3384ab934f0a83445e1ec",
+      "historySchemaVersion": 2,
+      "firstQualifiedAt": "2026-09-02T13:50:11-06:00",
+      "lastQualifiedAt": "2026-09-02T13:50:11-06:00",
+      "qualifiedObservations": 1,
+      "qualificationSnapshots": [
+        {
+          "observedAt": "2026-09-02T13:50:11-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-102",
+          "stake": 2.0,
+          "modelProb": 53.51,
+          "modelEdge": 3.01,
+          "ev": 5.97,
+          "betsPct": 53.0,
+          "handlePct": 88.0,
+          "signedDivergence": 35.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        }
+      ],
+      "latestViable": true,
+      "needsSettlement": true,
+      "settlement": {
+        "status": "PENDING",
+        "source": null,
+        "checkedAt": null,
+        "settledAt": null,
+        "homeScore": null,
+        "awayScore": null,
+        "notes": null
+      },
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": null,
+        "league": "SPORTS",
+        "sport": "",
+        "away": "Louisville",
+        "home": "Ole Miss",
+        "scheduledAt": "2026-09-06T17:30:00",
+        "matchStatus": "UNMATCHED"
+      }
+    },
+    {
       "id": 107,
       "game": "Louisville @ Ole Miss",
       "away": "Louisville",
@@ -1585,13 +1712,6 @@
       "time": "17:30",
       "iso": "2026-09-06T17:30:00",
       "history": [
-        {
-          "time": "21:00",
-          "timestamp": "2026-09-01T21:00:10",
-          "betsPct": 19.0,
-          "handlePct": 45.0,
-          "odds": "+220"
-        },
         {
           "time": "21:05",
           "timestamp": "2026-09-01T21:05:16",
@@ -2984,6 +3104,13 @@
           "betsPct": 21.0,
           "handlePct": 48.0,
           "odds": "+220"
+        },
+        {
+          "time": "13:50",
+          "timestamp": "2026-09-02T13:50:11",
+          "betsPct": 21.0,
+          "handlePct": 48.0,
+          "odds": "+220"
         }
       ],
       "clv": {
@@ -2991,7 +3118,7 @@
           "odds": "+220",
           "prob": 31.25,
           "divergence": 26.0,
-          "timestamp": "2026-09-01T21:00:10"
+          "timestamp": "2026-09-01T21:05:16"
         },
         "checkpoints": {
           "4h": null,
@@ -3008,8 +3135,8 @@
       "historyId": "8acc30ccedf502fc82f59a47",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T13:45:11-06:00",
-      "qualifiedObservations": 83,
+      "lastQualifiedAt": "2026-09-02T13:50:11-06:00",
+      "qualifiedObservations": 84,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -3194,13 +3321,6 @@
       "iso": "2026-09-06T17:30:00",
       "history": [
         {
-          "time": "21:00",
-          "timestamp": "2026-09-01T21:00:10",
-          "betsPct": 5.0,
-          "handlePct": 23.0,
-          "odds": "+1000"
-        },
-        {
           "time": "21:05",
           "timestamp": "2026-09-01T21:05:16",
           "betsPct": 5.0,
@@ -4445,6 +4565,13 @@
           "betsPct": 4.0,
           "handlePct": 23.0,
           "odds": "+950"
+        },
+        {
+          "time": "13:50",
+          "timestamp": "2026-09-02T13:50:11",
+          "betsPct": 4.0,
+          "handlePct": 23.0,
+          "odds": "+950"
         }
       ],
       "clv": {
@@ -4452,7 +4579,7 @@
           "odds": "+1000",
           "prob": 9.09,
           "divergence": 18.0,
-          "timestamp": "2026-09-01T21:00:10"
+          "timestamp": "2026-09-01T21:05:16"
         },
         "checkpoints": {
           "4h": null,
@@ -4469,8 +4596,8 @@
       "historyId": "9334fbc0b40484f4d6df54e8",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T13:45:11-06:00",
-      "qualifiedObservations": 62,
+      "lastQualifiedAt": "2026-09-02T13:50:11-06:00",
+      "qualifiedObservations": 63,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
