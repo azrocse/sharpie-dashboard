@@ -233,7 +233,7 @@
         /* KPI GRID */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            grid-template-columns: .75fr .8fr 2.35fr 1.65fr;
             gap: 12px;
             margin-bottom: 25px;
         }
@@ -253,7 +253,10 @@
 
         .stat-card.expandable { cursor: pointer; }
         .stat-card.expandable:hover { border-color: var(--teal); }
-        .stat-card.card-featured { grid-column: span 2; }
+        .stat-card.card-featured { grid-column: auto; }
+
+        .market-distribution { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 5px; line-height: 1.2; }
+        .market-distribution span { font: 800 10px "JetBrains Mono", monospace; white-space: nowrap; }
 
         .stat-header {
             display: flex;
@@ -604,6 +607,15 @@
             counter-reset: advcard;
         }
 
+        .adv-filters-grid .adv-card:nth-child(1) { order: 1; }
+        .adv-filters-grid .adv-card:nth-child(7) { order: 2; }
+        .adv-filters-grid .adv-card:nth-child(8) { order: 3; }
+        .adv-filters-grid .adv-card:nth-child(3) { order: 4; }
+        .adv-filters-grid .adv-card:nth-child(4) { order: 5; }
+        .adv-filters-grid .adv-card:nth-child(5) { order: 6; }
+        .adv-filters-grid .adv-card:nth-child(6) { order: 7; }
+        .adv-filters-grid .adv-card:nth-child(2) { order: 8; }
+
         .adv-card {
             position: relative;
             background: var(--panel2);
@@ -632,6 +644,8 @@
         .adv-card:hover {
             transform: translateY(-1px);
         }
+
+        .adv-card::before { display: none; }
 
         .adv-card:focus-within {
             border-color: var(--teal);
@@ -907,7 +921,30 @@
 
         .pcard-header-category { margin-top: 6px; }
 
+        .card-hero-header {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--panel2), var(--panel));
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--signal-color, var(--teal));
+            border-radius: 10px;
+        }
+        .signal-orb { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; font-size: 19px; background: var(--signal-bg, var(--teal-soft)); color: var(--signal-color, var(--teal)); border: 1px solid var(--signal-color, var(--teal)); }
+        .signal-copy { min-width: 0; }
+        .signal-kicker { color: var(--muted); font-size: 8px; font-weight: 900; letter-spacing: .7px; }
+        .signal-name { display: block; font-size: 11px; font-weight: 900; color: var(--signal-color, var(--text)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .signal-more { color: var(--muted); font-size: 9px; font-weight: 800; }
+        .card-hero-actions { display: grid; justify-items: end; gap: 6px; }
+        .card-hero-tags { display: flex; align-items: center; justify-content: flex-end; gap: 5px; flex-wrap: wrap; }
+        .status-icon { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 7px; border: 1px solid var(--border); background: var(--panel2); font-size: 12px; }
+
         @media (max-width: 520px) {
+            .card-hero-header { grid-template-columns: auto minmax(0, 1fr); }
+            .card-hero-actions { grid-column: 1 / -1; width: 100%; display: flex; align-items: center; justify-content: space-between; }
             .pcard-header { grid-template-columns: 1fr; }
             .pcard-header-line2 { justify-content: flex-start; }
             .pcard-header-line1 > span,
@@ -1471,6 +1508,7 @@
 
         /* TABLET (incluye laptops chicos e iPads) */
         @media(max-width: 1024px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
             .analytics-section { grid-template-columns: 1fr; }
             .badge-tag-grid-3x3 { grid-template-columns: repeat(2, 1fr); }
             #cardsView { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
@@ -1478,6 +1516,7 @@
 
         /* MÓVIL */
         @media(max-width: 640px) {
+            .stats-grid { grid-template-columns: 1fr; }
             body { padding: 14px; }
             .header { flex-direction: column; align-items: flex-start; }
             .header-meta { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
@@ -1513,7 +1552,7 @@
         @media(max-width: 380px) {
             .grid-metrics { grid-template-columns: 1fr; }
             .badge-tag-grid-3x3 { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 
@@ -1581,17 +1620,15 @@
         <div class="stat-popup" id="detailProximos"></div>
     </div>
 
-    <div class="stat-card expandable card-featured" id="cardMercado" data-target="detailMercado" style="border-left-color: var(--teal);">
+    <div class="stat-card card-featured" id="cardMercado" style="border-left-color: var(--teal);">
         <div class="stat-header">
             <span class="stat-icon">📊</span>
             <div class="stat-body">
                 <div class="label">ANÁLISIS DE MERCADO</div>
-                <div class="stat-value textline" id="statMercado">🚨 0 Fade · 🐋 0 Sharp · ⚪ 0 Cons.</div>
-                <div class="stat-sub">Distribución de flujos</div>
+                <div class="market-distribution" id="statMercado"></div>
+                <div class="stat-sub">Misma distribución que Tendencias de Mercado</div>
             </div>
-            <span class="stat-chevron">▾</span>
         </div>
-        <div class="stat-popup" id="detailMercado"></div>
     </div>
 
     <div class="stat-card expandable card-featured" id="cardMejor" data-target="detailMejor" style="border-left-color: var(--gold);">
@@ -1600,7 +1637,7 @@
             <div class="stat-body">
                 <div class="label">TOP PICK DESTACADO</div>
                 <div class="stat-value textline" id="statMejor">Sin datos</div>
-                <div class="stat-sub">Señal con mayor ventaja al momento</div>
+                <div class="stat-sub">Categoría + señales + EV + Edge + stake + urgencia</div>
             </div>
             <span class="stat-chevron">▾</span>
         </div>
@@ -1611,8 +1648,8 @@
 <div class="analytics-section">
     <div class="chart-card">
         <div class="chart-header">
-            <span>📈 Distribución por encuentro</span>
-            <span class="mono" style="font-size:11px; color:var(--muted);">Edge por encuentro</span>
+            <span>📈 Probabilidad Modelo vs EV</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">X: Prob. Modelo · Y: EV</span>
         </div>
         <div class="chart-container">
             <canvas id="edgeScatterChart"></canvas>
@@ -1630,19 +1667,17 @@
 </div>
 
 <div class="toolbar">
+    <div class="search-box" style="position:relative;">
+        <input id="search" placeholder="Buscar por equipo, liga, mercado..." autocomplete="off" list="searchSuggestions">
+        <datalist id="searchSuggestions"></datalist>
+        <div id="searchSuggest" class="search-suggest"></div>
+    </div>
     <div class="filter-section-label">🔍 Filtros Cualitativos</div>
     <div class="filter-row">
-        <div class="search-box" style="position:relative;">
-            <input id="search" placeholder="Buscar por equipo, liga, mercado..." autocomplete="off" list="searchSuggestions">
-            <datalist id="searchSuggestions"></datalist>
-            <div id="searchSuggest" class="search-suggest"></div>
-        </div>
         <select id="fSort">
             <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
             <option value="ev">📊 Ordenar por: Mayor EV</option>
         </select>
-        <button class="btn-chip" id="featuredOnly" aria-pressed="false">⭐ Pick Destacado</button>
-        <button class="btn-chip" id="watchlistOnly" aria-pressed="false">👁 My Watchlist</button>
         <select id="fDate"><option value="">📆 Todas las fechas</option></select>
         <select id="fTimeRange">
             <option value="">⏱️ Hora / Rango</option>
@@ -1667,10 +1702,12 @@
             <option value="LOW_LIQUIDITY">💧 LOW LIQUIDITY</option>
             <option value="NO_ACTION">⚪ NO ACTION</option>
         </select>
+        <button class="btn-chip" id="featuredOnly" aria-pressed="false">⭐ Pick Destacado</button>
+        <button class="btn-chip" id="watchlistOnly" aria-pressed="false">👁 My Watchlist</button>
         <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
         <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
-        <button class="clear-btn" id="clearBtn">🧹 Limpiar filtros</button>
         <button class="clear-btn" id="btnSaveFilter" style="border-color: var(--teal); color: var(--teal);">💾 Guardar filtro</button>
+        <button class="clear-btn" id="clearBtn">🧹 Limpiar filtros</button>
     </div>
     <div class="saved-filters-row" id="savedFiltersRow" style="display:none;"></div>
 </div>
@@ -2189,14 +2226,14 @@ function updateChartsData(activeList) {
 
 function evBadgeClass(ev) {
     const v = Number(ev || 0);
-    if (v >= 0.5) return "good";
+    if (v >= 6) return "good";
     if (v > 0) return "warn";
     return "bad";
 }
 
 function stakeBadgeClass(stake) {
     const s = Number(stake || 0);
-    if (s <= 0) return "neutral";
+    if (s <= 0) return "bad";
     if (s >= 3) return "good";
     if (s >= 1.5) return "warn";
     return "bad";
@@ -2226,16 +2263,31 @@ function edgeColorClass(edge) {
 function modelBadgeClass(prob) {
     const p = Number(prob);
     if (isNaN(p)) return "neutral";
-    if (p >= 60) return "good";
-    if (p >= 45) return "warn";
+    if (p >= 55) return "good";
+    if (p >= 50) return "warn";
     return "bad";
 }
 
 function edgeModBadgeClass(edge) {
     const e = Number(edge);
     if (isNaN(e)) return "neutral";
-    if (e >= 0.5) return "good";
+    if (e >= 2) return "good";
     if (e > 0) return "warn";
+    return "bad";
+}
+
+function oddsBadgeClass(odds) {
+    const decimal = parseOddsToDecimal(odds);
+    if (!decimal || decimal <= 1) return "bad";
+    if (decimal >= 1.70 && decimal <= 2.40) return "good";
+    if ((decimal >= 1.50 && decimal < 1.70) || (decimal > 2.40 && decimal <= 3.00)) return "warn";
+    return "bad";
+}
+
+function divergenceBadgeClass(value) {
+    const divergence = Number(value);
+    if (divergence >= 15) return "good";
+    if (divergence >= 0) return "warn";
     return "bad";
 }
 
@@ -2249,7 +2301,7 @@ function unifiedDecisionPanelHtml(p) {
         // Modo Simple: solo 3 datos -- Modelo, Cuota, Stake.
         const simpleChips = [
             `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
-            `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
+            `<span class="badge-tag ${oddsBadgeClass(p.odds || p.cuota)}">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
             `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`
         ];
         return `<div class="decision-panel"><div class="decision-panel-title">📐 Decisión</div><div class="badge-tag-grid">${simpleChips.join('')}</div></div>`;
@@ -2264,9 +2316,9 @@ function unifiedDecisionPanelHtml(p) {
         `<span class="badge-tag ${edgeModBadgeClass(modelEdgeVal)}">📈 Edge Modelo <b>${modelEdgeVal != null ? (modelEdgeVal > 0 ? '+' : '') + modelEdgeVal + '%' : '—'}</b></span>`,
         `<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`,
 
-        `<span class="badge-tag neutral">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
+        `<span class="badge-tag ${oddsBadgeClass(p.odds || p.cuota)}">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
         `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
-        `<span class="badge-tag ${smartMoneyVal >= 15 ? 'good' : (smartMoneyVal > 0 ? 'warn' : 'neutral')}">⚡ Divergencia <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
+        `<span class="badge-tag ${divergenceBadgeClass(smartMoneyVal)}">⚡ Divergencia <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
     ];
 
     return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div></div>`;
@@ -2326,26 +2378,29 @@ function calculateSmartMoney(p) {
 // ============================================================
 // La categoría viene resuelta por el backend y solo se presenta aquí.
 
-// Equipos mediáticos: si el pick los menciona, es automáticamente "Pick Destacado"
-const FEATURED_TEAMS = [
-    "Cowboys", "Chiefs", "49ers", "Patriots", "Packers", "Steelers",
-    "Lakers", "Warriors", "Celtics", "Bulls", "Knicks",
-    "Yankees", "Dodgers", "Red Sox", "Cubs",
-    "Maple Leafs", "Canadiens", "Rangers", "Bruins",
-    "Inter Miami", "LA Galaxy", "LAFC",
-    "Manchester United", "Liverpool", "Manchester City", "Arsenal", "Chelsea",
-    "Real Madrid", "Barcelona", "Atlético de Madrid", "Atletico de Madrid", "Atletico Madrid",
-    "Juventus", "Inter", "AC Milan", "Milan",
-    "Bayern Munich", "Bayern Múnich", "Borussia Dortmund",
-    "PSG", "Marseille",
-    "América", "America", "Chivas", "Cruz Azul",
-    "River Plate", "Boca Juniors",
-    "Flamengo", "Corinthians", "Palmeiras", "São Paulo", "Sao Paulo"
-];
+let TOP_PICK_ID = null;
+
+function topPickRank(p) {
+    if (!p || p.actionKey !== "bet") return -Infinity;
+    const categoryWeight = { WHALE: 4000, PREMIUM: 3000, FREE: 1500 }[p.pickCategory] || 0;
+    const signals = new Set(Array.isArray(p.marketSignals) ? p.marketSignals : [p.marketSignal]);
+    const signalWeight =
+        (signals.has("REVERSE_LINE_MOVEMENT") ? 600 : 0) +
+        (signals.has("STEAM_MOVE") ? 500 : 0) +
+        (signals.has("SMART_MONEY") ? 400 : 0) +
+        (signals.has("SHARP_VS_PUBLIC") ? 250 : 0) +
+        (signals.has("CONSENSUS") ? 100 : 0);
+    const minutes = p.iso ? (new Date(p.iso) - new Date()) / 60000 : Infinity;
+    const urgencyWeight = minutes >= 0 && minutes <= 120 ? 50 : 0;
+    return categoryWeight + signalWeight + Number(p.ev || 0) * 10 + calculateEdge(p) * 5 + Number(p.stake || 0) * 20 + urgencyWeight;
+}
+
+function selectTopPick(picks) {
+    return [...picks].filter(p => p.actionKey === "bet").sort((a, b) => topPickRank(b) - topPickRank(a))[0] || null;
+}
 
 function isFeaturedPick(p) {
-    const blob = `${p.game || ''} ${p.pick || ''} ${p.team || ''} ${p.home || ''} ${p.away || ''}`;
-    return FEATURED_TEAMS.some(team => blob.includes(team));
+    return TOP_PICK_ID !== null && getWatchlistId(p) === TOP_PICK_ID;
 }
 
 // Devuelve únicamente las mediciones donde Bets, Handle o Cuota realmente cambiaron
@@ -2554,18 +2609,19 @@ function updateMetrics(activePicks) {
     
     const elMercado = document.getElementById("statMercado");
     if (elMercado) {
-        elMercado.innerText = `💨 ${buckets.STEAM_MOVE.length} · ↩️ ${buckets.REVERSE_LINE_MOVEMENT.length} · 🐋 ${buckets.SMART_MONEY.length} · ⚔️ ${buckets.SHARP_VS_PUBLIC.length} · 🚨 ${buckets.PUBLIC_HEAVY.length}`;
+        elMercado.innerHTML = MARKET_SIGNAL_KEYS.map(key => {
+            const cfg = marketSignalVisualConfig(key);
+            return `<span title="${TREND_LABEL[key]}" style="color:${cfg.text}">${TREND_ICON[key]} ${buckets[key].length}</span>`;
+        }).join('');
     }
 
-    const bestBet = [...activePicks].filter(p => p.actionKey === "bet")
-        .sort((a, b) => Number(b.ev || 0) - Number(a.ev || 0))[0];
-    const best = bestBet || [...activePicks]
-        .sort((a, b) => Number(b.ev || 0) - Number(a.ev || 0))[0];
+    const best = selectTopPick(activePicks);
+    TOP_PICK_ID = best ? getWatchlistId(best) : null;
     statState.mejor = best ? [best] : [];
     
     const elMejor = document.getElementById("statMejor");
     if (elMejor) {
-        elMejor.innerText = best ? `${best.pick} (${best.game || 'Partido'})` : "Sin datos";
+        elMejor.innerText = best ? `${best.pick} · EV ${Number(best.ev || 0).toFixed(1)}% · ${Number(best.stake || 0).toFixed(1)}u` : "Sin pick operable";
     }
 }
 
@@ -2620,10 +2676,6 @@ function setupStatPopups() {
                 
                 if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
                 else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
-                else if (targetId === "detailMercado") {
-                    items = MARKET_SIGNAL_KEYS.flatMap(key => statState.mercado[key] || []);
-                    popupTitle = "Picks de Mercado";
-                }
 
                 box.innerHTML = `
                     <div class="stat-popup-title">
@@ -3237,6 +3289,8 @@ function render() {
         const allSignals = Array.isArray(p.marketSignals) && p.marketSignals.length ? p.marketSignals : [p.marketSignal];
         const signalSummary = allSignals.map(key => `${TREND_ICON[key] || ''} ${TREND_LABEL[key] || key}`).join(' · ');
         const additionalSignals = Math.max(0, allSignals.length - 1);
+        const primarySignalIcon = TREND_ICON[p.marketSignal] || '⚪';
+        const primarySignalName = TREND_LABEL[p.marketSignal] || 'NO ACTION';
         const timer = getCountdownText(p.iso);
         const edgeVal = calculateEdge(p);
         const formattedEdge = edgeVal > 0 ? `+${edgeVal}%` : `${edgeVal}%`;
@@ -3254,23 +3308,23 @@ function render() {
         return `
             <div class="${cardClasses}">
                 <div>
-                    <div class="pcard-header">
-                        <div class="pcard-header-line1">
-                            <div class="pcard-header-status">
-                                <span class="badge-action" title="${escapeHTML(signalSummary)}" style="background:${config.bg}; border-color:${config.border}; color:${config.text};">${config.label}</span>
-                                ${additionalSignals ? `<span class="badge-action" title="${escapeHTML(signalSummary)}">+${additionalSignals} señal${additionalSignals > 1 ? 'es' : ''}</span>` : ''}
-                                ${isNew ? `<span class="new-pick-badge">🆕 NUEVO</span>` : ''}
-                                ${isUpdated ? `<span class="updated-pick-badge">🔄 ACTUALIZADO</span>` : ''}
-                            </div>
-                            <div class="pcard-header-category">
-                                ${isFeatured ? `<span class="featured-badge">⭐ PICK DESTACADO</span>` : ''}
-                                ${isWhale ? `<span class="whale-header-badge">🐋 WHALE ALERT</span>` : ''}
-                                ${isFree ? `<span class="free-pick-badge">🔓 FREE PICK</span>` : ''}
-                                ${isPremiumPick ? `<span class="premium-pick-badge">💎 PREMIUM PICK</span>` : ''}
-                            </div>
+                    <div class="card-hero-header" style="--signal-color:${config.text}; --signal-bg:${config.bg};">
+                        <div class="signal-orb" title="${escapeHTML(signalSummary)}">${primarySignalIcon}</div>
+                        <div class="signal-copy" title="${escapeHTML(signalSummary)}">
+                            <span class="signal-kicker">SEÑAL DE MERCADO</span>
+                            <strong class="signal-name">${primarySignalName}</strong>
+                            ${additionalSignals ? `<span class="signal-more">+${additionalSignals} confirmación${additionalSignals > 1 ? 'es' : ''}</span>` : ''}
                         </div>
-                        <div class="pcard-header-line2">
+                        <div class="card-hero-actions">
                             <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
+                            <div class="card-hero-tags">
+                                ${isNew ? `<span class="status-icon" title="Pick nuevo">🆕</span>` : ''}
+                                ${isUpdated ? `<span class="status-icon" title="Pick actualizado">🔄</span>` : ''}
+                                ${isFeatured ? `<span class="status-icon" title="Top pick destacado">⭐</span>` : ''}
+                                ${isWhale ? `<span class="whale-header-badge">WHALE</span>` : ''}
+                                ${isFree ? `<span class="free-pick-badge">FREE</span>` : ''}
+                                ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
+                            </div>
                         </div>
                     </div>
 
