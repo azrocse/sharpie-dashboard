@@ -764,7 +764,7 @@
 
         .pcard {
             background: var(--panel-card);
-            border: 1px solid var(--border);
+            border: none;
             border-radius: var(--radius);
             padding: 20px;
             box-shadow: var(--shadow);
@@ -775,14 +775,12 @@
         }
 
         .pcard.whale-alert {
-            box-shadow: var(--shadow), 0 0 0 3px var(--blue) !important;
-            border-color: var(--blue) !important;
+            box-shadow: var(--shadow) !important;
         }
 
-        /* Identidad visual de Free Pick */
+        /* La categoría se comunica mediante la insignia de cabecera, sin contornos. */
         .pcard.free-pick {
-            box-shadow: var(--shadow), 0 0 0 2px var(--muted) !important;
-            border-color: var(--muted) !important;
+            box-shadow: var(--shadow) !important;
         }
 
         .premium-pick-badge {
