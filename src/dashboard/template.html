@@ -82,8 +82,15 @@
             padding: 24px;
             min-height: 100vh;
             overflow-x: hidden;
-            max-width: 100vw;
+            width: 100%;
+            max-width: 1680px;
+            margin-inline: auto;
         }
+
+        img, canvas, svg { max-width: 100%; }
+        .header, .stats-grid, .analytics-section, .toolbar,
+        .adv-filters-panel, .records-summary, #cardsView { min-width: 0; }
+        .stats-grid > *, .analytics-section > *, #cardsView > * { min-width: 0; }
 
         .mono { font-family: "JetBrains Mono", monospace; }
 
@@ -105,7 +112,10 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            min-width: 0;
         }
+
+        .brand-info { min-width: 0; }
 
         .brand-logo-icon {
             width: 48px;
@@ -155,6 +165,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            min-width: 0;
         }
 
         /* RECOLECTOR VISUAL DE FECHA Y HORA DESTACADO */
@@ -167,6 +178,7 @@
             align-items: center;
             gap: 14px;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            min-width: 0;
         }
 
         .time-display {
@@ -207,6 +219,7 @@
             font-weight: 700;
             color: var(--text);
             font-family: "JetBrains Mono", monospace;
+            overflow-wrap: anywhere;
         }
 
         .theme-toggle {
@@ -393,6 +406,7 @@
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
+            min-width: 0;
         }
 
         .chart-header {
@@ -403,6 +417,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px 16px;
+            flex-wrap: wrap;
         }
 
         .chart-container {
@@ -751,6 +767,7 @@
             gap: 6px;
             border: 1px solid var(--border);
             border-left-width: 4px;
+            flex-wrap: wrap;
         }
 
         .records-summary strong { color: var(--teal); }
@@ -968,6 +985,7 @@
             font-size: 15px;
             font-weight: 700;
             line-height: 1.4;
+            overflow-wrap: anywhere;
         }
 
         .meta-row {
@@ -985,6 +1003,8 @@
             gap: 8px;
             font-family: "JetBrains Mono", monospace;
             font-weight: 600;
+            flex-wrap: wrap;
+            min-width: 0;
         }
 
         .date-badge, .time-badge {
@@ -1026,6 +1046,7 @@
             font-size: 15px;
             font-weight: 700;
             color: var(--text);
+            overflow-wrap: anywhere;
         }
 
         .market-type {
@@ -1050,6 +1071,8 @@
             font-size: 11px;
             color: var(--muted);
             margin-bottom: 4px;
+            gap: 4px 12px;
+            flex-wrap: wrap;
         }
 
         .volume-bar-wrapper {
@@ -1166,6 +1189,8 @@
             font-weight: 700;
             background: var(--panel2);
             border: 1px solid var(--border);
+            min-width: 0;
+            overflow-wrap: anywhere;
         }
 
         .badge-tag.good { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); }
@@ -1526,11 +1551,21 @@
             #cardsView { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
         }
 
+        /* TABLET ESTRECHA / ZOOM DE ESCRITORIO */
+        @media(max-width: 900px) {
+            .header { flex-direction: column; align-items: stretch; }
+            .header-meta { width: 100%; justify-content: space-between; }
+            .timestamp-box { flex: 1 1 auto; padding-inline: 12px; }
+            .brand-info h1 { flex-wrap: wrap; }
+            .adv-panel-header { align-items: flex-start; gap: 8px 16px; flex-wrap: wrap; }
+        }
+
         /* MÓVIL */
         @media(max-width: 640px) {
             .stats-grid { grid-template-columns: 1fr; }
             body { padding: 14px; }
-            .header { flex-direction: column; align-items: flex-start; }
+            .header { flex-direction: column; align-items: stretch; padding: 14px; gap: 14px; }
+            .brand-container { gap: 12px; }
             .header-meta { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
             .timestamp-box { flex-wrap: wrap; width: 100%; justify-content: space-between; gap: 10px 14px; }
             .theme-toggle { align-self: flex-end; }
@@ -1542,7 +1577,13 @@
             .filter-row .btn-chip,
             .filter-row .view-mode-btn,
             .filter-row .btn-adv-toggle,
-            .filter-row .clear-btn { flex: 1 1 auto; min-width: 0; }
+            .filter-row .clear-btn {
+                flex: 1 1 calc(50% - 6px);
+                width: auto;
+                min-width: min(150px, 100%);
+                min-height: 42px;
+                white-space: normal;
+            }
             #cardsView { grid-template-columns: 1fr; gap: 14px; }
             .pcard { padding: 14px; }
             .grid-metrics { grid-template-columns: 1fr 1fr; font-size: 11px; }
@@ -1558,6 +1599,11 @@
             .adv-inputs { flex-wrap: wrap; }
             .pcard-action-row { flex-direction: column; }
             .pcard-action-row-item { width: 100%; }
+            .chart-header > * { min-width: 0; }
+            .market-distribution { gap: 5px 10px; }
+            .stat-sub { white-space: normal; overflow: visible; }
+            #toast-x { left: 14px; right: 14px; bottom: 14px; max-width: none; }
+            .reminder-notif-container { left: 14px; right: 14px; top: 14px; max-width: none; }
         }
 
         /* MÓVIL MUY CHICO (iPhone SE y similares) */
@@ -1565,6 +1611,22 @@
             .grid-metrics { grid-template-columns: 1fr; }
             .badge-tag-grid-3x3 { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr; }
+            body { padding: 10px; }
+            .header { padding: 12px; }
+            .brand-logo-icon { width: 42px; height: 42px; }
+            .brand-tag-badge { display: none; }
+            .timestamp-box { display: grid; grid-template-columns: 1fr; }
+            .time-divider { display: none; }
+            .theme-toggle { align-self: stretch; width: 100%; }
+            .filter-row select,
+            .filter-row .btn-chip,
+            .filter-row .view-mode-btn,
+            .filter-row .btn-adv-toggle,
+            .filter-row .clear-btn { flex-basis: 100%; width: 100%; }
+            .card-hero-actions { flex-direction: column; align-items: stretch; gap: 7px; }
+            .card-hero-tags { justify-content: flex-start; }
+            .countdown-timer { text-align: center; }
+            .pcard { padding: 12px; }
         }
     </style>
 
