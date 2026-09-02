@@ -1098,7 +1098,6 @@ def build_picks(raw_data):
 # ============================================================
 # SELECCIÓN EDITORIAL PARA REDES
 # ============================================================
-FREE_RELEASE_LIMIT = 2
 FREE_RELEASE_SIGNALS = {
     "SMART_MONEY", "REVERSE_LINE_MOVEMENT", "STEAM_MOVE",
     "SHARP_VS_PUBLIC", "CONSENSUS",
@@ -1122,11 +1121,11 @@ def _free_release_score(item):
     )
 
 
-def assign_free_releases(items, limit=FREE_RELEASE_LIMIT):
-    """Marca hasta dos publicaciones gratuitas sin degradar su categoría.
+def assign_free_releases(items):
+    """Publica todos los VALUE que cumplen los parámetros de Free Release.
 
-    Prioriza VALUE y completa con PREMIUM. WHALE nunca se libera de forma
-    automática. Se buscan encuentros distintos para diversificar la muestra.
+    No existe cupo mínimo ni máximo. PREMIUM y WHALE conservan acceso Premium
+    y nunca se liberan automáticamente para completar una cuota editorial.
     """
     for item in items:
         item["freeRelease"] = False
@@ -1136,7 +1135,7 @@ def assign_free_releases(items, limit=FREE_RELEASE_LIMIT):
     eligible = []
     for item in items:
         signals = set(item.get("marketSignals") or [item.get("marketSignal")])
-        if item.get("pickCategory") not in {"VALUE", "PREMIUM"}: continue
+        if item.get("pickCategory") != "VALUE": continue
         if item.get("actionKey") != "bet": continue
         if float(item.get("ev") or 0) < 1.0: continue
         if float(item.get("modelEdge") or 0) <= 0: continue
@@ -1144,30 +1143,9 @@ def assign_free_releases(items, limit=FREE_RELEASE_LIMIT):
         if not signals.intersection(FREE_RELEASE_SIGNALS): continue
         eligible.append(item)
 
-    ordered = []
-    for category in ("VALUE", "PREMIUM"):
-        ordered.extend(sorted(
-            (item for item in eligible if item.get("pickCategory") == category),
-            key=_free_release_score,
-            reverse=True,
-        ))
+    ordered = sorted(eligible, key=_free_release_score, reverse=True)
 
-    selected, used_games = [], set()
-    for item in ordered:
-        game_key = str(item.get("game") or "").strip().lower()
-        if game_key and game_key in used_games: continue
-        selected.append(item)
-        if game_key: used_games.add(game_key)
-        if len(selected) >= limit: break
-
-    # Si solo existe valor en un mismo encuentro, permite completar el cupo.
-    if len(selected) < limit:
-        for item in ordered:
-            if item in selected: continue
-            selected.append(item)
-            if len(selected) >= limit: break
-
-    for rank, item in enumerate(selected, start=1):
+    for rank, item in enumerate(ordered, start=1):
         item["freeRelease"] = True
         item["freeReleaseRank"] = rank
         item["publicationTier"] = "FREE_RELEASE"

@@ -1781,9 +1781,9 @@
         <button class="btn-chip" id="watchlistOnly" aria-pressed="false">👁 My Watchlist</button>
         <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
         <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
+        <button class="btn-chip" id="fullMarketToggle" aria-pressed="false">🔎 Mostrar mercado completo</button>
         <button class="clear-btn" id="btnSaveFilter" style="border-color: var(--teal); color: var(--teal);">💾 Guardar filtro</button>
         <button class="clear-btn" id="clearBtn">🧹 Limpiar filtros</button>
-        <button class="btn-chip" id="fullMarketToggle" aria-pressed="false">🔎 Mostrar mercado completo</button>
     </div>
     <div class="saved-filters-row" id="savedFiltersRow" style="display:none;"></div>
 </div>
@@ -2250,6 +2250,17 @@ const TREND_ICON = {
     NO_ACTION: "⚪"
 };
 const MARKET_SIGNAL_KEYS = Object.keys(TREND_LABEL);
+const MARKET_SIGNAL_COLORS = {
+    STEAM_MOVE: '#06b6d4',
+    REVERSE_LINE_MOVEMENT: '#8b5cf6',
+    SMART_MONEY: '#2563eb',
+    PUBLIC_HEAVY: '#fb7185',
+    CONSENSUS: '#2dd4bf',
+    SHARP_VS_PUBLIC: '#f59e0b',
+    BALANCED_ACTION: '#64748b',
+    LOW_LIQUIDITY: '#38bdf8',
+    NO_ACTION: '#94a3b8'
+};
 
 let edgeChartInstance = null;
 let marketChartInstance = null;
@@ -2283,8 +2294,8 @@ function initCharts() {
         marketChartInstance = new Chart(ctxDoughnut, {
             type: 'doughnut',
             data: {
-                labels: MARKET_SIGNAL_KEYS.map(key => TREND_LABEL[key]),
-                datasets: [{ data: MARKET_SIGNAL_KEYS.map(() => 0), backgroundColor: ['#06b6d4', '#8b5cf6', '#2563eb', '#fb7185', '#2dd4bf', '#f59e0b', '#64748b', '#38bdf8', '#94a3b8'], borderWidth: 0 }]
+                labels: [],
+                datasets: [{ data: [], backgroundColor: [], borderWidth: 0 }]
             },
             options: {
                 responsive: true,
@@ -2306,7 +2317,10 @@ function updateChartsData(activeList) {
     if (marketChartInstance) {
         const counts = Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, 0]));
         activeList.forEach(p => { counts[classifyMarketBucket(p)]++; });
-        marketChartInstance.data.datasets[0].data = MARKET_SIGNAL_KEYS.map(key => counts[key]);
+        const activeKeys = MARKET_SIGNAL_KEYS.filter(key => counts[key] > 0);
+        marketChartInstance.data.labels = activeKeys.map(key => TREND_LABEL[key]);
+        marketChartInstance.data.datasets[0].data = activeKeys.map(key => counts[key]);
+        marketChartInstance.data.datasets[0].backgroundColor = activeKeys.map(key => MARKET_SIGNAL_COLORS[key]);
         marketChartInstance.update();
     }
 }
@@ -2746,10 +2760,11 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
     
     const elMercado = document.getElementById("statMercado");
     if (elMercado) {
-        elMercado.innerHTML = MARKET_SIGNAL_KEYS.map(key => {
+        const activeKeys = MARKET_SIGNAL_KEYS.filter(key => buckets[key].length > 0);
+        elMercado.innerHTML = activeKeys.length ? activeKeys.map(key => {
             const cfg = marketSignalVisualConfig(key);
             return `<span title="${TREND_LABEL[key]}" style="color:${cfg.text}">${TREND_ICON[key]} ${buckets[key].length}</span>`;
-        }).join('');
+        }).join('') : `<span style="color:var(--muted)">Sin señales activas</span>`;
     }
 
     // El Top Pick es global: los filtros de pantalla no deben sustituir al
@@ -3372,8 +3387,17 @@ function updateFilterCounts(pendingPicks) {
         const counts = Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, 0]));
         pendingPicks.forEach(p => { if (p.marketSignal in counts) counts[p.marketSignal]++; });
         Array.from(fTrend.options).forEach(opt => {
-            if (!opt.value) { opt.textContent = "📊 Todas las señales"; return; }
-            opt.textContent = `${TREND_ICON[opt.value]} ${TREND_LABEL[opt.value]} (${counts[opt.value] || 0})`;
+            if (!opt.value) {
+                opt.textContent = "📊 Todas las señales";
+                opt.hidden = false;
+                opt.disabled = false;
+                return;
+            }
+            const count = counts[opt.value] || 0;
+            opt.textContent = `${TREND_ICON[opt.value]} ${TREND_LABEL[opt.value]} (${count})`;
+            const unavailable = count === 0 && state.trend !== opt.value;
+            opt.hidden = unavailable;
+            opt.disabled = unavailable;
         });
     }
 
