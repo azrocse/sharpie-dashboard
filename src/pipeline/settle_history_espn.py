@@ -23,7 +23,8 @@ import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from collections import Counter
+from datetime import datetime, timedelta, timezone
 from difflib import SequenceMatcher
 from pathlib import Path
 
@@ -33,6 +34,7 @@ BASE_DIR = CURRENT_DIR.parent.parent
 DEFAULT_HISTORY_DIR = BASE_DIR / "data" / "history"
 ESPN_BASE_URL = "https://site.api.espn.com/apis/site/v2/sports"
 FINAL_RESULTS = {"WIN", "LOSS", "PUSH", "VOID"}
+CDMX_TIMEZONE = timezone(timedelta(hours=-6))
 
 # Se evalúa en orden: las etiquetas específicas deben preceder a las generales.
 LEAGUE_ROUTES = [
@@ -40,7 +42,11 @@ LEAGUE_ROUTES = [
     (("nba",), ("basketball", "nba")),
     (("nfl",), ("football", "nfl")),
     (("ncaaf", "college football"), ("football", "college-football")),
+    (("ufl",), ("football", "ufl")),
+    (("ncaa womens basketball", "womens college basketball", "ncaaw"), ("basketball", "womens-college-basketball")),
+    (("ncaa basketball", "college basketball", "ncaab"), ("basketball", "mens-college-basketball")),
     (("mlb", "major league baseball"), ("baseball", "mlb")),
+    (("ncaa baseball", "college baseball"), ("baseball", "college-baseball")),
     (("kbo", "korea baseball"), ("baseball", "kbo")),
     (("npb", "japan baseball", "japanese baseball"), ("baseball", "jpn.1")),
     (("uefa champions", "champions league", "ucl"), ("soccer", "uefa.champions")),
@@ -53,7 +59,10 @@ LEAGUE_ROUTES = [
     (("liga mx", "mex.1"), ("soccer", "mex.1")),
     (("mls", "major league soccer", "usa.1"), ("soccer", "usa.1")),
     (("copa libertadores", "libertadores"), ("soccer", "conmebol.libertadores")),
+    (("world cup", "fifa world cup"), ("soccer", "fifa.world")),
     (("nhl",), ("hockey", "nhl")),
+    (("ncaa ice hockey", "college hockey"), ("hockey", "mens-college-hockey")),
+    (("ufc", "mma"), ("mma", "ufc")),
 ]
 
 TEAM_ROUTE_HINTS = {
@@ -147,6 +156,27 @@ def candidate_routes(pick):
     return list(dict.fromkeys(catalog))
 
 
+def date_relation(date_text):
+    """Clasifica la fecha del pick con respecto al día actual de CDMX."""
+    try:
+        event_date = datetime.strptime(str(date_text)[:10], "%Y-%m-%d").date()
+    except (TypeError, ValueError):
+        return "INVALID"
+    today = datetime.now(CDMX_TIMEZONE).date()
+    return "PAST" if event_date < today else "FUTURE" if event_date > today else "TODAY"
+
+
+def search_dates(date_text, include_adjacent=False):
+    try:
+        base = datetime.strptime(str(date_text)[:10], "%Y-%m-%d").date()
+    except (TypeError, ValueError):
+        return [str(date_text)[:10]]
+    values = [base]
+    if include_adjacent:
+        values.extend((base - timedelta(days=1), base + timedelta(days=1)))
+    return [value.isoformat() for value in values]
+
+
 class ESPNClient:
     def __init__(self, timeout=15.0, pause=0.20):
         self.timeout = timeout
@@ -221,7 +251,19 @@ def text_similarity(left, right):
 def side_similarity(expected, competitor):
     if not expected or not competitor:
         return 0.0
-    return max((text_similarity(expected, alias) for alias in competitor.get("aliases", set())), default=0.0)
+    expected_n = normalize(expected)
+    score = max((text_similarity(expected, alias) for alias in competitor.get("aliases", set())), default=0.0)
+    expected_tokens = expected_n.split()
+    if expected_tokens:
+        nickname = expected_tokens[-1]
+        if len(nickname) >= 4 and any(nickname == normalize(alias).split()[-1] for alias in competitor.get("aliases", set()) if normalize(alias)):
+            score = max(score, 0.88)
+    return score
+
+
+def game_teams(game):
+    parts = re.split(r"\s+(?:@|vs\.?|versus|v\.)\s+", str(game or ""), maxsplit=1, flags=re.IGNORECASE)
+    return (parts[0].strip(), parts[1].strip()) if len(parts) == 2 else (None, None)
 
 
 def event_match_score(pick, event):
@@ -233,6 +275,10 @@ def event_match_score(pick, event):
     competitors, _competition = event_competitors(event)
     expected_home = lookup.get("home") or pick.get("home")
     expected_away = lookup.get("away") or pick.get("away")
+    if not expected_home or not expected_away:
+        left, right = game_teams(pick.get("game"))
+        expected_away = expected_away or left
+        expected_home = expected_home or right
     if expected_home and expected_away:
         direct = side_similarity(expected_home, competitors.get("home")) + side_similarity(expected_away, competitors.get("away"))
         reverse = side_similarity(expected_home, competitors.get("away")) + side_similarity(expected_away, competitors.get("home"))
@@ -406,6 +452,56 @@ def history_files(history_dir, date_filter=None):
     return sorted(root.glob("????-??-??/sharpie.json"))
 
 
+def write_settlement_audit(history_dir):
+    """Genera un diagnóstico agregado sin contaminar el visualizador público."""
+    root = Path(history_dir)
+    status_counts, reason_counts, relation_counts, route_counts = Counter(), Counter(), Counter(), Counter()
+    unresolved = []
+    total = 0
+    for path in history_files(root):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        picks = payload.get("picks", []) if isinstance(payload, dict) else payload if isinstance(payload, list) else []
+        for pick in picks:
+            if not isinstance(pick, dict):
+                continue
+            total += 1
+            settlement = pick.get("settlement") or {}
+            lookup = pick.get("eventLookup") or {}
+            status = str(settlement.get("status") or "PENDING").upper()
+            reason = settlement.get("failureCode") or settlement.get("notes") or "SIN_DETALLE"
+            relation = date_relation(pick.get("date") or lookup.get("scheduledAt", "")[:10])
+            route = "/".join(filter(None, (str(lookup.get("espnSport") or ""), str(lookup.get("espnLeague") or "")))) or "SIN_RUTA"
+            status_counts[status] += 1
+            relation_counts[f"{status}_{relation}"] += 1
+            route_counts[route] += 1
+            if status not in FINAL_RESULTS:
+                reason_counts[str(reason)] += 1
+                if len(unresolved) < 200:
+                    unresolved.append({
+                        "date": pick.get("date"), "game": pick.get("game"),
+                        "pick": pick.get("pick"), "league": pick.get("league"),
+                        "status": status, "reason": reason,
+                        "matchConfidence": settlement.get("matchConfidence"),
+                        "bestCandidate": lookup.get("bestCandidate"),
+                        "attemptedRoutes": lookup.get("attemptedRoutes", []),
+                        "attemptedDates": lookup.get("attemptedDates", []),
+                    })
+    report = {
+        "generatedAt": now_iso(), "totalPicks": total,
+        "statusCounts": dict(status_counts), "unresolvedReasons": dict(reason_counts),
+        "statusByDateRelation": dict(relation_counts), "resolvedRoutes": dict(route_counts),
+        "unresolvedSamples": unresolved,
+    }
+    output = root.parent / "results" / "settlement_audit.json"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write(output, report)
+    print(f"[AUDITORÍA ESPN] {output}")
+    return report
+
+
 def update_pick_from_espn(pick, client, force=False):
     settlement = pick.get("settlement") or {"status": "PENDING"}
     if settlement.get("status") in FINAL_RESULTS and not force:
@@ -413,20 +509,26 @@ def update_pick_from_espn(pick, client, force=False):
 
     checked_at = now_iso()
     date_text = pick.get("date") or (pick.get("eventLookup") or {}).get("scheduledAt", "")[:10]
+    relation = date_relation(date_text)
+    routes = candidate_routes(pick)
+    dates = search_dates(date_text, include_adjacent=len(routes) <= 3)
     candidates = []
     request_errors = []
+    successful_requests = 0
     stored_id = str((pick.get("eventLookup") or {}).get("eventId") or pick.get("sourceEventId") or "").strip()
-    for route in candidate_routes(pick):
-        try:
-            route_response = client.scoreboard(route[0], route[1], date_text)
-        except Exception as exc:
-            request_errors.append(str(exc))
-            continue
-        for route_event in route_response["payload"].get("events") or []:
-            confidence = event_match_score(pick, route_event)
-            if stored_id and stored_id == str(route_event.get("id") or ""):
-                confidence = 1000.0
-            candidates.append((confidence, route_event, route_response, route))
+    for route in routes:
+        for query_date in dates:
+            try:
+                route_response = client.scoreboard(route[0], route[1], query_date)
+            except Exception as exc:
+                request_errors.append(str(exc))
+                continue
+            successful_requests += 1
+            for route_event in route_response["payload"].get("events") or []:
+                confidence = event_match_score(pick, route_event)
+                if stored_id and stored_id == str(route_event.get("id") or ""):
+                    confidence = 1000.0
+                candidates.append((confidence, route_event, route_response, route, query_date))
 
         # Una liga ya identificada no debe provocar una búsqueda innecesaria.
         if resolve_route(pick):
@@ -437,14 +539,35 @@ def update_pick_from_espn(pick, client, force=False):
     ambiguous = len(candidates) > 1 and best[0] < 1000 and best[0] - candidates[1][0] < 8.0
     if best is None or best[0] < 72.0 or ambiguous:
         error = "AMBIGUOUS_MATCH" if ambiguous else "NO_MATCH"
-        if best is None and request_errors:
+        if best is None and request_errors and not successful_requests:
             raise RuntimeError(request_errors[0])
         confidence = best[0] if best else 0.0
-        settlement.update({"status": "PENDING" if error == "NO_MATCH" else "REVIEW", "checkedAt": checked_at, "notes": error, "matchConfidence": round(confidence, 2)})
+        if error == "AMBIGUOUS_MATCH":
+            status, failure_code = "REVIEW", "AMBIGUOUS_MATCH"
+        elif relation == "PAST":
+            status, failure_code = "REVIEW", "NO_MATCH_PAST"
+        elif relation == "INVALID":
+            status, failure_code = "REVIEW", "INVALID_EVENT_DATE"
+        else:
+            status, failure_code = "PENDING", f"NO_MATCH_{relation}"
+        lookup = pick.setdefault("eventLookup", {})
+        lookup.update({
+            "provider": "ESPN", "matchStatus": failure_code,
+            "matchConfidence": round(confidence, 2),
+            "attemptedRoutes": [f"{sport}/{league}" for sport, league in routes],
+            "attemptedDates": dates,
+            "candidateEvents": len(candidates),
+        })
+        if best:
+            lookup["bestCandidate"] = best[1].get("name")
+        settlement.update({
+            "status": status, "checkedAt": checked_at, "notes": failure_code,
+            "failureCode": failure_code, "matchConfidence": round(confidence, 2),
+        })
         pick["settlement"] = settlement
-        return settlement["status"]
+        return status
 
-    confidence, event, response, route = best
+    confidence, event, response, route, matched_date = best
 
     competitors, _competition = event_competitors(event)
     home_score = competitors.get("home", {}).get("score")
@@ -455,6 +578,7 @@ def update_pick_from_espn(pick, client, force=False):
         "provider": "ESPN", "eventId": str(event.get("id")), "espnSport": route[0],
         "espnLeague": route[1], "matchedName": event.get("name"),
         "matchStatus": "MATCHED", "matchConfidence": round(confidence, 2),
+        "matchedDate": matched_date, "attemptedDates": dates,
     })
 
     common = {
@@ -513,7 +637,12 @@ def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=Fa
             except Exception as exc:
                 outcome = "ERROR"
                 settlement = pick.setdefault("settlement", {})
-                settlement.update({"status": "PENDING", "checkedAt": now_iso(), "notes": str(exc)})
+                relation = date_relation(pick.get("date") or (pick.get("eventLookup") or {}).get("scheduledAt", "")[:10])
+                visible_status = "REVIEW" if relation in {"PAST", "INVALID"} else "PENDING"
+                settlement.update({
+                    "status": visible_status, "checkedAt": now_iso(), "notes": str(exc),
+                    "failureCode": "ESPN_REQUEST_ERROR",
+                })
                 print(f"[ERROR] {pick.get('historyId') or pick.get('pick')}: {exc}")
             summary[outcome] = summary.get(outcome, 0) + 1
             changed = changed or before != json.dumps(pick, ensure_ascii=False, sort_keys=True)
@@ -527,6 +656,8 @@ def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=Fa
             print(f"[OK] {path}")
         elif changed:
             print(f"[DRY-RUN] {path}")
+    if not dry_run:
+        write_settlement_audit(history_dir)
     return summary
 
 

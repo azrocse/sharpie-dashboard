@@ -70,9 +70,47 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T17:18:35+00:00",
+        "checkedAt": "2026-09-03T17:59:00+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 36.36
+        "matchConfidence": 43.48,
+        "failureCode": "AMBIGUOUS_MATCH"
+      },
+      "eventLookup": {
+        "provider": "ESPN",
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 43.48,
+        "attemptedRoutes": [
+          "basketball/wnba",
+          "basketball/nba",
+          "football/nfl",
+          "football/college-football",
+          "football/ufl",
+          "basketball/womens-college-basketball",
+          "basketball/mens-college-basketball",
+          "baseball/mlb",
+          "baseball/college-baseball",
+          "baseball/kbo",
+          "baseball/jpn.1",
+          "soccer/uefa.champions",
+          "soccer/uefa.europa",
+          "soccer/eng.1",
+          "soccer/esp.1",
+          "soccer/ita.1",
+          "soccer/fra.1",
+          "soccer/ger.1",
+          "soccer/mex.1",
+          "soccer/usa.1",
+          "soccer/conmebol.libertadores",
+          "soccer/fifa.world",
+          "hockey/nhl",
+          "hockey/mens-college-hockey",
+          "mma/ufc"
+        ],
+        "attemptedDates": [
+          "2026-08-14"
+        ],
+        "candidateEvents": 19,
+        "bestCandidate": "San Diego Padres at Cleveland Guardians"
       }
     },
     {
@@ -4824,7 +4862,13 @@
         "espnLeague": "mlb",
         "matchedName": "San Diego Padres at Cleveland Guardians",
         "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-08-14",
+        "attemptedDates": [
+          "2026-08-14",
+          "2026-08-13",
+          "2026-08-15"
+        ]
       },
       "needsSettlement": true,
       "settlement": {
@@ -4833,7 +4877,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
         "eventId": "401816523",
         "eventName": "San Diego Padres at Cleveland Guardians",
-        "checkedAt": "2026-09-03T17:18:35+00:00",
+        "checkedAt": "2026-09-03T17:59:01+00:00",
         "homeScore": 5.0,
         "awayScore": 7.0,
         "matchConfidence": 1000.0,
@@ -5569,7 +5613,7 @@
       }
     }
   ],
-  "updatedAt": "2026-09-03T17:18:35+00:00",
+  "updatedAt": "2026-09-03T17:59:01+00:00",
   "pendingSettlement": 2,
   "settledCount": 52
 }

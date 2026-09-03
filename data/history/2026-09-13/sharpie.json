@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-13",
-  "updatedAt": "2026-09-03T17:33:57+00:00",
+  "updatedAt": "2026-09-03T18:20:13+00:00",
   "count": 11,
   "pendingSettlement": 11,
   "picks": [
@@ -29,34 +29,27 @@
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
       "stake": 2.0,
-      "modelProb": 56.18,
+      "modelProb": 56.03,
       "fairProb": 51.08,
-      "flowAdjustment": 5.1,
+      "flowAdjustment": 4.95,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 53.49,
-      "modelEdge": 2.69,
-      "ev": 5.03,
+      "modelEdge": 2.54,
+      "ev": 4.75,
       "coherence": null,
       "whale": false,
       "handlePct": 85.0,
-      "betsPct": 51.0,
-      "divergence": 34.0,
-      "signedDivergence": 34.0,
-      "reason": "SMART MONEY. 4 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 52.0,
+      "divergence": 33.0,
+      "signedDivergence": 33.0,
+      "reason": "SMART MONEY. 5 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "11:00",
       "iso": "2026-09-13T11:00:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 50.0,
-          "handlePct": 85.0,
-          "odds": "-115"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -1449,6 +1442,13 @@
           "betsPct": 51.0,
           "handlePct": 85.0,
           "odds": "-115"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 52.0,
+          "handlePct": 85.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -1456,7 +1456,7 @@
           "odds": "-115",
           "prob": 53.49,
           "divergence": 35.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -1468,13 +1468,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 5,
+      "freeReleaseRank": 9,
       "publicationTier": "FREE_RELEASE",
       "historyId": "4d636b3b6963b2da01a53772",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 225,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 226,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -1589,13 +1589,32 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T11:35:58-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-115",
+          "stake": 2.0,
+          "modelProb": 56.03,
+          "modelEdge": 2.54,
+          "ev": 4.75,
+          "betsPct": 52.0,
+          "handlePct": 85.0,
+          "signedDivergence": 33.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:56+00:00",
+        "checkedAt": "2026-09-03T18:20:12+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -1617,7 +1636,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "New Orleans Saints at Detroit Lions",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -1666,13 +1691,6 @@
       "time": "11:00",
       "iso": "2026-09-13T11:00:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 47.0,
-          "handlePct": 80.0,
-          "odds": "-115"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -3051,6 +3069,13 @@
           "betsPct": 50.0,
           "handlePct": 80.0,
           "odds": "-115"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 50.0,
+          "handlePct": 80.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -3058,7 +3083,7 @@
           "odds": "-115",
           "prob": 53.49,
           "divergence": 33.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -3070,13 +3095,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 8,
+      "freeReleaseRank": 12,
       "publicationTier": "FREE_RELEASE",
       "historyId": "95061a8865406a68ff0067df",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 223,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 224,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -3216,7 +3241,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:56+00:00",
+        "checkedAt": "2026-09-03T18:20:12+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -3238,7 +3263,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "New York Jets at Tennessee Titans",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -4775,7 +4806,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:56+00:00",
+        "checkedAt": "2026-09-03T18:20:12+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -4797,7 +4828,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Cleveland Browns at Jacksonville Jaguars",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -4846,13 +4883,6 @@
       "time": "11:00",
       "iso": "2026-09-13T11:00:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 56.0,
-          "handlePct": 96.0,
-          "odds": "-110"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -6245,6 +6275,13 @@
           "betsPct": 53.0,
           "handlePct": 83.0,
           "odds": "-110"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 53.0,
+          "handlePct": 83.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -6252,7 +6289,7 @@
           "odds": "-110",
           "prob": 52.38,
           "divergence": 40.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -6264,13 +6301,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 7,
+      "freeReleaseRank": 10,
       "publicationTier": "FREE_RELEASE",
       "historyId": "d4cc1d1ffe52d6c9812e8e51",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 225,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 226,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -6429,7 +6466,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:56+00:00",
+        "checkedAt": "2026-09-03T18:20:13+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -6451,7 +6488,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Chicago Bears at Carolina Panthers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -7950,7 +7993,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:57+00:00",
+        "checkedAt": "2026-09-03T18:20:13+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -7972,7 +8015,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Miami Dolphins at Las Vegas Raiders",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -8000,34 +8049,27 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.0,
-      "modelProb": 41.56,
+      "modelProb": 41.71,
       "fairProb": 36.31,
-      "flowAdjustment": 5.25,
+      "flowAdjustment": 5.4,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 37.88,
-      "modelEdge": 3.68,
-      "ev": 9.72,
+      "modelEdge": 3.83,
+      "ev": 10.11,
       "coherence": null,
       "whale": false,
-      "handlePct": 53.0,
+      "handlePct": 54.0,
       "betsPct": 18.0,
-      "divergence": 35.0,
-      "signedDivergence": 35.0,
-      "reason": "SMART MONEY. 9 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 36.0,
+      "signedDivergence": 36.0,
+      "reason": "SMART MONEY. 10 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 17.0,
-          "handlePct": 63.0,
-          "odds": "+164"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -9406,6 +9448,13 @@
           "betsPct": 18.0,
           "handlePct": 53.0,
           "odds": "+164"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 18.0,
+          "handlePct": 54.0,
+          "odds": "+164"
         }
       ],
       "clv": {
@@ -9413,7 +9462,7 @@
           "odds": "+164",
           "prob": 37.88,
           "divergence": 46.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -9430,8 +9479,8 @@
       "historyId": "41ebdd6f58b063f733708a67",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 223,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 224,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -9608,13 +9657,32 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T11:35:58-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+164",
+          "stake": 2.0,
+          "modelProb": 41.71,
+          "modelEdge": 3.83,
+          "ev": 10.11,
+          "betsPct": 18.0,
+          "handlePct": 54.0,
+          "signedDivergence": 36.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:57+00:00",
+        "checkedAt": "2026-09-03T18:20:13+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -9636,7 +9704,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Miami Dolphins at Las Vegas Raiders",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -11135,7 +11209,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:57+00:00",
+        "checkedAt": "2026-09-03T18:20:13+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -11157,7 +11231,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Arizona Cardinals at Los Angeles Chargers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -11207,13 +11287,6 @@
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 39.0,
-          "handlePct": 80.0,
-          "odds": "-118"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -12592,6 +12665,13 @@
           "betsPct": 40.0,
           "handlePct": 79.0,
           "odds": "-118"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 40.0,
+          "handlePct": 79.0,
+          "odds": "-118"
         }
       ],
       "clv": {
@@ -12599,7 +12679,7 @@
           "odds": "-118",
           "prob": 54.13,
           "divergence": 41.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -12616,8 +12696,8 @@
       "historyId": "77dc20f05621ea78265c1c92",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 223,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 224,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -12744,7 +12824,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:57+00:00",
+        "checkedAt": "2026-09-03T18:20:13+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -12766,7 +12846,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Green Bay Packers at Minnesota Vikings",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -12815,13 +12901,6 @@
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 46.0,
-          "handlePct": 88.0,
-          "odds": "-110"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -14200,6 +14279,13 @@
           "betsPct": 42.0,
           "handlePct": 87.0,
           "odds": "-110"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 42.0,
+          "handlePct": 87.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -14207,7 +14293,7 @@
           "odds": "-110",
           "prob": 52.38,
           "divergence": 42.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -14224,8 +14310,8 @@
       "historyId": "864cfe7a57c6fa4d99459bcb",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 223,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 224,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -14365,7 +14451,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:57+00:00",
+        "checkedAt": "2026-09-03T18:20:13+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -14387,7 +14473,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Green Bay Packers at Minnesota Vikings",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -14436,13 +14528,6 @@
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 60.0,
-          "handlePct": 98.0,
-          "odds": "-105"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -15821,6 +15906,13 @@
           "betsPct": 57.0,
           "handlePct": 97.0,
           "odds": "-105"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 57.0,
+          "handlePct": 97.0,
+          "odds": "-105"
         }
       ],
       "clv": {
@@ -15828,7 +15920,7 @@
           "odds": "-105",
           "prob": 51.22,
           "divergence": 38.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -15845,8 +15937,8 @@
       "historyId": "9c29f86c20f24a89bf76d3b4",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 223,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 224,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -15986,7 +16078,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:57+00:00",
+        "checkedAt": "2026-09-03T18:20:13+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -16008,7 +16100,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Arizona Cardinals at Los Angeles Chargers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     },
@@ -16057,13 +16155,6 @@
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 46.0,
-          "handlePct": 69.0,
-          "odds": "-110"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -17442,6 +17533,13 @@
           "betsPct": 40.0,
           "handlePct": 65.0,
           "odds": "-110"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 40.0,
+          "handlePct": 65.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -17449,7 +17547,7 @@
           "odds": "-110",
           "prob": 52.38,
           "divergence": 23.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -17461,13 +17559,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 9,
+      "freeReleaseRank": 13,
       "publicationTier": "FREE_RELEASE",
       "historyId": "efdeac0d5d47e5dd7794399f",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T10:05:11-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 3,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 4,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T10:05:11-06:00",
@@ -17493,7 +17591,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:57+00:00",
+        "checkedAt": "2026-09-03T18:20:13+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -17515,7 +17613,13 @@
         "espnSport": "football",
         "espnLeague": "nfl",
         "matchedName": "Arizona Cardinals at Los Angeles Chargers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-13",
+        "attemptedDates": [
+          "2026-09-13",
+          "2026-09-12",
+          "2026-09-14"
+        ]
       },
       "needsSettlement": true
     }

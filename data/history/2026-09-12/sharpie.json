@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-12",
-  "updatedAt": "2026-09-03T17:33:56+00:00",
+  "updatedAt": "2026-09-03T18:20:12+00:00",
   "count": 1,
   "pendingSettlement": 1,
   "picks": [
@@ -676,12 +676,13 @@
       "settlement": {
         "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-03T17:33:55+00:00",
+        "checkedAt": "2026-09-03T18:20:11+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 52.71
+        "matchConfidence": 52.71,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -691,7 +692,40 @@
         "away": "Ryan Garcia",
         "home": "Conor Benn",
         "scheduledAt": "2026-09-12T21:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 52.71,
+        "attemptedRoutes": [
+          "basketball/wnba",
+          "basketball/nba",
+          "football/nfl",
+          "football/college-football",
+          "football/ufl",
+          "basketball/womens-college-basketball",
+          "basketball/mens-college-basketball",
+          "baseball/mlb",
+          "baseball/college-baseball",
+          "baseball/kbo",
+          "baseball/jpn.1",
+          "soccer/uefa.champions",
+          "soccer/uefa.europa",
+          "soccer/eng.1",
+          "soccer/esp.1",
+          "soccer/ita.1",
+          "soccer/fra.1",
+          "soccer/ger.1",
+          "soccer/mex.1",
+          "soccer/usa.1",
+          "soccer/conmebol.libertadores",
+          "soccer/fifa.world",
+          "hockey/nhl",
+          "hockey/mens-college-hockey",
+          "mma/ufc"
+        ],
+        "attemptedDates": [
+          "2026-09-12"
+        ],
+        "candidateEvents": 136,
+        "bestCandidate": "Maryland Terrapins at UConn Huskies"
       },
       "needsSettlement": true
     }

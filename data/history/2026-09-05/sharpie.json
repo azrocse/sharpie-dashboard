@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-05",
-  "updatedAt": "2026-09-03T17:33:54+00:00",
+  "updatedAt": "2026-09-03T18:20:09+00:00",
   "count": 22,
   "pendingSettlement": 22,
   "picks": [
@@ -1682,7 +1682,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:49+00:00",
+        "checkedAt": "2026-09-03T18:20:02+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -1704,7 +1704,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "East Carolina Pirates at Alabama Crimson Tide",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -2427,7 +2433,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:49+00:00",
+        "checkedAt": "2026-09-03T18:20:03+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -2449,7 +2455,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Ohio Bobcats at Nebraska Cornhuskers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -2565,7 +2577,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:49+00:00",
+        "checkedAt": "2026-09-03T18:20:03+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -2587,7 +2599,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "North Texas Mean Green at Indiana Hoosiers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       }
     },
     {
@@ -2626,8 +2644,8 @@
       "ev": 14.26,
       "coherence": "contradictoria",
       "whale": false,
-      "handlePct": 55.0,
-      "betsPct": 12.0,
+      "handlePct": 56.0,
+      "betsPct": 13.0,
       "divergence": 43.0,
       "signedDivergence": 43.0,
       "reason": "SMART MONEY. la cuota se movió en contra de la dirección del dinero, coherencia contradictoria.",
@@ -3831,6 +3849,13 @@
           "betsPct": 12.0,
           "handlePct": 55.0,
           "odds": "+185"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 13.0,
+          "handlePct": 56.0,
+          "odds": "+185"
         }
       ],
       "clv": {
@@ -3855,8 +3880,8 @@
       "historyId": "659e517d527a1c163ea6f7b0",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T10:50:10-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 171,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 172,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T10:50:10-06:00",
@@ -4091,18 +4116,38 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T11:35:58-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+185",
+          "stake": 2.5,
+          "modelProb": 40.09,
+          "modelEdge": 5.0,
+          "ev": 14.26,
+          "betsPct": 13.0,
+          "handlePct": 56.0,
+          "signedDivergence": 43.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": null,
-        "checkedAt": "2026-09-03T17:33:49+00:00",
+        "checkedAt": "2026-09-03T18:20:04+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": "NO_MATCH",
-        "matchConfidence": 0.0
+        "notes": "NO_MATCH_FUTURE",
+        "matchConfidence": 0.0,
+        "failureCode": "NO_MATCH_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -4112,12 +4157,22 @@
         "away": "Liberty",
         "home": "James Madison",
         "scheduledAt": "2026-09-05T10:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "NO_MATCH_FUTURE",
+        "matchConfidence": 0.0,
+        "attemptedRoutes": [
+          "basketball/wnba"
+        ],
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ],
+        "candidateEvents": 0
       },
       "needsSettlement": true
     },
     {
-      "id": 147,
+      "id": 145,
       "game": "East Carolina @ Alabama",
       "away": "East Carolina",
       "home": "Alabama",
@@ -4153,22 +4208,15 @@
       "ev": 181.06,
       "coherence": "contradictoria",
       "whale": true,
-      "handlePct": 82.0,
+      "handlePct": 89.0,
       "betsPct": 7.0,
-      "divergence": 75.0,
-      "signedDivergence": 75.0,
+      "divergence": 82.0,
+      "signedDivergence": 82.0,
       "reason": "SMART MONEY. la cuota se movió en contra de la dirección del dinero, coherencia contradictoria.",
       "date": "2026-09-05",
       "time": "10:00",
       "iso": "2026-09-05T10:00:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 4.0,
-          "handlePct": 64.0,
-          "odds": "+2200"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -5561,6 +5609,13 @@
           "betsPct": 7.0,
           "handlePct": 82.0,
           "odds": "+2200"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 7.0,
+          "handlePct": 89.0,
+          "odds": "+2200"
         }
       ],
       "clv": {
@@ -5568,7 +5623,7 @@
           "odds": "+2200",
           "prob": 4.35,
           "divergence": 60.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -5585,8 +5640,8 @@
       "historyId": "a175bdc08a7030b38fe44fcb",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 225,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 226,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -5767,13 +5822,33 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T11:35:58-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+2200",
+          "stake": 2.5,
+          "modelProb": 12.22,
+          "modelEdge": 7.87,
+          "ev": 181.06,
+          "betsPct": 7.0,
+          "handlePct": 89.0,
+          "signedDivergence": 82.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:49+00:00",
+        "checkedAt": "2026-09-03T18:20:04+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -5795,7 +5870,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "East Carolina Pirates at Alabama Crimson Tide",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -6517,7 +6598,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:50+00:00",
+        "checkedAt": "2026-09-03T18:20:04+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -6539,7 +6620,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Ohio Bobcats at Nebraska Cornhuskers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -6567,24 +6654,24 @@
       "pickCategory": "VALUE",
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 2.0,
-      "modelProb": 55.25,
+      "stake": 2.5,
+      "modelProb": 55.4,
       "fairProb": 50.0,
-      "flowAdjustment": 5.25,
+      "flowAdjustment": 5.4,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 52.38,
-      "modelEdge": 2.87,
-      "ev": 5.48,
+      "modelEdge": 3.02,
+      "ev": 5.76,
       "coherence": null,
       "whale": false,
-      "handlePct": 69.0,
-      "betsPct": 34.0,
-      "divergence": 35.0,
-      "signedDivergence": 35.0,
-      "reason": "SMART MONEY. 14 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "handlePct": 71.0,
+      "betsPct": 35.0,
+      "divergence": 36.0,
+      "signedDivergence": 36.0,
+      "reason": "SMART MONEY. 15 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-05",
       "time": "10:00",
       "iso": "2026-09-05T10:00:00",
@@ -7785,6 +7872,13 @@
           "betsPct": 34.0,
           "handlePct": 69.0,
           "odds": "-110"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 35.0,
+          "handlePct": 71.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -7804,13 +7898,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 3,
+      "freeReleaseRank": 2,
       "publicationTier": "FREE_RELEASE",
       "historyId": "a7b3dbaae19c08d0676af132",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T10:55:10-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 170,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 171,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T10:55:10-06:00",
@@ -8091,18 +8185,39 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T11:35:58-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-110",
+          "stake": 2.5,
+          "modelProb": 55.4,
+          "modelEdge": 3.02,
+          "ev": 5.76,
+          "betsPct": 35.0,
+          "handlePct": 71.0,
+          "signedDivergence": 36.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": null,
-        "checkedAt": "2026-09-03T17:33:50+00:00",
+        "checkedAt": "2026-09-03T18:20:05+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": "NO_MATCH",
-        "matchConfidence": 0.0
+        "notes": "NO_MATCH_FUTURE",
+        "matchConfidence": 0.0,
+        "failureCode": "NO_MATCH_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -8112,12 +8227,22 @@
         "away": "Liberty",
         "home": "James Madison",
         "scheduledAt": "2026-09-05T10:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "NO_MATCH_FUTURE",
+        "matchConfidence": 0.0,
+        "attemptedRoutes": [
+          "basketball/wnba"
+        ],
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ],
+        "candidateEvents": 0
       },
       "needsSettlement": true
     },
     {
-      "id": 141,
+      "id": 139,
       "game": "Oregon State @ Houston",
       "away": "Oregon State",
       "home": "Houston",
@@ -8152,22 +8277,15 @@
       "ev": 64.01,
       "coherence": null,
       "whale": true,
-      "handlePct": 48.0,
-      "betsPct": 5.0,
+      "handlePct": 49.0,
+      "betsPct": 6.0,
       "divergence": 43.0,
       "signedDivergence": 43.0,
-      "reason": "SMART MONEY. 11 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "reason": "SMART MONEY. 12 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-05",
       "time": "10:00",
       "iso": "2026-09-05T10:00:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 4.0,
-          "handlePct": 50.0,
-          "odds": "+1000"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -9546,6 +9664,13 @@
           "betsPct": 5.0,
           "handlePct": 48.0,
           "odds": "+950"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 6.0,
+          "handlePct": 49.0,
+          "odds": "+950"
         }
       ],
       "clv": {
@@ -9553,7 +9678,7 @@
           "odds": "+1000",
           "prob": 9.09,
           "divergence": 46.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -9570,8 +9695,8 @@
       "historyId": "afc0e3e92187789776f216e0",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 223,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 224,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -9781,13 +9906,32 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T11:35:58-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+950",
+          "stake": 2.5,
+          "modelProb": 15.62,
+          "modelEdge": 6.1,
+          "ev": 64.01,
+          "betsPct": 6.0,
+          "handlePct": 49.0,
+          "signedDivergence": 43.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:50+00:00",
+        "checkedAt": "2026-09-03T18:20:05+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -9809,7 +9953,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Oregon State Beavers at Houston Cougars",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -11292,7 +11442,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:51+00:00",
+        "checkedAt": "2026-09-03T18:20:05+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -11314,7 +11464,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Oregon State Beavers at Houston Cougars",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -11665,7 +11821,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:51+00:00",
+        "checkedAt": "2026-09-03T18:20:05+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -11687,7 +11843,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Ball State Cardinals at Ohio State Buckeyes",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -12490,7 +12652,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:51+00:00",
+        "checkedAt": "2026-09-03T18:20:06+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -12512,7 +12674,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Ball State Cardinals at Ohio State Buckeyes",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -12562,13 +12730,6 @@
       "time": "13:30",
       "iso": "2026-09-05T13:30:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 7.0,
-          "handlePct": 73.0,
-          "odds": "+2500"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -13961,6 +14122,13 @@
           "betsPct": 7.0,
           "handlePct": 73.0,
           "odds": "+2500"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 7.0,
+          "handlePct": 73.0,
+          "odds": "+2500"
         }
       ],
       "clv": {
@@ -13968,7 +14136,7 @@
           "odds": "+2500",
           "prob": 3.85,
           "divergence": 66.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -13985,8 +14153,8 @@
       "historyId": "1d12a310d383a8ae86442cfa",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 225,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 226,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -14073,7 +14241,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:51+00:00",
+        "checkedAt": "2026-09-03T18:20:06+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -14095,7 +14263,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Texas State Bobcats at Texas Longhorns",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -14123,34 +14297,27 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.5,
-      "modelProb": 14.47,
+      "modelProb": 14.62,
       "fairProb": 7.42,
-      "flowAdjustment": 7.05,
+      "flowAdjustment": 7.2,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 7.69,
-      "modelEdge": 6.78,
-      "ev": 88.11,
+      "modelEdge": 6.93,
+      "ev": 90.06,
       "coherence": null,
       "whale": true,
       "handlePct": 54.0,
-      "betsPct": 7.0,
-      "divergence": 47.0,
-      "signedDivergence": 47.0,
-      "reason": "SMART MONEY. 8 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 6.0,
+      "divergence": 48.0,
+      "signedDivergence": 48.0,
+      "reason": "SMART MONEY. 9 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-05",
       "time": "13:30",
       "iso": "2026-09-05T13:30:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 5.0,
-          "handlePct": 77.0,
-          "odds": "+1200"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -15543,6 +15710,13 @@
           "betsPct": 7.0,
           "handlePct": 54.0,
           "odds": "+1200"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 6.0,
+          "handlePct": 54.0,
+          "odds": "+1200"
         }
       ],
       "clv": {
@@ -15550,7 +15724,7 @@
           "odds": "+1200",
           "prob": 7.69,
           "divergence": 72.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -15567,8 +15741,8 @@
       "historyId": "438891ce4737a40f927dbb57",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 225,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 226,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -15722,13 +15896,32 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T11:35:58-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+1200",
+          "stake": 2.5,
+          "modelProb": 14.62,
+          "modelEdge": 6.93,
+          "ev": 90.06,
+          "betsPct": 6.0,
+          "handlePct": 54.0,
+          "signedDivergence": 48.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:51+00:00",
+        "checkedAt": "2026-09-03T18:20:06+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -15750,7 +15943,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Boise State Broncos at Oregon Ducks",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -16902,7 +17101,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:52+00:00",
+        "checkedAt": "2026-09-03T18:20:06+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -16924,7 +17123,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Boston College Eagles at Cincinnati Bearcats",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -18537,7 +18742,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:52+00:00",
+        "checkedAt": "2026-09-03T18:20:07+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -18559,7 +18764,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Texas State Bobcats at Texas Longhorns",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -20096,7 +20307,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:52+00:00",
+        "checkedAt": "2026-09-03T18:20:07+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -20118,7 +20329,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Baylor Bears at Auburn Tigers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -20159,22 +20376,15 @@
       "ev": 11.13,
       "coherence": null,
       "whale": false,
-      "handlePct": 87.0,
-      "betsPct": 13.0,
-      "divergence": 74.0,
-      "signedDivergence": 74.0,
-      "reason": "SMART MONEY. 2 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "handlePct": 89.0,
+      "betsPct": 14.0,
+      "divergence": 75.0,
+      "signedDivergence": 75.0,
+      "reason": "SMART MONEY. 3 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-05",
       "time": "13:30",
       "iso": "2026-09-05T13:30:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 17.0,
-          "handlePct": 89.0,
-          "odds": "-105"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -20937,6 +21147,13 @@
           "betsPct": 13.0,
           "handlePct": 87.0,
           "odds": "-105"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 14.0,
+          "handlePct": 89.0,
+          "odds": "-105"
         }
       ],
       "clv": {
@@ -20944,7 +21161,7 @@
           "odds": "-105",
           "prob": 51.22,
           "divergence": 72.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -20961,8 +21178,8 @@
       "historyId": "c5390854d044dcdaf238b1a9",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 135,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 136,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -21003,13 +21220,33 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T11:35:58-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "-105",
+          "stake": 3.5,
+          "modelProb": 56.92,
+          "modelEdge": 5.7,
+          "ev": 11.13,
+          "betsPct": 14.0,
+          "handlePct": 89.0,
+          "signedDivergence": 75.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:52+00:00",
+        "checkedAt": "2026-09-03T18:20:07+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -21031,7 +21268,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Baylor Bears at Auburn Tigers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -21762,7 +22005,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:53+00:00",
+        "checkedAt": "2026-09-03T18:20:07+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -21784,7 +22027,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Baylor Bears at Auburn Tigers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -23454,7 +23703,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:53+00:00",
+        "checkedAt": "2026-09-03T18:20:08+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -23476,7 +23725,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Texas State Bobcats at Texas Longhorns",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -24322,7 +24577,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:53+00:00",
+        "checkedAt": "2026-09-03T18:20:08+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -24344,7 +24599,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Marshall Thundering Herd at Penn State Nittany Lions",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -25127,7 +25388,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:54+00:00",
+        "checkedAt": "2026-09-03T18:20:08+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -25149,7 +25410,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Marshall Thundering Herd at Penn State Nittany Lions",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     },
@@ -25198,13 +25465,6 @@
       "time": "17:30",
       "iso": "2026-09-05T17:30:00",
       "history": [
-        {
-          "time": "09:00",
-          "timestamp": "2026-09-02T09:00:10",
-          "betsPct": 12.0,
-          "handlePct": 38.0,
-          "odds": "+300"
-        },
         {
           "time": "09:05",
           "timestamp": "2026-09-02T09:05:09",
@@ -26597,6 +26857,13 @@
           "betsPct": 18.0,
           "handlePct": 48.0,
           "odds": "+295"
+        },
+        {
+          "time": "11:35",
+          "timestamp": "2026-09-03T11:35:58",
+          "betsPct": 18.0,
+          "handlePct": 48.0,
+          "odds": "+295"
         }
       ],
       "clv": {
@@ -26604,7 +26871,7 @@
           "odds": "+300",
           "prob": 25.0,
           "divergence": 26.0,
-          "timestamp": "2026-09-02T09:00:10"
+          "timestamp": "2026-09-02T09:05:09"
         },
         "checkpoints": {
           "4h": null,
@@ -26621,8 +26888,8 @@
       "historyId": "744d90278480d6ea33ec26fa",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T11:05:13-06:00",
-      "qualifiedObservations": 225,
+      "lastQualifiedAt": "2026-09-03T11:35:58-06:00",
+      "qualifiedObservations": 226,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -26952,7 +27219,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T17:33:54+00:00",
+        "checkedAt": "2026-09-03T18:20:08+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -26974,7 +27241,13 @@
         "espnSport": "football",
         "espnLeague": "college-football",
         "matchedName": "Clemson Tigers at LSU Tigers",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "matchedDate": "2026-09-05",
+        "attemptedDates": [
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
+        ]
       },
       "needsSettlement": true
     }
