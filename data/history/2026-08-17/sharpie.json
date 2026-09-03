@@ -60,20 +60,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:13+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 43.63,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:30:09+00:00",
+        "notes": "Resultado oficial del combate según ESPN",
+        "matchConfidence": 124.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260818&limit=500",
+        "eventId": "600060733",
+        "eventName": "Dana White's Contender Series: Season 10, Week 2",
+        "homeScore": null,
+        "awayScore": null,
+        "settledAt": "2026-09-03T19:30:09+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 43.63,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 124.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -105,8 +112,15 @@
           "2026-08-18"
         ],
         "candidateEvents": 23,
-        "bestCandidate": "Toronto Blue Jays at Tampa Bay Rays"
-      }
+        "bestCandidate": "Toronto Blue Jays at Tampa Bay Rays",
+        "eventId": "600060733",
+        "espnSport": "mma",
+        "espnLeague": "ufc",
+        "matchedName": "Dana White's Contender Series: Season 10, Week 2",
+        "matchedDate": "2026-08-18"
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4688
     },
     {
       "id": 211,
@@ -166,20 +180,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:23+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 43.63,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:30:18+00:00",
+        "notes": "Resultado oficial del combate según ESPN",
+        "matchConfidence": 124.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260818&limit=500",
+        "eventId": "600060733",
+        "eventName": "Dana White's Contender Series: Season 10, Week 2",
+        "homeScore": null,
+        "awayScore": null,
+        "settledAt": "2026-09-03T19:30:18+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 43.63,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 124.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -211,8 +232,15 @@
           "2026-08-18"
         ],
         "candidateEvents": 23,
-        "bestCandidate": "Toronto Blue Jays at Tampa Bay Rays"
-      }
+        "bestCandidate": "Toronto Blue Jays at Tampa Bay Rays",
+        "eventId": "600060733",
+        "espnSport": "mma",
+        "espnLeague": "ufc",
+        "matchedName": "Dana White's Contender Series: Season 10, Week 2",
+        "matchedDate": "2026-08-18"
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0
     },
     {
       "id": 210,
@@ -555,7 +583,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260818&limit=500",
         "eventId": "401857153",
         "eventName": "Indiana Fever at Toronto Tempo",
-        "checkedAt": "2026-09-03T18:33:23+00:00",
+        "checkedAt": "2026-09-03T19:31:26+00:00",
         "homeScore": 95.0,
         "awayScore": 101.0,
         "matchConfidence": 1000.0,
@@ -833,15 +861,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:24+00:00",
+        "checkedAt": "2026-09-03T19:31:27+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 45.79,
+        "matchConfidence": 67.46,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 45.79,
+        "matchConfidence": 67.46,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -867,7 +895,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-18"
@@ -975,15 +1004,15 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:24+00:00",
+        "checkedAt": "2026-09-03T19:31:36+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 45.79,
+        "matchConfidence": 67.46,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 45.79,
+        "matchConfidence": 67.46,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -1009,7 +1038,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-18"
@@ -1669,15 +1699,21 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:25+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 66.0,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-03T19:31:36+00:00",
+        "notes": "No se pudo identificar el equipo Moneyline",
+        "matchConfidence": 1000.0,
+        "failureCode": "NO_MATCH_PAST",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260818&limit=500",
+        "eventId": "401816583",
+        "eventName": "Seattle Mariners at Milwaukee Brewers",
+        "homeScore": 22.0,
+        "awayScore": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 66.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 1000.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -1706,11 +1742,19 @@
           "mma/ufc"
         ],
         "attemptedDates": [
-          "2026-08-18"
+          "2026-08-18",
+          "2026-08-17",
+          "2026-08-19"
         ],
         "candidateEvents": 23,
-        "bestCandidate": "Seattle Mariners at Milwaukee Brewers"
-      }
+        "bestCandidate": "Seattle Mariners at Milwaukee Brewers",
+        "eventId": "401816583",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Seattle Mariners at Milwaukee Brewers",
+        "matchedDate": "2026-08-18"
+      },
+      "needsSettlement": true
     },
     {
       "id": 195,
@@ -1770,20 +1814,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:25+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 66.0,
-        "failureCode": "NO_MATCH_PAST"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:30:21+00:00",
+        "notes": "Marcador 0-22",
+        "matchConfidence": 89.33,
+        "failureCode": "NO_MATCH_PAST",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260818&limit=500",
+        "eventId": "401816583",
+        "eventName": "Seattle Mariners at Milwaukee Brewers",
+        "homeScore": 22.0,
+        "awayScore": 0.0,
+        "settledAt": "2026-09-03T19:30:21+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 66.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 89.33,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -1815,8 +1866,15 @@
           "2026-08-18"
         ],
         "candidateEvents": 23,
-        "bestCandidate": "Seattle Mariners at Milwaukee Brewers"
-      }
+        "bestCandidate": "Seattle Mariners at Milwaukee Brewers",
+        "eventId": "401816583",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Seattle Mariners at Milwaukee Brewers",
+        "matchedDate": "2026-08-18"
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0
     },
     {
       "id": 194,
@@ -1881,15 +1939,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:25+00:00",
+        "checkedAt": "2026-09-03T19:31:37+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.74,
+        "matchConfidence": 63.74,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.74,
+        "matchConfidence": 63.74,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -1915,7 +1973,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-18"
@@ -1987,15 +2046,15 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:26+00:00",
+        "checkedAt": "2026-09-03T19:31:38+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.74,
+        "matchConfidence": 63.74,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.74,
+        "matchConfidence": 63.74,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -2021,7 +2080,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-18"
@@ -5023,7 +5083,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260821&limit=500",
         "eventId": "401873613",
         "eventName": "Green Bay Packers at Denver Broncos",
-        "checkedAt": "2026-09-03T18:33:26+00:00",
+        "checkedAt": "2026-09-03T19:31:39+00:00",
         "homeScore": 13.0,
         "awayScore": 33.0,
         "matchConfidence": 1000.0,
@@ -6087,15 +6147,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:27+00:00",
+        "checkedAt": "2026-09-03T19:31:40+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 42.36,
+        "matchConfidence": 57.43,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 42.36,
+        "matchConfidence": 57.43,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -6121,13 +6181,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-22"
         ],
         "candidateEvents": 62,
-        "bestCandidate": "Portland Timbers at LAFC"
+        "bestCandidate": "Brest at Le Mans"
       }
     },
     {
@@ -6235,15 +6296,15 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:28+00:00",
+        "checkedAt": "2026-09-03T19:31:40+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 42.36,
+        "matchConfidence": 57.43,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 42.36,
+        "matchConfidence": 57.43,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -6269,13 +6330,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-22"
         ],
         "candidateEvents": 62,
-        "bestCandidate": "Portland Timbers at LAFC"
+        "bestCandidate": "Brest at Le Mans"
       }
     },
     {
@@ -11235,15 +11297,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:28+00:00",
+        "checkedAt": "2026-09-03T19:31:41+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.0,
+        "matchConfidence": 62.91,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.0,
+        "matchConfidence": 62.91,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -11269,13 +11331,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "San Jose Earthquakes at Houston Dynamo FC"
+        "bestCandidate": "Miami Marlins at Washington Nationals"
       }
     },
     {
@@ -11383,15 +11446,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:29+00:00",
+        "checkedAt": "2026-09-03T19:31:42+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.0,
+        "matchConfidence": 62.91,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.0,
+        "matchConfidence": 62.91,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -11417,13 +11480,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "San Jose Earthquakes at Houston Dynamo FC"
+        "bestCandidate": "Miami Marlins at Washington Nationals"
       }
     },
     {
@@ -11531,15 +11595,15 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:29+00:00",
+        "checkedAt": "2026-09-03T19:31:42+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.58,
+        "matchConfidence": 57.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.58,
+        "matchConfidence": 57.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -11565,13 +11629,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "Nottingham Forest at Liverpool"
+        "bestCandidate": "Chicago Fire FC at Seattle Sounders FC"
       }
     },
     {
@@ -11679,15 +11744,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:33:30+00:00",
+        "checkedAt": "2026-09-03T19:31:43+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.58,
+        "matchConfidence": 57.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.58,
+        "matchConfidence": 57.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -11713,13 +11778,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "Nottingham Forest at Liverpool"
+        "bestCandidate": "Chicago Fire FC at Seattle Sounders FC"
       }
     },
     {
@@ -11827,7 +11893,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:30+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -11958,7 +12024,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:30+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -12089,7 +12155,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -12220,7 +12286,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -12351,7 +12417,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -12482,7 +12548,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -12632,7 +12698,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -12763,7 +12829,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -12894,7 +12960,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -13025,7 +13091,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -13156,7 +13222,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -13287,7 +13353,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -13399,7 +13465,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -13530,7 +13596,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -13661,7 +13727,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -13792,7 +13858,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -13923,7 +13989,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -14054,7 +14120,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -14185,7 +14251,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -14316,7 +14382,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -14447,7 +14513,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -14578,7 +14644,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -14709,7 +14775,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -14840,7 +14906,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -14990,7 +15056,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -15121,7 +15187,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -15252,7 +15318,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -15383,7 +15449,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -15514,7 +15580,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -15645,7 +15711,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -15757,7 +15823,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:44+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -15888,7 +15954,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -16019,7 +16085,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -16150,7 +16216,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -16281,7 +16347,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -16412,7 +16478,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -16556,7 +16622,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T18:33:31+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -16681,7 +16747,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -16806,7 +16872,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -16931,7 +16997,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -17056,7 +17122,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -17181,7 +17247,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -17306,7 +17372,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872925",
         "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -17431,7 +17497,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872925",
         "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -17556,7 +17622,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872925",
         "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -17681,7 +17747,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872925",
         "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -17806,7 +17872,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872925",
         "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -17931,7 +17997,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872925",
         "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -18037,7 +18103,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -18162,7 +18228,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -18287,7 +18353,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -18412,7 +18478,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -18537,7 +18603,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -18662,7 +18728,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -18806,7 +18872,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -18931,7 +18997,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -19056,7 +19122,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -19181,7 +19247,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -19306,7 +19372,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -19431,7 +19497,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -19537,7 +19603,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -19662,7 +19728,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -19787,7 +19853,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -19912,7 +19978,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -20037,7 +20103,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -20162,7 +20228,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -20306,7 +20372,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -20431,7 +20497,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -20556,7 +20622,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -20681,7 +20747,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -20806,7 +20872,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -20931,7 +20997,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -21056,7 +21122,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -21181,7 +21247,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -21306,7 +21372,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -21431,7 +21497,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -21556,7 +21622,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -21681,7 +21747,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -21806,7 +21872,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -21931,7 +21997,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T18:33:32+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -22056,7 +22122,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -22181,7 +22247,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:45+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -22306,7 +22372,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -22431,7 +22497,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -22556,7 +22622,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -22681,7 +22747,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -22806,7 +22872,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -22931,7 +22997,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -23056,7 +23122,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -23181,7 +23247,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -23306,7 +23372,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -23431,7 +23497,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -23556,7 +23622,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -23681,7 +23747,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -23806,7 +23872,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -23931,7 +23997,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24056,7 +24122,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24181,7 +24247,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24306,7 +24372,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24431,7 +24497,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24556,7 +24622,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24681,7 +24747,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T18:33:33+00:00",
+        "checkedAt": "2026-09-03T19:31:46+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24689,7 +24755,7 @@
       }
     }
   ],
-  "updatedAt": "2026-09-03T18:33:33+00:00",
-  "pendingSettlement": 118,
-  "settledCount": 94
+  "updatedAt": "2026-09-03T19:31:46+00:00",
+  "pendingSettlement": 115,
+  "settledCount": 97
 }

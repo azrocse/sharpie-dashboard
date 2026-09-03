@@ -33,7 +33,7 @@ CURRENT_DIR = Path(__file__).resolve().parent
 BASE_DIR = CURRENT_DIR.parent.parent
 DEFAULT_HISTORY_DIR = BASE_DIR / "data" / "history"
 ESPN_BASE_URL = "https://site.api.espn.com/apis/site/v2/sports"
-FINAL_RESULTS = {"WIN", "LOSS", "PUSH", "VOID"}
+FINAL_RESULTS = {"WIN", "LOSS", "PUSH", "VOID", "HALF_WIN", "HALF_LOSS"}
 CDMX_TIMEZONE = timezone(timedelta(hours=-6))
 
 # Se evalúa en orden: las etiquetas específicas deben preceder a las generales.
@@ -63,6 +63,7 @@ LEAGUE_ROUTES = [
     (("nhl",), ("hockey", "nhl")),
     (("ncaa ice hockey", "college hockey"), ("hockey", "mens-college-hockey")),
     (("ufc", "mma"), ("mma", "ufc")),
+    (("boxing", "boxeo"), ("boxing", "boxing")),
 ]
 
 TEAM_ROUTE_HINTS = {
@@ -156,6 +157,29 @@ def candidate_routes(pick):
     return list(dict.fromkeys(catalog))
 
 
+def infer_primary_route(pick):
+    """Infiere una única ruta solo cuando las evidencias no se contradicen."""
+    direct = resolve_route(pick)
+    if direct:
+        return direct
+    text = normalize(" ".join(str(pick.get(key) or "") for key in ("game", "away", "home", "market", "pick")))
+    team_routes = list(dict.fromkeys(route for route, hints in TEAM_ROUTE_HINTS.items() if any(hint in text for hint in hints)))
+    market = normalize(pick.get("market"))
+    market_routes = []
+    if "run line" in market:
+        market_routes = [("baseball", "mlb"), ("baseball", "kbo"), ("baseball", "jpn.1")]
+    elif "puck line" in market:
+        market_routes = [("hockey", "nhl")]
+    if team_routes and market_routes:
+        intersection = [route for route in team_routes if route in market_routes]
+        return intersection[0] if len(intersection) == 1 else None
+    if len(team_routes) == 1:
+        return team_routes[0]
+    if len(market_routes) == 1:
+        return market_routes[0]
+    return None
+
+
 def date_relation(date_text):
     """Clasifica la fecha del pick con respecto al día actual de CDMX."""
     try:
@@ -211,11 +235,11 @@ def event_competitors(event):
     competitions = event.get("competitions") or []
     competition = competitions[0] if competitions else {}
     result = {}
-    for competitor in competition.get("competitors") or []:
-        side = competitor.get("homeAway")
+    for index, competitor in enumerate(competition.get("competitors") or []):
+        side = competitor.get("homeAway") or ("away" if index == 0 else "home" if index == 1 else None)
         if side not in {"home", "away"}:
             continue
-        team = competitor.get("team") or {}
+        team = competitor.get("team") or competitor.get("athlete") or {}
         aliases = {
             team.get("displayName"), team.get("shortDisplayName"), team.get("name"),
             team.get("location"), team.get("abbreviation"), competitor.get("id"),
@@ -266,6 +290,28 @@ def game_teams(game):
     return (parts[0].strip(), parts[1].strip()) if len(parts) == 2 else (None, None)
 
 
+def parse_event_datetime(value, assume_cdmx=False):
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=CDMX_TIMEZONE if assume_cdmx else timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def pick_datetime(pick):
+    lookup = pick.get("eventLookup") or {}
+    parsed = parse_event_datetime(lookup.get("scheduledAt") or pick.get("iso"), assume_cdmx=True)
+    if parsed:
+        return parsed
+    date_text, time_text = str(pick.get("date") or "")[:10], str(pick.get("time") or "")
+    return parse_event_datetime(f"{date_text}T{time_text}", assume_cdmx=True)
+
+
 def event_match_score(pick, event):
     lookup = pick.get("eventLookup") or {}
     stored_id = str(lookup.get("eventId") or pick.get("sourceEventId") or "").strip()
@@ -282,7 +328,13 @@ def event_match_score(pick, event):
     if expected_home and expected_away:
         direct = side_similarity(expected_home, competitors.get("home")) + side_similarity(expected_away, competitors.get("away"))
         reverse = side_similarity(expected_home, competitors.get("away")) + side_similarity(expected_away, competitors.get("home"))
-        return max(direct, reverse) * 50.0
+        score = max(direct, reverse) * 50.0
+        expected_time = pick_datetime(pick)
+        event_time = parse_event_datetime(event.get("date"))
+        if expected_time and event_time:
+            hours = abs((expected_time - event_time).total_seconds()) / 3600.0
+            score += max(0.0, 24.0 - hours * 4.0)
+        return score
 
     game = pick.get("game") or ""
     names = " ".join(
@@ -359,10 +411,33 @@ def is_quarter_line(line):
     return abs(round(abs(line) * 4) % 2) == 1
 
 
+def settle_quarter_line(evaluator, line):
+    """Divide una línea asiática de cuarto en sus dos medias líneas."""
+    lines = (line - 0.25, line + 0.25)
+    outcomes = [evaluator(part) for part in lines]
+    if outcomes[0] == outcomes[1]:
+        return outcomes[0], lines, outcomes
+    pair = set(outcomes)
+    if pair == {"WIN", "PUSH"}:
+        return "HALF_WIN", lines, outcomes
+    if pair == {"LOSS", "PUSH"}:
+        return "HALF_LOSS", lines, outcomes
+    return "PUSH", lines, outcomes
+
+
 def settle_market(pick, event):
     competitors, _competition = event_competitors(event)
     if set(competitors) != {"home", "away"}:
         return "REVIEW", "ESPN no entregó local y visitante"
+    espn_sport = (pick.get("eventLookup") or {}).get("espnSport")
+    if espn_sport in {"boxing", "mma"}:
+        side = chosen_side(str(pick.get("pick") or ""), competitors)
+        if side is None:
+            return "REVIEW", "No se pudo identificar al peleador seleccionado"
+        winner = competitors[side].get("winner")
+        if winner is None:
+            return "REVIEW", "ESPN no entregó el ganador oficial del combate"
+        return ("WIN" if winner else "LOSS"), "Resultado oficial del combate según ESPN"
     home_score, away_score = competitors["home"]["score"], competitors["away"]["score"]
     if home_score is None or away_score is None:
         return "REVIEW", "ESPN no entregó marcador final"
@@ -377,9 +452,11 @@ def settle_market(pick, event):
         line = extract_number_after(r"\b(?:over|under)\b", pick_text)
         if direction is None or line is None:
             return "REVIEW", "No se pudo interpretar el total"
-        if is_quarter_line(line):
-            return "REVIEW", "Total asiático de cuarto requiere liquidación dividida"
         total = home_score + away_score
+        evaluator = lambda part: compare_margin(total - part if direction == "OVER" else part - total)
+        if is_quarter_line(line):
+            result, lines, outcomes = settle_quarter_line(evaluator, line)
+            return result, f"Total {total:g}; línea {line:g} dividida en {lines[0]:g}/{lines[1]:g} ({outcomes[0]}/{outcomes[1]})"
         return compare_margin(total - line if direction == "OVER" else line - total), f"Total final {total:g} vs línea {line:g}"
 
     is_spread = any(token in market_text for token in ("spread", "run line", "puck line", "handicap", "linea"))
@@ -389,13 +466,15 @@ def settle_market(pick, event):
         if not matches:
             return "REVIEW", "No se pudo interpretar el spread"
         line = float(matches[-1])
-        if is_quarter_line(line):
-            return "REVIEW", "Hándicap asiático de cuarto requiere liquidación dividida"
         side = chosen_side(pick_text, competitors)
         if side is None:
             return "REVIEW", "No se pudo identificar el equipo del spread"
         other = "away" if side == "home" else "home"
-        adjusted_margin = competitors[side]["score"] + line - competitors[other]["score"]
+        raw_margin = competitors[side]["score"] - competitors[other]["score"]
+        if is_quarter_line(line):
+            result, lines, outcomes = settle_quarter_line(lambda part: compare_margin(raw_margin + part), line)
+            return result, f"Margen {raw_margin:g}; línea {line:+g} dividida en {lines[0]:+g}/{lines[1]:+g} ({outcomes[0]}/{outcomes[1]})"
+        adjusted_margin = raw_margin + line
         return compare_margin(adjusted_margin), f"Margen ajustado {adjusted_margin:g} con línea {line:+g}"
 
     is_moneyline = any(token in market_text for token in ("moneyline", "money line", "ganador", "1x2", "ml"))
@@ -424,15 +503,18 @@ def american_profit_units(odds, stake, result):
         return None
     if result == "LOSS":
         return round(-stake_value, 4)
+    if result == "HALF_LOSS":
+        return round(-stake_value / 2.0, 4)
     if result in {"PUSH", "VOID"}:
         return 0.0
-    if result != "WIN" or odds_value == 0:
+    if result not in {"WIN", "HALF_WIN"} or odds_value == 0:
         return None
     if 1.01 <= abs(odds_value) <= 50:
         multiplier = abs(odds_value) - 1.0
     else:
         multiplier = odds_value / 100.0 if odds_value > 0 else 100.0 / abs(odds_value)
-    return round(stake_value * multiplier, 4)
+    profit = stake_value * multiplier
+    return round(profit / 2.0 if result == "HALF_WIN" else profit, 4)
 
 
 def atomic_write(path, payload):
@@ -564,10 +646,15 @@ def update_pick_from_espn(pick, client, force=False):
             "status": status, "checkedAt": checked_at, "notes": failure_code,
             "failureCode": failure_code, "matchConfidence": round(confidence, 2),
         })
+        if failure_code == "NO_MATCH_PAST":
+            pick["excludedFromResults"] = True
+            pick["exclusionReason"] = failure_code
         pick["settlement"] = settlement
         return status
 
     confidence, event, response, route, matched_date = best
+    pick.pop("excludedFromResults", None)
+    pick.pop("exclusionReason", None)
 
     competitors, _competition = event_competitors(event)
     home_score = competitors.get("home", {}).get("score")

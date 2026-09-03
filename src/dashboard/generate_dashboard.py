@@ -1048,7 +1048,10 @@ def build_picks(raw_data):
             "away": market.get("away", ""),
             "home": market.get("home", ""),
             "league": market.get("league", "Otras Ligas"),
+            "sourceLeague": market.get("sourceLeague"),
             "sport": market.get("sport", ""),
+            "espnSport": market.get("espnSport"),
+            "espnLeague": market.get("espnLeague"),
             "sourceEventId": market.get("espnEventId") or market.get("eventId"),
             "market": market_name or "Línea estándar",
             "pick": pick or "Sin selección",
@@ -1243,7 +1246,7 @@ def _new_history_record(item, observed_at):
         "qualifiedObservations": int(normalized.get("qualifiedObservations") or 1),
         "qualificationSnapshots": snapshots,
         "latestViable": True,
-        "needsSettlement": (normalized.get("settlement") or {}).get("status") not in {"WIN", "LOSS", "PUSH", "VOID"},
+        "needsSettlement": (normalized.get("settlement") or {}).get("status") not in {"WIN", "LOSS", "PUSH", "VOID", "HALF_WIN", "HALF_LOSS"},
         "settlement": normalized.get("settlement") or {
             "status": "PENDING",
             "source": None,
@@ -1258,6 +1261,8 @@ def _new_history_record(item, observed_at):
             "eventId": normalized.get("sourceEventId"),
             "league": normalized.get("league"),
             "sport": normalized.get("sport"),
+            "espnSport": normalized.get("espnSport"),
+            "espnLeague": normalized.get("espnLeague"),
             "away": normalized.get("away"),
             "home": normalized.get("home"),
             "scheduledAt": normalized.get("iso"),
@@ -1332,6 +1337,14 @@ def save_value_history(all_events, cdmx_now):
                 continue
 
             settlement = previous.get("settlement") or _new_history_record(item, observed_at)["settlement"]
+            event_lookup = dict(previous.get("eventLookup") or _new_history_record(item, observed_at)["eventLookup"])
+            if item.get("espnSport") and item.get("espnLeague"):
+                event_lookup.update({
+                    "espnSport": item.get("espnSport"),
+                    "espnLeague": item.get("espnLeague"),
+                    "league": item.get("league"),
+                    "sport": item.get("sport"),
+                })
             snapshots = previous.get("qualificationSnapshots", [])
             new_snapshot = _qualification_snapshot(item, observed_at)
             if not snapshots or _snapshot_signature(snapshots[-1]) != _snapshot_signature(new_snapshot):
@@ -1347,8 +1360,8 @@ def save_value_history(all_events, cdmx_now):
                 "qualificationSnapshots": snapshots,
                 "latestViable": True,
                 "settlement": settlement,
-                "eventLookup": previous.get("eventLookup") or _new_history_record(item, observed_at)["eventLookup"],
-                "needsSettlement": (settlement or {}).get("status") not in {"WIN", "LOSS", "PUSH", "VOID"},
+                "eventLookup": event_lookup,
+                "needsSettlement": (settlement or {}).get("status") not in {"WIN", "LOSS", "PUSH", "VOID", "HALF_WIN", "HALF_LOSS"},
             })
             records[history_id] = updated
             saved_count += 1

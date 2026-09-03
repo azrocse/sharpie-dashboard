@@ -4403,20 +4403,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:56+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:45+00:00",
+        "notes": "Marcador 6-5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816518",
+        "eventName": "Baltimore Orioles at Tampa Bay Rays",
+        "homeScore": 5.0,
+        "awayScore": 6.0,
+        "settledAt": "2026-09-03T19:28:45+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -4426,8 +4433,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays"
-      }
+        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays",
+        "eventId": "401816518",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Baltimore Orioles at Tampa Bay Rays",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5
     },
     {
       "id": 171,
@@ -4522,20 +4536,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:56+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:45+00:00",
+        "notes": "Marcador 6-5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816518",
+        "eventName": "Baltimore Orioles at Tampa Bay Rays",
+        "homeScore": 5.0,
+        "awayScore": 6.0,
+        "settledAt": "2026-09-03T19:28:45+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -4545,8 +4566,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays"
-      }
+        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays",
+        "eventId": "401816518",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Baltimore Orioles at Tampa Bay Rays",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.66
     },
     {
       "id": 170,
@@ -4646,15 +4674,21 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:56+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "checkedAt": "2026-09-03T19:30:21+00:00",
+        "notes": "No se pudo identificar el equipo del spread",
+        "matchConfidence": 1000.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816518",
+        "eventName": "Baltimore Orioles at Tampa Bay Rays",
+        "homeScore": 5.0,
+        "awayScore": 6.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 1000.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "baseball/kbo",
@@ -4666,8 +4700,14 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays"
-      }
+        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays",
+        "eventId": "401816518",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Baltimore Orioles at Tampa Bay Rays",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": true
     },
     {
       "id": 169,
@@ -4762,20 +4802,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:58+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:46+00:00",
+        "notes": "Margen ajustado 2.5 con línea +1.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816518",
+        "eventName": "Baltimore Orioles at Tampa Bay Rays",
+        "homeScore": 5.0,
+        "awayScore": 6.0,
+        "settledAt": "2026-09-03T19:28:46+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "baseball/kbo",
@@ -4787,8 +4834,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays"
-      }
+        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays",
+        "eventId": "401816518",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Baltimore Orioles at Tampa Bay Rays",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.8519
     },
     {
       "id": 168,
@@ -4859,20 +4913,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:59+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:48+00:00",
+        "notes": "Total final 11 vs línea 8.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816518",
+        "eventName": "Baltimore Orioles at Tampa Bay Rays",
+        "homeScore": 5.0,
+        "awayScore": 6.0,
+        "settledAt": "2026-09-03T19:28:48+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -4882,8 +4943,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays"
-      }
+        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays",
+        "eventId": "401816518",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Baltimore Orioles at Tampa Bay Rays",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.4851
     },
     {
       "id": 167,
@@ -4954,20 +5022,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:59+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:48+00:00",
+        "notes": "Total final 11 vs línea 8.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816518",
+        "eventName": "Baltimore Orioles at Tampa Bay Rays",
+        "homeScore": 5.0,
+        "awayScore": 6.0,
+        "settledAt": "2026-09-03T19:28:48+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -4977,8 +5052,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays"
-      }
+        "bestCandidate": "Baltimore Orioles at Tampa Bay Rays",
+        "eventId": "401816518",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Baltimore Orioles at Tampa Bay Rays",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5
     },
     {
       "id": 166,
@@ -5461,7 +5543,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
         "eventId": "401816523",
         "eventName": "San Diego Padres at Cleveland Guardians",
-        "checkedAt": "2026-09-03T18:31:59+00:00",
+        "checkedAt": "2026-09-03T19:30:21+00:00",
         "homeScore": 5.0,
         "awayScore": 7.0,
         "matchConfidence": 1000.0,
@@ -8369,7 +8451,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260814&limit=500",
         "eventId": "401857143",
         "eventName": "Dallas Wings at Indiana Fever",
-        "checkedAt": "2026-09-03T18:31:59+00:00",
+        "checkedAt": "2026-09-03T19:30:21+00:00",
         "homeScore": 98.0,
         "awayScore": 87.0,
         "matchConfidence": 1000.0,
@@ -9437,20 +9519,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:59+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:48+00:00",
+        "notes": "Marcador 7-6",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816529",
+        "eventName": "Kansas City Royals at Los Angeles Angels",
+        "homeScore": 6.0,
+        "awayScore": 7.0,
+        "settledAt": "2026-09-03T19:28:48+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -9460,8 +9549,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Kansas City Royals at Los Angeles Angels"
-      }
+        "bestCandidate": "Kansas City Royals at Los Angeles Angels",
+        "eventId": "401816529",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Kansas City Royals at Los Angeles Angels",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 129,
@@ -9556,20 +9652,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:59+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:48+00:00",
+        "notes": "Marcador 7-6",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816529",
+        "eventName": "Kansas City Royals at Los Angeles Angels",
+        "homeScore": 6.0,
+        "awayScore": 7.0,
+        "settledAt": "2026-09-03T19:28:48+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -9579,8 +9682,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Kansas City Royals at Los Angeles Angels"
-      }
+        "bestCandidate": "Kansas City Royals at Los Angeles Angels",
+        "eventId": "401816529",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Kansas City Royals at Los Angeles Angels",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.7431
     },
     {
       "id": 128,
@@ -9675,20 +9785,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:31:59+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:48+00:00",
+        "notes": "Margen ajustado -0.5 con línea -1.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816529",
+        "eventName": "Kansas City Royals at Los Angeles Angels",
+        "homeScore": 6.0,
+        "awayScore": 7.0,
+        "settledAt": "2026-09-03T19:28:48+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "baseball/kbo",
@@ -9700,8 +9817,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Kansas City Royals at Los Angeles Angels"
-      }
+        "bestCandidate": "Kansas City Royals at Los Angeles Angels",
+        "eventId": "401816529",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Kansas City Royals at Los Angeles Angels",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 127,
@@ -9796,20 +9920,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:01+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:49+00:00",
+        "notes": "Margen ajustado 0.5 con línea +1.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816529",
+        "eventName": "Kansas City Royals at Los Angeles Angels",
+        "homeScore": 6.0,
+        "awayScore": 7.0,
+        "settledAt": "2026-09-03T19:28:49+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "baseball/kbo",
@@ -9821,8 +9952,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Kansas City Royals at Los Angeles Angels"
-      }
+        "bestCandidate": "Kansas City Royals at Los Angeles Angels",
+        "eventId": "401816529",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Kansas City Royals at Los Angeles Angels",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.2281
     },
     {
       "id": 126,
@@ -9917,20 +10055,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:02+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:50+00:00",
+        "notes": "Total final 13 vs línea 8.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816529",
+        "eventName": "Kansas City Royals at Los Angeles Angels",
+        "homeScore": 6.0,
+        "awayScore": 7.0,
+        "settledAt": "2026-09-03T19:28:50+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -9940,8 +10085,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Kansas City Royals at Los Angeles Angels"
-      }
+        "bestCandidate": "Kansas City Royals at Los Angeles Angels",
+        "eventId": "401816529",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Kansas City Royals at Los Angeles Angels",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9259
     },
     {
       "id": 125,
@@ -10036,20 +10188,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:02+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:50+00:00",
+        "notes": "Total final 13 vs línea 8.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816529",
+        "eventName": "Kansas City Royals at Los Angeles Angels",
+        "homeScore": 6.0,
+        "awayScore": 7.0,
+        "settledAt": "2026-09-03T19:28:50+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -10059,8 +10218,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Kansas City Royals at Los Angeles Angels"
-      }
+        "bestCandidate": "Kansas City Royals at Los Angeles Angels",
+        "eventId": "401816529",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Kansas City Royals at Los Angeles Angels",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 124,
@@ -11607,20 +11773,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:02+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:51+00:00",
+        "notes": "Marcador 1-3",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816530",
+        "eventName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "settledAt": "2026-09-03T19:28:51+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -11630,8 +11803,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers"
-      }
+        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers",
+        "eventId": "401816530",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.2793
     },
     {
       "id": 111,
@@ -11726,20 +11906,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:02+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:51+00:00",
+        "notes": "Marcador 1-3",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816530",
+        "eventName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "settledAt": "2026-09-03T19:28:51+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -11749,8 +11936,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers"
-      }
+        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers",
+        "eventId": "401816530",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 110,
@@ -11845,20 +12039,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:02+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:51+00:00",
+        "notes": "Margen ajustado 0.5 con línea -1.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816530",
+        "eventName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "settledAt": "2026-09-03T19:28:51+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "baseball/kbo",
@@ -11870,8 +12071,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers"
-      }
+        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers",
+        "eventId": "401816530",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.808
     },
     {
       "id": 109,
@@ -11966,20 +12174,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:03+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:52+00:00",
+        "notes": "Margen ajustado -0.5 con línea +1.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816530",
+        "eventName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "settledAt": "2026-09-03T19:28:52+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "baseball/kbo",
@@ -11991,8 +12206,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers"
-      }
+        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers",
+        "eventId": "401816530",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 108,
@@ -12087,20 +12309,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:05+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:53+00:00",
+        "notes": "Total final 4 vs línea 7.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816530",
+        "eventName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "settledAt": "2026-09-03T19:28:53+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -12110,8 +12339,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers"
-      }
+        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers",
+        "eventId": "401816530",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.5
     },
     {
       "id": 107,
@@ -12206,20 +12442,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:05+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:53+00:00",
+        "notes": "Total final 4 vs línea 7.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816530",
+        "eventName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "settledAt": "2026-09-03T19:28:53+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb"
         ],
@@ -12229,8 +12472,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 38,
-        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers"
-      }
+        "bestCandidate": "Milwaukee Brewers at Los Angeles Dodgers",
+        "eventId": "401816530",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Milwaukee Brewers at Los Angeles Dodgers",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4762
     },
     {
       "id": 106,
@@ -12325,20 +12575,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:05+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:53+00:00",
+        "notes": "Marcador 5-2",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816528",
+        "eventName": "Colorado Rockies at San Francisco Giants",
+        "homeScore": 2.0,
+        "awayScore": 5.0,
+        "settledAt": "2026-09-03T19:28:53+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "football/nfl"
@@ -12349,8 +12606,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 54,
-        "bestCandidate": "Colorado Rockies at San Francisco Giants"
-      }
+        "bestCandidate": "Colorado Rockies at San Francisco Giants",
+        "eventId": "401816528",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Colorado Rockies at San Francisco Giants",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.1
     },
     {
       "id": 105,
@@ -12445,20 +12709,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:05+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:53+00:00",
+        "notes": "Marcador 5-2",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816528",
+        "eventName": "Colorado Rockies at San Francisco Giants",
+        "homeScore": 2.0,
+        "awayScore": 5.0,
+        "settledAt": "2026-09-03T19:28:53+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "football/nfl"
@@ -12469,8 +12740,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 54,
-        "bestCandidate": "Colorado Rockies at San Francisco Giants"
-      }
+        "bestCandidate": "Colorado Rockies at San Francisco Giants",
+        "eventId": "401816528",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Colorado Rockies at San Francisco Giants",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.58
     },
     {
       "id": 104,
@@ -12815,20 +13093,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:05+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:53+00:00",
+        "notes": "Total final 7 vs línea 7.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816528",
+        "eventName": "Colorado Rockies at San Francisco Giants",
+        "homeScore": 2.0,
+        "awayScore": 5.0,
+        "settledAt": "2026-09-03T19:28:53+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "football/nfl"
@@ -12839,8 +13124,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 54,
-        "bestCandidate": "Colorado Rockies at San Francisco Giants"
-      }
+        "bestCandidate": "Colorado Rockies at San Francisco Giants",
+        "eventId": "401816528",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Colorado Rockies at San Francisco Giants",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 101,
@@ -12935,20 +13227,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:05+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:54+00:00",
+        "notes": "Total final 7 vs línea 7.5",
+        "matchConfidence": 116.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816528",
+        "eventName": "Colorado Rockies at San Francisco Giants",
+        "homeScore": 2.0,
+        "awayScore": 5.0,
+        "settledAt": "2026-09-03T19:28:54+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 92.0,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 116.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "football/nfl"
@@ -12959,8 +13258,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 54,
-        "bestCandidate": "Colorado Rockies at San Francisco Giants"
-      }
+        "bestCandidate": "Colorado Rockies at San Francisco Giants",
+        "eventId": "401816528",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Colorado Rockies at San Francisco Giants",
+        "matchedDate": "2026-08-14"
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9346
     },
     {
       "id": 100,
@@ -14774,7 +15080,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260815&limit=500",
         "eventId": "401874393",
         "eventName": "Cleveland Browns at Chicago Bears",
-        "checkedAt": "2026-09-03T18:32:05+00:00",
+        "checkedAt": "2026-09-03T19:30:21+00:00",
         "homeScore": 34.0,
         "awayScore": 10.0,
         "matchConfidence": 1000.0,
@@ -16761,20 +17067,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:05+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 53.69,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "WIN",
+        "checkedAt": "2026-09-03T19:28:54+00:00",
+        "notes": "Resultado oficial del combate según ESPN",
+        "matchConfidence": 123.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260815&limit=500",
+        "eventId": "600059185",
+        "eventName": "UFC 330: Makhachev vs. Machado Garry",
+        "homeScore": null,
+        "awayScore": null,
+        "settledAt": "2026-09-03T19:28:54+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 53.69,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 123.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -16806,8 +17119,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Miami Marlins at Cincinnati Reds"
-      }
+        "bestCandidate": "Miami Marlins at Cincinnati Reds",
+        "eventId": "600059185",
+        "espnSport": "mma",
+        "espnLeague": "ufc",
+        "matchedName": "UFC 330: Makhachev vs. Machado Garry",
+        "matchedDate": "2026-08-15"
+      },
+      "needsSettlement": false,
+      "profitUnits": 6.75
     },
     {
       "id": 69,
@@ -16902,20 +17222,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:06+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 53.69,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:54+00:00",
+        "notes": "Resultado oficial del combate según ESPN",
+        "matchConfidence": 123.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260815&limit=500",
+        "eventId": "600059185",
+        "eventName": "UFC 330: Makhachev vs. Machado Garry",
+        "homeScore": null,
+        "awayScore": null,
+        "settledAt": "2026-09-03T19:28:54+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 53.69,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 123.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -16947,8 +17274,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Miami Marlins at Cincinnati Reds"
-      }
+        "bestCandidate": "Miami Marlins at Cincinnati Reds",
+        "eventId": "600059185",
+        "espnSport": "mma",
+        "espnLeague": "ufc",
+        "matchedName": "UFC 330: Makhachev vs. Machado Garry",
+        "matchedDate": "2026-08-15"
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5
     },
     {
       "id": 68,
@@ -17043,20 +17377,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:06+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 54.33,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:28:55+00:00",
+        "notes": "Marcador 1-2",
+        "matchConfidence": 73.33,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260815&limit=500",
+        "eventId": "761714",
+        "eventName": "New England Revolution at Toronto FC",
+        "homeScore": 2.0,
+        "awayScore": 1.0,
+        "settledAt": "2026-09-03T19:28:55+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 54.33,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.33,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -17088,8 +17429,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "New England Revolution at Toronto FC"
-      }
+        "bestCandidate": "New England Revolution at Toronto FC",
+        "eventId": "761714",
+        "espnSport": "soccer",
+        "espnLeague": "usa.1",
+        "matchedName": "New England Revolution at Toronto FC",
+        "matchedDate": "2026-08-15"
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 67,
@@ -17189,15 +17537,21 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:07+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 54.33,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "checkedAt": "2026-09-03T19:30:21+00:00",
+        "notes": "No se pudo identificar el equipo Moneyline",
+        "matchConfidence": 1000.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260815&limit=500",
+        "eventId": "761714",
+        "eventName": "New England Revolution at Toronto FC",
+        "homeScore": 2.0,
+        "awayScore": 1.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 54.33,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 1000.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -17226,11 +17580,19 @@
           "mma/ufc"
         ],
         "attemptedDates": [
-          "2026-08-15"
+          "2026-08-15",
+          "2026-08-14",
+          "2026-08-16"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "New England Revolution at Toronto FC"
-      }
+        "bestCandidate": "New England Revolution at Toronto FC",
+        "eventId": "761714",
+        "espnSport": "soccer",
+        "espnLeague": "usa.1",
+        "matchedName": "New England Revolution at Toronto FC",
+        "matchedDate": "2026-08-15"
+      },
+      "needsSettlement": true
     },
     {
       "id": 66,
@@ -17330,15 +17692,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:07+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 49.65,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-03T19:30:21+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 62.82,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 49.65,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 62.82,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -17364,13 +17726,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Carolina Panthers at Buffalo Bills"
+        "bestCandidate": "San Diego Padres at Cleveland Guardians"
       }
     },
     {
@@ -17471,15 +17834,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:08+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 49.65,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-03T19:30:21+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 62.82,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 49.65,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 62.82,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -17505,13 +17868,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Carolina Panthers at Buffalo Bills"
+        "bestCandidate": "San Diego Padres at Cleveland Guardians"
       }
     },
     {
@@ -18374,15 +18738,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:08+00:00",
+        "checkedAt": "2026-09-03T19:30:22+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 53.41,
+        "matchConfidence": 77.07,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 53.41,
+        "matchConfidence": 77.07,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -18408,7 +18772,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -18515,15 +18880,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:09+00:00",
+        "checkedAt": "2026-09-03T19:30:23+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 53.41,
+        "matchConfidence": 77.07,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 53.41,
+        "matchConfidence": 77.07,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -18549,7 +18914,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -18656,15 +19022,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:09+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 52.9,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-03T19:30:23+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 63.93,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 52.9,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 63.93,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -18690,13 +19056,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "New York Liberty at Connecticut Sun"
+        "bestCandidate": "FC Cincinnati at Orlando City SC"
       }
     },
     {
@@ -18797,15 +19164,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:10+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 52.9,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-03T19:30:24+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 63.93,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 52.9,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 63.93,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -18831,13 +19198,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "New York Liberty at Connecticut Sun"
+        "bestCandidate": "FC Cincinnati at Orlando City SC"
       }
     },
     {
@@ -19664,15 +20032,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:10+00:00",
+        "checkedAt": "2026-09-03T19:30:25+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.88,
+        "matchConfidence": 58.71,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.88,
+        "matchConfidence": 58.71,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -19698,13 +20066,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Chicago White Sox at Detroit Tigers"
+        "bestCandidate": "San Diego Padres at Cleveland Guardians"
       }
     },
     {
@@ -19805,15 +20174,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:10+00:00",
+        "checkedAt": "2026-09-03T19:30:25+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.88,
+        "matchConfidence": 58.71,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.88,
+        "matchConfidence": 58.71,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -19839,13 +20208,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Chicago White Sox at Detroit Tigers"
+        "bestCandidate": "San Diego Padres at Cleveland Guardians"
       }
     },
     {
@@ -19946,15 +20316,21 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:11+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.39,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "checkedAt": "2026-09-03T19:30:26+00:00",
+        "notes": "No se pudo identificar el equipo Moneyline",
+        "matchConfidence": 1000.0,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260815&limit=500",
+        "eventId": "401857147",
+        "eventName": "Minnesota Lynx at Las Vegas Aces",
+        "homeScore": 87.0,
+        "awayScore": 92.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.39,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 1000.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -19983,11 +20359,19 @@
           "mma/ufc"
         ],
         "attemptedDates": [
-          "2026-08-15"
+          "2026-08-15",
+          "2026-08-14",
+          "2026-08-16"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Minnesota Lynx at Las Vegas Aces"
-      }
+        "bestCandidate": "Minnesota Lynx at Las Vegas Aces",
+        "eventId": "401857147",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Minnesota Lynx at Las Vegas Aces",
+        "matchedDate": "2026-08-15"
+      },
+      "needsSettlement": true
     },
     {
       "id": 45,
@@ -20082,20 +20466,27 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:11+00:00",
-        "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.39,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "status": "LOSS",
+        "checkedAt": "2026-09-03T19:29:04+00:00",
+        "notes": "Marcador 92-87",
+        "matchConfidence": 84.39,
+        "failureCode": "AMBIGUOUS_MATCH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260815&limit=500",
+        "eventId": "401857147",
+        "eventName": "Minnesota Lynx at Las Vegas Aces",
+        "homeScore": 87.0,
+        "awayScore": 92.0,
+        "settledAt": "2026-09-03T19:29:04+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.39,
+        "matchStatus": "MATCHED",
+        "matchConfidence": 84.39,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -20127,8 +20518,15 @@
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Minnesota Lynx at Las Vegas Aces"
-      }
+        "bestCandidate": "Minnesota Lynx at Las Vegas Aces",
+        "eventId": "401857147",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Minnesota Lynx at Las Vegas Aces",
+        "matchedDate": "2026-08-15"
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5
     },
     {
       "id": 44,
@@ -20228,15 +20626,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:12+00:00",
+        "checkedAt": "2026-09-03T19:30:26+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 47.8,
+        "matchConfidence": 63.47,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 47.8,
+        "matchConfidence": 63.47,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -20262,7 +20660,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -20369,15 +20768,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:12+00:00",
+        "checkedAt": "2026-09-03T19:30:27+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 47.8,
+        "matchConfidence": 63.47,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 47.8,
+        "matchConfidence": 63.47,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -20403,7 +20802,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -20510,15 +20910,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:13+00:00",
+        "checkedAt": "2026-09-03T19:30:28+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 55.52,
+        "matchConfidence": 68.52,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 55.52,
+        "matchConfidence": 68.52,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -20544,7 +20944,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -20651,15 +21052,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:13+00:00",
+        "checkedAt": "2026-09-03T19:30:29+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 55.52,
+        "matchConfidence": 68.52,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 55.52,
+        "matchConfidence": 68.52,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -20685,7 +21086,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -20792,15 +21194,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:14+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 55.52,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-03T19:30:30+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 68.52,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 55.52,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 68.52,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -20826,7 +21228,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -20933,15 +21336,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:14+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 55.52,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-03T19:30:31+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 68.52,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 55.52,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 68.52,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -20967,7 +21370,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -21074,15 +21478,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:14+00:00",
+        "checkedAt": "2026-09-03T19:30:32+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 48.03,
+        "matchConfidence": 58.03,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 48.03,
+        "matchConfidence": 58.03,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -21108,7 +21512,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -21215,15 +21620,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:15+00:00",
+        "checkedAt": "2026-09-03T19:30:32+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 48.03,
+        "matchConfidence": 58.03,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 48.03,
+        "matchConfidence": 58.03,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -21249,7 +21654,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -21356,15 +21762,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:15+00:00",
+        "checkedAt": "2026-09-03T19:30:33+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 60.71,
+        "matchConfidence": 72.71,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 60.71,
+        "matchConfidence": 72.71,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -21390,7 +21796,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -21497,15 +21904,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:16+00:00",
+        "checkedAt": "2026-09-03T19:30:34+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 60.71,
+        "matchConfidence": 72.71,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 60.71,
+        "matchConfidence": 72.71,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -21531,7 +21938,8 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
@@ -21638,15 +22046,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:16+00:00",
+        "checkedAt": "2026-09-03T19:30:35+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.86,
+        "matchConfidence": 65.65,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.86,
+        "matchConfidence": 65.65,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -21672,13 +22080,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Los Angeles Rams at Kansas City Chiefs"
+        "bestCandidate": "Los Angeles Sparks at Washington Mystics"
       }
     },
     {
@@ -21779,15 +22188,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:17+00:00",
+        "checkedAt": "2026-09-03T19:30:35+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.86,
+        "matchConfidence": 65.65,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.86,
+        "matchConfidence": 65.65,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -21813,13 +22222,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Los Angeles Rams at Kansas City Chiefs"
+        "bestCandidate": "Los Angeles Sparks at Washington Mystics"
       }
     },
     {
@@ -23199,15 +23609,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:17+00:00",
+        "checkedAt": "2026-09-03T19:30:36+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.0,
+        "matchConfidence": 62.91,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.0,
+        "matchConfidence": 62.91,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -23233,13 +23643,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "San Jose Earthquakes at Houston Dynamo FC"
+        "bestCandidate": "Miami Marlins at Washington Nationals"
       }
     },
     {
@@ -23328,15 +23739,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:27+00:00",
+        "checkedAt": "2026-09-03T19:30:46+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.0,
+        "matchConfidence": 62.91,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 41.0,
+        "matchConfidence": 62.91,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -23362,13 +23773,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "San Jose Earthquakes at Houston Dynamo FC"
+        "bestCandidate": "Miami Marlins at Washington Nationals"
       }
     },
     {
@@ -23457,15 +23869,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T18:32:28+00:00",
+        "checkedAt": "2026-09-03T19:30:47+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.58,
+        "matchConfidence": 57.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 39.58,
+        "matchConfidence": 57.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -23491,13 +23903,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "Nottingham Forest at Liverpool"
+        "bestCandidate": "Chicago Fire FC at Seattle Sounders FC"
       }
     },
     {
@@ -23586,7 +23999,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:29+00:00",
+        "checkedAt": "2026-09-03T19:30:48+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -23698,7 +24111,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:30+00:00",
+        "checkedAt": "2026-09-03T19:30:49+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -23810,7 +24223,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:30+00:00",
+        "checkedAt": "2026-09-03T19:30:50+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -23922,7 +24335,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:30+00:00",
+        "checkedAt": "2026-09-03T19:30:50+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -24034,7 +24447,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:31+00:00",
+        "checkedAt": "2026-09-03T19:30:50+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -24146,7 +24559,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:31+00:00",
+        "checkedAt": "2026-09-03T19:30:50+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -24277,7 +24690,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:32:31+00:00",
+        "checkedAt": "2026-09-03T19:30:50+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24389,7 +24802,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:51+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24501,7 +24914,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:51+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24613,7 +25026,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:51+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24725,7 +25138,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:51+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24837,7 +25250,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:51+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -24930,7 +25343,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:51+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -25042,7 +25455,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:52+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -25154,7 +25567,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:52+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -25266,7 +25679,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:52+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -25378,7 +25791,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:52+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -25490,7 +25903,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T18:32:32+00:00",
+        "checkedAt": "2026-09-03T19:30:52+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -25517,7 +25930,7 @@
       }
     }
   ],
-  "updatedAt": "2026-09-03T18:32:32+00:00",
-  "pendingSettlement": 72,
-  "settledCount": 136
+  "updatedAt": "2026-09-03T19:30:52+00:00",
+  "pendingSettlement": 47,
+  "settledCount": 161
 }
