@@ -1,7 +1,6 @@
 from pipeline.download import download_all
 from pipeline.parse import parse_all
 from pipeline.analyze import analyze_all
-from pipeline.export import export_all
 from pipeline.settle_history_espn import settle_history
 
 from dashboard.generate_dashboard import generate_dashboard
@@ -15,7 +14,7 @@ CDMX_TIMEZONE = timezone(timedelta(hours=-6))
 BASE_DIR = Path(__file__).resolve().parent.parent
 SETTLEMENT_STATE_DIR = BASE_DIR / "data" / "results"
 BACKFILL_MARKER = SETTLEMENT_STATE_DIR / ".espn_backfill_date"
-BACKFILL_VERSION = "routes-v2"
+BACKFILL_VERSION = "settlement-audit-v3"
 
 
 def settle_recent_history(days=2):
@@ -71,12 +70,12 @@ def settle_history_pipeline(days=2):
     ]
     print("[ESPN HISTORIAL] " + (" · ".join(outcomes) if outcomes else "Sin picks pendientes"))
 
-    # Si hubo errores técnicos se vuelve a intentar en la siguiente corrida.
-    if not summary.get("ERROR"):
-        SETTLEMENT_STATE_DIR.mkdir(parents=True, exist_ok=True)
-        temp_marker = BACKFILL_MARKER.with_suffix(".tmp")
-        temp_marker.write_text(marker_value, encoding="utf-8")
-        temp_marker.replace(BACKFILL_MARKER)
+    # Nunca se repite el backfill completo cada 10 minutos: las incidencias
+    # quedan auditadas y se reintentan en el siguiente ciclo diario.
+    SETTLEMENT_STATE_DIR.mkdir(parents=True, exist_ok=True)
+    temp_marker = BACKFILL_MARKER.with_suffix(".tmp")
+    temp_marker.write_text(marker_value, encoding="utf-8")
+    temp_marker.replace(BACKFILL_MARKER)
 
     return summary
 
@@ -89,12 +88,8 @@ def main():
         downloaded
     )
 
-    analyzed = analyze_all(
+    analyze_all(
         parsed
-    )
-
-    export_all(
-        analyzed
     )
 
     # generate_dashboard construye los eventos, actualiza el historial de

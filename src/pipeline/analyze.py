@@ -81,12 +81,15 @@ def apply_divergence_adjustment(base_prob, divergence):
 
 def calculate_model_probability(decimal_odds, all_decimal_odds, divergence):
     """Siempre calcula modelProb desde cuota y flujo; ignora feeds heredados."""
-    if decimal_odds is None: return None, None, None, "sin_cuota_valida"
+    if decimal_odds is None or decimal_odds <= 1.0:
+        return None, None, None, "sin_cuota_valida"
     fair_prob = devig_probability(decimal_odds, all_decimal_odds)
     if fair_prob is None:
         fair_prob, source = implied_probability(decimal_odds), "implicita_divergencia_sin_devig"
     else:
         source = "propio_devig_divergencia"
+    if fair_prob is None:
+        return None, None, None, "sin_cuota_valida"
     model_prob = apply_divergence_adjustment(fair_prob, divergence)
     return model_prob, fair_prob, round(model_prob - fair_prob, 2), source
 
@@ -100,7 +103,8 @@ def calculate_ev(model_prob, decimal_odds):
 
 def calculate_stake(model_prob, decimal_odds, ev):
     """Medio Kelly, limitado a 1-5u y redondeado cada 0.5u."""
-    if model_prob is None or decimal_odds is None or ev is None or ev <= 0: return 0.0
+    if model_prob is None or decimal_odds is None or decimal_odds <= 1.0 or ev is None or ev <= 0:
+        return 0.0
     b, p = decimal_odds - 1.0, model_prob / 100.0
     kelly_full = (b * p - (1.0 - p)) / b
     if kelly_full <= 0: return 0.0
