@@ -202,9 +202,10 @@ def search_dates(date_text, include_adjacent=False):
 
 
 class ESPNClient:
-    def __init__(self, timeout=15.0, pause=0.20):
+    def __init__(self, timeout=15.0, pause=0.20, retries=3):
         self.timeout = timeout
         self.pause = pause
+        self.retries = max(1, int(retries))
         self.cache = {}
 
     def scoreboard(self, sport, league, date_text):
@@ -219,11 +220,24 @@ class ESPNClient:
             url,
             headers={"User-Agent": "SharpieDashboard/1.0", "Accept": "application/json"},
         )
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                payload = json.load(response)
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
-            raise RuntimeError(f"ESPN no respondió para {sport}/{league} {date_param}: {exc}") from exc
+        last_error = None
+        payload = None
+        for attempt in range(self.retries):
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                    payload = json.load(response)
+                if not isinstance(payload, dict) or not isinstance(payload.get("events", []), list):
+                    raise ValueError("respuesta JSON sin una lista de eventos")
+                break
+            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, ValueError) as exc:
+                last_error = exc
+                payload = None
+                if attempt + 1 < self.retries:
+                    time.sleep(min(2.0, 0.4 * (2 ** attempt)))
+        if payload is None:
+            raise RuntimeError(
+                f"ESPN no respondió para {sport}/{league} {date_param}: {last_error}"
+            ) from last_error
 
         self.cache[cache_key] = {"url": url, "payload": payload}
         if self.pause:
@@ -368,7 +382,7 @@ def event_state(event):
     name = str(status_type.get("name") or "").upper()
     description = str(status_type.get("description") or status_type.get("detail") or "").upper()
     completed = bool(status_type.get("completed"))
-    if "CANCEL" in name or "CANCEL" in description:
+    if any(token in name or token in description for token in ("CANCEL", "ABANDON")):
         return "CANCELED"
     if "POSTPON" in name or "POSTPON" in description:
         return "POSTPONED"
@@ -478,7 +492,7 @@ def settle_market(pick, event):
         return compare_margin(adjusted_margin), f"Margen ajustado {adjusted_margin:g} con línea {line:+g}"
 
     is_moneyline = any(token in market_text for token in ("moneyline", "money line", "ganador", "1x2", "ml"))
-    if is_moneyline or not re.search(r"[+-]\d+(?:\.\d+)?", pick_text):
+    if is_moneyline:
         if any(token in pick_normalized.split() for token in ("draw", "empate", "tie")):
             return ("WIN" if home_score == away_score else "LOSS"), f"Marcador {home_score:g}-{away_score:g}"
         side = chosen_side(pick_text, competitors)
@@ -539,6 +553,7 @@ def write_settlement_audit(history_dir):
     root = Path(history_dir)
     status_counts, reason_counts, relation_counts, route_counts = Counter(), Counter(), Counter(), Counter()
     unresolved = []
+    excluded_count = 0
     total = 0
     for path in history_files(root):
         try:
@@ -550,6 +565,9 @@ def write_settlement_audit(history_dir):
             if not isinstance(pick, dict):
                 continue
             total += 1
+            if pick.get("excludedFromResults"):
+                excluded_count += 1
+                continue
             settlement = pick.get("settlement") or {}
             lookup = pick.get("eventLookup") or {}
             status = str(settlement.get("status") or "PENDING").upper()
@@ -572,7 +590,7 @@ def write_settlement_audit(history_dir):
                         "attemptedDates": lookup.get("attemptedDates", []),
                     })
     report = {
-        "generatedAt": now_iso(), "totalPicks": total,
+        "generatedAt": now_iso(), "totalPicks": total, "excludedPicks": excluded_count,
         "statusCounts": dict(status_counts), "unresolvedReasons": dict(reason_counts),
         "statusByDateRelation": dict(relation_counts), "resolvedRoutes": dict(route_counts),
         "unresolvedSamples": unresolved,
@@ -611,6 +629,7 @@ def update_pick_from_espn(pick, client, force=False):
         pick.pop("exclusionReason", None)
 
     settlement = pick.get("settlement") or {"status": "PENDING"}
+    settlement["status"] = str(settlement.get("status") or "PENDING").upper()
     if settlement.get("status") in FINAL_RESULTS and not force:
         if stake_normalized:
             pick["profitUnits"] = american_profit_units(pick.get("odds"), pick.get("stake"), settlement.get("status"))
@@ -620,6 +639,15 @@ def update_pick_from_espn(pick, client, force=False):
     checked_at = now_iso()
     date_text = pick.get("date") or (pick.get("eventLookup") or {}).get("scheduledAt", "")[:10]
     relation = date_relation(date_text)
+    if relation == "FUTURE" and not force:
+        settlement.update({
+            "status": "PENDING", "checkedAt": checked_at,
+            "notes": "Evento programado para una fecha futura",
+            "failureCode": "NOT_STARTED_FUTURE",
+        })
+        pick["needsSettlement"] = True
+        pick["settlement"] = settlement
+        return "PENDING"
     routes = candidate_routes(pick)
     dates = search_dates(date_text, include_adjacent=len(routes) <= 3)
     candidates = []
@@ -644,7 +672,13 @@ def update_pick_from_espn(pick, client, force=False):
         if resolve_route(pick):
             break
 
-    candidates.sort(key=lambda item: item[0], reverse=True)
+    deduplicated = {}
+    for candidate in candidates:
+        confidence, event, _response, route, _query_date = candidate
+        identity = (route, str(event.get("id") or event.get("uid") or event.get("name") or ""))
+        if identity not in deduplicated or confidence > deduplicated[identity][0]:
+            deduplicated[identity] = candidate
+    candidates = sorted(deduplicated.values(), key=lambda item: item[0], reverse=True)
     best = candidates[0] if candidates else None
     ambiguous = len(candidates) > 1 and best[0] < 1000 and best[0] - candidates[1][0] < 8.0
     if best is None or best[0] < 72.0 or ambiguous:
@@ -677,6 +711,9 @@ def update_pick_from_espn(pick, client, force=False):
         if failure_code == "NO_MATCH_PAST":
             pick["excludedFromResults"] = True
             pick["exclusionReason"] = failure_code
+            pick["needsSettlement"] = False
+        else:
+            pick["needsSettlement"] = True
         pick["settlement"] = settlement
         return status
 
@@ -729,7 +766,7 @@ def update_pick_from_espn(pick, client, force=False):
 
 def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=False, force=False, timeout=15.0):
     client = ESPNClient(timeout=timeout)
-    summary = {key: 0 for key in ("FILES", "PICKS", "WIN", "LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "NORMALIZED", "EXCLUDED", "ERROR", "SKIPPED_FINAL")}
+    summary = {key: 0 for key in ("FILES", "PICKS", "WIN", "HALF_WIN", "LOSS", "HALF_LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "NORMALIZED", "EXCLUDED", "ERROR", "SKIPPED_FINAL")}
     for path in history_files(history_dir, date_filter):
         summary["FILES"] += 1
         try:
@@ -764,7 +801,12 @@ def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=Fa
 
         if isinstance(payload, dict):
             payload["updatedAt"] = now_iso()
-            payload["pendingSettlement"] = sum(1 for pick in picks if pick.get("needsSettlement", True))
+            payload["pendingSettlement"] = sum(
+                1 for pick in picks
+                if not pick.get("excludedFromResults")
+                and (pick.get("settlement") or {}).get("status") not in FINAL_RESULTS
+                and pick.get("needsSettlement", True)
+            )
             payload["settledCount"] = sum(1 for pick in picks if (pick.get("settlement") or {}).get("status") in FINAL_RESULTS)
         if changed and not dry_run:
             atomic_write(path, payload)

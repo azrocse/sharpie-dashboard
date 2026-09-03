@@ -6,11 +6,16 @@ probabilidad modelo -> Edge -> EV -> medio Kelly -> stake.
 import json
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
+
+try:
+    from pipeline.settle_history_espn import infer_primary_route
+except ImportError:
+    from settle_history_espn import infer_primary_route
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-INPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
-OUTPUT_DIR = INPUT_DIR
+INPUT_DIR = os.path.join(BASE_DIR, "data", "parsed")
+OUTPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 SHARPIE_PATH = os.path.join(OUTPUT_DIR, "sharpie.json")
 
@@ -20,7 +25,7 @@ KELLY_FRACTION = 0.50
 MAX_KELLY_FRACTION_PCT = 10.0
 STAKE_MIN_UNITS = 1.0
 STAKE_MAX_UNITS = 5.0
-INVALID_TOKENS = {"—", "", "0", "-0", "-1", "None", "0%", "NaN", None}
+INVALID_TOKENS = {"—", "", "0", "-0", "-1", "NONE", "0%", "NAN"}
 MARKET_SIGNAL_LABELS = {
     "STEAM_MOVE": "💨 STEAM MOVE",
     "REVERSE_LINE_MOVEMENT": "↩️ REVERSE LINE MOVEMENT",
@@ -32,15 +37,34 @@ MARKET_SIGNAL_LABELS = {
     "LOW_LIQUIDITY": "💧 LOW LIQUIDITY",
     "NO_ACTION": "⚪ NO ACTION",
 }
+ROUTE_LABELS = {
+    ("baseball", "mlb"): "MLB", ("baseball", "kbo"): "KBO",
+    ("baseball", "jpn.1"): "NPB", ("baseball", "college-baseball"): "NCAA BASEBALL",
+    ("football", "nfl"): "NFL", ("football", "college-football"): "NCAA FOOTBALL",
+    ("football", "ufl"): "UFL", ("basketball", "nba"): "NBA",
+    ("basketball", "wnba"): "WNBA",
+    ("basketball", "mens-college-basketball"): "NCAA BASKETBALL",
+    ("basketball", "womens-college-basketball"): "NCAA WOMENS BASKETBALL",
+    ("hockey", "nhl"): "NHL", ("hockey", "mens-college-hockey"): "NCAA ICE HOCKEY",
+    ("mma", "ufc"): "UFC", ("soccer", "fifa.world"): "WORLD CUP",
+    ("soccer", "uefa.champions"): "CHAMPIONS LEAGUE",
+    ("soccer", "uefa.europa"): "EUROPA LEAGUE", ("soccer", "eng.1"): "PREMIER LEAGUE",
+    ("soccer", "esp.1"): "LA LIGA", ("soccer", "ita.1"): "SERIE A",
+    ("soccer", "fra.1"): "LIGUE 1", ("soccer", "ger.1"): "BUNDESLIGA",
+    ("soccer", "mex.1"): "LIGA MX", ("soccer", "usa.1"): "MLS",
+}
 
 def safe_pct(value):
     try: value = float(value)
     except (TypeError, ValueError): return None
-    return round(max(0.0, min(100.0, value)), 2)
+    if not 0.0 <= value <= 100.0: return None
+    return round(value, 2)
 
 def clean_odds(raw_odds):
-    if raw_odds is None or str(raw_odds).strip() in INVALID_TOKENS: return None
-    return raw_odds
+    if raw_odds is None: return None
+    text = str(raw_odds).strip().upper().replace("−", "-")
+    if text in INVALID_TOKENS: return None
+    return "+100" if text == "EVEN" else text
 
 def is_price(raw_odds, market_type=None):
     try: value = float(raw_odds)
@@ -164,12 +188,19 @@ def action_from_category(category):
 
 def normalize_history(market):
     points = []
+    seen = set()
     for item in market.get("history", []):
         if not isinstance(item, dict): continue
-        bets, handle, odds = safe_pct(item.get("bets")), safe_pct(item.get("handle")), clean_odds(item.get("odds"))
+        bets = safe_pct(item.get("betsPct", item.get("bets")))
+        handle = safe_pct(item.get("handlePct", item.get("handle")))
+        odds = clean_odds(item.get("odds"))
         if bets is None and handle is None and odds is None: continue
         if bets == 0 and handle == 0: continue
-        points.append({"time": item.get("time") or item.get("hora") or "", "betsPct": bets, "handlePct": handle, "odds": odds})
+        point = {"time": item.get("time") or item.get("observed_at") or item.get("hora") or "", "betsPct": bets, "handlePct": handle, "odds": odds}
+        signature = (point["time"], bets, handle, odds)
+        if signature not in seen:
+            seen.add(signature)
+            points.append(point)
     return points
 
 def _parse_history_time(value):
@@ -196,6 +227,8 @@ def calculate_line_movement(history):
     previous_time = _parse_history_time(previous[0].get("time"))
     current_time = _parse_history_time(current[0].get("time"))
     if previous_time is None or current_time is None: return line_move, None
+    if (previous_time.tzinfo is None) != (current_time.tzinfo is None):
+        return line_move, None
     minutes = abs((current_time - previous_time).total_seconds()) / 60.0
     return line_move, round(minutes, 1)
 
@@ -206,14 +239,22 @@ def explicit_liquidity_status(market):
 
 def get_latest_files():
     if not os.path.exists(INPUT_DIR): return []
-    return [os.path.join(root, name) for root, _dirs, files in os.walk(INPUT_DIR) for name in files if name.lower().endswith(".json") and name.lower() != "sharpie.json"]
+    return sorted(
+        os.path.join(INPUT_DIR, name)
+        for name in os.listdir(INPUT_DIR)
+        if name.lower().endswith(".json") and name.lower() != "sharpie.json"
+    )
 
 def _group_market_indices(markets):
     groups = {}
-    for index, market in enumerate(markets): groups.setdefault(str(market.get("market", "")).strip(), []).append(index)
+    for index, market in enumerate(markets):
+        market_name = str(market.get("market", "")).strip().casefold()
+        explicit_group = market.get("marketGroup")
+        key = (market_name, str(explicit_group)) if explicit_group is not None else (market_name, None)
+        groups.setdefault(key, []).append(index)
     resolved = {}
-    for indices in groups.values():
-        chunks = [indices] if len(indices) == 3 else [indices[i:i + 2] for i in range(0, len(indices), 2)]
+    for (_market_name, explicit_group), indices in groups.items():
+        chunks = [indices] if explicit_group is not None or len(indices) == 3 else [indices[i:i + 2] for i in range(0, len(indices), 2)]
         for chunk in chunks:
             for index in chunk:
                 resolved[index] = chunk
@@ -229,6 +270,7 @@ def _current_odds(market):
     return None
 
 def process_market(league_name, game, market, grouped_markets):
+    if market.get("marketValid") is False: return None
     handle, bets, raw_odds = safe_pct(market.get("handle")), safe_pct(market.get("bets")), _current_odds(market)
     if handle is None or bets is None or raw_odds is None: return None
     market_type = market.get("market", "")
@@ -247,7 +289,7 @@ def process_market(league_name, game, market, grouped_markets):
     history = normalize_history(market)
     if (not history or history[-1].get("handlePct") != handle
             or history[-1].get("betsPct") != bets or history[-1].get("odds") != raw_odds):
-        observed_at = market.get("observed_at") or market.get("updatedAt") or datetime.now().isoformat(timespec="seconds")
+        observed_at = market.get("observed_at") or market.get("updatedAt") or datetime.now(timezone.utc).isoformat(timespec="seconds")
         history.append({"time": observed_at, "betsPct": bets, "handlePct": handle, "odds": raw_odds})
     line_move, line_move_minutes = calculate_line_movement(history)
     liquidity = explicit_liquidity_status(market)
@@ -257,9 +299,22 @@ def process_market(league_name, game, market, grouped_markets):
     market_signal = market_signals[0]
     pick_category = classify_pick_category(ev, market_signals, divergence)
     action, action_key, priority = action_from_category(pick_category)
-    game_time = game.get("time_raw") or game.get("time") or market.get("time_raw") or datetime.now().strftime("%H:%M")
+    game_time = game.get("time_raw") or game.get("startIso") or game.get("time") or market.get("time_raw") or datetime.now().strftime("%H:%M")
+    route_probe = {
+        "league": league_name, "sport": game.get("sport") or market.get("sport"),
+        "game": game.get("game"), "away": game.get("away"), "home": game.get("home"),
+        "market": market_type, "pick": market.get("pick"),
+    }
+    espn_route = infer_primary_route(route_probe)
+    resolved_league = ROUTE_LABELS.get(espn_route, league_name)
     return {
-        "league": league_name, "game": game.get("game"), "away": game.get("away", ""), "home": game.get("home", ""),
+        "league": resolved_league, "sourceLeague": league_name,
+        "sport": espn_route[0] if espn_route else (game.get("sport") or market.get("sport") or ""),
+        "espnSport": espn_route[0] if espn_route else None,
+        "espnLeague": espn_route[1] if espn_route else None,
+        "game": game.get("game"), "away": game.get("away", ""), "home": game.get("home", ""),
+        "date": game.get("date"), "startIso": game.get("startIso"),
+        "sourceTimeRaw": game.get("sourceTimeRaw"), "timezone": game.get("timezone"),
         "time": game_time, "market": market_type, "pick": market.get("pick"), "odds": raw_odds,
         "decimalOdds": round(decimal_odds, 4), "impliedProb": implied_prob, "fairProb": fair_prob,
         "handlePct": handle, "betsPct": bets, "divergence": divergence, "signedDivergence": divergence,
@@ -275,11 +330,13 @@ def analyze_all(parsed_files=None):
     parsed_files = get_latest_files() if parsed_files is None else parsed_files
     results = []
     for filepath in parsed_files:
-        with open(filepath, encoding="utf-8") as source:
-            try: data = json.load(source)
-            except json.JSONDecodeError: continue
+        try:
+            with open(filepath, encoding="utf-8") as source: data = json.load(source)
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict): continue
         league_name = data.get("league", "UNKNOWN")
-        league_result = {"league": league_name, "date": datetime.now().strftime("%Y-%m-%d"), "markets": []}
+        league_result = {"league": league_name, "date": datetime.now().strftime("%Y-%m-%d"), "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"), "markets": []}
         for game in data.get("games", []):
             markets = game.get("markets", [])
             grouped_indices = _group_market_indices(markets)
@@ -288,7 +345,12 @@ def analyze_all(parsed_files=None):
                 processed = process_market(league_name, game, market, group)
                 if processed is not None: league_result["markets"].append(processed)
         if league_result["markets"]: results.append(league_result)
-    with open(SHARPIE_PATH, "w", encoding="utf-8") as output: json.dump(results, output, indent=4, ensure_ascii=False)
+    temporary = f"{SHARPIE_PATH}.tmp"
+    with open(temporary, "w", encoding="utf-8") as output:
+        json.dump(results, output, indent=4, ensure_ascii=False)
+        output.flush()
+        os.fsync(output.fileno())
+    os.replace(temporary, SHARPIE_PATH)
     return SHARPIE_PATH
 
 if __name__ == "__main__": analyze_all()

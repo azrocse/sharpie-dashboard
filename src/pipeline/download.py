@@ -1,58 +1,89 @@
+"""Orquestación de descargas por liga para el pipeline de Sharpie."""
+
+from __future__ import annotations
+
 import logging
-from league_config import load_leagues
+
+try:
+    from config.league_config import load_leagues
+except ImportError:
+    from league_config import load_leagues
+
 from scraper.draftkings import DraftKingsScraper
 
-# Configuración básica de logs para la consola
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - [%(levelname)s] - %(message)s",
-    datefmt="%H:%M:%S"
-)
+
 logger = logging.getLogger(__name__)
+
+
+def _valid_league_config(league_name, config):
+    if not isinstance(config, dict):
+        logger.error("❌ Configuración inválida para '%s': se esperaba un diccionario", league_name)
+        return None
+    if not config.get("enabled", False):
+        logger.info("⏭️ Omitiendo '%s' (enabled=False)", league_name)
+        return None
+    slug = str(config.get("slug") or "").strip()
+    if not slug:
+        logger.error("❌ '%s' está habilitada pero no tiene slug/ID", league_name)
+        return None
+    date_range = str(config.get("date_range") or "today").strip()
+    return slug, date_range
 
 
 def download_all():
     scraper = DraftKingsScraper()
     leagues = load_leagues()
+    if not isinstance(leagues, dict):
+        raise TypeError("load_leagues() debe devolver un diccionario")
+
     downloaded = []
+    enabled_count = 0
+    failed_count = 0
+    logger.info("Se cargaron %d ligas desde la configuración.", len(leagues))
 
-    logger.info(f"Se cargaron {len(leagues)} ligas desde la configuración.")
-
-    for league_name, league in leagues.items():
-        enabled = league.get("enabled", False)
-        slug = league.get("slug", "SÍN_SLUG")
-        date_range = league.get("date_range", "today")
-
-        if not enabled:
-            logger.info(f"⏭️ Omitiendo '{league_name}' (enabled=False)")
+    for league_name, config in leagues.items():
+        validated = _valid_league_config(league_name, config)
+        if validated is None:
             continue
-
-        logger.info(f"🔄 Procesando: '{league_name}' | Slug: '{slug}' | Date Range: '{date_range}'")
+        enabled_count += 1
+        slug, date_range = validated
+        logger.info(
+            "🔄 Procesando '%s' | Slug/ID: '%s' | Rango: '%s'",
+            league_name, slug, date_range,
+        )
 
         try:
-            files = scraper.scrape_league(
-                league_name,
-                slug,
-                date_range
-            )
+            files = scraper.scrape_league(league_name, slug, date_range)
+        except Exception:
+            failed_count += 1
+            logger.exception("❌ Error crítico procesando '%s'", league_name)
+            continue
 
-            # Evaluar si la respuesta fue None o lista vacía
-            if not files:
-                logger.warning(f"⚠️ '{league_name}' no devolvió archivos/datos (retorno vacio: {files})")
-            else:
-                count = len(files) if isinstance(files, (list, dict)) else 1
-                logger.info(f"✅ '{league_name}' descargado con éxito. Elementos/Archivos: {count}")
+        files = [path for path in (files or []) if isinstance(path, str) and path]
+        if not files:
+            failed_count += 1
+            logger.warning("⚠️ '%s' no devolvió archivos válidos", league_name)
+            continue
 
-            downloaded.append({
-                "league": league_name,
-                "slug": slug,
-                "date_range": date_range,
-                "files": files
-            })
+        downloaded.append({
+            "league": str(league_name),
+            "slug": slug,
+            "date_range": date_range,
+            "files": files,
+        })
+        logger.info("✅ '%s': %d archivo(s)", league_name, len(files))
 
-        except Exception as e:
-            # exc_info=True imprime todo el Stack Trace del error exacto en el scraper
-            logger.error(f"❌ Error crítico procesando '{league_name}': {e}", exc_info=True)
-
-    logger.info(f"Proceso finalizado. Ligas procesadas exitosamente: {len(downloaded)}")
+    logger.info(
+        "Descarga finalizada: %d/%d ligas correctas, %d con error o sin datos.",
+        len(downloaded), enabled_count, failed_count,
+    )
     return downloaded
+
+
+if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - [%(levelname)s] - %(message)s",
+        datefmt="%H:%M:%S",
+    )
+    download_all()
