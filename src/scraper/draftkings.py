@@ -1,30 +1,38 @@
+"""Descarga robusta de Betting Splits de DraftKings Network."""
+
+from __future__ import annotations
+
 import os
 import re
-import requests
 from datetime import datetime
+from urllib.parse import urlencode
+
+import requests
 from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 try:
-    from settings import MAX_PAGES
+    from config.settings import MAX_PAGES
 except ImportError:
-    MAX_PAGES = 5
+    try:
+        from settings import MAX_PAGES
+    except ImportError:
+        MAX_PAGES = 5
 
-BASE_DIR = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        "..",
-        ".."
-    )
-)
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
 class DraftKingsScraper:
+    """Obtiene HTML sin mezclar ligas cuando falla el filtro principal."""
 
-    def __init__(self):
+    def __init__(self, session=None, timeout=30):
         self.base_url = (
             "https://dknetwork.draftkings.com/"
             "draftkings-sportsbook-betting-splits/"
         )
+        self.timeout = timeout
         self.headers = {
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -32,94 +40,127 @@ class DraftKingsScraper:
                 "Chrome/126.0.0.0 Safari/537.36"
             ),
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
         }
+        self.session = session or requests.Session()
+        if session is None:
+            retry = Retry(
+                total=3,
+                connect=3,
+                read=3,
+                backoff_factor=0.8,
+                status_forcelist=(429, 500, 502, 503, 504),
+                allowed_methods=frozenset({"GET"}),
+            )
+            adapter = HTTPAdapter(max_retries=retry)
+            self.session.mount("https://", adapter)
 
     def build_url(self, league_slug, date_range, page):
-        # URL principal
-        url = (
-            f"{self.base_url}"
-            f"?tb_eg=Sports"
-            f"&tb_edate={date_range}"
-            f"&tb_emt=0"
-            f"&itm_content={league_slug}"
-        )
-        
-        # Omitir tb_page en la página 1
+        params = {
+            "tb_eg": "Sports",
+            "tb_edate": date_range,
+            "tb_emt": 0,
+            "itm_content": league_slug,
+        }
         if page > 1:
-            url += f"&tb_page={page}"
-            
-        return url
+            params["tb_page"] = page
+        return f"{self.base_url}?{urlencode(params)}"
 
-    def build_fallback_url(self, league_slug, page):
-        # URL de respaldo usando el nuevo formato recibido
-        # Si league_slug contiene un ID específico (ej. '84240'), se usa ese valor en tb_eg
-        tb_eg_val = league_slug if league_slug.isdigit() else "84240"
-        
-        url = (
-            f"{self.base_url}"
-            f"?tb_eg={tb_eg_val}"
-            f"&tb_edate=n30days"
-            f"&tb_emt=0"
-        )
-        
+    def build_fallback_url(self, league_slug, page, date_range="today"):
+        """El fallback solo es seguro cuando se recibió un ID real de liga.
+
+        Antes se sustituía cualquier slug por 84240, que corresponde a un
+        catálogo amplio y podía mezclar MLB, NCAA y otros deportes.
+        """
+        league_id = str(league_slug or "").strip()
+        if not league_id.isdigit():
+            return ""
+        params = {"tb_eg": league_id, "tb_edate": date_range, "tb_emt": 0}
         if page > 1:
-            url += f"&tb_page={page}"
-            
-        return url
+            params["tb_page"] = page
+        return f"{self.base_url}?{urlencode(params)}"
+
+    def _download(self, url):
+        if not url:
+            return ""
+        response = self.session.get(
+            url,
+            headers=self.headers,
+            timeout=self.timeout,
+            allow_redirects=True,
+        )
+        response.raise_for_status()
+        content_type = response.headers.get("Content-Type", "").lower()
+        if content_type and "html" not in content_type:
+            raise requests.RequestException(f"Contenido inesperado: {content_type}")
+        if not response.encoding or response.encoding.lower() == "iso-8859-1":
+            response.encoding = response.apparent_encoding or "utf-8"
+        return response.text
 
     def fetch_page(self, league_slug, date_range, page):
         primary_url = self.build_url(league_slug, date_range, page)
-        
         try:
-            # Intento principal
-            response = requests.get(primary_url, headers=self.headers, timeout=30)
-            response.raise_for_status()
-            html = response.text
-            
-            # Verificamos si la página realmente trajo eventos
+            html = self._download(primary_url)
             if self.extract_events(html):
                 return html
-            else:
-                print(f"  [!] URL principal no retornó eventos en pag {page}. Intentando URL de respaldo...")
-        except requests.RequestException as e:
-            print(f"  [!] Error en URL principal ({e}). Intentando URL de respaldo...")
+            print(f"  [!] La URL principal no retornó eventos en página {page}.")
+        except requests.RequestException as exc:
+            print(f"  [!] Error en URL principal ({exc}).")
 
-        # Módulo de Respaldo / Fallback
-        fallback_url = self.build_fallback_url(league_slug, page)
-        try:
-            fallback_response = requests.get(fallback_url, headers=self.headers, timeout=30)
-            fallback_response.raise_for_status()
-            return fallback_response.text
-        except requests.RequestException as e:
-            print(f"  [X] También falló la URL de respaldo: {e}")
+        fallback_url = self.build_fallback_url(
+            league_slug, page, date_range=date_range
+        )
+        if not fallback_url:
+            print("  [!] Fallback omitido: no existe un ID numérico seguro para la liga.")
             return ""
 
-    def extract_events(self, html):
+        try:
+            html = self._download(fallback_url)
+            if self.extract_events(html):
+                print("  [i] Se utilizó el fallback específico de la liga.")
+                return html
+            print(f"  [!] El fallback no retornó eventos en página {page}.")
+        except requests.RequestException as exc:
+            print(f"  [X] También falló la URL de respaldo: {exc}")
+        return ""
+
+    def extract_event_keys(self, html):
         if not html:
             return []
-            
         soup = BeautifulSoup(html, "html.parser")
-        events = soup.select(".tb-se")
         result = []
-        for event in events:
+        for event in soup.select(".tb-se"):
             title = event.select_one(".tb-se-title h5")
-            if title:
-                result.append(title.get_text(" ", strip=True))
+            if not title:
+                continue
+            time_node = event.select_one(".tb-se-title span")
+            title_text = title.get_text(" ", strip=True)
+            time_text = time_node.get_text(" ", strip=True) if time_node else ""
+            result.append(f"{title_text}||{time_text}")
         return result
 
+    def extract_events(self, html):
+        return [key.split("||", 1)[0] for key in self.extract_event_keys(html)]
+
     def sanitize_name(self, text):
-        text = text.lower()
-        text = text.replace(" ", "_")
-        return re.sub(r"[^a-z0-9_]", "", text)
+        normalized = re.sub(r"\s+", "_", str(text or "").strip().lower())
+        return re.sub(r"[^a-z0-9_-]", "", normalized) or "unknown"
 
     def save_raw(self, html, league, page):
         folder = os.path.join(BASE_DIR, "data", "raw")
         os.makedirs(folder, exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"draftkings_{self.sanitize_name(league)}_page{page}_{timestamp}.html"
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        filename = (
+            f"draftkings_{self.sanitize_name(league)}_"
+            f"page{page}_{timestamp}.html"
+        )
         path = os.path.join(folder, filename)
-        with open(path, "w", encoding="utf-8") as file:
-            file.write(html)
+        temporary = f"{path}.tmp"
+        with open(temporary, "w", encoding="utf-8") as output:
+            output.write(html)
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary, path)
         return path
 
     def scrape_league(self, league_name, league_slug, date_range="today"):
@@ -130,26 +171,23 @@ class DraftKingsScraper:
         print("=" * 60)
 
         files = []
-        previous = set()
+        page_fingerprints = set()
 
         for page in range(1, MAX_PAGES + 1):
             print(f"Descargando página {page}...")
             html = self.fetch_page(league_slug, date_range, page)
-            events = self.extract_events(html)
+            event_keys = self.extract_event_keys(html)
 
-            if not events:
+            if not event_keys:
                 print("No se encontraron más eventos.")
                 break
 
-            current = set(events)
-            if current == previous:
+            fingerprint = tuple(sorted(set(event_keys)))
+            if fingerprint in page_fingerprints:
+                print("Página repetida; finaliza la paginación.")
                 break
+            page_fingerprints.add(fingerprint)
 
-            previous = current
-            file = self.save_raw(html, league_name, page)
-            files.append(file)
-
-            if len(events) < 5:
-                break
+            files.append(self.save_raw(html, league_name, page))
 
         return files
