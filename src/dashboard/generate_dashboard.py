@@ -1178,11 +1178,15 @@ HISTORY_SCHEMA_VERSION = 2
 
 def _is_qualified_value_pick(item, allow_legacy=False):
     categories = LEGACY_VALUE_CATEGORIES if allow_legacy else VALUE_CATEGORIES
-    if not isinstance(item, dict) or item.get("pickCategory") not in categories or item.get("actionKey") != "bet":
+    if not isinstance(item, dict) or item.get("pickCategory") not in categories:
+        return False
+    action_key = item.get("actionKey")
+    if (not allow_legacy and action_key != "bet") or (allow_legacy and action_key not in {None, "", "bet"}):
         return False
     try:
+        ev = float(item.get("ev") or 0)
         return (
-            float(item.get("ev") or 0) >= 1.0
+            (ev > 0 if allow_legacy else ev >= 1.0)
             and float(item.get("modelEdge") or 0) > 0
             and float(item.get("stake") or 0) >= 1.0
         )
@@ -1289,9 +1293,22 @@ def _load_existing_value_records(history_file, observed_at):
     records = {}
     legacy_time = payload.get("generated_at", observed_at) if isinstance(payload, dict) else observed_at
     for item in raw_picks:
-        if not _is_qualified_value_pick(item, allow_legacy=True):
+        if not isinstance(item, dict):
             continue
-        record = _new_history_record(item, legacy_time)
+        legacy_item = dict(item)
+        try:
+            positive_value = float(legacy_item.get("ev") or 0) > 0 and float(legacy_item.get("modelEdge") or 0) > 0
+            old_stake = float(legacy_item.get("stake") or 0)
+        except (TypeError, ValueError):
+            positive_value, old_stake = False, 0.0
+        if positive_value and old_stake <= 0:
+            legacy_item["stake"] = 1.0
+            legacy_item["originalStake"] = item.get("stake")
+            legacy_item["stakeNormalized"] = True
+            legacy_item["stakeNormalizationReason"] = "LEGACY_STAKE_MODEL"
+        if not _is_qualified_value_pick(legacy_item, allow_legacy=True):
+            continue
+        record = _new_history_record(legacy_item, legacy_time)
         records[record["historyId"]] = record
     return records
 

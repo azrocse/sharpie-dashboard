@@ -14,7 +14,7 @@ CDMX_TIMEZONE = timezone(timedelta(hours=-6))
 BASE_DIR = Path(__file__).resolve().parent.parent
 SETTLEMENT_STATE_DIR = BASE_DIR / "data" / "results"
 BACKFILL_MARKER = SETTLEMENT_STATE_DIR / ".espn_backfill_date"
-BACKFILL_VERSION = "settlement-fixes-v5"
+BACKFILL_VERSION = "legacy-stake-normalization-v7"
 
 
 def settle_recent_history(days=2):
@@ -36,7 +36,7 @@ def settle_recent_history(days=2):
     if totals:
         outcomes = [
             f"{key}={totals.get(key, 0)}"
-            for key in ("WIN", "HALF_WIN", "LOSS", "HALF_LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "ERROR")
+            for key in ("WIN", "HALF_WIN", "LOSS", "HALF_LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "NORMALIZED", "EXCLUDED", "ERROR")
             if totals.get(key, 0)
         ]
         print("[ESPN] " + (" · ".join(outcomes) if outcomes else "Sin liquidaciones pendientes"))
@@ -65,7 +65,7 @@ def settle_history_pipeline(days=2):
 
     outcomes = [
         f"{key}={summary.get(key, 0)}"
-        for key in ("WIN", "HALF_WIN", "LOSS", "HALF_LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "ERROR")
+        for key in ("WIN", "HALF_WIN", "LOSS", "HALF_LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "NORMALIZED", "EXCLUDED", "ERROR")
         if summary.get(key, 0)
     ]
     print("[ESPN HISTORIAL] " + (" · ".join(outcomes) if outcomes else "Sin picks pendientes"))

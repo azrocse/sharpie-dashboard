@@ -585,8 +585,36 @@ def write_settlement_audit(history_dir):
 
 
 def update_pick_from_espn(pick, client, force=False):
+    try:
+        positive_value = float(pick.get("ev") or 0) > 0 and float(pick.get("modelEdge") or 0) > 0
+        old_stake = float(pick.get("stake") or 0)
+    except (TypeError, ValueError):
+        positive_value, old_stake = False, 0.0
+
+    stake_normalized = positive_value and old_stake <= 0
+    if stake_normalized:
+        pick["originalStake"] = pick.get("stake")
+        pick["stake"] = 1.0
+        pick["stakeNormalized"] = True
+        pick["stakeNormalizationReason"] = "LEGACY_STAKE_MODEL"
+
+    actionable = positive_value and float(pick.get("stake") or 0) >= 1.0
+
+    if not actionable:
+        pick["excludedFromResults"] = True
+        pick["exclusionReason"] = "NON_ACTIONABLE_PICK"
+        pick["needsSettlement"] = False
+        return "EXCLUDED"
+
+    if pick.get("exclusionReason") == "NON_ACTIONABLE_PICK":
+        pick.pop("excludedFromResults", None)
+        pick.pop("exclusionReason", None)
+
     settlement = pick.get("settlement") or {"status": "PENDING"}
     if settlement.get("status") in FINAL_RESULTS and not force:
+        if stake_normalized:
+            pick["profitUnits"] = american_profit_units(pick.get("odds"), pick.get("stake"), settlement.get("status"))
+            return "NORMALIZED"
         return "SKIPPED_FINAL"
 
     checked_at = now_iso()
@@ -701,7 +729,7 @@ def update_pick_from_espn(pick, client, force=False):
 
 def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=False, force=False, timeout=15.0):
     client = ESPNClient(timeout=timeout)
-    summary = {key: 0 for key in ("FILES", "PICKS", "WIN", "LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "ERROR", "SKIPPED_FINAL")}
+    summary = {key: 0 for key in ("FILES", "PICKS", "WIN", "LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "NORMALIZED", "EXCLUDED", "ERROR", "SKIPPED_FINAL")}
     for path in history_files(history_dir, date_filter):
         summary["FILES"] += 1
         try:

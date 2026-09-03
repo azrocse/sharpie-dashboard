@@ -388,7 +388,7 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T19:32:32+00:00",
+        "checkedAt": "2026-09-03T20:54:29+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 53.14,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -795,7 +795,7 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T19:32:33+00:00",
+        "checkedAt": "2026-09-03T20:54:29+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 53.14,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -3336,7 +3336,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.8696
+      "profitUnits": 0.8696,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 254,
@@ -6865,7 +6867,9 @@
         "matchConfidence": 85.19,
         "notes": "Marcador 4-2",
         "settledAt": "2026-09-03T04:25:50+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 242,
@@ -7323,7 +7327,9 @@
         "matchConfidence": 85.19,
         "notes": "Margen ajustado 0.5 con línea -1.5",
         "settledAt": "2026-09-03T04:25:50+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 241,
@@ -7994,7 +8000,9 @@
         "matchConfidence": 85.19,
         "notes": "Total final 6 vs línea 7.5",
         "settledAt": "2026-09-03T04:25:51+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 239,
@@ -8861,7 +8869,9 @@
         "matchConfidence": 72.0,
         "notes": "Marcador 4-1",
         "settledAt": "2026-09-03T04:25:51+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 237,
@@ -9270,7 +9280,9 @@
         "matchConfidence": 72.0,
         "notes": "Marcador 4-1",
         "settledAt": "2026-09-03T04:25:51+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 236,
@@ -9288,7 +9300,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 72.2,
       "finalScore": 72.2,
       "valueScore": 68.3,
@@ -9666,7 +9678,7 @@
         "matchConfidence": 72.0
       },
       "needsSettlement": false,
-      "profitUnits": 0.0,
+      "profitUnits": 1.23,
       "settlement": {
         "status": "WIN",
         "source": "ESPN",
@@ -9679,7 +9691,10 @@
         "matchConfidence": 72.0,
         "notes": "Margen ajustado 1.5 con línea -1.5",
         "settledAt": "2026-09-03T04:25:51+00:00"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 235,
@@ -9843,7 +9858,9 @@
         "matchConfidence": 72.0,
         "notes": "Margen ajustado -1.5 con línea +1.5",
         "settledAt": "2026-09-03T04:25:51+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 234,
@@ -10252,7 +10269,9 @@
         "matchConfidence": 72.0,
         "notes": "Total final 5 vs línea 7.5",
         "settledAt": "2026-09-03T04:25:52+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 233,
@@ -10661,7 +10680,9 @@
         "matchConfidence": 72.0,
         "notes": "Total final 5 vs línea 7.5",
         "settledAt": "2026-09-03T04:25:52+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 232,
@@ -10972,7 +10993,9 @@
         "matchConfidence": 76.92,
         "notes": "Marcador 3-13",
         "settledAt": "2026-09-03T04:25:52+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 231,
@@ -11283,7 +11306,9 @@
         "matchConfidence": 76.92,
         "notes": "Marcador 3-13",
         "settledAt": "2026-09-03T04:25:52+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 230,
@@ -11594,7 +11619,9 @@
         "matchConfidence": 76.92,
         "notes": "Margen ajustado 8.5 con línea -1.5",
         "settledAt": "2026-09-03T04:25:52+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 229,
@@ -11702,7 +11729,9 @@
         "matchConfidence": 76.92,
         "notes": "Margen ajustado -8.5 con línea +1.5",
         "settledAt": "2026-09-03T04:25:53+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 228,
@@ -11866,7 +11895,9 @@
         "matchConfidence": 76.92,
         "notes": "Total final 16 vs línea 8.5",
         "settledAt": "2026-09-03T04:25:53+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 227,
@@ -12285,7 +12316,9 @@
         "matchConfidence": 84.75,
         "notes": "Marcador 11-2",
         "settledAt": "2026-09-03T04:25:53+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 225,
@@ -12393,7 +12426,9 @@
         "matchConfidence": 84.75,
         "notes": "Marcador 11-2",
         "settledAt": "2026-09-03T04:25:53+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 224,
@@ -12609,7 +12644,9 @@
         "matchConfidence": 84.75,
         "notes": "Margen ajustado 10.5 con línea +1.5",
         "settledAt": "2026-09-03T04:25:54+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 222,
@@ -12825,7 +12862,9 @@
         "matchConfidence": 84.75,
         "notes": "Total final 13 vs línea 8.5",
         "settledAt": "2026-09-03T04:25:54+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 220,
@@ -12995,7 +13034,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 219,
@@ -13165,7 +13206,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 218,
@@ -13279,7 +13322,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 216,
@@ -13393,7 +13438,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 215,
@@ -13507,7 +13554,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 214,
@@ -13830,7 +13879,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 213,
@@ -14153,7 +14204,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 212,
@@ -14478,7 +14531,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 1.04
+      "profitUnits": 1.04,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 211,
@@ -14654,7 +14709,9 @@
         "matchedName": "Cleveland Guardians at Los Angeles Angels",
         "matchedDate": "2026-08-24"
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 210,
@@ -15097,7 +15154,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.9091
+      "profitUnits": 0.9091,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 208,
@@ -15115,7 +15174,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 62.7,
       "finalScore": 62.7,
       "valueScore": 47.8,
@@ -15297,7 +15356,7 @@
         "matchConfidence": 75.76
       },
       "needsSettlement": false,
-      "profitUnits": 0.0,
+      "profitUnits": 1.02,
       "settlement": {
         "status": "WIN",
         "source": "ESPN",
@@ -15310,7 +15369,10 @@
         "matchConfidence": 75.76,
         "notes": "Marcador 2-9",
         "settledAt": "2026-09-03T04:25:55+00:00"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 207,
@@ -15523,7 +15585,9 @@
         "matchConfidence": 75.76,
         "notes": "Marcador 2-9",
         "settledAt": "2026-09-03T04:25:55+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 206,
@@ -15541,7 +15605,7 @@
       "pickCategory": null,
       "priority": "👀 OBSERVAR",
       "priorityKey": "watch",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 65.2,
       "finalScore": 65.2,
       "valueScore": 38.4,
@@ -15723,7 +15787,7 @@
         "matchConfidence": 75.76
       },
       "needsSettlement": false,
-      "profitUnits": -0.0,
+      "profitUnits": -1.0,
       "settlement": {
         "status": "LOSS",
         "source": "ESPN",
@@ -15736,7 +15800,10 @@
         "matchConfidence": 75.76,
         "notes": "Margen ajustado -8.5 con línea -1.5",
         "settledAt": "2026-09-03T04:25:55+00:00"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 204,
@@ -15949,7 +16016,9 @@
         "matchConfidence": 75.76,
         "notes": "Total final 11 vs línea 6.5",
         "settledAt": "2026-09-03T04:25:56+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 202,
@@ -16211,7 +16280,9 @@
         "matchConfidence": 81.97,
         "notes": "Marcador 7-0",
         "settledAt": "2026-09-03T04:25:56+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 201,
@@ -16473,7 +16544,9 @@
         "matchConfidence": 81.97,
         "notes": "Marcador 7-0",
         "settledAt": "2026-09-03T04:25:56+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 200,
@@ -16735,7 +16808,9 @@
         "matchConfidence": 81.97,
         "notes": "Margen ajustado 5.5 con línea -1.5",
         "settledAt": "2026-09-03T04:25:56+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 199,
@@ -17161,7 +17236,9 @@
         "matchConfidence": 81.97,
         "notes": "Total final 7 vs línea 9",
         "settledAt": "2026-09-03T04:25:57+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 196,
@@ -17288,7 +17365,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 195,
@@ -17415,7 +17494,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 194,
@@ -17666,7 +17747,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 192,
@@ -17786,7 +17869,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.8696
+      "profitUnits": 0.8696,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 191,
@@ -17931,7 +18016,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 77.5,
       "finalScore": 77.5,
       "valueScore": 65.3,
@@ -18040,7 +18125,10 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -1.0,
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 189,
@@ -18167,7 +18255,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.9009
+      "profitUnits": 0.9009,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 188,
@@ -18296,7 +18386,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 187,
@@ -18425,7 +18517,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.5525
+      "profitUnits": 0.5525,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 186,
@@ -18552,7 +18646,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 185,
@@ -18679,7 +18775,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 184,
@@ -18905,7 +19003,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 183,
@@ -19131,7 +19231,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 182,
@@ -19460,7 +19562,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.6944
+      "profitUnits": 0.6944,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 180,
@@ -19478,7 +19582,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 77.5,
       "finalScore": 77.5,
       "valueScore": 65.3,
@@ -19686,7 +19790,10 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -1.0,
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 179,
@@ -19912,7 +20019,9 @@
         "matchedDate": "2026-08-24"
       },
       "needsSettlement": false,
-      "profitUnits": 0.8929
+      "profitUnits": 0.8929,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 178,
@@ -20026,7 +20135,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 177,
@@ -20140,7 +20251,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.2198
+      "profitUnits": 0.2198,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 176,
@@ -20158,7 +20271,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 80.5,
       "finalScore": 80.5,
       "valueScore": 75.8,
@@ -20254,7 +20367,10 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -1.0,
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 173,
@@ -20368,7 +20484,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.9091
+      "profitUnits": 0.9091,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 172,
@@ -26048,7 +26166,10 @@
         ],
         "candidateEvents": 69,
         "bestCandidate": "SC Paderborn 07 at Mainz"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 165,
@@ -27423,7 +27544,7 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T19:32:35+00:00",
+        "checkedAt": "2026-09-03T20:54:29+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 57.71,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -30748,7 +30869,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 159,
@@ -32148,7 +32271,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 158,
@@ -33548,7 +33673,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 157,
@@ -34948,7 +35075,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 156,
@@ -36348,7 +36477,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 155,
@@ -39026,7 +39157,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 65.0,
       "finalScore": 65.0,
       "valueScore": 84.0,
@@ -40268,7 +40399,10 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -1.0,
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 152,
@@ -40870,7 +41004,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 151,
@@ -41472,7 +41608,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 150,
@@ -42074,7 +42212,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.9091
+      "profitUnits": 0.9091,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 149,
@@ -42676,7 +42816,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 148,
@@ -43418,7 +43560,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.4587
+      "profitUnits": 0.4587,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 147,
@@ -45644,7 +45788,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 144,
@@ -46386,7 +46532,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 143,
@@ -47747,7 +47895,10 @@
         ],
         "candidateEvents": 69,
         "bestCandidate": "Colorado Rockies at Atlanta Braves"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 141,
@@ -48324,7 +48475,7 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T19:32:37+00:00",
+        "checkedAt": "2026-09-03T20:54:30+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 69.14,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -49783,7 +49934,10 @@
         ],
         "candidateEvents": 69,
         "bestCandidate": "Chicago Fire FC at Seattle Sounders FC"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 138,
@@ -50612,7 +50766,9 @@
         "matchConfidence": 79.57,
         "notes": "Marcador 7-33",
         "settledAt": "2026-09-03T04:26:19+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 137,
@@ -51441,7 +51597,9 @@
         "matchConfidence": 79.57,
         "notes": "Marcador 7-33",
         "settledAt": "2026-09-03T04:26:20+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 136,
@@ -52270,7 +52428,9 @@
         "matchConfidence": 79.57,
         "notes": "Margen ajustado 19 con línea -7",
         "settledAt": "2026-09-03T04:26:20+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 135,
@@ -53099,7 +53259,9 @@
         "matchConfidence": 79.57,
         "notes": "Margen ajustado -19 con línea +7",
         "settledAt": "2026-09-03T04:26:21+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 134,
@@ -53928,7 +54090,9 @@
         "matchConfidence": 79.57,
         "notes": "Total final 40 vs línea 46.5",
         "settledAt": "2026-09-03T04:26:21+00:00"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 133,
@@ -55499,7 +55663,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.4587
+      "profitUnits": 0.4587,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 131,
@@ -55517,7 +55683,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 73.8,
       "finalScore": 73.8,
       "valueScore": 73.8,
@@ -56241,7 +56407,10 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -1.0,
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 130,
@@ -56983,7 +57152,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 129,
@@ -57001,7 +57172,7 @@
       "pickCategory": null,
       "priority": "👀 OBSERVAR",
       "priorityKey": "watch",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 51.8,
       "finalScore": 51.8,
       "valueScore": 29.4,
@@ -57725,7 +57896,10 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -1.0,
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 128,
@@ -58467,7 +58641,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 127,
@@ -59209,7 +59385,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 126,
@@ -59909,7 +60087,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -0.0
+      "profitUnits": -0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 125,
@@ -60609,7 +60789,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 124,
@@ -62009,7 +62191,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.8929
+      "profitUnits": 0.8929,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 122,
@@ -62709,7 +62893,9 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": -1.0
+      "profitUnits": -1.0,
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
       "id": 121,
@@ -62727,7 +62913,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 72.4,
       "finalScore": 72.4,
       "valueScore": 66.8,
@@ -63409,7 +63595,10 @@
         ]
       },
       "needsSettlement": false,
-      "profitUnits": 0.0
+      "profitUnits": 0.8929,
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 120,
@@ -64059,7 +64248,10 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 119,
@@ -64685,7 +64877,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:39+00:00",
+        "checkedAt": "2026-09-03T20:54:31+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -65359,7 +65551,10 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 117,
@@ -66009,7 +66204,10 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 115,
@@ -66635,7 +66833,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:40+00:00",
+        "checkedAt": "2026-09-03T20:54:31+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -67575,7 +67773,10 @@
           "2026-09-03",
           "2026-09-05"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 113,
@@ -68491,7 +68692,10 @@
           "2026-09-03",
           "2026-09-05"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 112,
@@ -69407,7 +69611,10 @@
           "2026-09-03",
           "2026-09-05"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 111,
@@ -70323,7 +70530,10 @@
           "2026-09-03",
           "2026-09-05"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 109,
@@ -71239,7 +71449,10 @@
           "2026-09-03",
           "2026-09-05"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 108,
@@ -72393,7 +72606,10 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 107,
@@ -73523,7 +73739,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:40+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -74677,7 +74893,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:41+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -75855,7 +76071,10 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 104,
@@ -77009,7 +77228,10 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 103,
@@ -78139,7 +78361,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:41+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -79149,7 +79371,10 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 101,
@@ -80111,7 +80336,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:41+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -81121,7 +81346,10 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 99,
@@ -82107,7 +82335,10 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 98,
@@ -83093,7 +83324,10 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 97,
@@ -84079,7 +84313,10 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 96,
@@ -85562,7 +85799,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 95,
@@ -87040,7 +87280,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -88528,7 +88768,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 93,
@@ -90011,7 +90254,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 92,
@@ -91494,7 +91740,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 91,
@@ -91512,7 +91761,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 80.5,
       "finalScore": 80.5,
       "valueScore": 75.8,
@@ -92972,12 +93221,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 90,
@@ -94460,7 +94712,10 @@
           "2026-09-09",
           "2026-09-11"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 89,
@@ -95943,7 +96198,10 @@
           "2026-09-09",
           "2026-09-11"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 88,
@@ -97426,7 +97684,10 @@
           "2026-09-09",
           "2026-09-11"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 87,
@@ -97444,7 +97705,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 64.9,
       "finalScore": 64.9,
       "valueScore": 51.7,
@@ -98885,7 +99146,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -98909,7 +99170,10 @@
           "2026-09-09",
           "2026-09-11"
         ]
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 86,
@@ -100392,7 +100656,10 @@
           "2026-09-09",
           "2026-09-11"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 85,
@@ -101851,7 +102118,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -103358,7 +103625,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 83,
@@ -104841,7 +105111,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 82,
@@ -106324,7 +106597,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 81,
@@ -107807,7 +108083,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 80,
@@ -109290,7 +109569,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 79,
@@ -110773,7 +111055,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 78,
@@ -112256,7 +112541,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 77,
@@ -113739,7 +114027,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 76,
@@ -113757,7 +114048,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 71.8,
       "finalScore": 71.8,
       "valueScore": 51.7,
@@ -115198,7 +115489,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -115222,7 +115513,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 75,
@@ -116705,7 +116999,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 74,
@@ -118188,7 +118485,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 73,
@@ -118206,7 +118506,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 62.8,
       "finalScore": 62.8,
       "valueScore": 51.7,
@@ -119647,7 +119947,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -119671,7 +119971,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 72,
@@ -119689,7 +119992,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 62.0,
       "finalScore": 62.0,
       "valueScore": 48.1,
@@ -121149,12 +121452,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 71,
@@ -122637,7 +122943,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 70,
@@ -124120,7 +124429,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 69,
@@ -125603,7 +125915,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 68,
@@ -127086,7 +127401,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 67,
@@ -127104,7 +127422,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 71.8,
       "finalScore": 71.8,
       "valueScore": 51.7,
@@ -128564,12 +128882,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 66,
@@ -130052,7 +130373,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 65,
@@ -131535,7 +131859,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 64,
@@ -133018,7 +133345,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 63,
@@ -134501,7 +134831,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 62,
@@ -134519,7 +134852,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 83.0,
       "finalScore": 83.0,
       "valueScore": 73.3,
@@ -135979,12 +136312,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 61,
@@ -137467,7 +137803,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 60,
@@ -138950,7 +139289,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 59,
@@ -138968,7 +139310,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 69.9,
       "finalScore": 69.9,
       "valueScore": 69.4,
@@ -140428,12 +140770,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872925",
         "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
-        "checkedAt": "2026-09-03T19:32:42+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 58,
@@ -141916,7 +142261,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 57,
@@ -143399,7 +143747,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 56,
@@ -144882,7 +145233,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 55,
@@ -146365,7 +146719,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 54,
@@ -147848,7 +148205,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 53,
@@ -149331,7 +149691,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 52,
@@ -150814,7 +151177,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 51,
@@ -152297,7 +152663,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 50,
@@ -153780,7 +154149,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 49,
@@ -155263,7 +155635,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 48,
@@ -156746,7 +157121,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 47,
@@ -158229,7 +158607,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 46,
@@ -158247,7 +158628,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 78.9,
       "finalScore": 78.9,
       "valueScore": 72.3,
@@ -159707,12 +160088,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 45,
@@ -161195,7 +161579,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 44,
@@ -162678,7 +163065,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 43,
@@ -162696,7 +163086,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 83.9,
       "finalScore": 83.9,
       "valueScore": 73.3,
@@ -164156,12 +164546,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 42,
@@ -165644,7 +166037,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 41,
@@ -165662,7 +166058,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 59.0,
       "finalScore": 59.0,
       "valueScore": 40.4,
@@ -167103,7 +167499,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -167127,7 +167523,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 40,
@@ -167145,7 +167544,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 68.4,
       "finalScore": 68.4,
       "valueScore": 64.0,
@@ -168586,7 +168985,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -168610,7 +169009,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 39,
@@ -170093,7 +170495,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 38,
@@ -170111,7 +170516,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 78.1,
       "finalScore": 78.1,
       "valueScore": 73.3,
@@ -171552,7 +171957,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -171576,7 +171981,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 37,
@@ -173059,7 +173467,10 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 36,
@@ -174542,7 +174953,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 35,
@@ -176020,7 +176434,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -177508,7 +177922,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 33,
@@ -177526,7 +177943,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 71.8,
       "finalScore": 71.8,
       "valueScore": 51.7,
@@ -178986,12 +179403,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 31,
@@ -179009,7 +179429,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 81.5,
       "finalScore": 81.5,
       "valueScore": 75.8,
@@ -180469,12 +180889,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 30,
@@ -181957,7 +182380,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 29,
@@ -183440,7 +183866,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 28,
@@ -183458,7 +183887,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 81.5,
       "finalScore": 81.5,
       "valueScore": 75.8,
@@ -184918,12 +185347,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 27,
@@ -186406,7 +186838,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 26,
@@ -187889,7 +188324,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 25,
@@ -189367,7 +189805,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -190855,7 +191293,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 23,
@@ -192333,7 +192774,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -193816,7 +194257,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:32+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -195304,7 +195745,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 20,
@@ -196787,7 +197231,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 19,
@@ -198270,7 +198717,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 18,
@@ -199748,7 +200198,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:33+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -201236,7 +201686,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 16,
@@ -202719,7 +203172,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 15,
@@ -204202,7 +204658,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 14,
@@ -205685,7 +206144,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 13,
@@ -207163,7 +207625,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:33+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -208651,7 +209113,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 11,
@@ -210134,7 +210599,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 10,
@@ -211617,7 +212085,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 9,
@@ -213100,7 +213571,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 8,
@@ -214583,7 +215057,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 7,
@@ -214601,7 +215078,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 68.9,
       "finalScore": 68.9,
       "valueScore": 51.7,
@@ -216061,12 +216538,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:33+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 6,
@@ -217549,7 +218029,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 5,
@@ -217567,7 +218050,7 @@
       "pickCategory": null,
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 76.9,
       "finalScore": 76.9,
       "valueScore": 76.2,
@@ -219027,12 +219510,15 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T19:32:43+00:00",
+        "checkedAt": "2026-09-03T20:54:33+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     },
     {
       "id": 4,
@@ -220515,7 +221001,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 3,
@@ -221993,7 +222482,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T19:32:44+00:00",
+        "checkedAt": "2026-09-03T20:54:33+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -223481,7 +223970,10 @@
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "excludedFromResults": true,
+      "exclusionReason": "NON_ACTIONABLE_PICK",
+      "needsSettlement": false
     },
     {
       "id": 1,
@@ -223499,7 +223991,7 @@
       "pickCategory": null,
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 0.0,
+      "stake": 1.0,
       "score": 66.4,
       "finalScore": 66.4,
       "valueScore": 51.7,
@@ -224959,15 +225451,18 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T19:32:44+00:00",
+        "checkedAt": "2026-09-03T20:54:33+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
         "notes": "Evento aún no finaliza"
-      }
+      },
+      "originalStake": 0.0,
+      "stakeNormalized": true,
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
     }
   ],
-  "updatedAt": "2026-09-03T19:32:44+00:00",
-  "pendingSettlement": 125,
+  "updatedAt": "2026-09-03T20:54:33+00:00",
+  "pendingSettlement": 38,
   "settledCount": 112
 }
