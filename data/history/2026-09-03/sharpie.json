@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-03",
-  "updatedAt": "2026-09-03T22:20:25+00:00",
+  "updatedAt": "2026-09-03T22:25:19+00:00",
   "count": 30,
   "pendingSettlement": 30,
   "picks": [
@@ -1496,7 +1496,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:22+00:00",
+        "checkedAt": "2026-09-03T22:25:15+00:00",
         "settledAt": null,
         "homeScore": 7.0,
         "awayScore": 7.0,
@@ -1576,13 +1576,6 @@
       "time": "17:00",
       "iso": "2026-09-03T17:00:00",
       "history": [
-        {
-          "time": "12:05",
-          "timestamp": "2026-09-02T12:05:11",
-          "betsPct": 19.0,
-          "handlePct": 100.0,
-          "odds": "+3500"
-        },
         {
           "time": "12:10",
           "timestamp": "2026-09-02T12:10:11",
@@ -2968,6 +2961,13 @@
           "betsPct": 30.0,
           "handlePct": 94.0,
           "odds": "+2200"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 30.0,
+          "handlePct": 94.0,
+          "odds": "+2200"
         }
       ],
       "clv": {
@@ -2975,7 +2975,7 @@
           "odds": "+3500",
           "prob": 2.78,
           "divergence": 81.0,
-          "timestamp": "2026-09-02T12:05:11"
+          "timestamp": "2026-09-02T12:10:11"
         },
         "checkpoints": {
           "4h": {
@@ -3013,8 +3013,8 @@
       "historyId": "3ba5d3af2bc3c1e86667b8e0",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:45:34-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 35,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 36,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:45:34-06:00",
@@ -3161,7 +3161,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -3219,24 +3219,24 @@
       "pickCategory": "VALUE",
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
-      "stake": 2.0,
-      "modelProb": 54.35,
+      "stake": 1.5,
+      "modelProb": 53.3,
       "fairProb": 50.0,
-      "flowAdjustment": 4.35,
+      "flowAdjustment": 3.3,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 52.38,
-      "modelEdge": 1.97,
-      "ev": 3.76,
+      "modelEdge": 0.92,
+      "ev": 1.75,
       "coherence": null,
       "whale": false,
-      "handlePct": 67.0,
+      "handlePct": 60.0,
       "betsPct": 38.0,
-      "divergence": 29.0,
-      "signedDivergence": 29.0,
-      "reason": "SHARP VS PUBLIC. 9 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 22.0,
+      "signedDivergence": 22.0,
+      "reason": "SHARP VS PUBLIC. 10 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-03",
       "time": "17:00",
       "iso": "2026-09-03T17:00:00",
@@ -3485,6 +3485,13 @@
           "betsPct": 38.0,
           "handlePct": 67.0,
           "odds": "-110"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 38.0,
+          "handlePct": 60.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -3525,13 +3532,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 9,
+      "freeReleaseRank": 11,
       "publicationTier": "FREE_RELEASE",
       "historyId": "699bf7506de437154490d757",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:50:13-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 34,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 35,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:50:13-06:00",
@@ -3688,13 +3695,32 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T16:25:10-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-110",
+          "stake": 1.5,
+          "modelProb": 53.3,
+          "modelEdge": 0.92,
+          "ev": 1.75,
+          "betsPct": 38.0,
+          "handlePct": 60.0,
+          "signedDivergence": 22.0,
+          "marketSignal": "SHARP_VS_PUBLIC",
+          "marketSignals": [
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -3766,22 +3792,15 @@
       "ev": 55.93,
       "coherence": null,
       "whale": true,
-      "handlePct": 87.0,
+      "handlePct": 86.0,
       "betsPct": 12.0,
-      "divergence": 75.0,
-      "signedDivergence": 75.0,
-      "reason": "SMART MONEY. 20 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 74.0,
+      "signedDivergence": 74.0,
+      "reason": "SMART MONEY. 21 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-03",
       "time": "17:00",
       "iso": "2026-09-03T17:00:00",
       "history": [
-        {
-          "time": "12:05",
-          "timestamp": "2026-09-02T12:05:11",
-          "betsPct": 8.0,
-          "handlePct": 98.0,
-          "odds": "+750"
-        },
         {
           "time": "12:10",
           "timestamp": "2026-09-02T12:10:11",
@@ -5167,6 +5186,13 @@
           "betsPct": 12.0,
           "handlePct": 87.0,
           "odds": "+650"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 12.0,
+          "handlePct": 86.0,
+          "odds": "+650"
         }
       ],
       "clv": {
@@ -5174,7 +5200,7 @@
           "odds": "+750",
           "prob": 11.76,
           "divergence": 90.0,
-          "timestamp": "2026-09-02T12:05:11"
+          "timestamp": "2026-09-02T12:10:11"
         },
         "checkpoints": {
           "4h": {
@@ -5212,8 +5238,8 @@
       "historyId": "a2c1e4759201d06e7f1cb87c",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:45:34-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 35,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 36,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:45:34-06:00",
@@ -5334,13 +5360,33 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T16:25:10-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+650",
+          "stake": 2.5,
+          "modelProb": 20.79,
+          "modelEdge": 7.46,
+          "ev": 55.93,
+          "betsPct": 12.0,
+          "handlePct": 86.0,
+          "signedDivergence": 74.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -5400,22 +5446,22 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.5,
-      "modelProb": 56.15,
+      "modelProb": 56.3,
       "fairProb": 50.0,
-      "flowAdjustment": 6.15,
+      "flowAdjustment": 6.3,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 52.38,
-      "modelEdge": 3.77,
-      "ev": 7.2,
+      "modelEdge": 3.92,
+      "ev": 7.48,
       "coherence": "contradictoria",
       "whale": false,
       "handlePct": 72.0,
-      "betsPct": 31.0,
-      "divergence": 41.0,
-      "signedDivergence": 41.0,
+      "betsPct": 30.0,
+      "divergence": 42.0,
+      "signedDivergence": 42.0,
       "reason": "SMART MONEY. la cuota se movió en contra de la dirección del dinero, coherencia contradictoria.",
       "date": "2026-09-03",
       "time": "17:00",
@@ -5707,6 +5753,13 @@
           "betsPct": 31.0,
           "handlePct": 72.0,
           "odds": "-110"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 30.0,
+          "handlePct": 72.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -5752,8 +5805,8 @@
       "historyId": "ac327695bec653263f47c8cc",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:50:13-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 34,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 35,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:50:13-06:00",
@@ -5874,13 +5927,33 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T16:25:10-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "-110",
+          "stake": 2.5,
+          "modelProb": 56.3,
+          "modelEdge": 3.92,
+          "ev": 7.48,
+          "betsPct": 30.0,
+          "handlePct": 72.0,
+          "signedDivergence": 42.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -5961,13 +6034,6 @@
       "time": "17:00",
       "iso": "2026-09-03T17:00:00",
       "history": [
-        {
-          "time": "12:05",
-          "timestamp": "2026-09-02T12:05:11",
-          "betsPct": 30.0,
-          "handlePct": 81.0,
-          "odds": "-108"
-        },
         {
           "time": "12:10",
           "timestamp": "2026-09-02T12:10:11",
@@ -7353,6 +7419,13 @@
           "betsPct": 32.0,
           "handlePct": 77.0,
           "odds": "-110"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 32.0,
+          "handlePct": 77.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -7360,7 +7433,7 @@
           "odds": "-108",
           "prob": 51.92,
           "divergence": 51.0,
-          "timestamp": "2026-09-02T12:05:11"
+          "timestamp": "2026-09-02T12:10:11"
         },
         "checkpoints": {
           "4h": {
@@ -7398,8 +7471,8 @@
       "historyId": "b05dffbcaeba9ba7ac50bb2e",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:45:34-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 35,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 36,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:45:34-06:00",
@@ -7586,7 +7659,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -7632,7 +7705,7 @@
       "market": "Total",
       "pick": "Over 58.5",
       "odds": "-115",
-      "action": "🟢 PREMIUM",
+      "action": "🟢 VALUE PICK",
       "actionKey": "bet",
       "pattern": "🐋 SMART MONEY",
       "trend": "🐋 SMART MONEY",
@@ -7641,27 +7714,27 @@
       "marketSignals": [
         "SMART_MONEY"
       ],
-      "pickCategory": "PREMIUM",
-      "priority": "🔥 AHORA",
-      "priorityKey": "now",
+      "pickCategory": "VALUE",
+      "priority": "⚡ PRONTO",
+      "priorityKey": "soon",
       "stake": 2.5,
-      "modelProb": 56.78,
+      "modelProb": 56.63,
       "fairProb": 51.08,
-      "flowAdjustment": 5.7,
+      "flowAdjustment": 5.55,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 53.49,
-      "modelEdge": 3.29,
-      "ev": 6.15,
+      "modelEdge": 3.14,
+      "ev": 5.87,
       "coherence": null,
       "whale": false,
       "handlePct": 88.0,
-      "betsPct": 50.0,
-      "divergence": 38.0,
-      "signedDivergence": 38.0,
-      "reason": "SMART MONEY. 17 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 51.0,
+      "divergence": 37.0,
+      "signedDivergence": 37.0,
+      "reason": "SMART MONEY. 18 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-03",
       "time": "17:00",
       "iso": "2026-09-03T17:00:00",
@@ -8477,6 +8550,13 @@
           "betsPct": 50.0,
           "handlePct": 88.0,
           "odds": "-115"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 51.0,
+          "handlePct": 88.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -8516,14 +8596,14 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freeRelease": false,
-      "freeReleaseRank": null,
-      "publicationTier": "PREMIUM_ONLY",
+      "freeRelease": true,
+      "freeReleaseRank": 1,
+      "publicationTier": "FREE_RELEASE",
       "historyId": "b312871b87e66e0fe60ea3a8",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:45:34-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 35,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 36,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:45:34-06:00",
@@ -8697,13 +8777,32 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T16:25:10-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-115",
+          "stake": 2.5,
+          "modelProb": 56.63,
+          "modelEdge": 3.14,
+          "ev": 5.87,
+          "betsPct": 51.0,
+          "handlePct": 88.0,
+          "signedDivergence": 37.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -10233,7 +10332,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -10304,22 +10403,15 @@
       "ev": 124.64,
       "coherence": null,
       "whale": true,
-      "handlePct": 88.0,
+      "handlePct": 89.0,
       "betsPct": 13.0,
-      "divergence": 75.0,
-      "signedDivergence": 75.0,
-      "reason": "SMART MONEY. 18 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 76.0,
+      "signedDivergence": 76.0,
+      "reason": "SMART MONEY. 19 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-03",
       "time": "17:00",
       "iso": "2026-09-03T17:00:00",
       "history": [
-        {
-          "time": "12:05",
-          "timestamp": "2026-09-02T12:05:11",
-          "betsPct": 6.0,
-          "handlePct": 95.0,
-          "odds": "+1500"
-        },
         {
           "time": "12:10",
           "timestamp": "2026-09-02T12:10:11",
@@ -11656,6 +11748,13 @@
           "betsPct": 13.0,
           "handlePct": 88.0,
           "odds": "+1500"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 13.0,
+          "handlePct": 89.0,
+          "odds": "+1500"
         }
       ],
       "clv": {
@@ -11663,7 +11762,7 @@
           "odds": "+1500",
           "prob": 6.25,
           "divergence": 89.0,
-          "timestamp": "2026-09-02T12:05:11"
+          "timestamp": "2026-09-02T12:10:11"
         },
         "checkpoints": {
           "4h": {
@@ -11701,8 +11800,8 @@
       "historyId": "fb7f587613dbf041c11b84fe",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:45:34-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 35,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 36,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:45:34-06:00",
@@ -11823,13 +11922,33 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T16:25:10-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+1500",
+          "stake": 2.5,
+          "modelProb": 14.04,
+          "modelEdge": 7.79,
+          "ev": 124.64,
+          "betsPct": 13.0,
+          "handlePct": 89.0,
+          "signedDivergence": 76.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -12186,7 +12305,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:23+00:00",
+        "checkedAt": "2026-09-03T22:25:17+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -12652,7 +12771,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -13116,7 +13235,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -13380,7 +13499,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -13840,7 +13959,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -14263,7 +14382,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -15208,7 +15327,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -15315,6 +15434,13 @@
           "betsPct": 61.0,
           "handlePct": 92.0,
           "odds": "-110"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 61.0,
+          "handlePct": 92.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -15341,13 +15467,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 4,
+      "freeReleaseRank": 6,
       "publicationTier": "FREE_RELEASE",
       "historyId": "8a85865f1cde1da906af65ea",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T16:10:11-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 3,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 4,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T16:10:11-06:00",
@@ -15393,7 +15519,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -15453,23 +15579,23 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.5,
-      "modelProb": 56.0,
+      "modelProb": 56.15,
       "fairProb": 50.0,
-      "flowAdjustment": 6.0,
+      "flowAdjustment": 6.15,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 52.38,
-      "modelEdge": 3.62,
-      "ev": 6.91,
+      "modelEdge": 3.77,
+      "ev": 7.2,
       "coherence": null,
       "whale": false,
       "handlePct": 75.0,
-      "betsPct": 35.0,
-      "divergence": 40.0,
-      "signedDivergence": 40.0,
-      "reason": "SMART MONEY. 8 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 34.0,
+      "divergence": 41.0,
+      "signedDivergence": 41.0,
+      "reason": "SMART MONEY. 9 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-03",
       "time": "18:00",
       "iso": "2026-09-03T18:00:00",
@@ -15711,6 +15837,13 @@
           "betsPct": 35.0,
           "handlePct": 75.0,
           "odds": "-110"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 34.0,
+          "handlePct": 75.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -15749,8 +15882,8 @@
       "historyId": "959125e678c70a33965fd8f6",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T13:05:56-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 33,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 34,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T13:05:56-06:00",
@@ -15931,13 +16064,33 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T16:25:10-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "-110",
+          "stake": 2.5,
+          "modelProb": 56.15,
+          "modelEdge": 3.77,
+          "ev": 7.2,
+          "betsPct": 34.0,
+          "handlePct": 75.0,
+          "signedDivergence": 41.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -16690,7 +16843,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -17946,7 +18099,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -18423,7 +18576,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -18496,21 +18649,14 @@
       "coherence": null,
       "whale": true,
       "handlePct": 86.0,
-      "betsPct": 12.0,
-      "divergence": 74.0,
-      "signedDivergence": 74.0,
-      "reason": "SMART MONEY. 21 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 13.0,
+      "divergence": 73.0,
+      "signedDivergence": 73.0,
+      "reason": "SMART MONEY. 22 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-03",
       "time": "19:00",
       "iso": "2026-09-03T19:00:00",
       "history": [
-        {
-          "time": "12:05",
-          "timestamp": "2026-09-02T12:05:11",
-          "betsPct": 10.0,
-          "handlePct": 88.0,
-          "odds": "+1700"
-        },
         {
           "time": "12:10",
           "timestamp": "2026-09-02T12:10:11",
@@ -19889,6 +20035,13 @@
           "betsPct": 12.0,
           "handlePct": 86.0,
           "odds": "+1700"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 13.0,
+          "handlePct": 86.0,
+          "odds": "+1700"
         }
       ],
       "clv": {
@@ -19896,7 +20049,7 @@
           "odds": "+1700",
           "prob": 5.56,
           "divergence": 78.0,
-          "timestamp": "2026-09-02T12:05:11"
+          "timestamp": "2026-09-02T12:10:11"
         },
         "checkpoints": {
           "4h": {
@@ -19920,8 +20073,8 @@
       "historyId": "496dd1b783af1acfda5c1782",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:45:34-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 35,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 36,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:45:34-06:00",
@@ -20102,13 +20255,33 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T16:25:10-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+1700",
+          "stake": 2.5,
+          "modelProb": 13.37,
+          "modelEdge": 7.81,
+          "ev": 140.66,
+          "betsPct": 13.0,
+          "handlePct": 86.0,
+          "signedDivergence": 73.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -20189,13 +20362,6 @@
       "time": "19:00",
       "iso": "2026-09-03T19:00:00",
       "history": [
-        {
-          "time": "12:05",
-          "timestamp": "2026-09-02T12:05:11",
-          "betsPct": 12.0,
-          "handlePct": 89.0,
-          "odds": "+5000"
-        },
         {
           "time": "12:10",
           "timestamp": "2026-09-02T12:10:11",
@@ -21574,6 +21740,13 @@
           "betsPct": 21.0,
           "handlePct": 97.0,
           "odds": "+5000"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 21.0,
+          "handlePct": 97.0,
+          "odds": "+5000"
         }
       ],
       "clv": {
@@ -21581,7 +21754,7 @@
           "odds": "+5000",
           "prob": 1.96,
           "divergence": 77.0,
-          "timestamp": "2026-09-02T12:05:11"
+          "timestamp": "2026-09-02T12:10:11"
         },
         "checkpoints": {
           "4h": {
@@ -21605,8 +21778,8 @@
       "historyId": "7f2341f2fcd8f214e073cf15",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T12:45:34-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 35,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 36,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T12:45:34-06:00",
@@ -21773,7 +21946,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -22236,7 +22409,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -23750,7 +23923,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -25221,7 +25394,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -25575,7 +25748,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -26051,7 +26224,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -26609,7 +26782,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -26661,7 +26834,7 @@
       "sourceEventId": null,
       "market": "Total",
       "pick": "Over 7.5",
-      "odds": "-113",
+      "odds": "-110",
       "action": "🟢 VALUE PICK",
       "actionKey": "bet",
       "pattern": "🐋 SMART MONEY",
@@ -26675,23 +26848,23 @@
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
       "stake": 2.0,
-      "modelProb": 55.15,
-      "fairProb": 50.65,
-      "flowAdjustment": 4.5,
+      "modelProb": 54.46,
+      "fairProb": 50.11,
+      "flowAdjustment": 4.35,
       "modelSource": "propio_devig_divergencia",
-      "lineMove": 0.0,
+      "lineMove": -0.67,
       "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
-      "impliedProb": 53.05,
-      "modelEdge": 2.1,
-      "ev": 3.96,
+      "impliedProb": 52.38,
+      "modelEdge": 2.08,
+      "ev": 3.97,
       "coherence": null,
       "whale": false,
       "handlePct": 98.0,
-      "betsPct": 68.0,
-      "divergence": 30.0,
-      "signedDivergence": 30.0,
-      "reason": "SMART MONEY. historial insuficiente para evaluar coherencia.",
+      "betsPct": 69.0,
+      "divergence": 29.0,
+      "signedDivergence": 29.0,
+      "reason": "SMART MONEY. 2 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-03",
       "time": "20:10",
       "iso": "2026-09-03T20:10:00",
@@ -26716,6 +26889,13 @@
           "betsPct": 68.0,
           "handlePct": 98.0,
           "odds": "-113"
+        },
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-03T16:25:10",
+          "betsPct": 69.0,
+          "handlePct": 98.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -26742,13 +26922,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 7,
+      "freeReleaseRank": 8,
       "publicationTier": "FREE_RELEASE",
       "historyId": "797eaf2ccabe7665c60b0258",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T16:15:12-06:00",
-      "lastQualifiedAt": "2026-09-03T16:20:15-06:00",
-      "qualifiedObservations": 2,
+      "lastQualifiedAt": "2026-09-03T16:25:10-06:00",
+      "qualifiedObservations": 3,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T16:15:12-06:00",
@@ -26768,13 +26948,32 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T16:25:10-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-110",
+          "stake": 2.0,
+          "modelProb": 54.46,
+          "modelEdge": 2.08,
+          "ev": 3.97,
+          "betsPct": 69.0,
+          "handlePct": 98.0,
+          "signedDivergence": 29.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": -0.67
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T22:20:25+00:00",
+        "checkedAt": "2026-09-03T22:25:19+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
