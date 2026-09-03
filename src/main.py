@@ -5,6 +5,7 @@ from pipeline.export import export_all
 from pipeline.settle_history_espn import settle_history
 
 from dashboard.generate_dashboard import generate_dashboard
+from dashboard.generate_results_viewer import generate_results_viewer
 
 from datetime import datetime, timedelta, timezone
 
@@ -62,6 +63,13 @@ def main():
     # La liquidación es independiente: una caída de ESPN nunca debe impedir
     # que el dashboard principal se genere.
     settle_recent_history()
+
+    # Se genera después de ESPN para que results.html ya incluya los últimos
+    # WIN, LOSS, PUSH, VOID y unidades liquidadas.
+    try:
+        generate_results_viewer()
+    except Exception as exc:
+        print(f"[AVISO RESULTADOS] No se pudo generar results.html: {exc}")
 
 
 if __name__ == "__main__":
