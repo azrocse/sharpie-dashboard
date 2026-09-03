@@ -8,9 +8,14 @@ from dashboard.generate_dashboard import generate_dashboard
 from dashboard.generate_results_viewer import generate_results_viewer
 
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 
 CDMX_TIMEZONE = timezone(timedelta(hours=-6))
+BASE_DIR = Path(__file__).resolve().parent.parent
+SETTLEMENT_STATE_DIR = BASE_DIR / "data" / "results"
+BACKFILL_MARKER = SETTLEMENT_STATE_DIR / ".espn_backfill_date"
+BACKFILL_VERSION = "routes-v2"
 
 
 def settle_recent_history(days=2):
@@ -40,6 +45,42 @@ def settle_recent_history(days=2):
     return totals
 
 
+def settle_history_pipeline(days=2):
+    """Liquida todo el rezago una vez al día y lo reciente en cada ejecución."""
+    cdmx_today = datetime.now(CDMX_TIMEZONE).date().isoformat()
+    try:
+        last_backfill = BACKFILL_MARKER.read_text(encoding="utf-8").strip()
+    except OSError:
+        last_backfill = ""
+
+    marker_value = f"{cdmx_today}|{BACKFILL_VERSION}"
+    if last_backfill == marker_value:
+        return settle_recent_history(days=days)
+
+    print("[ESPN] Iniciando liquidación del historial pendiente...")
+    try:
+        summary = settle_history()
+    except Exception as exc:
+        print(f"[AVISO ESPN] No se pudo completar el historial: {exc}")
+        return settle_recent_history(days=days)
+
+    outcomes = [
+        f"{key}={summary.get(key, 0)}"
+        for key in ("WIN", "LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "ERROR")
+        if summary.get(key, 0)
+    ]
+    print("[ESPN HISTORIAL] " + (" · ".join(outcomes) if outcomes else "Sin picks pendientes"))
+
+    # Si hubo errores técnicos se vuelve a intentar en la siguiente corrida.
+    if not summary.get("ERROR"):
+        SETTLEMENT_STATE_DIR.mkdir(parents=True, exist_ok=True)
+        temp_marker = BACKFILL_MARKER.with_suffix(".tmp")
+        temp_marker.write_text(marker_value, encoding="utf-8")
+        temp_marker.replace(BACKFILL_MARKER)
+
+    return summary
+
+
 def main():
 
     downloaded = download_all()
@@ -62,7 +103,7 @@ def main():
 
     # La liquidación es independiente: una caída de ESPN nunca debe impedir
     # que el dashboard principal se genere.
-    settle_recent_history()
+    settle_history_pipeline()
 
     # Se genera después de ESPN para que results.html ya incluya los últimos
     # WIN, LOSS, PUSH, VOID y unidades liquidadas.

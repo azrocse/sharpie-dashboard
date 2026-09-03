@@ -903,7 +903,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:10+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.36
+      }
     },
     {
       "id": 267,
@@ -1064,7 +1070,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:10+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.36
+      }
     },
     {
       "id": 264,
@@ -2534,7 +2546,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:11+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 41.79
+      }
     },
     {
       "id": 262,
@@ -3003,7 +3021,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:11+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 41.79
+      }
     },
     {
       "id": 261,
@@ -3325,7 +3349,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:12+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 41.79
+      }
     },
     {
       "id": 254,
@@ -4088,7 +4118,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:12+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 41.79
+      }
     },
     {
       "id": 253,
@@ -4508,7 +4544,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:13+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 41.79
+      }
     },
     {
       "id": 252,
@@ -4879,7 +4921,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:13+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 41.79
+      }
     },
     {
       "id": 246,
@@ -6347,9 +6395,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873298",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Pittsburgh Steelers at Buffalo Bills",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.86
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260827&limit=500",
+        "eventId": "401873298",
+        "eventName": "Pittsburgh Steelers at Buffalo Bills",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "homeScore": 28.0,
+        "awayScore": 27.0,
+        "matchConfidence": 75.86,
+        "notes": "Marcador 27-28",
+        "settledAt": "2026-09-03T04:28:14+00:00"
+      }
     },
     {
       "id": 245,
@@ -7817,9 +7889,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873298",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Pittsburgh Steelers at Buffalo Bills",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.86
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260827&limit=500",
+        "eventId": "401873298",
+        "eventName": "Pittsburgh Steelers at Buffalo Bills",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "homeScore": 28.0,
+        "awayScore": 27.0,
+        "matchConfidence": 75.86,
+        "notes": "Marcador 27-28",
+        "settledAt": "2026-09-03T04:28:14+00:00"
+      }
     },
     {
       "id": 244,
@@ -9287,9 +9383,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873298",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Pittsburgh Steelers at Buffalo Bills",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.86
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260827&limit=500",
+        "eventId": "401873298",
+        "eventName": "Pittsburgh Steelers at Buffalo Bills",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "homeScore": 28.0,
+        "awayScore": 27.0,
+        "matchConfidence": 75.86,
+        "notes": "Margen ajustado -2 con línea -3",
+        "settledAt": "2026-09-03T04:28:14+00:00"
+      }
     },
     {
       "id": 243,
@@ -10757,9 +10877,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873298",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Pittsburgh Steelers at Buffalo Bills",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.86
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260827&limit=500",
+        "eventId": "401873298",
+        "eventName": "Pittsburgh Steelers at Buffalo Bills",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "homeScore": 28.0,
+        "awayScore": 27.0,
+        "matchConfidence": 75.86,
+        "notes": "Margen ajustado 2 con línea +3",
+        "settledAt": "2026-09-03T04:28:14+00:00"
+      }
     },
     {
       "id": 242,
@@ -11275,9 +11419,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873298",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Pittsburgh Steelers at Buffalo Bills",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.86
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260827&limit=500",
+        "eventId": "401873298",
+        "eventName": "Pittsburgh Steelers at Buffalo Bills",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "homeScore": 28.0,
+        "awayScore": 27.0,
+        "matchConfidence": 75.86,
+        "notes": "Total final 55 vs línea 34.5",
+        "settledAt": "2026-09-03T04:28:14+00:00"
+      }
     },
     {
       "id": 241,
@@ -11793,9 +11961,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873298",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Pittsburgh Steelers at Buffalo Bills",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.86
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260827&limit=500",
+        "eventId": "401873298",
+        "eventName": "Pittsburgh Steelers at Buffalo Bills",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "homeScore": 28.0,
+        "awayScore": 27.0,
+        "matchConfidence": 75.86,
+        "notes": "Total final 55 vs línea 34.5",
+        "settledAt": "2026-09-03T04:28:14+00:00"
+      }
     },
     {
       "id": 240,
@@ -13258,7 +13450,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.97
+      }
     },
     {
       "id": 239,
@@ -14721,7 +14919,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.97
+      }
     },
     {
       "id": 238,
@@ -16184,7 +16388,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.97
+      }
     },
     {
       "id": 237,
@@ -17353,7 +17563,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.97
+      }
     },
     {
       "id": 236,
@@ -18816,7 +19032,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.97
+      }
     },
     {
       "id": 235,
@@ -20279,7 +20501,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.97
+      }
     },
     {
       "id": 234,
@@ -21742,7 +21970,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 233,
@@ -23205,7 +23439,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 232,
@@ -24108,7 +24348,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 231,
@@ -25011,7 +25257,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 230,
@@ -25480,7 +25732,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 229,
@@ -25949,7 +26207,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 228,
@@ -27412,7 +27676,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 227,
@@ -28875,7 +29145,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 226,
@@ -30338,7 +30614,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 225,
@@ -31801,7 +32083,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 224,
@@ -33264,7 +33552,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 223,
@@ -34727,7 +35021,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 222,
@@ -36197,7 +36497,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 42.11
+      }
     },
     {
       "id": 219,
@@ -36666,7 +36972,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:14+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 42.11
+      }
     },
     {
       "id": 212,
@@ -37135,7 +37447,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:15+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 47.46
+      }
     },
     {
       "id": 211,
@@ -37604,7 +37922,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:15+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 47.46
+      }
     },
     {
       "id": 210,
@@ -38505,9 +38829,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873302",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Baltimore Ravens",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873302",
+        "eventName": "Washington Commanders at Baltimore Ravens",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 41.0,
+        "awayScore": 3.0,
+        "matchConfidence": 75.76,
+        "notes": "Marcador 3-41",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 209,
@@ -39408,9 +39756,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873302",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Baltimore Ravens",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873302",
+        "eventName": "Washington Commanders at Baltimore Ravens",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 41.0,
+        "awayScore": 3.0,
+        "matchConfidence": 75.76,
+        "notes": "Marcador 3-41",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 208,
@@ -39912,9 +40284,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873302",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Baltimore Ravens",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.381,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873302",
+        "eventName": "Washington Commanders at Baltimore Ravens",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 41.0,
+        "awayScore": 3.0,
+        "matchConfidence": 75.76,
+        "notes": "Margen ajustado 34.5 con línea -3.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 207,
@@ -40416,9 +40812,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873302",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Baltimore Ravens",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873302",
+        "eventName": "Washington Commanders at Baltimore Ravens",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 41.0,
+        "awayScore": 3.0,
+        "matchConfidence": 75.76,
+        "notes": "Margen ajustado -34.5 con línea +3.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 206,
@@ -41319,9 +41739,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873302",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Baltimore Ravens",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873302",
+        "eventName": "Washington Commanders at Baltimore Ravens",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 41.0,
+        "awayScore": 3.0,
+        "matchConfidence": 75.76,
+        "notes": "Total final 44 vs línea 34.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 205,
@@ -42222,9 +42666,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873302",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Baltimore Ravens",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873302",
+        "eventName": "Washington Commanders at Baltimore Ravens",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 41.0,
+        "awayScore": 3.0,
+        "matchConfidence": 75.76,
+        "notes": "Total final 44 vs línea 34.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 204,
@@ -43636,9 +44104,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873304",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Miami Dolphins",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 84.21
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873304",
+        "eventName": "Atlanta Falcons at Miami Dolphins",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 12.0,
+        "awayScore": 17.0,
+        "matchConfidence": 84.21,
+        "notes": "Marcador 17-12",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 203,
@@ -45050,9 +45542,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873304",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Miami Dolphins",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 84.21
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.578,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873304",
+        "eventName": "Atlanta Falcons at Miami Dolphins",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 12.0,
+        "awayScore": 17.0,
+        "matchConfidence": 84.21,
+        "notes": "Marcador 17-12",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 202,
@@ -46051,9 +46567,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873304",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Miami Dolphins",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 84.21
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.8696,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873304",
+        "eventName": "Atlanta Falcons at Miami Dolphins",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 12.0,
+        "awayScore": 17.0,
+        "matchConfidence": 84.21,
+        "notes": "Margen ajustado 1.5 con línea -3.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 201,
@@ -47052,9 +47592,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873304",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Miami Dolphins",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 84.21
+      },
+      "needsSettlement": false,
+      "profitUnits": -3.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873304",
+        "eventName": "Atlanta Falcons at Miami Dolphins",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 12.0,
+        "awayScore": 17.0,
+        "matchConfidence": 84.21,
+        "notes": "Margen ajustado -1.5 con línea +3.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 200,
@@ -48466,9 +49030,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873304",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Miami Dolphins",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 84.21
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873304",
+        "eventName": "Atlanta Falcons at Miami Dolphins",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 12.0,
+        "awayScore": 17.0,
+        "matchConfidence": 84.21,
+        "notes": "Total final 29 vs línea 36.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 199,
@@ -49880,9 +50468,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873304",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Miami Dolphins",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 84.21
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873304",
+        "eventName": "Atlanta Falcons at Miami Dolphins",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 12.0,
+        "awayScore": 17.0,
+        "matchConfidence": 84.21,
+        "notes": "Total final 29 vs línea 36.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 198,
@@ -50503,9 +51115,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873307",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Houston Texans at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873307",
+        "eventName": "Houston Texans at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 16.0,
+        "awayScore": 13.0,
+        "matchConfidence": 79.31,
+        "notes": "Marcador 13-16",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 197,
@@ -51126,9 +51762,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873307",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Houston Texans at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873307",
+        "eventName": "Houston Texans at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 16.0,
+        "awayScore": 13.0,
+        "matchConfidence": 79.31,
+        "notes": "Marcador 13-16",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 196,
@@ -51749,9 +52409,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873307",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Houston Texans at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873307",
+        "eventName": "Houston Texans at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 16.0,
+        "awayScore": 13.0,
+        "matchConfidence": 79.31,
+        "notes": "Margen ajustado -4.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 195,
@@ -52372,9 +53056,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873307",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Houston Texans at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873307",
+        "eventName": "Houston Texans at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 16.0,
+        "awayScore": 13.0,
+        "matchConfidence": 79.31,
+        "notes": "Margen ajustado 4.5 con línea +1.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 194,
@@ -52995,9 +53703,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873307",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Houston Texans at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873307",
+        "eventName": "Houston Texans at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 16.0,
+        "awayScore": 13.0,
+        "matchConfidence": 79.31,
+        "notes": "Total final 29 vs línea 36.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 193,
@@ -53618,9 +54350,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873307",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Houston Texans at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401873307",
+        "eventName": "Houston Texans at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 16.0,
+        "awayScore": 13.0,
+        "matchConfidence": 79.31,
+        "notes": "Total final 29 vs línea 36.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 192,
@@ -54292,7 +55048,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.39
+      }
     },
     {
       "id": 191,
@@ -54964,7 +55726,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.39
+      }
     },
     {
       "id": 190,
@@ -55636,7 +56404,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.39
+      }
     },
     {
       "id": 189,
@@ -56308,7 +57082,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.39
+      }
     },
     {
       "id": 188,
@@ -56980,7 +57760,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.39
+      }
     },
     {
       "id": 187,
@@ -57652,7 +58438,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.39
+      }
     },
     {
       "id": 186,
@@ -58275,7 +59067,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.57
+      }
     },
     {
       "id": 185,
@@ -58898,7 +59696,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.57
+      }
     },
     {
       "id": 184,
@@ -59521,7 +60325,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.57
+      }
     },
     {
       "id": 183,
@@ -60144,7 +60954,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.57
+      }
     },
     {
       "id": 182,
@@ -60767,7 +61583,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.57
+      }
     },
     {
       "id": 181,
@@ -61390,7 +62212,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 69.57
+      }
     },
     {
       "id": 180,
@@ -62438,9 +63266,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874048",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New Orleans Saints at Dallas Cowboys",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874048",
+        "eventName": "New Orleans Saints at Dallas Cowboys",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 24.0,
+        "awayScore": 27.0,
+        "matchConfidence": 73.68,
+        "notes": "Marcador 27-24",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 179,
@@ -63488,9 +64340,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874048",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New Orleans Saints at Dallas Cowboys",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.2,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874048",
+        "eventName": "New Orleans Saints at Dallas Cowboys",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 24.0,
+        "awayScore": 27.0,
+        "matchConfidence": 73.68,
+        "notes": "Marcador 27-24",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 178,
@@ -63614,9 +64490,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874048",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New Orleans Saints at Dallas Cowboys",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874048",
+        "eventName": "New Orleans Saints at Dallas Cowboys",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 24.0,
+        "awayScore": 27.0,
+        "matchConfidence": 73.68,
+        "notes": "Margen ajustado -5.5 con línea -2.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 177,
@@ -63740,9 +64640,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874048",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New Orleans Saints at Dallas Cowboys",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874048",
+        "eventName": "New Orleans Saints at Dallas Cowboys",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 24.0,
+        "awayScore": 27.0,
+        "matchConfidence": 73.68,
+        "notes": "Margen ajustado 5.5 con línea +2.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 175,
@@ -64790,9 +65714,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874048",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New Orleans Saints at Dallas Cowboys",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874048",
+        "eventName": "New Orleans Saints at Dallas Cowboys",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 24.0,
+        "awayScore": 27.0,
+        "matchConfidence": 73.68,
+        "notes": "Total final 51 vs línea 38.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 174,
@@ -65315,9 +66263,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874102",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Green Bay Packers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.6667,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874102",
+        "eventName": "Arizona Cardinals at Green Bay Packers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 42.0,
+        "awayScore": 38.0,
+        "matchConfidence": 77.42,
+        "notes": "Marcador 38-42",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 173,
@@ -65840,9 +66812,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874102",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Green Bay Packers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874102",
+        "eventName": "Arizona Cardinals at Green Bay Packers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 42.0,
+        "awayScore": 38.0,
+        "matchConfidence": 77.42,
+        "notes": "Marcador 38-42",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 172,
@@ -66365,9 +67361,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874102",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Green Bay Packers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874102",
+        "eventName": "Arizona Cardinals at Green Bay Packers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 42.0,
+        "awayScore": 38.0,
+        "matchConfidence": 77.42,
+        "notes": "Margen ajustado 2.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 171,
@@ -66890,9 +67910,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874102",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Green Bay Packers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874102",
+        "eventName": "Arizona Cardinals at Green Bay Packers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 42.0,
+        "awayScore": 38.0,
+        "matchConfidence": 77.42,
+        "notes": "Margen ajustado -2.5 con línea +1.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 170,
@@ -67415,9 +68459,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874102",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Green Bay Packers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9804,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874102",
+        "eventName": "Arizona Cardinals at Green Bay Packers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 42.0,
+        "awayScore": 38.0,
+        "matchConfidence": 77.42,
+        "notes": "Total final 80 vs línea 36.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 169,
@@ -67940,9 +69008,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874102",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Green Bay Packers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260828&limit=500",
+        "eventId": "401874102",
+        "eventName": "Arizona Cardinals at Green Bay Packers",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "homeScore": 42.0,
+        "awayScore": 38.0,
+        "matchConfidence": 77.42,
+        "notes": "Total final 80 vs línea 36.5",
+        "settledAt": "2026-09-03T04:28:16+00:00"
+      }
     },
     {
       "id": 168,
@@ -68565,7 +69657,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 46.43
+      }
     },
     {
       "id": 167,
@@ -69188,7 +70286,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:16+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 46.43
+      }
     },
     {
       "id": 166,
@@ -69475,7 +70579,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:17+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.73
+      }
     },
     {
       "id": 165,
@@ -69762,7 +70872,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:17+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.73
+      }
     },
     {
       "id": 164,
@@ -70385,7 +71501,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:18+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 43.64
+      }
     },
     {
       "id": 163,
@@ -71008,7 +72130,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:18+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 43.64
+      }
     },
     {
       "id": 162,
@@ -71533,7 +72661,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:19+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.0
+      }
     },
     {
       "id": 161,
@@ -72058,7 +73192,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:19+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.0
+      }
     },
     {
       "id": 160,
@@ -72877,7 +74017,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:20+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 51.16
+      }
     },
     {
       "id": 159,
@@ -73696,7 +74842,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:20+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 51.16
+      }
     },
     {
       "id": 158,
@@ -74158,7 +75310,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:21+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 41.38
+      }
     },
     {
       "id": 157,
@@ -74620,7 +75778,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:21+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 41.38
+      }
     },
     {
       "id": 156,
@@ -76090,7 +77254,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:22+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 38.36
+      }
     },
     {
       "id": 155,
@@ -77560,7 +78730,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:22+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 38.36
+      }
     },
     {
       "id": 153,
@@ -78855,7 +80031,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:23+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 45.61
+      }
     },
     {
       "id": 152,
@@ -80325,7 +81507,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:24+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.06
+      }
     },
     {
       "id": 151,
@@ -81795,7 +82983,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:24+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.06
+      }
     },
     {
       "id": 150,
@@ -82656,7 +83850,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:25+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.06
+      }
     },
     {
       "id": 149,
@@ -83517,7 +84717,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:25+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.06
+      }
     },
     {
       "id": 148,
@@ -84378,7 +85584,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:26+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.06
+      }
     },
     {
       "id": 147,
@@ -85239,7 +86451,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:26+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.06
+      }
     },
     {
       "id": 146,
@@ -86709,7 +87927,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:27+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 43.24
+      }
     },
     {
       "id": 145,
@@ -88179,7 +89403,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:27+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 43.24
+      }
     },
     {
       "id": 144,
@@ -89040,7 +90270,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:28+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.29
+      }
     },
     {
       "id": 143,
@@ -89901,7 +91137,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:28+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.29
+      }
     },
     {
       "id": 142,
@@ -91049,7 +92291,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:29+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.29
+      }
     },
     {
       "id": 141,
@@ -92197,7 +93445,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:29+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.29
+      }
     },
     {
       "id": 140,
@@ -93667,7 +94921,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:30+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 60.71
+      }
     },
     {
       "id": 139,
@@ -95137,7 +96397,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:30+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 60.71
+      }
     },
     {
       "id": 138,
@@ -96047,7 +97313,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:31+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 60.71
+      }
     },
     {
       "id": 137,
@@ -96957,7 +98229,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:31+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 60.71
+      }
     },
     {
       "id": 136,
@@ -97965,7 +99243,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:32+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 60.71
+      }
     },
     {
       "id": 135,
@@ -98973,7 +100257,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:32+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 60.71
+      }
     },
     {
       "id": 134,
@@ -100443,7 +101733,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:33+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 37.29
+      }
     },
     {
       "id": 133,
@@ -100814,7 +102110,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:33+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 37.29
+      }
     },
     {
       "id": 132,
@@ -102282,9 +103584,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864577",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.3876,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864577",
+        "eventName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "checkedAt": "2026-09-03T04:28:34+00:00",
+        "homeScore": 33.0,
+        "awayScore": 7.0,
+        "matchConfidence": 79.57,
+        "notes": "Marcador 7-33",
+        "settledAt": "2026-09-03T04:28:34+00:00"
+      }
     },
     {
       "id": 131,
@@ -103752,9 +105078,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864577",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.57
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864577",
+        "eventName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "checkedAt": "2026-09-03T04:28:34+00:00",
+        "homeScore": 33.0,
+        "awayScore": 7.0,
+        "matchConfidence": 79.57,
+        "notes": "Marcador 7-33",
+        "settledAt": "2026-09-03T04:28:34+00:00"
+      }
     },
     {
       "id": 130,
@@ -105222,9 +106572,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864577",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864577",
+        "eventName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "checkedAt": "2026-09-03T04:28:35+00:00",
+        "homeScore": 33.0,
+        "awayScore": 7.0,
+        "matchConfidence": 79.57,
+        "notes": "Margen ajustado 19 con línea -7",
+        "settledAt": "2026-09-03T04:28:35+00:00"
+      }
     },
     {
       "id": 129,
@@ -106692,9 +108066,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864577",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.57
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864577",
+        "eventName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "checkedAt": "2026-09-03T04:28:35+00:00",
+        "homeScore": 33.0,
+        "awayScore": 7.0,
+        "matchConfidence": 79.57,
+        "notes": "Margen ajustado -19 con línea +7",
+        "settledAt": "2026-09-03T04:28:35+00:00"
+      }
     },
     {
       "id": 128,
@@ -108162,9 +109560,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864577",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.57
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864577",
+        "eventName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "checkedAt": "2026-09-03T04:28:36+00:00",
+        "homeScore": 33.0,
+        "awayScore": 7.0,
+        "matchConfidence": 79.57,
+        "notes": "Total final 40 vs línea 46.5",
+        "settledAt": "2026-09-03T04:28:36+00:00"
+      }
     },
     {
       "id": 127,
@@ -109632,9 +111054,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864577",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864577",
+        "eventName": "Jacksonville State Gamecocks at North Dakota State Bison",
+        "checkedAt": "2026-09-03T04:28:37+00:00",
+        "homeScore": 33.0,
+        "awayScore": 7.0,
+        "matchConfidence": 79.57,
+        "notes": "Total final 40 vs línea 46.5",
+        "settledAt": "2026-09-03T04:28:37+00:00"
+      }
     },
     {
       "id": 126,
@@ -110297,9 +111743,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874394",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Tennessee Titans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.47
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260829&limit=500",
+        "eventId": "401874394",
+        "eventName": "Chicago Bears at Tennessee Titans",
+        "checkedAt": "2026-09-03T04:28:37+00:00",
+        "homeScore": 15.0,
+        "awayScore": 24.0,
+        "matchConfidence": 75.47,
+        "notes": "Marcador 24-15",
+        "settledAt": "2026-09-03T04:28:37+00:00"
+      }
     },
     {
       "id": 125,
@@ -110962,9 +112432,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874394",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Tennessee Titans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.47
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.21,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260829&limit=500",
+        "eventId": "401874394",
+        "eventName": "Chicago Bears at Tennessee Titans",
+        "checkedAt": "2026-09-03T04:28:37+00:00",
+        "homeScore": 15.0,
+        "awayScore": 24.0,
+        "matchConfidence": 75.47,
+        "notes": "Marcador 24-15",
+        "settledAt": "2026-09-03T04:28:37+00:00"
+      }
     },
     {
       "id": 124,
@@ -111627,9 +113121,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874394",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Tennessee Titans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.47
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260829&limit=500",
+        "eventId": "401874394",
+        "eventName": "Chicago Bears at Tennessee Titans",
+        "checkedAt": "2026-09-03T04:28:37+00:00",
+        "homeScore": 15.0,
+        "awayScore": 24.0,
+        "matchConfidence": 75.47,
+        "notes": "Margen ajustado -11.5 con línea -2.5",
+        "settledAt": "2026-09-03T04:28:37+00:00"
+      }
     },
     {
       "id": 123,
@@ -112292,9 +113810,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874394",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Tennessee Titans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.47
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9259,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260829&limit=500",
+        "eventId": "401874394",
+        "eventName": "Chicago Bears at Tennessee Titans",
+        "checkedAt": "2026-09-03T04:28:37+00:00",
+        "homeScore": 15.0,
+        "awayScore": 24.0,
+        "matchConfidence": 75.47,
+        "notes": "Margen ajustado 11.5 con línea +2.5",
+        "settledAt": "2026-09-03T04:28:37+00:00"
+      }
     },
     {
       "id": 122,
@@ -112957,9 +114499,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874394",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Tennessee Titans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.47
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.8696,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260829&limit=500",
+        "eventId": "401874394",
+        "eventName": "Chicago Bears at Tennessee Titans",
+        "checkedAt": "2026-09-03T04:28:37+00:00",
+        "homeScore": 15.0,
+        "awayScore": 24.0,
+        "matchConfidence": 75.47,
+        "notes": "Total final 39 vs línea 36.5",
+        "settledAt": "2026-09-03T04:28:37+00:00"
+      }
     },
     {
       "id": 121,
@@ -113622,9 +115188,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401874394",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Tennessee Titans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.47
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260829&limit=500",
+        "eventId": "401874394",
+        "eventName": "Chicago Bears at Tennessee Titans",
+        "checkedAt": "2026-09-03T04:28:37+00:00",
+        "homeScore": 15.0,
+        "awayScore": 24.0,
+        "matchConfidence": 75.47,
+        "notes": "Total final 39 vs línea 36.5",
+        "settledAt": "2026-09-03T04:28:37+00:00"
+      }
     },
     {
       "id": 120,
@@ -114917,9 +116507,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401866408",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.2667,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401866408",
+        "eventName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "checkedAt": "2026-09-03T04:28:37+00:00",
+        "homeScore": 28.0,
+        "awayScore": 17.0,
+        "matchConfidence": 78.57,
+        "notes": "Marcador 17-28",
+        "settledAt": "2026-09-03T04:28:37+00:00"
+      }
     },
     {
       "id": 118,
@@ -116212,9 +117826,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401866408",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401866408",
+        "eventName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "checkedAt": "2026-09-03T04:28:38+00:00",
+        "homeScore": 28.0,
+        "awayScore": 17.0,
+        "matchConfidence": 78.57,
+        "notes": "Margen ajustado 1 con línea -10",
+        "settledAt": "2026-09-03T04:28:38+00:00"
+      }
     },
     {
       "id": 117,
@@ -117507,9 +119145,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401866408",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401866408",
+        "eventName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "checkedAt": "2026-09-03T04:28:38+00:00",
+        "homeScore": 28.0,
+        "awayScore": 17.0,
+        "matchConfidence": 78.57,
+        "notes": "Margen ajustado -1 con línea +10",
+        "settledAt": "2026-09-03T04:28:38+00:00"
+      }
     },
     {
       "id": 116,
@@ -118270,9 +119932,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401866408",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401866408",
+        "eventName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "checkedAt": "2026-09-03T04:28:38+00:00",
+        "homeScore": 28.0,
+        "awayScore": 17.0,
+        "matchConfidence": 78.57,
+        "notes": "Total final 45 vs línea 53.5",
+        "settledAt": "2026-09-03T04:28:38+00:00"
+      }
     },
     {
       "id": 115,
@@ -119033,9 +120719,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401866408",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.8519,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401866408",
+        "eventName": "Sacramento State Hornets at Eastern Michigan Eagles",
+        "checkedAt": "2026-09-03T04:28:39+00:00",
+        "homeScore": 28.0,
+        "awayScore": 17.0,
+        "matchConfidence": 78.57,
+        "notes": "Total final 45 vs línea 53.5",
+        "settledAt": "2026-09-03T04:28:39+00:00"
+      }
     },
     {
       "id": 114,
@@ -120505,7 +122215,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:40+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 50.0
+      }
     },
     {
       "id": 113,
@@ -121975,7 +123691,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:40+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 50.0
+      }
     },
     {
       "id": 112,
@@ -123445,7 +125167,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:41+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 50.0
+      }
     },
     {
       "id": 111,
@@ -124915,7 +126643,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:41+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 50.0
+      }
     },
     {
       "id": 110,
@@ -126385,7 +128119,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:42+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 50.0
+      }
     },
     {
       "id": 109,
@@ -127855,7 +129595,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:28:42+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 50.0
+      }
     },
     {
       "id": 108,
@@ -128861,9 +130607,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864570",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "New Mexico State Aggies at Florida State Seminoles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0154,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864570",
+        "eventName": "New Mexico State Aggies at Florida State Seminoles",
+        "checkedAt": "2026-09-03T04:28:43+00:00",
+        "homeScore": 34.0,
+        "awayScore": 17.0,
+        "matchConfidence": 75.0,
+        "notes": "Marcador 17-34",
+        "settledAt": "2026-09-03T04:28:43+00:00"
+      }
     },
     {
       "id": 107,
@@ -129869,9 +131639,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864570",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "New Mexico State Aggies at Florida State Seminoles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": -4.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864570",
+        "eventName": "New Mexico State Aggies at Florida State Seminoles",
+        "checkedAt": "2026-09-03T04:28:43+00:00",
+        "homeScore": 34.0,
+        "awayScore": 17.0,
+        "matchConfidence": 75.0,
+        "notes": "Marcador 17-34",
+        "settledAt": "2026-09-03T04:28:43+00:00"
+      }
     },
     {
       "id": 106,
@@ -130632,9 +132426,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864570",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "New Mexico State Aggies at Florida State Seminoles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864570",
+        "eventName": "New Mexico State Aggies at Florida State Seminoles",
+        "checkedAt": "2026-09-03T04:28:44+00:00",
+        "homeScore": 34.0,
+        "awayScore": 17.0,
+        "matchConfidence": 75.0,
+        "notes": "Margen ajustado -13.5 con línea -30.5",
+        "settledAt": "2026-09-03T04:28:44+00:00"
+      }
     },
     {
       "id": 105,
@@ -131395,9 +133213,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864570",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "New Mexico State Aggies at Florida State Seminoles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9804,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864570",
+        "eventName": "New Mexico State Aggies at Florida State Seminoles",
+        "checkedAt": "2026-09-03T04:28:44+00:00",
+        "homeScore": 34.0,
+        "awayScore": 17.0,
+        "matchConfidence": 75.0,
+        "notes": "Margen ajustado 13.5 con línea +30.5",
+        "settledAt": "2026-09-03T04:28:44+00:00"
+      }
     },
     {
       "id": 104,
@@ -132305,9 +134147,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864570",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "New Mexico State Aggies at Florida State Seminoles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864570",
+        "eventName": "New Mexico State Aggies at Florida State Seminoles",
+        "checkedAt": "2026-09-03T04:28:44+00:00",
+        "homeScore": 34.0,
+        "awayScore": 17.0,
+        "matchConfidence": 75.0,
+        "notes": "Total final 51 vs línea 53.5",
+        "settledAt": "2026-09-03T04:28:44+00:00"
+      }
     },
     {
       "id": 103,
@@ -133215,9 +135081,33 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401864570",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "New Mexico State Aggies at Florida State Seminoles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260829&limit=500",
+        "eventId": "401864570",
+        "eventName": "New Mexico State Aggies at Florida State Seminoles",
+        "checkedAt": "2026-09-03T04:28:45+00:00",
+        "homeScore": 34.0,
+        "awayScore": 17.0,
+        "matchConfidence": 75.0,
+        "notes": "Total final 51 vs línea 53.5",
+        "settledAt": "2026-09-03T04:28:45+00:00"
+      }
     },
     {
       "id": 102,
@@ -134687,7 +136577,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:45+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.54
+      }
     },
     {
       "id": 101,
@@ -136157,7 +138053,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:45+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.54
+      }
     },
     {
       "id": 100,
@@ -137627,7 +139529,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:46+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.54
+      }
     },
     {
       "id": 99,
@@ -139097,7 +141005,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:46+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.54
+      }
     },
     {
       "id": 98,
@@ -140567,7 +142481,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:46+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.54
+      }
     },
     {
       "id": 97,
@@ -142037,7 +143957,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.54
+      }
     },
     {
       "id": 96,
@@ -143507,7 +145433,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872656",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New England Patriots at Seattle Seahawks",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
+        "eventId": "401872656",
+        "eventName": "New England Patriots at Seattle Seahawks",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.0,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 95,
@@ -144977,7 +146924,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872656",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New England Patriots at Seattle Seahawks",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
+        "eventId": "401872656",
+        "eventName": "New England Patriots at Seattle Seahawks",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.0,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 94,
@@ -146447,7 +148415,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872656",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New England Patriots at Seattle Seahawks",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
+        "eventId": "401872656",
+        "eventName": "New England Patriots at Seattle Seahawks",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.0,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 93,
@@ -147917,7 +149906,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872656",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New England Patriots at Seattle Seahawks",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
+        "eventId": "401872656",
+        "eventName": "New England Patriots at Seattle Seahawks",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.0,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 92,
@@ -149387,7 +151397,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872656",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New England Patriots at Seattle Seahawks",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
+        "eventId": "401872656",
+        "eventName": "New England Patriots at Seattle Seahawks",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.0,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 91,
@@ -150857,7 +152888,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872656",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New England Patriots at Seattle Seahawks",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
+        "eventId": "401872656",
+        "eventName": "New England Patriots at Seattle Seahawks",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.0,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 90,
@@ -152327,7 +154379,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.18
+      }
     },
     {
       "id": 89,
@@ -153797,7 +155855,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.18
+      }
     },
     {
       "id": 88,
@@ -155267,7 +157331,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.18
+      }
     },
     {
       "id": 87,
@@ -156737,7 +158807,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.18
+      }
     },
     {
       "id": 86,
@@ -158207,7 +160283,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.18
+      }
     },
     {
       "id": 85,
@@ -159677,7 +161759,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 58.18
+      }
     },
     {
       "id": 84,
@@ -161147,7 +163235,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.37
+      }
     },
     {
       "id": 83,
@@ -162617,7 +164711,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.37
+      }
     },
     {
       "id": 82,
@@ -164087,7 +166187,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.37
+      }
     },
     {
       "id": 81,
@@ -165557,7 +167663,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.37
+      }
     },
     {
       "id": 80,
@@ -166222,7 +168334,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.37
+      }
     },
     {
       "id": 79,
@@ -166887,7 +169005,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.37
+      }
     },
     {
       "id": 78,
@@ -168357,7 +170481,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872660",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Buffalo Bills at Houston Texans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.43
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872660",
+        "eventName": "Buffalo Bills at Houston Texans",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.43,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 77,
@@ -169827,7 +171972,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872660",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Buffalo Bills at Houston Texans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.43
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872660",
+        "eventName": "Buffalo Bills at Houston Texans",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.43,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 76,
@@ -171297,7 +173463,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872660",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Buffalo Bills at Houston Texans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.43
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872660",
+        "eventName": "Buffalo Bills at Houston Texans",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.43,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 75,
@@ -172767,7 +174954,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872660",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Buffalo Bills at Houston Texans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.43
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872660",
+        "eventName": "Buffalo Bills at Houston Texans",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.43,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 74,
@@ -174237,7 +176445,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872660",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Buffalo Bills at Houston Texans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.43
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872660",
+        "eventName": "Buffalo Bills at Houston Texans",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.43,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 73,
@@ -175707,7 +177936,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872660",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Buffalo Bills at Houston Texans",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.43
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872660",
+        "eventName": "Buffalo Bills at Houston Texans",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.43,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 72,
@@ -177177,7 +179427,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.74
+      }
     },
     {
       "id": 71,
@@ -178647,7 +180903,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.74
+      }
     },
     {
       "id": 70,
@@ -180117,7 +182379,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.74
+      }
     },
     {
       "id": 69,
@@ -181587,7 +183855,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.74
+      }
     },
     {
       "id": 68,
@@ -183057,7 +185331,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.74
+      }
     },
     {
       "id": 67,
@@ -184527,7 +186807,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.74
+      }
     },
     {
       "id": 66,
@@ -185997,7 +188283,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872661",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872661",
+        "eventName": "Chicago Bears at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 65,
@@ -187467,7 +189774,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872661",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872661",
+        "eventName": "Chicago Bears at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 64,
@@ -188937,7 +191265,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872661",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872661",
+        "eventName": "Chicago Bears at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 63,
@@ -190407,7 +192756,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872661",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872661",
+        "eventName": "Chicago Bears at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 62,
@@ -191877,7 +194247,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872661",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872661",
+        "eventName": "Chicago Bears at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 61,
@@ -193347,7 +195738,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872661",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Carolina Panthers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872661",
+        "eventName": "Chicago Bears at Carolina Panthers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 60,
@@ -194817,7 +197229,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 68.97
+      }
     },
     {
       "id": 59,
@@ -196287,7 +198705,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 68.97
+      }
     },
     {
       "id": 58,
@@ -197757,7 +200181,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 68.97
+      }
     },
     {
       "id": 57,
@@ -199227,7 +201657,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 68.97
+      }
     },
     {
       "id": 56,
@@ -200697,7 +203133,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 68.97
+      }
     },
     {
       "id": 55,
@@ -202167,7 +204609,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 68.97
+      }
     },
     {
       "id": 54,
@@ -203637,7 +206085,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872925",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.63
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872925",
+        "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 74.63,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 53,
@@ -205107,7 +207576,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872925",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.63
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872925",
+        "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 74.63,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 52,
@@ -206577,7 +209067,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872925",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.63
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872925",
+        "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 74.63,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 51,
@@ -208047,7 +210558,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872925",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.63
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872925",
+        "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 74.63,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 50,
@@ -209517,7 +212049,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872925",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.63
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872925",
+        "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 74.63,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 49,
@@ -210987,7 +213540,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872925",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.63
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872925",
+        "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 74.63,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 48,
@@ -212457,7 +215031,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872658",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Pittsburgh Steelers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872658",
+        "eventName": "Atlanta Falcons at Pittsburgh Steelers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.42,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 47,
@@ -213927,7 +216522,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872658",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Pittsburgh Steelers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872658",
+        "eventName": "Atlanta Falcons at Pittsburgh Steelers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.42,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 46,
@@ -215397,7 +218013,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872658",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Pittsburgh Steelers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872658",
+        "eventName": "Atlanta Falcons at Pittsburgh Steelers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.42,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 45,
@@ -216867,7 +219504,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872658",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Pittsburgh Steelers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872658",
+        "eventName": "Atlanta Falcons at Pittsburgh Steelers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.42,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 44,
@@ -218337,7 +220995,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872658",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Pittsburgh Steelers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872658",
+        "eventName": "Atlanta Falcons at Pittsburgh Steelers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.42,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 43,
@@ -219807,7 +222486,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872658",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Atlanta Falcons at Pittsburgh Steelers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.42
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872658",
+        "eventName": "Atlanta Falcons at Pittsburgh Steelers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.42,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 42,
@@ -221277,7 +223977,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.59
+      }
     },
     {
       "id": 41,
@@ -222747,7 +225453,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.59
+      }
     },
     {
       "id": 40,
@@ -224217,7 +226929,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.59
+      }
     },
     {
       "id": 39,
@@ -225687,7 +228405,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.59
+      }
     },
     {
       "id": 38,
@@ -227157,7 +229881,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.59
+      }
     },
     {
       "id": 37,
@@ -228627,7 +231357,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.59
+      }
     },
     {
       "id": 36,
@@ -230097,7 +232833,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872926",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872926",
+        "eventName": "Arizona Cardinals at Los Angeles Chargers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.76,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 35,
@@ -231567,7 +234324,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872926",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872926",
+        "eventName": "Arizona Cardinals at Los Angeles Chargers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.76,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 34,
@@ -233037,7 +235815,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872926",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872926",
+        "eventName": "Arizona Cardinals at Los Angeles Chargers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.76,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 33,
@@ -234507,7 +237306,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872926",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872926",
+        "eventName": "Arizona Cardinals at Los Angeles Chargers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.76,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 31,
@@ -235977,7 +238797,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872926",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.76
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872926",
+        "eventName": "Arizona Cardinals at Los Angeles Chargers",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 75.76,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 30,
@@ -237447,7 +240288,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872929",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Philadelphia Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.46
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872929",
+        "eventName": "Washington Commanders at Philadelphia Eagles",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 72.46,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 29,
@@ -238917,7 +241779,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872929",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Philadelphia Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.46
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872929",
+        "eventName": "Washington Commanders at Philadelphia Eagles",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 72.46,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 28,
@@ -240387,7 +243270,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872929",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Philadelphia Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.46
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872929",
+        "eventName": "Washington Commanders at Philadelphia Eagles",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 72.46,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 27,
@@ -241857,7 +244761,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872929",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Philadelphia Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.46
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872929",
+        "eventName": "Washington Commanders at Philadelphia Eagles",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 72.46,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 26,
@@ -243327,7 +246252,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872929",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Philadelphia Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.46
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872929",
+        "eventName": "Washington Commanders at Philadelphia Eagles",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 72.46,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 25,
@@ -244797,7 +247743,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872929",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Washington Commanders at Philadelphia Eagles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.46
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872929",
+        "eventName": "Washington Commanders at Philadelphia Eagles",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 72.46,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 24,
@@ -246267,7 +249234,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872928",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Las Vegas Raiders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872928",
+        "eventName": "Miami Dolphins at Las Vegas Raiders",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 79.31,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 23,
@@ -247737,7 +250725,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872928",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Las Vegas Raiders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872928",
+        "eventName": "Miami Dolphins at Las Vegas Raiders",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 79.31,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 22,
@@ -249207,7 +252216,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872928",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Las Vegas Raiders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872928",
+        "eventName": "Miami Dolphins at Las Vegas Raiders",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 79.31,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 21,
@@ -250677,7 +253707,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872928",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Las Vegas Raiders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872928",
+        "eventName": "Miami Dolphins at Las Vegas Raiders",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 79.31,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 20,
@@ -252147,7 +255198,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872928",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Las Vegas Raiders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872928",
+        "eventName": "Miami Dolphins at Las Vegas Raiders",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 79.31,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 19,
@@ -253617,7 +256689,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872928",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Las Vegas Raiders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 79.31
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872928",
+        "eventName": "Miami Dolphins at Las Vegas Raiders",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 79.31,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 18,
@@ -255087,7 +258180,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872927",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Green Bay Packers at Minnesota Vikings",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.33
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872927",
+        "eventName": "Green Bay Packers at Minnesota Vikings",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.33,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 17,
@@ -256557,7 +259671,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872927",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Green Bay Packers at Minnesota Vikings",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.33
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872927",
+        "eventName": "Green Bay Packers at Minnesota Vikings",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.33,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 16,
@@ -258027,7 +261162,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872927",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Green Bay Packers at Minnesota Vikings",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.33
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872927",
+        "eventName": "Green Bay Packers at Minnesota Vikings",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.33,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 15,
@@ -259497,7 +262653,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872927",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Green Bay Packers at Minnesota Vikings",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.33
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872927",
+        "eventName": "Green Bay Packers at Minnesota Vikings",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.33,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 14,
@@ -260967,7 +264144,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872927",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Green Bay Packers at Minnesota Vikings",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.33
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872927",
+        "eventName": "Green Bay Packers at Minnesota Vikings",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.33,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 13,
@@ -262437,7 +265635,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": true
+      "freePick": true,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872927",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Green Bay Packers at Minnesota Vikings",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.33
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872927",
+        "eventName": "Green Bay Packers at Minnesota Vikings",
+        "checkedAt": "2026-09-03T04:28:47+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.33,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 12,
@@ -263907,7 +267126,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872930",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Dallas Cowboys at New York Giants",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.78
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872930",
+        "eventName": "Dallas Cowboys at New York Giants",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.78,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 11,
@@ -265377,7 +268617,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872930",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Dallas Cowboys at New York Giants",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.78
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872930",
+        "eventName": "Dallas Cowboys at New York Giants",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.78,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 10,
@@ -266847,7 +270108,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872930",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Dallas Cowboys at New York Giants",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.78
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872930",
+        "eventName": "Dallas Cowboys at New York Giants",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.78,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 9,
@@ -268317,7 +271599,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872930",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Dallas Cowboys at New York Giants",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.78
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872930",
+        "eventName": "Dallas Cowboys at New York Giants",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.78,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 8,
@@ -269787,7 +273090,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872930",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Dallas Cowboys at New York Giants",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.78
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872930",
+        "eventName": "Dallas Cowboys at New York Giants",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.78,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 7,
@@ -271257,7 +274581,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872930",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Dallas Cowboys at New York Giants",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.78
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872930",
+        "eventName": "Dallas Cowboys at New York Giants",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 77.78,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 6,
@@ -272727,7 +276072,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872931",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Kansas City Chiefs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
+        "eventId": "401872931",
+        "eventName": "Denver Broncos at Kansas City Chiefs",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.68,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 5,
@@ -274197,7 +277563,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872931",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Kansas City Chiefs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
+        "eventId": "401872931",
+        "eventName": "Denver Broncos at Kansas City Chiefs",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.68,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 4,
@@ -275667,7 +279054,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872931",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Kansas City Chiefs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
+        "eventId": "401872931",
+        "eventName": "Denver Broncos at Kansas City Chiefs",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.68,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 3,
@@ -277137,7 +280545,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872931",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Kansas City Chiefs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
+        "eventId": "401872931",
+        "eventName": "Denver Broncos at Kansas City Chiefs",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.68,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 2,
@@ -278607,7 +282036,28 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872931",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Kansas City Chiefs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
+        "eventId": "401872931",
+        "eventName": "Denver Broncos at Kansas City Chiefs",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.68,
+        "notes": "Evento aún no finaliza"
+      }
     },
     {
       "id": 1,
@@ -280077,7 +283527,31 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401872931",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Kansas City Chiefs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.68
+      },
+      "settlement": {
+        "status": "PENDING",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
+        "eventId": "401872931",
+        "eventName": "Denver Broncos at Kansas City Chiefs",
+        "checkedAt": "2026-09-03T04:28:48+00:00",
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "matchConfidence": 73.68,
+        "notes": "Evento aún no finaliza"
+      }
     }
-  ]
+  ],
+  "updatedAt": "2026-09-03T04:28:48+00:00",
+  "pendingSettlement": 184,
+  "settledCount": 58
 }

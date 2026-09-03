@@ -56,6 +56,43 @@ LEAGUE_ROUTES = [
     (("nhl",), ("hockey", "nhl")),
 ]
 
+TEAM_ROUTE_HINTS = {
+    ("baseball", "mlb"): (
+        "diamondbacks", "braves", "orioles", "red sox", "cubs", "white sox",
+        "reds", "guardians", "rockies", "tigers", "astros", "royals",
+        "angels", "dodgers", "marlins", "brewers", "twins", "mets",
+        "yankees", "athletics", "phillies", "pirates", "padres", "giants",
+        "mariners", "cardinals", "rays", "rangers", "blue jays", "nationals",
+    ),
+    ("football", "nfl"): (
+        "cardinals", "falcons", "ravens", "bills", "panthers", "bears",
+        "bengals", "browns", "cowboys", "broncos", "lions", "packers",
+        "texans", "colts", "jaguars", "chiefs", "raiders", "chargers",
+        "rams", "dolphins", "vikings", "patriots", "saints", "giants",
+        "jets", "eagles", "steelers", "49ers", "seahawks", "buccaneers",
+        "titans", "commanders",
+    ),
+    ("basketball", "wnba"): (
+        "dream", "sky", "sun", "wings", "valkyries", "fever", "aces",
+        "sparks", "lynx", "liberty", "mercury", "storm", "mystics",
+    ),
+    ("basketball", "nba"): (
+        "hawks", "celtics", "nets", "hornets", "bulls", "cavaliers",
+        "mavericks", "nuggets", "pistons", "warriors", "rockets", "pacers",
+        "clippers", "lakers", "grizzlies", "heat", "bucks", "timberwolves",
+        "pelicans", "knicks", "thunder", "magic", "76ers", "suns",
+        "trail blazers", "kings", "spurs", "raptors", "jazz", "wizards",
+    ),
+    ("hockey", "nhl"): (
+        "ducks", "bruins", "sabres", "flames", "hurricanes", "blackhawks",
+        "avalanche", "blue jackets", "stars", "red wings", "oilers",
+        "panthers", "kings", "wild", "canadiens", "predators", "devils",
+        "islanders", "rangers", "senators", "flyers", "penguins", "sharks",
+        "kraken", "blues", "lightning", "maple leafs", "canucks", "golden knights",
+        "capitals", "jets",
+    ),
+}
+
 
 def normalize(value):
     text = unicodedata.normalize("NFKD", str(value or ""))
@@ -83,6 +120,31 @@ def resolve_route(pick):
         if any(alias in source for alias in aliases):
             return route
     return None
+
+
+def candidate_routes(pick):
+    """Devuelve rutas probables; SPORTS cae en búsqueda multiproveedor ESPN."""
+    direct = resolve_route(pick)
+    if direct:
+        return [direct]
+
+    text = normalize(" ".join(str(pick.get(key) or "") for key in ("game", "away", "home", "market", "pick")))
+    market = normalize(pick.get("market"))
+    inferred = []
+    if "run line" in market:
+        inferred.extend([("baseball", "mlb"), ("baseball", "kbo"), ("baseball", "jpn.1")])
+    elif "puck line" in market:
+        inferred.append(("hockey", "nhl"))
+
+    for route, hints in TEAM_ROUTE_HINTS.items():
+        if any(hint in text for hint in hints):
+            inferred.append(route)
+
+    # Rutas únicas en orden: primero las inferidas y después el catálogo.
+    if inferred:
+        return list(dict.fromkeys(inferred))
+    catalog = [route for _aliases, route in LEAGUE_ROUTES]
+    return list(dict.fromkeys(catalog))
 
 
 class ESPNClient:
@@ -349,21 +411,40 @@ def update_pick_from_espn(pick, client, force=False):
     if settlement.get("status") in FINAL_RESULTS and not force:
         return "SKIPPED_FINAL"
 
-    route = resolve_route(pick)
     checked_at = now_iso()
-    if route is None:
-        settlement.update({"status": "REVIEW", "checkedAt": checked_at, "notes": "Liga sin ruta ESPN configurada"})
-        pick["settlement"] = settlement
-        return "REVIEW"
-
     date_text = pick.get("date") or (pick.get("eventLookup") or {}).get("scheduledAt", "")[:10]
-    response = client.scoreboard(route[0], route[1], date_text)
-    events = response["payload"].get("events") or []
-    event, confidence, error = find_event(pick, events)
-    if event is None:
+    candidates = []
+    request_errors = []
+    stored_id = str((pick.get("eventLookup") or {}).get("eventId") or pick.get("sourceEventId") or "").strip()
+    for route in candidate_routes(pick):
+        try:
+            route_response = client.scoreboard(route[0], route[1], date_text)
+        except Exception as exc:
+            request_errors.append(str(exc))
+            continue
+        for route_event in route_response["payload"].get("events") or []:
+            confidence = event_match_score(pick, route_event)
+            if stored_id and stored_id == str(route_event.get("id") or ""):
+                confidence = 1000.0
+            candidates.append((confidence, route_event, route_response, route))
+
+        # Una liga ya identificada no debe provocar una búsqueda innecesaria.
+        if resolve_route(pick):
+            break
+
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    best = candidates[0] if candidates else None
+    ambiguous = len(candidates) > 1 and best[0] < 1000 and best[0] - candidates[1][0] < 8.0
+    if best is None or best[0] < 72.0 or ambiguous:
+        error = "AMBIGUOUS_MATCH" if ambiguous else "NO_MATCH"
+        if best is None and request_errors:
+            raise RuntimeError(request_errors[0])
+        confidence = best[0] if best else 0.0
         settlement.update({"status": "PENDING" if error == "NO_MATCH" else "REVIEW", "checkedAt": checked_at, "notes": error, "matchConfidence": round(confidence, 2)})
         pick["settlement"] = settlement
         return settlement["status"]
+
+    confidence, event, response, route = best
 
     competitors, _competition = event_competitors(event)
     home_score = competitors.get("home", {}).get("score")

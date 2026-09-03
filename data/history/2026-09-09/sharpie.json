@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-09",
-  "updatedAt": "2026-09-02T22:00:14-06:00",
+  "updatedAt": "2026-09-03T04:37:39+00:00",
   "count": 2,
   "pendingSettlement": 2,
   "picks": [
@@ -50,20 +50,6 @@
       "time": "18:20",
       "iso": "2026-09-09T18:20:00",
       "history": [
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 48.0,
-          "handlePct": 69.0,
-          "odds": "+150"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 49.0,
-          "handlePct": 69.0,
-          "odds": "+150"
-        },
         {
           "time": "05:30",
           "timestamp": "2026-09-02T05:30:10",
@@ -1449,14 +1435,28 @@
           "betsPct": 48.0,
           "handlePct": 73.0,
           "odds": "+145"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 48.0,
+          "handlePct": 73.0,
+          "odds": "+145"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 48.0,
+          "handlePct": 73.0,
+          "odds": "+145"
         }
       ],
       "clv": {
         "opening": {
           "odds": "+150",
           "prob": 40.0,
-          "divergence": 21.0,
-          "timestamp": "2026-09-02T05:20:10"
+          "divergence": 20.0,
+          "timestamp": "2026-09-02T05:30:10"
         },
         "checkpoints": {
           "4h": null,
@@ -1473,8 +1473,8 @@
       "historyId": "c268a1fd374af4a7079abb7e",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T16:40:11-06:00",
-      "lastQualifiedAt": "2026-09-02T22:00:14-06:00",
-      "qualifiedObservations": 45,
+      "lastQualifiedAt": "2026-09-02T22:05:13-06:00",
+      "qualifiedObservations": 47,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T16:40:11-06:00",
@@ -1518,22 +1518,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:39+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
+        "eventId": "401872656",
+        "eventName": "New England Patriots at Seattle Seahawks",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872656",
         "league": "SPORTS",
         "sport": "",
         "away": "NE Patriots",
         "home": "SEA Seahawks",
         "scheduledAt": "2026-09-09T18:20:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New England Patriots at Seattle Seahawks",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -3069,24 +3077,33 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:39+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
+        "eventId": "401872656",
+        "eventName": "New England Patriots at Seattle Seahawks",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872656",
         "league": "SPORTS",
         "sport": "",
         "away": "NE Patriots",
         "home": "SEA Seahawks",
         "scheduledAt": "2026-09-09T18:15:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New England Patriots at Seattle Seahawks",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     }
-  ]
+  ],
+  "settledCount": 0
 }

@@ -97,7 +97,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:29+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.82
+      }
     },
     {
       "id": 135,
@@ -194,7 +200,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:29+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.82
+      }
     },
     {
       "id": 134,
@@ -291,7 +303,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:30+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 39.34
+      }
     },
     {
       "id": 133,
@@ -388,7 +406,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:30+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 39.34
+      }
     },
     {
       "id": 132,
@@ -485,7 +509,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:30+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 39.34
+      }
     },
     {
       "id": 131,
@@ -558,7 +588,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:31+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 46.38
+      }
     },
     {
       "id": 130,
@@ -655,7 +691,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:31+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 45.0
+      }
     },
     {
       "id": 129,
@@ -752,7 +794,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:32+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 45.0
+      }
     },
     {
       "id": 128,
@@ -847,9 +895,33 @@
         }
       ],
       "status": "LIVE",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816357",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Los Angeles Dodgers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.58
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260801&limit=500",
+        "eventId": "401816357",
+        "eventName": "Boston Red Sox at Los Angeles Dodgers",
+        "checkedAt": "2026-09-03T04:14:32+00:00",
+        "homeScore": 2.0,
+        "awayScore": 3.0,
+        "matchConfidence": 74.58,
+        "notes": "Marcador 3-2",
+        "settledAt": "2026-09-03T04:14:32+00:00"
+      }
     },
     {
       "id": 127,
@@ -944,9 +1016,33 @@
         }
       ],
       "status": "LIVE",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816357",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Los Angeles Dodgers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.58
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.989,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260801&limit=500",
+        "eventId": "401816357",
+        "eventName": "Boston Red Sox at Los Angeles Dodgers",
+        "checkedAt": "2026-09-03T04:14:32+00:00",
+        "homeScore": 2.0,
+        "awayScore": 3.0,
+        "matchConfidence": 74.58,
+        "notes": "Marcador 3-2",
+        "settledAt": "2026-09-03T04:14:32+00:00"
+      }
     },
     {
       "id": 126,
@@ -1041,9 +1137,33 @@
         }
       ],
       "status": "LIVE",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816357",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Los Angeles Dodgers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.58
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.1,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260801&limit=500",
+        "eventId": "401816357",
+        "eventName": "Boston Red Sox at Los Angeles Dodgers",
+        "checkedAt": "2026-09-03T04:14:32+00:00",
+        "homeScore": 2.0,
+        "awayScore": 3.0,
+        "matchConfidence": 74.58,
+        "notes": "Margen ajustado -2.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:14:32+00:00"
+      }
     },
     {
       "id": 125,
@@ -1138,9 +1258,33 @@
         }
       ],
       "status": "LIVE",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816357",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Los Angeles Dodgers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.58
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.6993,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260801&limit=500",
+        "eventId": "401816357",
+        "eventName": "Boston Red Sox at Los Angeles Dodgers",
+        "checkedAt": "2026-09-03T04:14:32+00:00",
+        "homeScore": 2.0,
+        "awayScore": 3.0,
+        "matchConfidence": 74.58,
+        "notes": "Margen ajustado 2.5 con línea +1.5",
+        "settledAt": "2026-09-03T04:14:32+00:00"
+      }
     },
     {
       "id": 124,
@@ -1235,9 +1379,33 @@
         }
       ],
       "status": "LIVE",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816357",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Los Angeles Dodgers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.58
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260801&limit=500",
+        "eventId": "401816357",
+        "eventName": "Boston Red Sox at Los Angeles Dodgers",
+        "checkedAt": "2026-09-03T04:14:33+00:00",
+        "homeScore": 2.0,
+        "awayScore": 3.0,
+        "matchConfidence": 74.58,
+        "notes": "Total final 5 vs línea 7",
+        "settledAt": "2026-09-03T04:14:33+00:00"
+      }
     },
     {
       "id": 123,
@@ -1332,9 +1500,33 @@
         }
       ],
       "status": "LIVE",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816357",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Los Angeles Dodgers",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.58
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4902,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260801&limit=500",
+        "eventId": "401816357",
+        "eventName": "Boston Red Sox at Los Angeles Dodgers",
+        "checkedAt": "2026-09-03T04:14:33+00:00",
+        "homeScore": 2.0,
+        "awayScore": 3.0,
+        "matchConfidence": 74.58,
+        "notes": "Total final 5 vs línea 7",
+        "settledAt": "2026-09-03T04:14:33+00:00"
+      }
     },
     {
       "id": 122,
@@ -1407,7 +1599,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:33+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.67
+      }
     },
     {
       "id": 121,
@@ -1480,7 +1678,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:33+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.67
+      }
     },
     {
       "id": 120,
@@ -1577,7 +1781,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:33+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 46.15
+      }
     },
     {
       "id": 119,
@@ -1674,7 +1884,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:34+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 46.15
+      }
     },
     {
       "id": 118,
@@ -1771,7 +1987,13 @@
       "status": "LIVE",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:34+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 46.15
+      }
     },
     {
       "id": 117,
@@ -1868,7 +2090,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:34+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.0
+      }
     },
     {
       "id": 116,
@@ -1965,7 +2193,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:34+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.0
+      }
     },
     {
       "id": 115,
@@ -2062,7 +2296,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:35+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.0
+      }
     },
     {
       "id": 114,
@@ -2159,7 +2399,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:35+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.0
+      }
     },
     {
       "id": 113,
@@ -2256,7 +2502,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:35+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.18
+      }
     },
     {
       "id": 112,
@@ -2353,7 +2605,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:35+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.18
+      }
     },
     {
       "id": 111,
@@ -2450,7 +2708,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:35+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.18
+      }
     },
     {
       "id": 110,
@@ -2547,7 +2811,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:35+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.62
+      }
     },
     {
       "id": 109,
@@ -2644,7 +2914,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:36+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.62
+      }
     },
     {
       "id": 108,
@@ -2741,7 +3017,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:36+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.62
+      }
     },
     {
       "id": 107,
@@ -2838,7 +3120,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:36+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.91
+      }
     },
     {
       "id": 106,
@@ -2935,7 +3223,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:37+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.91
+      }
     },
     {
       "id": 105,
@@ -3008,7 +3302,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:37+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.91
+      }
     },
     {
       "id": 104,
@@ -3105,7 +3405,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:38+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 57.58
+      }
     },
     {
       "id": 103,
@@ -3202,7 +3508,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:38+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 57.58
+      }
     },
     {
       "id": 102,
@@ -3299,7 +3611,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:38+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 57.58
+      }
     },
     {
       "id": 101,
@@ -3372,7 +3690,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:39+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 57.58
+      }
     },
     {
       "id": 100,
@@ -3469,7 +3793,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:39+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.09
+      }
     },
     {
       "id": 99,
@@ -3566,7 +3896,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:39+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.09
+      }
     },
     {
       "id": 98,
@@ -3663,7 +3999,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:40+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.09
+      }
     },
     {
       "id": 97,
@@ -3760,7 +4102,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:40+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.09
+      }
     },
     {
       "id": 96,
@@ -3857,7 +4205,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:40+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 48.89
+      }
     },
     {
       "id": 95,
@@ -3954,7 +4308,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:40+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 48.89
+      }
     },
     {
       "id": 94,
@@ -4051,7 +4411,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:41+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.56
+      }
     },
     {
       "id": 93,
@@ -4148,7 +4514,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:41+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.56
+      }
     },
     {
       "id": 92,
@@ -4245,7 +4617,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:41+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.36
+      }
     },
     {
       "id": 91,
@@ -4342,7 +4720,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:42+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.36
+      }
     },
     {
       "id": 90,
@@ -4439,7 +4823,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:42+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 0.0
+      }
     },
     {
       "id": 89,
@@ -4536,7 +4926,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:42+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 45.9
+      }
     },
     {
       "id": 88,
@@ -4609,7 +5005,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:42+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 45.9
+      }
     },
     {
       "id": 87,
@@ -4706,7 +5108,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:43+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 43.75
+      }
     },
     {
       "id": 86,
@@ -4779,7 +5187,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:43+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.74
+      }
     },
     {
       "id": 85,
@@ -4852,7 +5266,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:43+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.74
+      }
     },
     {
       "id": 84,
@@ -4949,7 +5369,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:44+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.0
+      }
     },
     {
       "id": 83,
@@ -5046,7 +5472,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:44+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 37.33
+      }
     },
     {
       "id": 82,
@@ -5143,7 +5575,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:44+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 37.33
+      }
     },
     {
       "id": 81,
@@ -5240,7 +5678,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:45+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.0
+      }
     },
     {
       "id": 80,
@@ -5337,7 +5781,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:45+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.0
+      }
     },
     {
       "id": 79,
@@ -5434,7 +5884,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:45+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.0
+      }
     },
     {
       "id": 78,
@@ -5529,9 +5985,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857107",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Indiana Fever at Minnesota Lynx",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.47
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.2222,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857107",
+        "eventName": "Indiana Fever at Minnesota Lynx",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 108.0,
+        "awayScore": 100.0,
+        "matchConfidence": 73.47,
+        "notes": "Marcador 100-108",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 77,
@@ -5626,9 +6106,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857107",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Indiana Fever at Minnesota Lynx",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.47
+      },
+      "needsSettlement": false,
+      "profitUnits": -2.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857107",
+        "eventName": "Indiana Fever at Minnesota Lynx",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 108.0,
+        "awayScore": 100.0,
+        "matchConfidence": 73.47,
+        "notes": "Marcador 100-108",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 76,
@@ -5725,7 +6229,29 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857107",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Indiana Fever at Minnesota Lynx",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.47
+      },
+      "needsSettlement": true,
+      "settlement": {
+        "status": "REVIEW",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857107",
+        "eventName": "Indiana Fever at Minnesota Lynx",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 108.0,
+        "awayScore": 100.0,
+        "matchConfidence": 73.47,
+        "notes": "No se pudo identificar el equipo del spread"
+      }
     },
     {
       "id": 75,
@@ -5820,9 +6346,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857107",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Indiana Fever at Minnesota Lynx",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.47
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857107",
+        "eventName": "Indiana Fever at Minnesota Lynx",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 108.0,
+        "awayScore": 100.0,
+        "matchConfidence": 73.47,
+        "notes": "Margen ajustado -2.5 con línea +5.5",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 74,
@@ -5917,9 +6467,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857107",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Indiana Fever at Minnesota Lynx",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.47
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.6087,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857107",
+        "eventName": "Indiana Fever at Minnesota Lynx",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 108.0,
+        "awayScore": 100.0,
+        "matchConfidence": 73.47,
+        "notes": "Total final 208 vs línea 192.5",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 73,
@@ -6014,9 +6588,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857107",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Indiana Fever at Minnesota Lynx",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 73.47
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857107",
+        "eventName": "Indiana Fever at Minnesota Lynx",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 108.0,
+        "awayScore": 100.0,
+        "matchConfidence": 73.47,
+        "notes": "Total final 208 vs línea 192.5",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 72,
@@ -6111,9 +6709,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816365",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Philadelphia Phillies at Baltimore Orioles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.73
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816365",
+        "eventName": "Philadelphia Phillies at Baltimore Orioles",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 0.0,
+        "awayScore": 8.0,
+        "matchConfidence": 72.73,
+        "notes": "Marcador 8-0",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 71,
@@ -6208,9 +6830,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816365",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Philadelphia Phillies at Baltimore Orioles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.73
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.7576,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816365",
+        "eventName": "Philadelphia Phillies at Baltimore Orioles",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 0.0,
+        "awayScore": 8.0,
+        "matchConfidence": 72.73,
+        "notes": "Marcador 8-0",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 70,
@@ -6307,7 +6953,29 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816365",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Philadelphia Phillies at Baltimore Orioles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.73
+      },
+      "needsSettlement": true,
+      "settlement": {
+        "status": "REVIEW",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816365",
+        "eventName": "Philadelphia Phillies at Baltimore Orioles",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 0.0,
+        "awayScore": 8.0,
+        "matchConfidence": 72.73,
+        "notes": "No se pudo identificar el equipo del spread"
+      }
     },
     {
       "id": 69,
@@ -6402,9 +7070,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "PUSH",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816365",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Philadelphia Phillies at Baltimore Orioles",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.73
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.0,
+      "settlement": {
+        "status": "PUSH",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816365",
+        "eventName": "Philadelphia Phillies at Baltimore Orioles",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 0.0,
+        "awayScore": 8.0,
+        "matchConfidence": 72.73,
+        "notes": "Total final 8 vs línea 8",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 68,
@@ -6499,9 +7191,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816367",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "St. Louis Cardinals at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816367",
+        "eventName": "St. Louis Cardinals at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 1.0,
+        "awayScore": 5.0,
+        "matchConfidence": 81.82,
+        "notes": "Marcador 5-1",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 67,
@@ -6596,9 +7312,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816367",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "St. Louis Cardinals at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.4706,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816367",
+        "eventName": "St. Louis Cardinals at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 1.0,
+        "awayScore": 5.0,
+        "matchConfidence": 81.82,
+        "notes": "Marcador 5-1",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 66,
@@ -6693,9 +7433,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816367",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "St. Louis Cardinals at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816367",
+        "eventName": "St. Louis Cardinals at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 1.0,
+        "awayScore": 5.0,
+        "matchConfidence": 81.82,
+        "notes": "Total final 6 vs línea 9",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 65,
@@ -6790,9 +7554,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816363",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Chicago White Sox at Tampa Bay Rays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816363",
+        "eventName": "Chicago White Sox at Tampa Bay Rays",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 1.0,
+        "awayScore": 9.0,
+        "matchConfidence": 75.0,
+        "notes": "Marcador 9-1",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 64,
@@ -6887,9 +7675,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816363",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Chicago White Sox at Tampa Bay Rays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": 3.72,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816363",
+        "eventName": "Chicago White Sox at Tampa Bay Rays",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 1.0,
+        "awayScore": 9.0,
+        "matchConfidence": 75.0,
+        "notes": "Marcador 9-1",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 63,
@@ -6984,9 +7796,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816363",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Chicago White Sox at Tampa Bay Rays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 75.0
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4237,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816363",
+        "eventName": "Chicago White Sox at Tampa Bay Rays",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 1.0,
+        "awayScore": 9.0,
+        "matchConfidence": 75.0,
+        "notes": "Total final 10 vs línea 7.5",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 62,
@@ -7081,9 +7917,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816364",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Miami Marlins at New York Mets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.55
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.8696,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816364",
+        "eventName": "Miami Marlins at New York Mets",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 0.0,
+        "awayScore": 2.0,
+        "matchConfidence": 77.55,
+        "notes": "Marcador 2-0",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 61,
@@ -7178,9 +8038,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816364",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Miami Marlins at New York Mets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.55
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816364",
+        "eventName": "Miami Marlins at New York Mets",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "homeScore": 0.0,
+        "awayScore": 2.0,
+        "matchConfidence": 77.55,
+        "notes": "Total final 2 vs línea 9",
+        "settledAt": "2026-09-03T04:14:46+00:00"
+      }
     },
     {
       "id": 60,
@@ -7277,7 +8161,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:46+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 53.57
+      }
     },
     {
       "id": 59,
@@ -7374,7 +8264,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:47+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 53.57
+      }
     },
     {
       "id": 58,
@@ -7469,9 +8365,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816370",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Texas Rangers at Houston Astros",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 83.02
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9524,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816370",
+        "eventName": "Texas Rangers at Houston Astros",
+        "checkedAt": "2026-09-03T04:14:47+00:00",
+        "homeScore": 7.0,
+        "awayScore": 3.0,
+        "matchConfidence": 83.02,
+        "notes": "Marcador 3-7",
+        "settledAt": "2026-09-03T04:14:47+00:00"
+      }
     },
     {
       "id": 57,
@@ -7566,9 +8486,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816370",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Texas Rangers at Houston Astros",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 83.02
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816370",
+        "eventName": "Texas Rangers at Houston Astros",
+        "checkedAt": "2026-09-03T04:14:47+00:00",
+        "homeScore": 7.0,
+        "awayScore": 3.0,
+        "matchConfidence": 83.02,
+        "notes": "Marcador 3-7",
+        "settledAt": "2026-09-03T04:14:47+00:00"
+      }
     },
     {
       "id": 56,
@@ -7663,9 +8607,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816370",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Texas Rangers at Houston Astros",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 83.02
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.8197,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816370",
+        "eventName": "Texas Rangers at Houston Astros",
+        "checkedAt": "2026-09-03T04:14:47+00:00",
+        "homeScore": 7.0,
+        "awayScore": 3.0,
+        "matchConfidence": 83.02,
+        "notes": "Total final 10 vs línea 8.5",
+        "settledAt": "2026-09-03T04:14:47+00:00"
+      }
     },
     {
       "id": 55,
@@ -7760,9 +8728,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816369",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Chicago Cubs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.51
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816369",
+        "eventName": "New York Yankees at Chicago Cubs",
+        "checkedAt": "2026-09-03T04:14:47+00:00",
+        "homeScore": 1.0,
+        "awayScore": 2.0,
+        "matchConfidence": 74.51,
+        "notes": "Marcador 2-1",
+        "settledAt": "2026-09-03T04:14:47+00:00"
+      }
     },
     {
       "id": 54,
@@ -7857,9 +8849,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816369",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Chicago Cubs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.51
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.7937,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816369",
+        "eventName": "New York Yankees at Chicago Cubs",
+        "checkedAt": "2026-09-03T04:14:47+00:00",
+        "homeScore": 1.0,
+        "awayScore": 2.0,
+        "matchConfidence": 74.51,
+        "notes": "Marcador 2-1",
+        "settledAt": "2026-09-03T04:14:47+00:00"
+      }
     },
     {
       "id": 53,
@@ -7954,9 +8970,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816369",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Chicago Cubs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.51
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260802&limit=500",
+        "eventId": "401816369",
+        "eventName": "New York Yankees at Chicago Cubs",
+        "checkedAt": "2026-09-03T04:14:47+00:00",
+        "homeScore": 1.0,
+        "awayScore": 2.0,
+        "matchConfidence": 74.51,
+        "notes": "Total final 3 vs línea 6.5",
+        "settledAt": "2026-09-03T04:14:47+00:00"
+      }
     },
     {
       "id": 52,
@@ -8053,7 +9093,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:47+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 37.5
+      }
     },
     {
       "id": 51,
@@ -8150,7 +9196,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:48+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 71.19
+      }
     },
     {
       "id": 50,
@@ -8247,7 +9299,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:48+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 71.19
+      }
     },
     {
       "id": 49,
@@ -8344,7 +9402,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:48+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 71.19
+      }
     },
     {
       "id": 48,
@@ -8399,7 +9463,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:48+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 71.19
+      }
     },
     {
       "id": 47,
@@ -8496,7 +9566,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:48+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.0
+      }
     },
     {
       "id": 46,
@@ -8593,7 +9669,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:48+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.0
+      }
     },
     {
       "id": 45,
@@ -8648,7 +9730,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.0
+      }
     },
     {
       "id": 44,
@@ -8703,7 +9791,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.0
+      }
     },
     {
       "id": 43,
@@ -8800,7 +9894,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.92
+      }
     },
     {
       "id": 42,
@@ -8897,7 +9997,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.92
+      }
     },
     {
       "id": 41,
@@ -8994,7 +10100,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.92
+      }
     },
     {
       "id": 40,
@@ -9091,7 +10203,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.92
+      }
     },
     {
       "id": 39,
@@ -9188,7 +10306,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 67.92
+      }
     },
     {
       "id": 38,
@@ -9285,7 +10409,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.18
+      }
     },
     {
       "id": 37,
@@ -9382,7 +10512,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.18
+      }
     },
     {
       "id": 36,
@@ -9479,7 +10615,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.18
+      }
     },
     {
       "id": 35,
@@ -9576,7 +10718,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.18
+      }
     },
     {
       "id": 34,
@@ -9673,7 +10821,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.18
+      }
     },
     {
       "id": 33,
@@ -9770,7 +10924,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 32,
@@ -9867,7 +11027,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 31,
@@ -9964,7 +11130,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 30,
@@ -10061,7 +11233,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 64.41
+      }
     },
     {
       "id": 29,
@@ -10158,7 +11336,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:49+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 34.78
+      }
     },
     {
       "id": 28,
@@ -10255,7 +11439,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:50+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.29
+      }
     },
     {
       "id": 27,
@@ -10352,7 +11542,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:50+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.83
+      }
     },
     {
       "id": 26,
@@ -10449,7 +11645,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:50+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.83
+      }
     },
     {
       "id": 25,
@@ -10546,7 +11748,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.83
+      }
     },
     {
       "id": 24,
@@ -10643,7 +11851,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.83
+      }
     },
     {
       "id": 23,
@@ -10740,7 +11954,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "PENDING",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "notes": "NO_MATCH",
+        "matchConfidence": 70.83
+      }
     },
     {
       "id": 22,
@@ -10835,9 +12055,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857110",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Toronto Tempo at Golden State Valkyries",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.13
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.125,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857110",
+        "eventName": "Toronto Tempo at Golden State Valkyries",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "homeScore": 96.0,
+        "awayScore": 79.0,
+        "matchConfidence": 72.13,
+        "notes": "Marcador 79-96",
+        "settledAt": "2026-09-03T04:14:51+00:00"
+      }
     },
     {
       "id": 21,
@@ -10932,9 +12176,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857110",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Toronto Tempo at Golden State Valkyries",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.13
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4762,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857110",
+        "eventName": "Toronto Tempo at Golden State Valkyries",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "homeScore": 96.0,
+        "awayScore": 79.0,
+        "matchConfidence": 72.13,
+        "notes": "Margen ajustado 3.5 con línea -13.5",
+        "settledAt": "2026-09-03T04:14:51+00:00"
+      }
     },
     {
       "id": 20,
@@ -11029,9 +12297,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857110",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Toronto Tempo at Golden State Valkyries",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.13
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.7273,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857110",
+        "eventName": "Toronto Tempo at Golden State Valkyries",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "homeScore": 96.0,
+        "awayScore": 79.0,
+        "matchConfidence": 72.13,
+        "notes": "Total final 175 vs línea 165.5",
+        "settledAt": "2026-09-03T04:14:51+00:00"
+      }
     },
     {
       "id": 19,
@@ -11126,9 +12418,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401857110",
+        "espnSport": "basketball",
+        "espnLeague": "wnba",
+        "matchedName": "Toronto Tempo at Golden State Valkyries",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.13
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260802&limit=500",
+        "eventId": "401857110",
+        "eventName": "Toronto Tempo at Golden State Valkyries",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "homeScore": 96.0,
+        "awayScore": 79.0,
+        "matchConfidence": 72.13,
+        "notes": "Total final 175 vs línea 165.5",
+        "settledAt": "2026-09-03T04:14:51+00:00"
+      }
     },
     {
       "id": 18,
@@ -11225,7 +12541,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 37.5
+      }
     },
     {
       "id": 17,
@@ -11322,7 +12644,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:51+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 28.07
+      }
     },
     {
       "id": 16,
@@ -11419,7 +12747,29 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873271",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Carolina Panthers at Arizona Cardinals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.25
+      },
+      "needsSettlement": true,
+      "settlement": {
+        "status": "REVIEW",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260806&limit=500",
+        "eventId": "401873271",
+        "eventName": "Carolina Panthers at Arizona Cardinals",
+        "checkedAt": "2026-09-03T04:14:59+00:00",
+        "homeScore": 30.0,
+        "awayScore": 33.0,
+        "matchConfidence": 81.25,
+        "notes": "No se pudo identificar el equipo Moneyline"
+      }
     },
     {
       "id": 15,
@@ -11514,9 +12864,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873271",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Carolina Panthers at Arizona Cardinals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.25
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.8,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260806&limit=500",
+        "eventId": "401873271",
+        "eventName": "Carolina Panthers at Arizona Cardinals",
+        "checkedAt": "2026-09-03T04:14:59+00:00",
+        "homeScore": 30.0,
+        "awayScore": 33.0,
+        "matchConfidence": 81.25,
+        "notes": "Marcador 33-30",
+        "settledAt": "2026-09-03T04:14:59+00:00"
+      }
     },
     {
       "id": 14,
@@ -11611,9 +12985,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873271",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Carolina Panthers at Arizona Cardinals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.25
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9259,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260806&limit=500",
+        "eventId": "401873271",
+        "eventName": "Carolina Panthers at Arizona Cardinals",
+        "checkedAt": "2026-09-03T04:14:59+00:00",
+        "homeScore": 30.0,
+        "awayScore": 33.0,
+        "matchConfidence": 81.25,
+        "notes": "Margen ajustado 1.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:14:59+00:00"
+      }
     },
     {
       "id": 13,
@@ -11710,7 +13108,29 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873271",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Carolina Panthers at Arizona Cardinals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.25
+      },
+      "needsSettlement": true,
+      "settlement": {
+        "status": "REVIEW",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260806&limit=500",
+        "eventId": "401873271",
+        "eventName": "Carolina Panthers at Arizona Cardinals",
+        "checkedAt": "2026-09-03T04:14:59+00:00",
+        "homeScore": 30.0,
+        "awayScore": 33.0,
+        "matchConfidence": 81.25,
+        "notes": "No se pudo identificar el equipo del spread"
+      }
     },
     {
       "id": 12,
@@ -11805,9 +13225,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873271",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Carolina Panthers at Arizona Cardinals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.25
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.6364,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260806&limit=500",
+        "eventId": "401873271",
+        "eventName": "Carolina Panthers at Arizona Cardinals",
+        "checkedAt": "2026-09-03T04:14:59+00:00",
+        "homeScore": 30.0,
+        "awayScore": 33.0,
+        "matchConfidence": 81.25,
+        "notes": "Total final 63 vs línea 36.5",
+        "settledAt": "2026-09-03T04:14:59+00:00"
+      }
     },
     {
       "id": 11,
@@ -11902,9 +13346,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873271",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Carolina Panthers at Arizona Cardinals",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.25
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260806&limit=500",
+        "eventId": "401873271",
+        "eventName": "Carolina Panthers at Arizona Cardinals",
+        "checkedAt": "2026-09-03T04:14:59+00:00",
+        "homeScore": 30.0,
+        "awayScore": 33.0,
+        "matchConfidence": 81.25,
+        "notes": "Total final 63 vs línea 36.5",
+        "settledAt": "2026-09-03T04:14:59+00:00"
+      }
     },
     {
       "id": 10,
@@ -12001,7 +13469,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:14:59+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.36
+      }
     },
     {
       "id": 9,
@@ -12098,7 +13572,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:07+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.92
+      }
     },
     {
       "id": 8,
@@ -12195,7 +13675,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:07+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.92
+      }
     },
     {
       "id": 7,
@@ -12292,7 +13778,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:08+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.82
+      }
     },
     {
       "id": 6,
@@ -12389,7 +13881,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:08+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.82
+      }
     },
     {
       "id": 5,
@@ -12486,7 +13984,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:08+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 35.71
+      }
     },
     {
       "id": 4,
@@ -12583,7 +14087,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:08+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 37.5
+      }
     },
     {
       "id": 3,
@@ -12680,7 +14190,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:09+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 37.5
+      }
     },
     {
       "id": 2,
@@ -12777,7 +14293,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:09+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.62
+      }
     },
     {
       "id": 1,
@@ -12874,7 +14396,16 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:15:09+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 40.62
+      }
     }
-  ]
+  ],
+  "updatedAt": "2026-09-03T04:15:10+00:00",
+  "pendingSettlement": 100,
+  "settledCount": 36
 }

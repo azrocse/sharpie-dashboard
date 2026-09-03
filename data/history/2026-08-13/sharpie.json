@@ -67,7 +67,13 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "settlement": {
+        "status": "REVIEW",
+        "checkedAt": "2026-09-03T04:20:40+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 36.36
+      }
     },
     {
       "id": 53,
@@ -156,9 +162,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816527",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "St. Louis Cardinals at Chicago Cubs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.5376,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816527",
+        "eventName": "St. Louis Cardinals at Chicago Cubs",
+        "checkedAt": "2026-09-03T04:20:11+00:00",
+        "homeScore": 3.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Marcador 0-3",
+        "settledAt": "2026-09-03T04:20:11+00:00"
+      }
     },
     {
       "id": 52,
@@ -247,9 +277,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816527",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "St. Louis Cardinals at Chicago Cubs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 3.69,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816527",
+        "eventName": "St. Louis Cardinals at Chicago Cubs",
+        "checkedAt": "2026-09-03T04:20:11+00:00",
+        "homeScore": 3.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Margen ajustado 1.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:20:11+00:00"
+      }
     },
     {
       "id": 51,
@@ -338,9 +392,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816527",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "St. Louis Cardinals at Chicago Cubs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816527",
+        "eventName": "St. Louis Cardinals at Chicago Cubs",
+        "checkedAt": "2026-09-03T04:20:12+00:00",
+        "homeScore": 3.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Margen ajustado -1.5 con línea +1.5",
+        "settledAt": "2026-09-03T04:20:12+00:00"
+      }
     },
     {
       "id": 50,
@@ -405,9 +483,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816527",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "St. Louis Cardinals at Chicago Cubs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816527",
+        "eventName": "St. Louis Cardinals at Chicago Cubs",
+        "checkedAt": "2026-09-03T04:20:12+00:00",
+        "homeScore": 3.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Total final 3 vs línea 8",
+        "settledAt": "2026-09-03T04:20:12+00:00"
+      }
     },
     {
       "id": 49,
@@ -472,9 +574,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816527",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "St. Louis Cardinals at Chicago Cubs",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.57
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4545,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816527",
+        "eventName": "St. Louis Cardinals at Chicago Cubs",
+        "checkedAt": "2026-09-03T04:20:12+00:00",
+        "homeScore": 3.0,
+        "awayScore": 0.0,
+        "matchConfidence": 78.57,
+        "notes": "Total final 3 vs línea 8",
+        "settledAt": "2026-09-03T04:20:12+00:00"
+      }
     },
     {
       "id": 48,
@@ -539,9 +665,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816521",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Miami Marlins at Cincinnati Reds",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 76.92
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.6667,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816521",
+        "eventName": "Miami Marlins at Cincinnati Reds",
+        "checkedAt": "2026-09-03T04:20:12+00:00",
+        "homeScore": 1.0,
+        "awayScore": 0.0,
+        "matchConfidence": 76.92,
+        "notes": "Marcador 0-1",
+        "settledAt": "2026-09-03T04:20:12+00:00"
+      }
     },
     {
       "id": 47,
@@ -606,9 +756,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816521",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Miami Marlins at Cincinnati Reds",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 76.92
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816521",
+        "eventName": "Miami Marlins at Cincinnati Reds",
+        "checkedAt": "2026-09-03T04:20:12+00:00",
+        "homeScore": 1.0,
+        "awayScore": 0.0,
+        "matchConfidence": 76.92,
+        "notes": "Marcador 0-1",
+        "settledAt": "2026-09-03T04:20:12+00:00"
+      }
     },
     {
       "id": 46,
@@ -673,9 +847,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816521",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Miami Marlins at Cincinnati Reds",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 76.92
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816521",
+        "eventName": "Miami Marlins at Cincinnati Reds",
+        "checkedAt": "2026-09-03T04:20:12+00:00",
+        "homeScore": 1.0,
+        "awayScore": 0.0,
+        "matchConfidence": 76.92,
+        "notes": "Margen ajustado -2.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:20:12+00:00"
+      }
     },
     {
       "id": 45,
@@ -740,9 +938,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816521",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Miami Marlins at Cincinnati Reds",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 76.92
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.2525,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816521",
+        "eventName": "Miami Marlins at Cincinnati Reds",
+        "checkedAt": "2026-09-03T04:20:12+00:00",
+        "homeScore": 1.0,
+        "awayScore": 0.0,
+        "matchConfidence": 76.92,
+        "notes": "Margen ajustado 2.5 con línea +1.5",
+        "settledAt": "2026-09-03T04:20:12+00:00"
+      }
     },
     {
       "id": 44,
@@ -807,9 +1029,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816521",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Miami Marlins at Cincinnati Reds",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 76.92
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816521",
+        "eventName": "Miami Marlins at Cincinnati Reds",
+        "checkedAt": "2026-09-03T04:20:13+00:00",
+        "homeScore": 1.0,
+        "awayScore": 0.0,
+        "matchConfidence": 76.92,
+        "notes": "Total final 1 vs línea 8",
+        "settledAt": "2026-09-03T04:20:13+00:00"
+      }
     },
     {
       "id": 43,
@@ -874,9 +1120,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816521",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Miami Marlins at Cincinnati Reds",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 76.92
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.6949,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816521",
+        "eventName": "Miami Marlins at Cincinnati Reds",
+        "checkedAt": "2026-09-03T04:20:13+00:00",
+        "homeScore": 1.0,
+        "awayScore": 0.0,
+        "matchConfidence": 76.92,
+        "notes": "Total final 1 vs línea 8",
+        "settledAt": "2026-09-03T04:20:13+00:00"
+      }
     },
     {
       "id": 42,
@@ -971,9 +1241,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816519",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Pittsburgh Pirates",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.97
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.23,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816519",
+        "eventName": "Boston Red Sox at Pittsburgh Pirates",
+        "checkedAt": "2026-09-03T04:20:13+00:00",
+        "homeScore": 8.0,
+        "awayScore": 4.0,
+        "matchConfidence": 77.97,
+        "notes": "Marcador 4-8",
+        "settledAt": "2026-09-03T04:20:13+00:00"
+      }
     },
     {
       "id": 41,
@@ -1068,9 +1362,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816519",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Pittsburgh Pirates",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.97
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816519",
+        "eventName": "Boston Red Sox at Pittsburgh Pirates",
+        "checkedAt": "2026-09-03T04:20:13+00:00",
+        "homeScore": 8.0,
+        "awayScore": 4.0,
+        "matchConfidence": 77.97,
+        "notes": "Marcador 4-8",
+        "settledAt": "2026-09-03T04:20:13+00:00"
+      }
     },
     {
       "id": 40,
@@ -1165,9 +1483,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816519",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Pittsburgh Pirates",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.97
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.2,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816519",
+        "eventName": "Boston Red Sox at Pittsburgh Pirates",
+        "checkedAt": "2026-09-03T04:20:13+00:00",
+        "homeScore": 8.0,
+        "awayScore": 4.0,
+        "matchConfidence": 77.97,
+        "notes": "Margen ajustado -5.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:20:13+00:00"
+      }
     },
     {
       "id": 39,
@@ -1262,9 +1604,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816519",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Pittsburgh Pirates",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.97
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.7299,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816519",
+        "eventName": "Boston Red Sox at Pittsburgh Pirates",
+        "checkedAt": "2026-09-03T04:20:13+00:00",
+        "homeScore": 8.0,
+        "awayScore": 4.0,
+        "matchConfidence": 77.97,
+        "notes": "Margen ajustado 5.5 con línea +1.5",
+        "settledAt": "2026-09-03T04:20:13+00:00"
+      }
     },
     {
       "id": 38,
@@ -1359,9 +1725,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816519",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Pittsburgh Pirates",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.97
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.3084,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816519",
+        "eventName": "Boston Red Sox at Pittsburgh Pirates",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 8.0,
+        "awayScore": 4.0,
+        "matchConfidence": 77.97,
+        "notes": "Total final 12 vs línea 8",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 37,
@@ -1456,9 +1846,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816519",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Boston Red Sox at Pittsburgh Pirates",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 77.97
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816519",
+        "eventName": "Boston Red Sox at Pittsburgh Pirates",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 8.0,
+        "awayScore": 4.0,
+        "matchConfidence": 77.97,
+        "notes": "Total final 12 vs línea 8",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 36,
@@ -1553,9 +1967,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873276",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at New York Jets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873276",
+        "eventName": "Tampa Bay Buccaneers at New York Jets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 16.0,
+        "awayScore": 24.0,
+        "matchConfidence": 72.41,
+        "notes": "Marcador 24-16",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 35,
@@ -1650,9 +2088,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873276",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at New York Jets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": 3.15,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873276",
+        "eventName": "Tampa Bay Buccaneers at New York Jets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 16.0,
+        "awayScore": 24.0,
+        "matchConfidence": 72.41,
+        "notes": "Marcador 24-16",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 34,
@@ -1747,9 +2209,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873276",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at New York Jets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873276",
+        "eventName": "Tampa Bay Buccaneers at New York Jets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 16.0,
+        "awayScore": 24.0,
+        "matchConfidence": 72.41,
+        "notes": "Margen ajustado -13.5 con línea -5.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 33,
@@ -1844,9 +2330,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873276",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at New York Jets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9259,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873276",
+        "eventName": "Tampa Bay Buccaneers at New York Jets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 16.0,
+        "awayScore": 24.0,
+        "matchConfidence": 72.41,
+        "notes": "Margen ajustado 13.5 con línea +5.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 32,
@@ -1941,9 +2451,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873276",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at New York Jets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4545,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873276",
+        "eventName": "Tampa Bay Buccaneers at New York Jets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 16.0,
+        "awayScore": 24.0,
+        "matchConfidence": 72.41,
+        "notes": "Total final 40 vs línea 35.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 31,
@@ -2038,9 +2572,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873276",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Tampa Bay Buccaneers at New York Jets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873276",
+        "eventName": "Tampa Bay Buccaneers at New York Jets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 16.0,
+        "awayScore": 24.0,
+        "matchConfidence": 72.41,
+        "notes": "Total final 40 vs línea 35.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 30,
@@ -2135,9 +2693,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873278",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Atlanta Falcons",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 82.14
+      },
+      "needsSettlement": false,
+      "profitUnits": -3.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873278",
+        "eventName": "Denver Broncos at Atlanta Falcons",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 7.0,
+        "awayScore": 27.0,
+        "matchConfidence": 82.14,
+        "notes": "Marcador 27-7",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 29,
@@ -2232,9 +2814,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873278",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Atlanta Falcons",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 82.14
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.5208,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873278",
+        "eventName": "Denver Broncos at Atlanta Falcons",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 7.0,
+        "awayScore": 27.0,
+        "matchConfidence": 82.14,
+        "notes": "Marcador 27-7",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 28,
@@ -2299,9 +2905,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873278",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Atlanta Falcons",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 82.14
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.3214,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873278",
+        "eventName": "Denver Broncos at Atlanta Falcons",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 7.0,
+        "awayScore": 27.0,
+        "matchConfidence": 82.14,
+        "notes": "Margen ajustado 16.5 con línea -3.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 27,
@@ -2366,9 +2996,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873278",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Atlanta Falcons",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 82.14
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873278",
+        "eventName": "Denver Broncos at Atlanta Falcons",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 7.0,
+        "awayScore": 27.0,
+        "matchConfidence": 82.14,
+        "notes": "Margen ajustado -16.5 con línea +3.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 26,
@@ -2433,9 +3087,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873278",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Atlanta Falcons",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 82.14
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873278",
+        "eventName": "Denver Broncos at Atlanta Falcons",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 7.0,
+        "awayScore": 27.0,
+        "matchConfidence": 82.14,
+        "notes": "Total final 34 vs línea 40.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 25,
@@ -2500,9 +3178,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873278",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Denver Broncos at Atlanta Falcons",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 82.14
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4237,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873278",
+        "eventName": "Denver Broncos at Atlanta Falcons",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 7.0,
+        "awayScore": 27.0,
+        "matchConfidence": 82.14,
+        "notes": "Total final 34 vs línea 40.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 24,
@@ -2597,9 +3299,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873277",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Washington Commanders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.4,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873277",
+        "eventName": "Miami Dolphins at Washington Commanders",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 20.0,
+        "awayScore": 7.0,
+        "matchConfidence": 81.82,
+        "notes": "Marcador 7-20",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 23,
@@ -2694,9 +3420,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873277",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Washington Commanders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873277",
+        "eventName": "Miami Dolphins at Washington Commanders",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 20.0,
+        "awayScore": 7.0,
+        "matchConfidence": 81.82,
+        "notes": "Marcador 7-20",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 22,
@@ -2791,9 +3541,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873277",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Washington Commanders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": -3.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873277",
+        "eventName": "Miami Dolphins at Washington Commanders",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 20.0,
+        "awayScore": 7.0,
+        "matchConfidence": 81.82,
+        "notes": "Margen ajustado -16.5 con línea -3.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 21,
@@ -2888,9 +3662,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873277",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Washington Commanders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.8696,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873277",
+        "eventName": "Miami Dolphins at Washington Commanders",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 20.0,
+        "awayScore": 7.0,
+        "matchConfidence": 81.82,
+        "notes": "Margen ajustado 16.5 con línea +3.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 20,
@@ -2985,9 +3783,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873277",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Washington Commanders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873277",
+        "eventName": "Miami Dolphins at Washington Commanders",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 20.0,
+        "awayScore": 7.0,
+        "matchConfidence": 81.82,
+        "notes": "Total final 27 vs línea 35.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 19,
@@ -3082,9 +3904,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401873277",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Washington Commanders",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 81.82
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.4902,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260814&limit=500",
+        "eventId": "401873277",
+        "eventName": "Miami Dolphins at Washington Commanders",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 20.0,
+        "awayScore": 7.0,
+        "matchConfidence": 81.82,
+        "notes": "Total final 27 vs línea 35.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 18,
@@ -3149,9 +3995,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816524",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Washington Nationals at New York Mets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.8,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816524",
+        "eventName": "Washington Nationals at New York Mets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 4.0,
+        "awayScore": 1.0,
+        "matchConfidence": 72.41,
+        "notes": "Marcador 1-4",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 17,
@@ -3216,9 +4086,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816524",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Washington Nationals at New York Mets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": -2.2,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816524",
+        "eventName": "Washington Nationals at New York Mets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 4.0,
+        "awayScore": 1.0,
+        "matchConfidence": 72.41,
+        "notes": "Marcador 1-4",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 16,
@@ -3283,9 +4177,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816524",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Washington Nationals at New York Mets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.81,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816524",
+        "eventName": "Washington Nationals at New York Mets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 4.0,
+        "awayScore": 1.0,
+        "matchConfidence": 72.41,
+        "notes": "Margen ajustado 1.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 15,
@@ -3350,9 +4268,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816524",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Washington Nationals at New York Mets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816524",
+        "eventName": "Washington Nationals at New York Mets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 4.0,
+        "awayScore": 1.0,
+        "matchConfidence": 72.41,
+        "notes": "Margen ajustado -1.5 con línea +1.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 14,
@@ -3417,9 +4359,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816524",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Washington Nationals at New York Mets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": -2.7,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816524",
+        "eventName": "Washington Nationals at New York Mets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 4.0,
+        "awayScore": 1.0,
+        "matchConfidence": 72.41,
+        "notes": "Total final 5 vs línea 8.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 13,
@@ -3484,9 +4450,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816524",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "Washington Nationals at New York Mets",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 72.41
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.9434,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816524",
+        "eventName": "Washington Nationals at New York Mets",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 4.0,
+        "awayScore": 1.0,
+        "matchConfidence": 72.41,
+        "notes": "Total final 5 vs línea 8.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 12,
@@ -3551,9 +4541,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816523",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "San Diego Padres at Cleveland Guardians",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.19
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816523",
+        "eventName": "San Diego Padres at Cleveland Guardians",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 5.0,
+        "awayScore": 7.0,
+        "matchConfidence": 74.19,
+        "notes": "Marcador 7-5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 11,
@@ -3618,9 +4632,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816523",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "San Diego Padres at Cleveland Guardians",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.19
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.512,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816523",
+        "eventName": "San Diego Padres at Cleveland Guardians",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 5.0,
+        "awayScore": 7.0,
+        "matchConfidence": 74.19,
+        "notes": "Marcador 7-5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 10,
@@ -3685,9 +4723,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816523",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "San Diego Padres at Cleveland Guardians",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.19
+      },
+      "needsSettlement": false,
+      "profitUnits": -0.5,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816523",
+        "eventName": "San Diego Padres at Cleveland Guardians",
+        "checkedAt": "2026-09-03T04:20:14+00:00",
+        "homeScore": 5.0,
+        "awayScore": 7.0,
+        "matchConfidence": 74.19,
+        "notes": "Margen ajustado -3.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:20:14+00:00"
+      }
     },
     {
       "id": 9,
@@ -3754,7 +4816,29 @@
       "status": "UPCOMING",
       "result": "PENDING",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816523",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "San Diego Padres at Cleveland Guardians",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 1000.0
+      },
+      "needsSettlement": true,
+      "settlement": {
+        "status": "REVIEW",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816523",
+        "eventName": "San Diego Padres at Cleveland Guardians",
+        "checkedAt": "2026-09-03T04:20:41+00:00",
+        "homeScore": 5.0,
+        "awayScore": 7.0,
+        "matchConfidence": 1000.0,
+        "notes": "No se pudo identificar el equipo del spread"
+      }
     },
     {
       "id": 8,
@@ -3819,9 +4903,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816523",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "San Diego Padres at Cleveland Guardians",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.19
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.01,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816523",
+        "eventName": "San Diego Padres at Cleveland Guardians",
+        "checkedAt": "2026-09-03T04:20:15+00:00",
+        "homeScore": 5.0,
+        "awayScore": 7.0,
+        "matchConfidence": 74.19,
+        "notes": "Total final 12 vs línea 7.5",
+        "settledAt": "2026-09-03T04:20:15+00:00"
+      }
     },
     {
       "id": 7,
@@ -3886,9 +4994,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816523",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "San Diego Padres at Cleveland Guardians",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 74.19
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816523",
+        "eventName": "San Diego Padres at Cleveland Guardians",
+        "checkedAt": "2026-09-03T04:20:15+00:00",
+        "homeScore": 5.0,
+        "awayScore": 7.0,
+        "matchConfidence": 74.19,
+        "notes": "Total final 12 vs línea 7.5",
+        "settledAt": "2026-09-03T04:20:15+00:00"
+      }
     },
     {
       "id": 6,
@@ -3953,9 +5085,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816522",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.69
+      },
+      "needsSettlement": false,
+      "profitUnits": 1.28,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816522",
+        "eventName": "New York Yankees at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:20:15+00:00",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "matchConfidence": 78.69,
+        "notes": "Marcador 1-3",
+        "settledAt": "2026-09-03T04:20:15+00:00"
+      }
     },
     {
       "id": 5,
@@ -4020,9 +5176,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816522",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.69
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816522",
+        "eventName": "New York Yankees at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:20:15+00:00",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "matchConfidence": 78.69,
+        "notes": "Marcador 1-3",
+        "settledAt": "2026-09-03T04:20:15+00:00"
+      }
     },
     {
       "id": 4,
@@ -4087,9 +5267,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816522",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.69
+      },
+      "needsSettlement": false,
+      "profitUnits": -3.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816522",
+        "eventName": "New York Yankees at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:20:15+00:00",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "matchConfidence": 78.69,
+        "notes": "Margen ajustado -3.5 con línea -1.5",
+        "settledAt": "2026-09-03T04:20:15+00:00"
+      }
     },
     {
       "id": 3,
@@ -4154,9 +5358,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816522",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.69
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.7634,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816522",
+        "eventName": "New York Yankees at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:20:16+00:00",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "matchConfidence": 78.69,
+        "notes": "Margen ajustado 3.5 con línea +1.5",
+        "settledAt": "2026-09-03T04:20:16+00:00"
+      }
     },
     {
       "id": 2,
@@ -4221,9 +5449,33 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816522",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.69
+      },
+      "needsSettlement": false,
+      "profitUnits": -1.0,
+      "settlement": {
+        "status": "LOSS",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816522",
+        "eventName": "New York Yankees at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:20:16+00:00",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "matchConfidence": 78.69,
+        "notes": "Total final 4 vs línea 8",
+        "settledAt": "2026-09-03T04:20:16+00:00"
+      }
     },
     {
       "id": 1,
@@ -4288,9 +5540,36 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
-      "freePick": false
+      "freePick": false,
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": "401816522",
+        "espnSport": "baseball",
+        "espnLeague": "mlb",
+        "matchedName": "New York Yankees at Toronto Blue Jays",
+        "matchStatus": "MATCHED",
+        "matchConfidence": 78.69
+      },
+      "needsSettlement": false,
+      "profitUnits": 0.885,
+      "settlement": {
+        "status": "WIN",
+        "source": "ESPN",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260814&limit=500",
+        "eventId": "401816522",
+        "eventName": "New York Yankees at Toronto Blue Jays",
+        "checkedAt": "2026-09-03T04:20:16+00:00",
+        "homeScore": 3.0,
+        "awayScore": 1.0,
+        "matchConfidence": 78.69,
+        "notes": "Total final 4 vs línea 8",
+        "settledAt": "2026-09-03T04:20:16+00:00"
+      }
     }
-  ]
+  ],
+  "updatedAt": "2026-09-03T04:20:41+00:00",
+  "pendingSettlement": 2,
+  "settledCount": 52
 }

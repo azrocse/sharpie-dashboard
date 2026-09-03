@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-13",
-  "updatedAt": "2026-09-02T22:00:14-06:00",
+  "updatedAt": "2026-09-03T04:37:41+00:00",
   "count": 10,
   "pendingSettlement": 10,
   "picks": [
@@ -50,20 +50,6 @@
       "time": "11:00",
       "iso": "2026-09-13T11:00:00",
       "history": [
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 48.0,
-          "handlePct": 80.0,
-          "odds": "-115"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 49.0,
-          "handlePct": 80.0,
-          "odds": "-115"
-        },
         {
           "time": "05:30",
           "timestamp": "2026-09-02T05:30:10",
@@ -1449,14 +1435,28 @@
           "betsPct": 50.0,
           "handlePct": 85.0,
           "odds": "-115"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 50.0,
+          "handlePct": 85.0,
+          "odds": "-115"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 50.0,
+          "handlePct": 85.0,
+          "odds": "-115"
         }
       ],
       "clv": {
         "opening": {
           "odds": "-115",
           "prob": 53.49,
-          "divergence": 32.0,
-          "timestamp": "2026-09-02T05:20:10"
+          "divergence": 31.0,
+          "timestamp": "2026-09-02T05:30:10"
         },
         "checkpoints": {
           "4h": null,
@@ -1473,8 +1473,8 @@
       "historyId": "4d636b3b6963b2da01a53772",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T22:00:14-06:00",
-      "qualifiedObservations": 183,
+      "lastQualifiedAt": "2026-09-02T22:05:13-06:00",
+      "qualifiedObservations": 185,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -1575,22 +1575,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:40+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872923",
+        "eventName": "New Orleans Saints at Detroit Lions",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872923",
         "league": "SPORTS",
         "sport": "",
         "away": "NO Saints",
         "home": "DET Lions",
         "scheduledAt": "2026-09-13T11:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New Orleans Saints at Detroit Lions",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -1639,20 +1647,6 @@
       "time": "11:00",
       "iso": "2026-09-13T11:00:00",
       "history": [
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 48.0,
-          "handlePct": 81.0,
-          "odds": "-115"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 48.0,
-          "handlePct": 81.0,
-          "odds": "-115"
-        },
         {
           "time": "05:30",
           "timestamp": "2026-09-02T05:30:10",
@@ -3038,6 +3032,20 @@
           "betsPct": 49.0,
           "handlePct": 79.0,
           "odds": "-115"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 49.0,
+          "handlePct": 79.0,
+          "odds": "-115"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 49.0,
+          "handlePct": 79.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -3045,7 +3053,7 @@
           "odds": "-115",
           "prob": 53.49,
           "divergence": 33.0,
-          "timestamp": "2026-09-02T05:20:10"
+          "timestamp": "2026-09-02T05:30:10"
         },
         "checkpoints": {
           "4h": null,
@@ -3062,8 +3070,8 @@
       "historyId": "95061a8865406a68ff0067df",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T22:00:14-06:00",
-      "qualifiedObservations": 183,
+      "lastQualifiedAt": "2026-09-02T22:05:13-06:00",
+      "qualifiedObservations": 185,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -3145,22 +3153,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:40+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872924",
+        "eventName": "New York Jets at Tennessee Titans",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872924",
         "league": "SPORTS",
         "sport": "",
         "away": "NY Jets",
         "home": "TEN Titans",
         "scheduledAt": "2026-09-13T11:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "New York Jets at Tennessee Titans",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -4696,22 +4712,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:40+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872922",
+        "eventName": "Cleveland Browns at Jacksonville Jaguars",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872922",
         "league": "SPORTS",
         "sport": "",
         "away": "CLE Browns",
         "home": "JAX Jaguars",
         "scheduledAt": "2026-09-13T11:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Cleveland Browns at Jacksonville Jaguars",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -4755,25 +4779,11 @@
       "betsPct": 51.0,
       "divergence": 31.0,
       "signedDivergence": 31.0,
-      "reason": "SMART MONEY. 8 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "reason": "SMART MONEY. 7 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "11:00",
       "iso": "2026-09-13T11:00:00",
       "history": [
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 53.0,
-          "handlePct": 91.0,
-          "odds": "-115"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 54.0,
-          "handlePct": 91.0,
-          "odds": "-115"
-        },
         {
           "time": "05:30",
           "timestamp": "2026-09-02T05:30:10",
@@ -6159,14 +6169,28 @@
           "betsPct": 51.0,
           "handlePct": 82.0,
           "odds": "-110"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 51.0,
+          "handlePct": 82.0,
+          "odds": "-110"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 51.0,
+          "handlePct": 82.0,
+          "odds": "-110"
         }
       ],
       "clv": {
         "opening": {
           "odds": "-115",
           "prob": 53.49,
-          "divergence": 38.0,
-          "timestamp": "2026-09-02T05:20:10"
+          "divergence": 37.0,
+          "timestamp": "2026-09-02T05:30:10"
         },
         "checkpoints": {
           "4h": null,
@@ -6183,8 +6207,8 @@
       "historyId": "d4cc1d1ffe52d6c9812e8e51",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T22:00:14-06:00",
-      "qualifiedObservations": 183,
+      "lastQualifiedAt": "2026-09-02T22:05:13-06:00",
+      "qualifiedObservations": 185,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -6304,22 +6328,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:41+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872661",
+        "eventName": "Chicago Bears at Carolina Panthers",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872661",
         "league": "SPORTS",
         "sport": "",
         "away": "CHI Bears",
         "home": "CAR Panthers",
         "scheduledAt": "2026-09-13T11:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Chicago Bears at Carolina Panthers",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -7817,22 +7849,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:41+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872928",
+        "eventName": "Miami Dolphins at Las Vegas Raiders",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872928",
         "league": "SPORTS",
         "sport": "",
         "away": "MIA Dolphins",
         "home": "LV Raiders",
         "scheduledAt": "2026-09-13T14:25:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Las Vegas Raiders",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -7881,20 +7921,6 @@
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 17.0,
-          "handlePct": 63.0,
-          "odds": "+164"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 17.0,
-          "handlePct": 63.0,
-          "odds": "+164"
-        },
         {
           "time": "05:30",
           "timestamp": "2026-09-02T05:30:10",
@@ -9280,6 +9306,20 @@
           "betsPct": 18.0,
           "handlePct": 53.0,
           "odds": "+164"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 18.0,
+          "handlePct": 53.0,
+          "odds": "+164"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 18.0,
+          "handlePct": 53.0,
+          "odds": "+164"
         }
       ],
       "clv": {
@@ -9287,7 +9327,7 @@
           "odds": "+164",
           "prob": 37.88,
           "divergence": 46.0,
-          "timestamp": "2026-09-02T05:20:10"
+          "timestamp": "2026-09-02T05:30:10"
         },
         "checkpoints": {
           "4h": null,
@@ -9304,8 +9344,8 @@
       "historyId": "41ebdd6f58b063f733708a67",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T22:00:14-06:00",
-      "qualifiedObservations": 183,
+      "lastQualifiedAt": "2026-09-02T22:05:13-06:00",
+      "qualifiedObservations": 185,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -9448,22 +9488,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:41+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872928",
+        "eventName": "Miami Dolphins at Las Vegas Raiders",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872928",
         "league": "SPORTS",
         "sport": "",
         "away": "MIA Dolphins",
         "home": "LV Raiders",
         "scheduledAt": "2026-09-13T14:25:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Miami Dolphins at Las Vegas Raiders",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -10961,22 +11009,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:41+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872926",
+        "eventName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872926",
         "league": "SPORTS",
         "sport": "",
         "away": "ARI Cardinals",
         "home": "LA Chargers",
         "scheduledAt": "2026-09-13T14:25:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -11026,20 +11082,6 @@
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 39.0,
-          "handlePct": 80.0,
-          "odds": "-118"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 39.0,
-          "handlePct": 80.0,
-          "odds": "-118"
-        },
         {
           "time": "05:30",
           "timestamp": "2026-09-02T05:30:10",
@@ -12425,6 +12467,20 @@
           "betsPct": 39.0,
           "handlePct": 80.0,
           "odds": "-118"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 39.0,
+          "handlePct": 80.0,
+          "odds": "-118"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 39.0,
+          "handlePct": 80.0,
+          "odds": "-118"
         }
       ],
       "clv": {
@@ -12432,7 +12488,7 @@
           "odds": "-118",
           "prob": 54.13,
           "divergence": 41.0,
-          "timestamp": "2026-09-02T05:20:10"
+          "timestamp": "2026-09-02T05:30:10"
         },
         "checkpoints": {
           "4h": null,
@@ -12449,8 +12505,8 @@
       "historyId": "77dc20f05621ea78265c1c92",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T22:00:14-06:00",
-      "qualifiedObservations": 183,
+      "lastQualifiedAt": "2026-09-02T22:05:13-06:00",
+      "qualifiedObservations": 185,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -12516,22 +12572,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:41+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872927",
+        "eventName": "Green Bay Packers at Minnesota Vikings",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872927",
         "league": "SPORTS",
         "sport": "",
         "away": "GB Packers",
         "home": "MIN Vikings",
         "scheduledAt": "2026-09-13T14:25:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Green Bay Packers at Minnesota Vikings",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -12580,20 +12644,6 @@
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 44.0,
-          "handlePct": 88.0,
-          "odds": "-110"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 44.0,
-          "handlePct": 88.0,
-          "odds": "-110"
-        },
         {
           "time": "05:30",
           "timestamp": "2026-09-02T05:30:10",
@@ -13979,6 +14029,20 @@
           "betsPct": 46.0,
           "handlePct": 88.0,
           "odds": "-110"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 46.0,
+          "handlePct": 88.0,
+          "odds": "-110"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 46.0,
+          "handlePct": 88.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -13986,7 +14050,7 @@
           "odds": "-110",
           "prob": 52.38,
           "divergence": 44.0,
-          "timestamp": "2026-09-02T05:20:10"
+          "timestamp": "2026-09-02T05:30:10"
         },
         "checkpoints": {
           "4h": null,
@@ -14003,8 +14067,8 @@
       "historyId": "864cfe7a57c6fa4d99459bcb",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T22:00:14-06:00",
-      "qualifiedObservations": 183,
+      "lastQualifiedAt": "2026-09-02T22:05:13-06:00",
+      "qualifiedObservations": 185,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -14067,22 +14131,30 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:41+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872927",
+        "eventName": "Green Bay Packers at Minnesota Vikings",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872927",
         "league": "SPORTS",
         "sport": "",
         "away": "GB Packers",
         "home": "MIN Vikings",
         "scheduledAt": "2026-09-13T14:25:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Green Bay Packers at Minnesota Vikings",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     },
@@ -14131,20 +14203,6 @@
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 60.0,
-          "handlePct": 98.0,
-          "odds": "-105"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 60.0,
-          "handlePct": 98.0,
-          "odds": "-105"
-        },
         {
           "time": "05:30",
           "timestamp": "2026-09-02T05:30:10",
@@ -15530,6 +15588,20 @@
           "betsPct": 59.0,
           "handlePct": 97.0,
           "odds": "-105"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 59.0,
+          "handlePct": 97.0,
+          "odds": "-105"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 59.0,
+          "handlePct": 97.0,
+          "odds": "-105"
         }
       ],
       "clv": {
@@ -15537,7 +15609,7 @@
           "odds": "-105",
           "prob": 51.22,
           "divergence": 38.0,
-          "timestamp": "2026-09-02T05:20:10"
+          "timestamp": "2026-09-02T05:30:10"
         },
         "checkpoints": {
           "4h": null,
@@ -15554,8 +15626,8 @@
       "historyId": "9c29f86c20f24a89bf76d3b4",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T22:00:14-06:00",
-      "qualifiedObservations": 183,
+      "lastQualifiedAt": "2026-09-02T22:05:13-06:00",
+      "qualifiedObservations": 185,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -15637,24 +15709,33 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-03T04:37:41+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
+        "eventId": "401872926",
+        "eventName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchConfidence": 1000.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401872926",
         "league": "SPORTS",
         "sport": "",
         "away": "ARI Cardinals",
         "home": "LA Chargers",
         "scheduledAt": "2026-09-13T14:25:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "espnSport": "football",
+        "espnLeague": "nfl",
+        "matchedName": "Arizona Cardinals at Los Angeles Chargers",
+        "matchConfidence": 1000.0
       },
       "needsSettlement": true
     }
-  ]
+  ],
+  "settledCount": 0
 }
