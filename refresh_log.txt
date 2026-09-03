@@ -69643,3 +69643,63 @@ warning: in the working copy of 'refresh_log.txt', LF will be replaced by CRLF t
 ------------------------------------------------------------
 [2026-09-03 12:40:29] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
 ------------------------------------------------------------
+warning: in the working copy of 'refresh_log.txt', LF will be replaced by CRLF the next time Git touches it
+[INFO] Archivos preparados en el área de stage.
+------------------------------------------------------------
+[2026-09-03 12:40:34] [STEP 3/4] EJECUTANDO: Creación de Commit descriptivo (git commit)
+------------------------------------------------------------
+[main 278c605cd] Auto-update: Datos, scripts y assets (2026-09-03 12:40)
+ 48 files changed, 8490 insertions(+), 7263 deletions(-)
+------------------------------------------------------------
+[2026-09-03 12:40:37] [STEP 4/4] EJECUTANDO: Sincronización con GitHub (git push)
+------------------------------------------------------------
+
+============================================================
+[2026-09-03 12:40:56] PROCESO FINALIZADO: Todo se actualizó y publicó con éxito.
+============================================================
+
+============================================================
+[2026-09-03 12:45:05] INICIANDO SCRIPT DE AUTO-PUBLICACIÓN
+============================================================
+------------------------------------------------------------
+[2026-09-03 12:45:05] [STEP 1/4] EJECUTANDO: Script de Python (src\main.py)
+------------------------------------------------------------
+12:45:09 - [INFO] - Se cargaron 1 ligas desde la configuraci├│n.
+12:45:09 - [INFO] - ≡ƒöä Procesando: 'SPORTS' | Slug: 'Sports' | Date Range: 'n30days'
+12:45:32 - [INFO] - Γ£à 'SPORTS' descargado con ├⌐xito. Elementos/Archivos: 5
+12:45:32 - [INFO] - Proceso finalizado. Ligas procesadas exitosamente: 1
+
+============================================================
+SPORTS
+Rango: n30days
+============================================================
+Descargando p├ígina 1...
+  [!] URL principal no retorn├│ eventos en pag 1. Intentando URL de respaldo...
+Descargando p├ígina 2...
+  [!] URL principal no retorn├│ eventos en pag 2. Intentando URL de respaldo...
+Descargando p├ígina 3...
+  [!] URL principal no retorn├│ eventos en pag 3. Intentando URL de respaldo...
+Descargando p├ígina 4...
+  [!] URL principal no retorn├│ eventos en pag 4. Intentando URL de respaldo...
+Descargando p├ígina 5...
+  [!] URL principal no retorn├│ eventos en pag 5. Intentando URL de respaldo...
+Descargando p├ígina 6...
+  [!] URL principal no retorn├│ eventos en pag 6. Intentando URL de respaldo...
+Γ£ô JSON creado: sports.json (Total juegos incluidos: 50)
+≡ƒôè Calibraci├│n CLV actualizada: 1711 picks en el log, peso medido = 0.0007
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-03\sharpie.json (13 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-04\sharpie.json (9 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-05\sharpie.json (22 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-06\sharpie.json (5 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-13\sharpie.json (11 picks)
+[OK] Dashboard generado con ├⌐xito: C:\Users\Administrator\Desktop\sharpie-dashboard\index.html
+[OK] C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-03\sharpie.json
+[AUDITOR├ìA ESPN] C:\Users\Administrator\Desktop\sharpie-dashboard\data\results\settlement_audit.json
+[OK] C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-02\sharpie.json
+[AUDITOR├ìA ESPN] C:\Users\Administrator\Desktop\sharpie-dashboard\data\results\settlement_audit.json
+[ESPN] PENDING=197 ┬╖ REVIEW=74
+[OK] Visualizador de resultados: C:\Users\Administrator\Desktop\sharpie-dashboard\results.html (559 picks)
+[SUCCESS] Python finalizó correctamente con código de salida 0.
+------------------------------------------------------------
+[2026-09-03 12:47:22] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
+------------------------------------------------------------
