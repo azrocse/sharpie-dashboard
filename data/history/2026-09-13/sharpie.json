@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-13",
-  "updatedAt": "2026-09-02T23:50:12-06:00",
+  "updatedAt": "2026-09-02T23:55:13-06:00",
   "count": 10,
   "pendingSettlement": 10,
   "picks": [
@@ -50,13 +50,6 @@
       "time": "11:00",
       "iso": "2026-09-13T11:00:00",
       "history": [
-        {
-          "time": "06:45",
-          "timestamp": "2026-09-02T06:45:10",
-          "betsPct": 48.0,
-          "handlePct": 80.0,
-          "odds": "-115"
-        },
         {
           "time": "06:50",
           "timestamp": "2026-09-02T06:50:09",
@@ -1449,6 +1442,13 @@
           "betsPct": 50.0,
           "handlePct": 85.0,
           "odds": "-115"
+        },
+        {
+          "time": "23:55",
+          "timestamp": "2026-09-02T23:55:13",
+          "betsPct": 50.0,
+          "handlePct": 85.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -1456,7 +1456,7 @@
           "odds": "-115",
           "prob": 53.49,
           "divergence": 32.0,
-          "timestamp": "2026-09-02T06:45:10"
+          "timestamp": "2026-09-02T06:50:09"
         },
         "checkpoints": {
           "4h": null,
@@ -1473,8 +1473,8 @@
       "historyId": "4d636b3b6963b2da01a53772",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T23:50:12-06:00",
-      "qualifiedObservations": 200,
+      "lastQualifiedAt": "2026-09-02T23:55:13-06:00",
+      "qualifiedObservations": 201,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -1626,34 +1626,27 @@
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
       "stake": 2.0,
-      "modelProb": 55.58,
+      "modelProb": 56.18,
       "fairProb": 51.08,
-      "flowAdjustment": 4.5,
+      "flowAdjustment": 5.1,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 53.49,
-      "modelEdge": 2.09,
-      "ev": 3.91,
+      "modelEdge": 2.69,
+      "ev": 5.03,
       "coherence": null,
       "whale": false,
       "handlePct": 79.0,
-      "betsPct": 49.0,
-      "divergence": 30.0,
-      "signedDivergence": 30.0,
-      "reason": "SMART MONEY. 4 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 45.0,
+      "divergence": 34.0,
+      "signedDivergence": 34.0,
+      "reason": "SMART MONEY. 5 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "11:00",
       "iso": "2026-09-13T11:00:00",
       "history": [
-        {
-          "time": "06:45",
-          "timestamp": "2026-09-02T06:45:10",
-          "betsPct": 47.0,
-          "handlePct": 80.0,
-          "odds": "-115"
-        },
         {
           "time": "06:50",
           "timestamp": "2026-09-02T06:50:09",
@@ -3046,6 +3039,13 @@
           "betsPct": 49.0,
           "handlePct": 79.0,
           "odds": "-115"
+        },
+        {
+          "time": "23:55",
+          "timestamp": "2026-09-02T23:55:13",
+          "betsPct": 45.0,
+          "handlePct": 79.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -3053,7 +3053,7 @@
           "odds": "-115",
           "prob": 53.49,
           "divergence": 33.0,
-          "timestamp": "2026-09-02T06:45:10"
+          "timestamp": "2026-09-02T06:50:09"
         },
         "checkpoints": {
           "4h": null,
@@ -3065,13 +3065,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 7,
+      "freeReleaseRank": 3,
       "publicationTier": "FREE_RELEASE",
       "historyId": "95061a8865406a68ff0067df",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T23:50:12-06:00",
-      "qualifiedObservations": 200,
+      "lastQualifiedAt": "2026-09-02T23:55:13-06:00",
+      "qualifiedObservations": 201,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -3143,6 +3143,25 @@
           "betsPct": 49.0,
           "handlePct": 79.0,
           "signedDivergence": 30.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-02T23:55:13-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-115",
+          "stake": 2.0,
+          "modelProb": 56.18,
+          "modelEdge": 2.69,
+          "ev": 5.03,
+          "betsPct": 45.0,
+          "handlePct": 79.0,
+          "signedDivergence": 34.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
             "SMART_MONEY"
@@ -4785,13 +4804,6 @@
       "iso": "2026-09-13T11:00:00",
       "history": [
         {
-          "time": "06:45",
-          "timestamp": "2026-09-02T06:45:10",
-          "betsPct": 55.0,
-          "handlePct": 91.0,
-          "odds": "-115"
-        },
-        {
           "time": "06:50",
           "timestamp": "2026-09-02T06:50:09",
           "betsPct": 55.0,
@@ -6183,6 +6195,13 @@
           "betsPct": 51.0,
           "handlePct": 82.0,
           "odds": "-110"
+        },
+        {
+          "time": "23:55",
+          "timestamp": "2026-09-02T23:55:13",
+          "betsPct": 51.0,
+          "handlePct": 82.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -6190,7 +6209,7 @@
           "odds": "-115",
           "prob": 53.49,
           "divergence": 36.0,
-          "timestamp": "2026-09-02T06:45:10"
+          "timestamp": "2026-09-02T06:50:09"
         },
         "checkpoints": {
           "4h": null,
@@ -6207,8 +6226,8 @@
       "historyId": "d4cc1d1ffe52d6c9812e8e51",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T23:50:12-06:00",
-      "qualifiedObservations": 200,
+      "lastQualifiedAt": "2026-09-02T23:55:13-06:00",
+      "qualifiedObservations": 201,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -7894,40 +7913,34 @@
       "trendKey": "SMART_MONEY",
       "marketSignal": "SMART_MONEY",
       "marketSignals": [
-        "SMART_MONEY"
+        "SMART_MONEY",
+        "SHARP_VS_PUBLIC"
       ],
       "pickCategory": "PREMIUM",
       "priority": "🔥 AHORA",
       "priorityKey": "now",
-      "stake": 2.0,
-      "modelProb": 41.56,
+      "stake": 2.5,
+      "modelProb": 43.06,
       "fairProb": 36.31,
-      "flowAdjustment": 5.25,
+      "flowAdjustment": 6.75,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 37.88,
-      "modelEdge": 3.68,
-      "ev": 9.72,
+      "modelEdge": 5.18,
+      "ev": 13.68,
       "coherence": null,
       "whale": false,
-      "handlePct": 53.0,
+      "handlePct": 63.0,
       "betsPct": 18.0,
-      "divergence": 35.0,
-      "signedDivergence": 35.0,
-      "reason": "SMART MONEY. 7 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 45.0,
+      "signedDivergence": 45.0,
+      "reason": "SMART MONEY. 8 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "06:45",
-          "timestamp": "2026-09-02T06:45:10",
-          "betsPct": 17.0,
-          "handlePct": 63.0,
-          "odds": "+164"
-        },
         {
           "time": "06:50",
           "timestamp": "2026-09-02T06:50:09",
@@ -9320,6 +9333,13 @@
           "betsPct": 18.0,
           "handlePct": 53.0,
           "odds": "+164"
+        },
+        {
+          "time": "23:55",
+          "timestamp": "2026-09-02T23:55:13",
+          "betsPct": 18.0,
+          "handlePct": 63.0,
+          "odds": "+164"
         }
       ],
       "clv": {
@@ -9327,7 +9347,7 @@
           "odds": "+164",
           "prob": 37.88,
           "divergence": 46.0,
-          "timestamp": "2026-09-02T06:45:10"
+          "timestamp": "2026-09-02T06:50:09"
         },
         "checkpoints": {
           "4h": null,
@@ -9344,8 +9364,8 @@
       "historyId": "41ebdd6f58b063f733708a67",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T23:50:12-06:00",
-      "qualifiedObservations": 200,
+      "lastQualifiedAt": "2026-09-02T23:55:13-06:00",
+      "qualifiedObservations": 201,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -9483,6 +9503,26 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-02T23:55:13-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+164",
+          "stake": 2.5,
+          "modelProb": 43.06,
+          "modelEdge": 5.18,
+          "ev": 13.68,
+          "betsPct": 18.0,
+          "handlePct": 63.0,
+          "signedDivergence": 45.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
@@ -9555,242 +9595,11 @@
       "betsPct": 9.0,
       "divergence": 19.0,
       "signedDivergence": 19.0,
-      "reason": "SMART MONEY. 4 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "reason": "SMART MONEY. 6 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "04:05",
-          "timestamp": "2026-09-02T04:05:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:10",
-          "timestamp": "2026-09-02T04:10:09",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:15",
-          "timestamp": "2026-09-02T04:15:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:20",
-          "timestamp": "2026-09-02T04:20:09",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:25",
-          "timestamp": "2026-09-02T04:25:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:30",
-          "timestamp": "2026-09-02T04:30:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:35",
-          "timestamp": "2026-09-02T04:35:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:40",
-          "timestamp": "2026-09-02T04:40:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:45",
-          "timestamp": "2026-09-02T04:45:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:50",
-          "timestamp": "2026-09-02T04:50:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "04:55",
-          "timestamp": "2026-09-02T04:55:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:00",
-          "timestamp": "2026-09-02T05:00:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:05",
-          "timestamp": "2026-09-02T05:05:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:10",
-          "timestamp": "2026-09-02T05:10:09",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:15",
-          "timestamp": "2026-09-02T05:15:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:20",
-          "timestamp": "2026-09-02T05:20:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:25",
-          "timestamp": "2026-09-02T05:25:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:30",
-          "timestamp": "2026-09-02T05:30:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:35",
-          "timestamp": "2026-09-02T05:35:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:40",
-          "timestamp": "2026-09-02T05:40:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:45",
-          "timestamp": "2026-09-02T05:45:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:50",
-          "timestamp": "2026-09-02T05:50:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "05:55",
-          "timestamp": "2026-09-02T05:55:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:00",
-          "timestamp": "2026-09-02T06:00:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:05",
-          "timestamp": "2026-09-02T06:05:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:10",
-          "timestamp": "2026-09-02T06:10:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:15",
-          "timestamp": "2026-09-02T06:15:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:20",
-          "timestamp": "2026-09-02T06:20:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:25",
-          "timestamp": "2026-09-02T06:25:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:30",
-          "timestamp": "2026-09-02T06:30:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:35",
-          "timestamp": "2026-09-02T06:35:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:40",
-          "timestamp": "2026-09-02T06:40:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
-        {
-          "time": "06:45",
-          "timestamp": "2026-09-02T06:45:10",
-          "betsPct": 10.0,
-          "handlePct": 28.0,
-          "odds": "+410"
-        },
         {
           "time": "06:50",
           "timestamp": "2026-09-02T06:50:09",
@@ -10959,6 +10768,237 @@
           "betsPct": 9.0,
           "handlePct": 28.0,
           "odds": "+410"
+        },
+        {
+          "time": "20:55",
+          "timestamp": "2026-09-02T20:55:10",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:00",
+          "timestamp": "2026-09-02T21:00:11",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:05",
+          "timestamp": "2026-09-02T21:05:10",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:10",
+          "timestamp": "2026-09-02T21:10:10",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:15",
+          "timestamp": "2026-09-02T21:15:10",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:20",
+          "timestamp": "2026-09-02T21:20:10",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:25",
+          "timestamp": "2026-09-02T21:25:09",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:30",
+          "timestamp": "2026-09-02T21:30:09",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:35",
+          "timestamp": "2026-09-02T21:35:09",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:40",
+          "timestamp": "2026-09-02T21:40:09",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:45",
+          "timestamp": "2026-09-02T21:45:14",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:46",
+          "timestamp": "2026-09-02T21:46:34",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:50",
+          "timestamp": "2026-09-02T21:50:11",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "21:55",
+          "timestamp": "2026-09-02T21:55:11",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "22:00",
+          "timestamp": "2026-09-02T22:00:14",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "22:04",
+          "timestamp": "2026-09-02T22:04:39",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "22:05",
+          "timestamp": "2026-09-02T22:05:13",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "22:40",
+          "timestamp": "2026-09-02T22:40:18",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "22:45",
+          "timestamp": "2026-09-02T22:45:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "22:50",
+          "timestamp": "2026-09-02T22:50:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "22:55",
+          "timestamp": "2026-09-02T22:55:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:00",
+          "timestamp": "2026-09-02T23:00:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:05",
+          "timestamp": "2026-09-02T23:05:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:10",
+          "timestamp": "2026-09-02T23:10:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:15",
+          "timestamp": "2026-09-02T23:15:13",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:20",
+          "timestamp": "2026-09-02T23:20:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:25",
+          "timestamp": "2026-09-02T23:25:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:30",
+          "timestamp": "2026-09-02T23:30:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:35",
+          "timestamp": "2026-09-02T23:35:13",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:40",
+          "timestamp": "2026-09-02T23:40:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:45",
+          "timestamp": "2026-09-02T23:45:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:50",
+          "timestamp": "2026-09-02T23:50:12",
+          "betsPct": 9.0,
+          "handlePct": 27.0,
+          "odds": "+410"
+        },
+        {
+          "time": "23:55",
+          "timestamp": "2026-09-02T23:55:13",
+          "betsPct": 9.0,
+          "handlePct": 28.0,
+          "odds": "+410"
         }
       ],
       "clv": {
@@ -10966,7 +11006,7 @@
           "odds": "+410",
           "prob": 19.61,
           "divergence": 18.0,
-          "timestamp": "2026-09-02T04:05:10"
+          "timestamp": "2026-09-02T06:50:09"
         },
         "checkpoints": {
           "4h": null,
@@ -10983,8 +11023,8 @@
       "historyId": "510c5fbe33cb5591bf2b40ea",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T08:10:10-06:00",
-      "lastQualifiedAt": "2026-09-02T20:50:10-06:00",
-      "qualifiedObservations": 146,
+      "lastQualifiedAt": "2026-09-02T23:55:13-06:00",
+      "qualifiedObservations": 147,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T08:10:10-06:00",
@@ -11061,34 +11101,27 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.5,
-      "modelProb": 57.74,
+      "modelProb": 57.89,
       "fairProb": 51.74,
-      "flowAdjustment": 6.0,
+      "flowAdjustment": 6.15,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 54.13,
-      "modelEdge": 3.61,
-      "ev": 6.67,
+      "modelEdge": 3.76,
+      "ev": 6.95,
       "coherence": null,
       "whale": false,
       "handlePct": 80.0,
-      "betsPct": 40.0,
-      "divergence": 40.0,
-      "signedDivergence": 40.0,
-      "reason": "SMART MONEY. 4 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 39.0,
+      "divergence": 41.0,
+      "signedDivergence": 41.0,
+      "reason": "SMART MONEY. 5 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "06:45",
-          "timestamp": "2026-09-02T06:45:10",
-          "betsPct": 39.0,
-          "handlePct": 80.0,
-          "odds": "-118"
-        },
         {
           "time": "06:50",
           "timestamp": "2026-09-02T06:50:09",
@@ -12481,6 +12514,13 @@
           "betsPct": 40.0,
           "handlePct": 80.0,
           "odds": "-118"
+        },
+        {
+          "time": "23:55",
+          "timestamp": "2026-09-02T23:55:13",
+          "betsPct": 39.0,
+          "handlePct": 80.0,
+          "odds": "-118"
         }
       ],
       "clv": {
@@ -12488,7 +12528,7 @@
           "odds": "-118",
           "prob": 54.13,
           "divergence": 41.0,
-          "timestamp": "2026-09-02T06:45:10"
+          "timestamp": "2026-09-02T06:50:09"
         },
         "checkpoints": {
           "4h": null,
@@ -12505,8 +12545,8 @@
       "historyId": "77dc20f05621ea78265c1c92",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T23:50:12-06:00",
-      "qualifiedObservations": 200,
+      "lastQualifiedAt": "2026-09-02T23:55:13-06:00",
+      "qualifiedObservations": 201,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -12587,6 +12627,26 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-02T23:55:13-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "-118",
+          "stake": 2.5,
+          "modelProb": 57.89,
+          "modelEdge": 3.76,
+          "ev": 6.95,
+          "betsPct": 39.0,
+          "handlePct": 80.0,
+          "signedDivergence": 41.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
@@ -12643,34 +12703,27 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.5,
-      "modelProb": 56.3,
+      "modelProb": 56.45,
       "fairProb": 50.0,
-      "flowAdjustment": 6.3,
+      "flowAdjustment": 6.45,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 52.38,
-      "modelEdge": 3.92,
-      "ev": 7.48,
+      "modelEdge": 4.07,
+      "ev": 7.77,
       "coherence": null,
       "whale": false,
       "handlePct": 88.0,
-      "betsPct": 46.0,
-      "divergence": 42.0,
-      "signedDivergence": 42.0,
-      "reason": "SMART MONEY. 3 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 45.0,
+      "divergence": 43.0,
+      "signedDivergence": 43.0,
+      "reason": "SMART MONEY. 4 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "06:45",
-          "timestamp": "2026-09-02T06:45:10",
-          "betsPct": 46.0,
-          "handlePct": 88.0,
-          "odds": "-110"
-        },
         {
           "time": "06:50",
           "timestamp": "2026-09-02T06:50:09",
@@ -14063,6 +14116,13 @@
           "betsPct": 46.0,
           "handlePct": 88.0,
           "odds": "-110"
+        },
+        {
+          "time": "23:55",
+          "timestamp": "2026-09-02T23:55:13",
+          "betsPct": 45.0,
+          "handlePct": 88.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -14070,7 +14130,7 @@
           "odds": "-110",
           "prob": 52.38,
           "divergence": 42.0,
-          "timestamp": "2026-09-02T06:45:10"
+          "timestamp": "2026-09-02T06:50:09"
         },
         "checkpoints": {
           "4h": null,
@@ -14087,8 +14147,8 @@
       "historyId": "864cfe7a57c6fa4d99459bcb",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T23:50:12-06:00",
-      "qualifiedObservations": 200,
+      "lastQualifiedAt": "2026-09-02T23:55:13-06:00",
+      "qualifiedObservations": 201,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -14141,6 +14201,25 @@
           "betsPct": 46.0,
           "handlePct": 88.0,
           "signedDivergence": 42.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-02T23:55:13-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "-110",
+          "stake": 2.5,
+          "modelProb": 56.45,
+          "modelEdge": 4.07,
+          "ev": 7.77,
+          "betsPct": 45.0,
+          "handlePct": 88.0,
+          "signedDivergence": 43.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
             "SMART_MONEY"
@@ -14202,34 +14281,27 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.5,
-      "modelProb": 54.62,
+      "modelProb": 54.77,
       "fairProb": 48.92,
-      "flowAdjustment": 5.7,
+      "flowAdjustment": 5.85,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
       "lineMoveMinutes": null,
       "liquidityStatus": null,
       "impliedProb": 51.22,
-      "modelEdge": 3.4,
-      "ev": 6.64,
+      "modelEdge": 3.55,
+      "ev": 6.93,
       "coherence": null,
       "whale": false,
-      "handlePct": 97.0,
+      "handlePct": 98.0,
       "betsPct": 59.0,
-      "divergence": 38.0,
-      "signedDivergence": 38.0,
-      "reason": "SMART MONEY. 4 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 39.0,
+      "signedDivergence": 39.0,
+      "reason": "SMART MONEY. 5 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-13",
       "time": "14:25",
       "iso": "2026-09-13T14:25:00",
       "history": [
-        {
-          "time": "06:45",
-          "timestamp": "2026-09-02T06:45:10",
-          "betsPct": 60.0,
-          "handlePct": 98.0,
-          "odds": "-105"
-        },
         {
           "time": "06:50",
           "timestamp": "2026-09-02T06:50:09",
@@ -15622,6 +15694,13 @@
           "betsPct": 59.0,
           "handlePct": 97.0,
           "odds": "-105"
+        },
+        {
+          "time": "23:55",
+          "timestamp": "2026-09-02T23:55:13",
+          "betsPct": 59.0,
+          "handlePct": 98.0,
+          "odds": "-105"
         }
       ],
       "clv": {
@@ -15629,7 +15708,7 @@
           "odds": "-105",
           "prob": 51.22,
           "divergence": 38.0,
-          "timestamp": "2026-09-02T06:45:10"
+          "timestamp": "2026-09-02T06:50:09"
         },
         "checkpoints": {
           "4h": null,
@@ -15646,8 +15725,8 @@
       "historyId": "9c29f86c20f24a89bf76d3b4",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-02T23:50:12-06:00",
-      "qualifiedObservations": 200,
+      "lastQualifiedAt": "2026-09-02T23:55:13-06:00",
+      "qualifiedObservations": 201,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -15719,6 +15798,25 @@
           "betsPct": 59.0,
           "handlePct": 97.0,
           "signedDivergence": 38.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-02T23:55:13-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "-105",
+          "stake": 2.5,
+          "modelProb": 54.77,
+          "modelEdge": 3.55,
+          "ev": 6.93,
+          "betsPct": 59.0,
+          "handlePct": 98.0,
+          "signedDivergence": 39.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
             "SMART_MONEY"
