@@ -68531,3 +68531,35 @@ warning: in the working copy of 'refresh_log.txt', LF will be replaced by CRLF t
 ------------------------------------------------------------
 [2026-09-02 22:37:50] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
 ------------------------------------------------------------
+warning: in the working copy of 'refresh_log.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/dashboard/generate_results_viewer.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/main.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/pipeline/settle_history_espn.py', LF will be replaced by CRLF the next time Git touches it
+[INFO] Archivos preparados en el área de stage.
+------------------------------------------------------------
+[2026-09-02 22:38:07] [STEP 3/4] EJECUTANDO: Creación de Commit descriptivo (git commit)
+------------------------------------------------------------
+[main df606a87c] Auto-update: Datos, scripts y assets (2026-09-02 22:38)
+ 70 files changed, 150814 insertions(+), 44121 deletions(-)
+ create mode 100644 data/results/.espn_backfill_date
+ rename data/snapshots/sports/{20260902_052010.json => 20260902_220439.json} (80%)
+ rename data/snapshots/sports/{20260902_052510.json => 20260902_220513.json} (79%)
+------------------------------------------------------------
+[2026-09-02 22:38:32] [STEP 4/4] EJECUTANDO: Sincronización con GitHub (git push)
+------------------------------------------------------------
+
+============================================================
+[2026-09-02 22:39:03] PROCESO FINALIZADO: Todo se actualizó y publicó con éxito.
+============================================================
+
+============================================================
+[2026-09-02 22:40:04] INICIANDO SCRIPT DE AUTO-PUBLICACIÓN
+============================================================
+------------------------------------------------------------
+[2026-09-02 22:40:05] [STEP 1/4] EJECUTANDO: Script de Python (src\main.py)
+------------------------------------------------------------
+
+[SUCCESS] Python finalizó correctamente con código de salida 0.
+------------------------------------------------------------
+[2026-09-02 22:44:08] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
+------------------------------------------------------------
