@@ -71084,3 +71084,62 @@ P├ígina repetida; finaliza la paginaci├│n.
 ------------------------------------------------------------
 [2026-09-03 15:31:18] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
 ------------------------------------------------------------
+warning: in the working copy of 'refresh_log.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/scraper/draftkings.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/scraper/parser.py', LF will be replaced by CRLF the next time Git touches it
+[INFO] Archivos preparados en el área de stage.
+------------------------------------------------------------
+[2026-09-03 15:31:21] [STEP 3/4] EJECUTANDO: Creación de Commit descriptivo (git commit)
+------------------------------------------------------------
+[main 883e25a37] Auto-update: Datos, scripts y assets (2026-09-03 15:31)
+ 19 files changed, 10274 insertions(+), 6774 deletions(-)
+ delete mode 100644 data/snapshots/sports/20260902_111010.json
+ create mode 100644 data/snapshots/sports/20260903_153010.json
+------------------------------------------------------------
+[2026-09-03 15:31:21] [STEP 4/4] EJECUTANDO: Sincronización con GitHub (git push)
+------------------------------------------------------------
+
+============================================================
+[2026-09-03 15:31:28] PROCESO FINALIZADO: Todo se actualizó y publicó con éxito.
+============================================================
+
+============================================================
+[2026-09-03 15:35:02] INICIANDO SCRIPT DE AUTO-PUBLICACIÓN
+============================================================
+------------------------------------------------------------
+[2026-09-03 15:35:02] [STEP 1/4] EJECUTANDO: Script de Python (src\main.py)
+------------------------------------------------------------
+15:35:03 - [INFO] - Se cargaron 1 ligas desde la configuraci├│n.
+15:35:03 - [INFO] - ≡ƒöä Procesando: 'SPORTS' | Slug: 'Sports' | Date Range: 'n30days'
+15:35:06 - [INFO] - Γ£à 'SPORTS' descargado con ├⌐xito. Elementos/Archivos: 5
+15:35:06 - [INFO] - Proceso finalizado. Ligas procesadas exitosamente: 1
+
+============================================================
+SPORTS
+Rango: n30days
+============================================================
+Descargando p├ígina 1...
+Descargando p├ígina 2...
+Descargando p├ígina 3...
+Descargando p├ígina 4...
+Descargando p├ígina 5...
+Descargando p├ígina 6...
+P├ígina repetida; finaliza la paginaci├│n.
+Γ£ô JSON creado: sports.json (Total juegos incluidos: 50)
+≡ƒôè Calibraci├│n CLV actualizada: 1717 picks en el log, peso medido = 0.0007
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-03\sharpie.json (28 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-04\sharpie.json (9 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-05\sharpie.json (23 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-06\sharpie.json (5 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-13\sharpie.json (11 picks)
+[OK] Dashboard generado con ├⌐xito: C:\Users\Administrator\Desktop\sharpie-dashboard\index.html
+[OK] C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-03\sharpie.json
+[AUDITOR├ìA ESPN] C:\Users\Administrator\Desktop\sharpie-dashboard\data\results\settlement_audit.json
+[OK] C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-02\sharpie.json
+[AUDITOR├ìA ESPN] C:\Users\Administrator\Desktop\sharpie-dashboard\data\results\settlement_audit.json
+[ESPN] PENDING=84 ┬╖ REVIEW=32 ┬╖ EXCLUDED=183
+[OK] Visualizador de resultados: C:\Users\Administrator\Desktop\sharpie-dashboard\results.html (524 picks)
+[SUCCESS] Python finalizó correctamente con código de salida 0.
+------------------------------------------------------------
+[2026-09-03 15:36:10] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
+------------------------------------------------------------
