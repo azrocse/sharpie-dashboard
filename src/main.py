@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SETTLEMENT_STATE_DIR = BASE_DIR / "data" / "results"
 BACKFILL_MARKER = SETTLEMENT_STATE_DIR / ".espn_backfill_date"
 SETTLEMENT_CHECK_MARKER = SETTLEMENT_STATE_DIR / ".espn_last_check"
-BACKFILL_VERSION = "legacy-stake-normalization-v7"
+BACKFILL_VERSION = "canonical-history-and-espn-v8"
 SETTLEMENT_INTERVAL_MINUTES = 30
 RESULTS_HTML = BASE_DIR / "results.html"
 HISTORY_DIR = BASE_DIR / "data" / "history"
@@ -46,7 +46,16 @@ def results_view_is_stale():
         return True
     try:
         output_mtime = RESULTS_HTML.stat().st_mtime
-        return any(path.stat().st_mtime > output_mtime for path in HISTORY_DIR.glob("????-??-??/sharpie.json"))
+        history_changed = any(path.stat().st_mtime > output_mtime for path in HISTORY_DIR.glob("????-??-??/sharpie.json"))
+        viewer_sources = (
+            BASE_DIR / "src" / "dashboard" / "generate_results_viewer.py",
+            BASE_DIR / "src" / "dashboard" / "templates" / "results.html",
+            BASE_DIR / "src" / "dashboard" / "templates" / "results_body.html",
+            BASE_DIR / "src" / "dashboard" / "assets" / "css" / "results.css",
+            BASE_DIR / "src" / "dashboard" / "assets" / "js" / "results.js",
+        )
+        viewer_changed = any(path.exists() and path.stat().st_mtime > output_mtime for path in viewer_sources)
+        return history_changed or viewer_changed
     except OSError:
         return True
 

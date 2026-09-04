@@ -213,6 +213,20 @@ def date_relation(date_text):
     return "PAST" if event_date < today else "FUTURE" if event_date > today else "TODAY"
 
 
+def pick_date_text(pick):
+    """Recupera la fecha incluso en registros heredados sin campo date."""
+    lookup = pick.get("eventLookup") or {}
+    for value in (pick.get("date"), lookup.get("scheduledAt"), pick.get("iso")):
+        match = re.match(r"^(\d{4}-\d{2}-\d{2})", str(value or "").strip())
+        if match:
+            return match.group(1)
+    legacy = re.search(r"\b(\d{1,2})/(\d{1,2})\b", str(pick.get("time") or ""))
+    if legacy:
+        year = datetime.now(CDMX_TIMEZONE).year
+        return f"{year}-{int(legacy.group(1)):02d}-{int(legacy.group(2)):02d}"
+    return ""
+
+
 def search_dates(date_text, include_adjacent=False):
     try:
         base = datetime.strptime(str(date_text)[:10], "%Y-%m-%d").date()
@@ -345,7 +359,16 @@ def pick_datetime(pick):
     parsed = parse_event_datetime(lookup.get("scheduledAt") or pick.get("iso"), assume_cdmx=True)
     if parsed:
         return parsed
-    date_text, time_text = str(pick.get("date") or "")[:10], str(pick.get("time") or "")
+    date_text, time_text = pick_date_text(pick), str(pick.get("time") or "")
+    clock = re.search(r"(\d{1,2}:\d{2}\s*(?:AM|PM)?)", time_text, flags=re.IGNORECASE)
+    if clock:
+        time_text = clock.group(1).replace(" ", "")
+        for fmt in ("%Y-%m-%dT%I:%M%p", "%Y-%m-%dT%H:%M"):
+            try:
+                local = datetime.strptime(f"{date_text}T{time_text}", fmt).replace(tzinfo=CDMX_TIMEZONE)
+                return local.astimezone(timezone.utc)
+            except ValueError:
+                pass
     return parse_event_datetime(f"{date_text}T{time_text}", assume_cdmx=True)
 
 
@@ -363,14 +386,27 @@ def event_match_score(pick, event):
         expected_away = expected_away or left
         expected_home = expected_home or right
     if expected_home and expected_away:
-        direct = side_similarity(expected_home, competitors.get("home")) + side_similarity(expected_away, competitors.get("away"))
-        reverse = side_similarity(expected_home, competitors.get("away")) + side_similarity(expected_away, competitors.get("home"))
-        score = max(direct, reverse) * 50.0
+        direct_pair = (
+            side_similarity(expected_home, competitors.get("home")),
+            side_similarity(expected_away, competitors.get("away")),
+        )
+        reverse_pair = (
+            side_similarity(expected_home, competitors.get("away")),
+            side_similarity(expected_away, competitors.get("home")),
+        )
+        best_pair = direct_pair if sum(direct_pair) >= sum(reverse_pair) else reverse_pair
+        score = sum(best_pair) * 50.0
         expected_time = pick_datetime(pick)
         event_time = parse_event_datetime(event.get("date"))
+        time_bonus = 0.0
         if expected_time and event_time:
             hours = abs((expected_time - event_time).total_seconds()) / 3600.0
-            score += max(0.0, 24.0 - hours * 4.0)
+            time_bonus = max(0.0, 24.0 - hours * 4.0)
+        # El horario o un nombre compartido no bastan: deben reconocerse ambos
+        # contendientes. Evita cruces como Sunderland vs Connecticut Sun.
+        if min(best_pair) < 0.50:
+            return sum(best_pair) * 25.0 + time_bonus * 0.25
+        score += time_bonus
         return score
 
     game = pick.get("game") or ""
@@ -595,7 +631,7 @@ def write_settlement_audit(history_dir):
             lookup = pick.get("eventLookup") or {}
             status = str(settlement.get("status") or "PENDING").upper()
             reason = settlement.get("failureCode") or settlement.get("notes") or "SIN_DETALLE"
-            relation = date_relation(pick.get("date") or lookup.get("scheduledAt", "")[:10])
+            relation = date_relation(pick_date_text(pick))
             route = "/".join(filter(None, (str(lookup.get("espnSport") or ""), str(lookup.get("espnLeague") or "")))) or "SIN_RUTA"
             status_counts[status] += 1
             relation_counts[f"{status}_{relation}"] += 1
@@ -660,7 +696,7 @@ def update_pick_from_espn(pick, client, force=False):
         return "SKIPPED_FINAL"
 
     checked_at = now_iso()
-    date_text = pick.get("date") or (pick.get("eventLookup") or {}).get("scheduledAt", "")[:10]
+    date_text = pick_date_text(pick)
     relation = date_relation(date_text)
     if relation == "FUTURE" and not force:
         settlement.update({
@@ -718,7 +754,9 @@ def update_pick_from_espn(pick, client, force=False):
     best = candidates[0] if candidates else None
     ambiguous = len(candidates) > 1 and best[0] < 1000 and best[0] - candidates[1][0] < 8.0
     if best is None or best[0] < 72.0 or ambiguous:
-        error = "AMBIGUOUS_MATCH" if ambiguous else "NO_MATCH"
+        # Una similitud baja nunca es una ambigüedad: simplemente no es el
+        # evento. Antes esto producía falsos REVIEW entre deportes distintos.
+        error = "NO_MATCH" if best is None or best[0] < 72.0 else "AMBIGUOUS_MATCH"
         if best is None and request_errors and not successful_requests:
             raise RuntimeError(request_errors[0])
         confidence = best[0] if best else 0.0
@@ -768,6 +806,8 @@ def update_pick_from_espn(pick, client, force=False):
         "matchStatus": "MATCHED", "matchConfidence": round(confidence, 2),
         "matchedDate": matched_date, "attemptedDates": dates,
     })
+    lookup.pop("bestCandidate", None)
+    settlement.pop("failureCode", None)
 
     common = {
         "source": "ESPN", "sourceUrl": response["url"], "eventId": str(event.get("id")),
@@ -778,11 +818,11 @@ def update_pick_from_espn(pick, client, force=False):
     if state == "CANCELED":
         result, notes = "VOID", "Evento cancelado por ESPN"
     elif state == "POSTPONED":
-        settlement.update(common, status="PENDING", notes="Evento pospuesto; requiere nueva fecha")
+        settlement.update(common, status="PENDING", notes="Evento pospuesto; requiere nueva fecha", failureCode="EVENT_POSTPONED")
         pick["settlement"] = settlement
         return "PENDING"
     elif state != "FINAL":
-        settlement.update(common, status="PENDING", notes="Evento aún no finaliza")
+        settlement.update(common, status="PENDING", notes="Evento aún no finaliza", failureCode="EVENT_IN_PROGRESS")
         pick["settlement"] = settlement
         return "PENDING"
     else:
@@ -825,7 +865,7 @@ def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=Fa
             except Exception as exc:
                 outcome = "ERROR"
                 settlement = pick.setdefault("settlement", {})
-                relation = date_relation(pick.get("date") or (pick.get("eventLookup") or {}).get("scheduledAt", "")[:10])
+                relation = date_relation(pick_date_text(pick))
                 visible_status = "REVIEW" if relation in {"PAST", "INVALID"} else "PENDING"
                 settlement.update({
                     "status": visible_status, "checkedAt": now_iso(), "notes": str(exc),
