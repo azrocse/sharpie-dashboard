@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-05",
-  "updatedAt": "2026-09-03T18:55:09-06:00",
+  "updatedAt": "2026-09-03T19:00:09-06:00",
   "count": 23,
   "pendingSettlement": 23,
   "picks": [
     {
-      "id": 183,
+      "id": 147,
       "game": "Oregon State @ Houston",
       "away": "Oregon State",
       "home": "Houston",
@@ -37,7 +37,7 @@
       "flowAdjustment": 4.95,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 25.0,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 53.49,
       "modelEdge": 2.54,
@@ -472,6 +472,13 @@
           "betsPct": 15.0,
           "handlePct": 48.0,
           "odds": "-115"
+        },
+        {
+          "time": "19:00",
+          "timestamp": "2026-09-03T19:00:09",
+          "betsPct": 15.0,
+          "handlePct": 48.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -496,8 +503,8 @@
       "historyId": "073d2eb70dfe5010c1bacb51",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-03T15:30:10-06:00",
-      "lastQualifiedAt": "2026-09-03T18:55:09-06:00",
-      "qualifiedObservations": 36,
+      "lastQualifiedAt": "2026-09-03T19:00:09-06:00",
+      "qualifiedObservations": 37,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-03T15:30:10-06:00",
@@ -5208,7 +5215,7 @@
       "needsSettlement": true
     },
     {
-      "id": 191,
+      "id": 155,
       "game": "East Carolina @ Alabama",
       "away": "East Carolina",
       "home": "Alabama",
@@ -5240,7 +5247,7 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 20.0,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 4.35,
       "modelEdge": 7.87,
@@ -5248,21 +5255,14 @@
       "coherence": "contradictoria",
       "whale": true,
       "handlePct": 88.0,
-      "betsPct": 9.0,
-      "divergence": 79.0,
-      "signedDivergence": 79.0,
+      "betsPct": 8.0,
+      "divergence": 80.0,
+      "signedDivergence": 80.0,
       "reason": "SMART MONEY. la cuota se movió en contra de la dirección del dinero, coherencia contradictoria.",
       "date": "2026-09-05",
       "time": "10:00",
       "iso": "2026-09-05T10:00:00",
       "history": [
-        {
-          "time": "14:20",
-          "timestamp": "2026-09-02T14:20:10",
-          "betsPct": 4.0,
-          "handlePct": 64.0,
-          "odds": "+2200"
-        },
         {
           "time": "14:25",
           "timestamp": "2026-09-02T14:25:10",
@@ -6641,6 +6641,13 @@
           "betsPct": 9.0,
           "handlePct": 88.0,
           "odds": "+2200"
+        },
+        {
+          "time": "19:00",
+          "timestamp": "2026-09-03T19:00:09",
+          "betsPct": 8.0,
+          "handlePct": 88.0,
+          "odds": "+2200"
         }
       ],
       "clv": {
@@ -6648,7 +6655,7 @@
           "odds": "+2200",
           "prob": 4.35,
           "divergence": 60.0,
-          "timestamp": "2026-09-02T14:20:10"
+          "timestamp": "2026-09-02T14:25:10"
         },
         "checkpoints": {
           "4h": null,
@@ -6665,8 +6672,8 @@
       "historyId": "a175bdc08a7030b38fe44fcb",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T18:55:09-06:00",
-      "qualifiedObservations": 287,
+      "lastQualifiedAt": "2026-09-03T19:00:09-06:00",
+      "qualifiedObservations": 288,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -6961,6 +6968,26 @@
           "betsPct": 9.0,
           "handlePct": 88.0,
           "signedDivergence": 79.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T19:00:09-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+2200",
+          "stake": 2.5,
+          "modelProb": 12.22,
+          "modelEdge": 7.87,
+          "ev": 181.06,
+          "betsPct": 8.0,
+          "handlePct": 88.0,
+          "signedDivergence": 80.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
             "SMART_MONEY",
@@ -9647,7 +9674,7 @@
       "needsSettlement": true
     },
     {
-      "id": 185,
+      "id": 149,
       "game": "Oregon State @ Houston",
       "away": "Oregon State",
       "home": "Houston",
@@ -9673,34 +9700,27 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.0,
-      "modelProb": 15.02,
+      "modelProb": 15.17,
       "fairProb": 9.17,
-      "flowAdjustment": 5.85,
+      "flowAdjustment": 6.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 25.0,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 9.52,
-      "modelEdge": 5.5,
-      "ev": 57.71,
+      "modelEdge": 5.65,
+      "ev": 59.29,
       "coherence": "contradictoria",
       "whale": true,
       "handlePct": 45.0,
-      "betsPct": 6.0,
-      "divergence": 39.0,
-      "signedDivergence": 39.0,
+      "betsPct": 5.0,
+      "divergence": 40.0,
+      "signedDivergence": 40.0,
       "reason": "SMART MONEY. la cuota se movió en contra de la dirección del dinero, coherencia contradictoria.",
       "date": "2026-09-05",
       "time": "10:00",
       "iso": "2026-09-05T10:00:00",
       "history": [
-        {
-          "time": "14:20",
-          "timestamp": "2026-09-02T14:20:10",
-          "betsPct": 4.0,
-          "handlePct": 43.0,
-          "odds": "+950"
-        },
         {
           "time": "14:25",
           "timestamp": "2026-09-02T14:25:10",
@@ -11058,6 +11078,13 @@
           "betsPct": 6.0,
           "handlePct": 45.0,
           "odds": "+950"
+        },
+        {
+          "time": "19:00",
+          "timestamp": "2026-09-03T19:00:09",
+          "betsPct": 5.0,
+          "handlePct": 45.0,
+          "odds": "+950"
         }
       ],
       "clv": {
@@ -11065,7 +11092,7 @@
           "odds": "+950",
           "prob": 9.52,
           "divergence": 39.0,
-          "timestamp": "2026-09-02T14:20:10"
+          "timestamp": "2026-09-02T14:25:10"
         },
         "checkpoints": {
           "4h": null,
@@ -11082,8 +11109,8 @@
       "historyId": "afc0e3e92187789776f216e0",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T18:55:09-06:00",
-      "qualifiedObservations": 284,
+      "lastQualifiedAt": "2026-09-03T19:00:09-06:00",
+      "qualifiedObservations": 285,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -11421,6 +11448,25 @@
           "betsPct": 6.0,
           "handlePct": 45.0,
           "signedDivergence": 39.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T19:00:09-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+950",
+          "stake": 2.0,
+          "modelProb": 15.17,
+          "modelEdge": 5.65,
+          "ev": 59.29,
+          "betsPct": 5.0,
+          "handlePct": 45.0,
+          "signedDivergence": 40.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
             "SMART_MONEY"
@@ -14319,7 +14365,7 @@
       "needsSettlement": true
     },
     {
-      "id": 135,
+      "id": 125,
       "game": "Texas State @ Texas",
       "away": "Texas State",
       "home": "Texas",
@@ -14351,29 +14397,22 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 20.0,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 3.85,
       "modelEdge": 7.89,
       "ev": 205.24,
-      "coherence": null,
+      "coherence": "contradictoria",
       "whale": true,
-      "handlePct": 70.0,
+      "handlePct": 73.0,
       "betsPct": 7.0,
-      "divergence": 63.0,
-      "signedDivergence": 63.0,
-      "reason": "SMART MONEY. 7 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 66.0,
+      "signedDivergence": 66.0,
+      "reason": "SMART MONEY. la cuota se movió en contra de la dirección del dinero, coherencia contradictoria.",
       "date": "2026-09-05",
       "time": "13:30",
       "iso": "2026-09-05T13:30:00",
       "history": [
-        {
-          "time": "14:20",
-          "timestamp": "2026-09-02T14:20:10",
-          "betsPct": 6.0,
-          "handlePct": 72.0,
-          "odds": "+2500"
-        },
         {
           "time": "14:25",
           "timestamp": "2026-09-02T14:25:10",
@@ -15752,6 +15791,13 @@
           "betsPct": 7.0,
           "handlePct": 70.0,
           "odds": "+2500"
+        },
+        {
+          "time": "19:00",
+          "timestamp": "2026-09-03T19:00:09",
+          "betsPct": 7.0,
+          "handlePct": 73.0,
+          "odds": "+2500"
         }
       ],
       "clv": {
@@ -15759,7 +15805,7 @@
           "odds": "+2500",
           "prob": 3.85,
           "divergence": 66.0,
-          "timestamp": "2026-09-02T14:20:10"
+          "timestamp": "2026-09-02T14:25:10"
         },
         "checkpoints": {
           "4h": null,
@@ -15776,8 +15822,8 @@
       "historyId": "1d12a310d383a8ae86442cfa",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T18:55:09-06:00",
-      "qualifiedObservations": 287,
+      "lastQualifiedAt": "2026-09-03T19:00:09-06:00",
+      "qualifiedObservations": 288,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -15938,6 +15984,26 @@
             "SHARP_VS_PUBLIC"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T19:00:09-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+2500",
+          "stake": 2.5,
+          "modelProb": 11.74,
+          "modelEdge": 7.89,
+          "ev": 205.24,
+          "betsPct": 7.0,
+          "handlePct": 73.0,
+          "signedDivergence": 66.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
@@ -15977,7 +16043,7 @@
       "needsSettlement": true
     },
     {
-      "id": 147,
+      "id": 137,
       "game": "Boise State @ Oregon",
       "away": "Boise State",
       "home": "Oregon",
@@ -16003,34 +16069,27 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.5,
-      "modelProb": 14.32,
+      "modelProb": 14.62,
       "fairProb": 7.42,
-      "flowAdjustment": 6.9,
+      "flowAdjustment": 7.2,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 20.0,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 7.69,
-      "modelEdge": 6.63,
-      "ev": 86.16,
-      "coherence": null,
+      "modelEdge": 6.93,
+      "ev": 90.06,
+      "coherence": "contradictoria",
       "whale": true,
-      "handlePct": 52.0,
+      "handlePct": 54.0,
       "betsPct": 6.0,
-      "divergence": 46.0,
-      "signedDivergence": 46.0,
-      "reason": "SMART MONEY. 12 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 48.0,
+      "signedDivergence": 48.0,
+      "reason": "SMART MONEY. la cuota se movió en contra de la dirección del dinero, coherencia contradictoria.",
       "date": "2026-09-05",
       "time": "13:30",
       "iso": "2026-09-05T13:30:00",
       "history": [
-        {
-          "time": "14:20",
-          "timestamp": "2026-09-02T14:20:10",
-          "betsPct": 5.0,
-          "handlePct": 52.0,
-          "odds": "+1200"
-        },
         {
           "time": "14:25",
           "timestamp": "2026-09-02T14:25:10",
@@ -17409,6 +17468,13 @@
           "betsPct": 6.0,
           "handlePct": 52.0,
           "odds": "+1200"
+        },
+        {
+          "time": "19:00",
+          "timestamp": "2026-09-03T19:00:09",
+          "betsPct": 6.0,
+          "handlePct": 54.0,
+          "odds": "+1200"
         }
       ],
       "clv": {
@@ -17416,7 +17482,7 @@
           "odds": "+1200",
           "prob": 7.69,
           "divergence": 47.0,
-          "timestamp": "2026-09-02T14:20:10"
+          "timestamp": "2026-09-02T14:25:10"
         },
         "checkpoints": {
           "4h": null,
@@ -17433,8 +17499,8 @@
       "historyId": "438891ce4737a40f927dbb57",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T18:55:09-06:00",
-      "qualifiedObservations": 287,
+      "lastQualifiedAt": "2026-09-03T19:00:09-06:00",
+      "qualifiedObservations": 288,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -17683,6 +17749,25 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T19:00:09-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+1200",
+          "stake": 2.5,
+          "modelProb": 14.62,
+          "modelEdge": 6.93,
+          "ev": 90.06,
+          "betsPct": 6.0,
+          "handlePct": 54.0,
+          "signedDivergence": 48.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
@@ -17722,7 +17807,7 @@
       "needsSettlement": true
     },
     {
-      "id": 129,
+      "id": 119,
       "game": "Boston College @ Cincinnati",
       "away": "Boston College",
       "home": "Cincinnati",
@@ -17754,29 +17839,22 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 20.0,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 28.99,
       "modelEdge": 6.8,
       "ev": 23.48,
       "coherence": null,
       "whale": true,
-      "handlePct": 96.0,
-      "betsPct": 21.0,
+      "handlePct": 97.0,
+      "betsPct": 22.0,
       "divergence": 75.0,
       "signedDivergence": 75.0,
-      "reason": "SMART MONEY. 12 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "reason": "SMART MONEY. 13 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-05",
       "time": "13:30",
       "iso": "2026-09-05T13:30:00",
       "history": [
-        {
-          "time": "14:20",
-          "timestamp": "2026-09-02T14:20:10",
-          "betsPct": 19.0,
-          "handlePct": 97.0,
-          "odds": "+245"
-        },
         {
           "time": "14:25",
           "timestamp": "2026-09-02T14:25:10",
@@ -19078,6 +19156,13 @@
           "betsPct": 21.0,
           "handlePct": 96.0,
           "odds": "+245"
+        },
+        {
+          "time": "19:00",
+          "timestamp": "2026-09-03T19:00:09",
+          "betsPct": 22.0,
+          "handlePct": 97.0,
+          "odds": "+245"
         }
       ],
       "clv": {
@@ -19085,7 +19170,7 @@
           "odds": "+245",
           "prob": 28.99,
           "divergence": 78.0,
-          "timestamp": "2026-09-02T14:20:10"
+          "timestamp": "2026-09-02T14:25:10"
         },
         "checkpoints": {
           "4h": null,
@@ -19102,8 +19187,8 @@
       "historyId": "6383f36675f227cb90e9b61f",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T13:45:11-06:00",
-      "lastQualifiedAt": "2026-09-03T18:55:09-06:00",
-      "qualifiedObservations": 194,
+      "lastQualifiedAt": "2026-09-03T19:00:09-06:00",
+      "qualifiedObservations": 195,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T13:45:11-06:00",
@@ -19337,6 +19422,26 @@
           "ev": 23.48,
           "betsPct": 21.0,
           "handlePct": 96.0,
+          "signedDivergence": 75.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T19:00:09-06:00",
+          "pickCategory": "WHALE",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+245",
+          "stake": 3.0,
+          "modelProb": 35.79,
+          "modelEdge": 6.8,
+          "ev": 23.48,
+          "betsPct": 22.0,
+          "handlePct": 97.0,
           "signedDivergence": 75.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
@@ -23564,7 +23669,7 @@
       "needsSettlement": true
     },
     {
-      "id": 137,
+      "id": 127,
       "game": "Baylor @ Auburn",
       "away": "Baylor",
       "home": "Auburn",
@@ -23596,7 +23701,7 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 20.0,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 53.49,
       "modelEdge": 5.59,
@@ -23612,13 +23717,6 @@
       "time": "13:30",
       "iso": "2026-09-05T13:30:00",
       "history": [
-        {
-          "time": "14:20",
-          "timestamp": "2026-09-02T14:20:10",
-          "betsPct": 17.0,
-          "handlePct": 89.0,
-          "odds": "-115"
-        },
         {
           "time": "14:25",
           "timestamp": "2026-09-02T14:25:10",
@@ -24304,6 +24402,13 @@
           "betsPct": 14.0,
           "handlePct": 89.0,
           "odds": "-115"
+        },
+        {
+          "time": "19:00",
+          "timestamp": "2026-09-03T19:00:09",
+          "betsPct": 14.0,
+          "handlePct": 89.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -24311,7 +24416,7 @@
           "odds": "-115",
           "prob": 53.49,
           "divergence": 72.0,
-          "timestamp": "2026-09-02T14:20:10"
+          "timestamp": "2026-09-02T14:25:10"
         },
         "checkpoints": {
           "4h": null,
@@ -24328,8 +24433,8 @@
       "historyId": "d3e37cd87e2da094ea43fb11",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T12:05:11-06:00",
-      "lastQualifiedAt": "2026-09-03T18:55:09-06:00",
-      "qualifiedObservations": 126,
+      "lastQualifiedAt": "2026-09-03T19:00:09-06:00",
+      "qualifiedObservations": 127,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T12:05:11-06:00",
@@ -27819,7 +27924,7 @@
       "needsSettlement": true
     },
     {
-      "id": 115,
+      "id": 113,
       "game": "Clemson @ LSU",
       "away": "Clemson",
       "home": "LSU",
@@ -27845,34 +27950,27 @@
       "priority": "🔥 AHORA",
       "priorityKey": "now",
       "stake": 2.0,
-      "modelProb": 28.33,
+      "modelProb": 28.48,
       "fairProb": 24.28,
-      "flowAdjustment": 4.05,
+      "flowAdjustment": 4.2,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 20.0,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 25.32,
-      "modelEdge": 3.01,
-      "ev": 11.9,
+      "modelEdge": 3.16,
+      "ev": 12.5,
       "coherence": "confirmada",
       "whale": false,
-      "handlePct": 44.0,
+      "handlePct": 45.0,
       "betsPct": 17.0,
-      "divergence": 27.0,
-      "signedDivergence": 27.0,
+      "divergence": 28.0,
+      "signedDivergence": 28.0,
       "reason": "SMART MONEY. cuota y dinero se mueven en la misma dirección, coherencia confirmada.",
       "date": "2026-09-05",
       "time": "17:30",
       "iso": "2026-09-05T17:30:00",
       "history": [
-        {
-          "time": "14:20",
-          "timestamp": "2026-09-02T14:20:10",
-          "betsPct": 15.0,
-          "handlePct": 42.0,
-          "odds": "+310"
-        },
         {
           "time": "14:25",
           "timestamp": "2026-09-02T14:25:10",
@@ -29251,6 +29349,13 @@
           "betsPct": 17.0,
           "handlePct": 44.0,
           "odds": "+295"
+        },
+        {
+          "time": "19:00",
+          "timestamp": "2026-09-03T19:00:09",
+          "betsPct": 17.0,
+          "handlePct": 45.0,
+          "odds": "+295"
         }
       ],
       "clv": {
@@ -29258,7 +29363,7 @@
           "odds": "+310",
           "prob": 24.39,
           "divergence": 27.0,
-          "timestamp": "2026-09-02T14:20:10"
+          "timestamp": "2026-09-02T14:25:10"
         },
         "checkpoints": {
           "4h": null,
@@ -29275,8 +29380,8 @@
       "historyId": "744d90278480d6ea33ec26fa",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T06:45:14-06:00",
-      "lastQualifiedAt": "2026-09-03T18:55:09-06:00",
-      "qualifiedObservations": 287,
+      "lastQualifiedAt": "2026-09-03T19:00:09-06:00",
+      "qualifiedObservations": 288,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T06:45:14-06:00",
@@ -29785,6 +29890,25 @@
           "betsPct": 17.0,
           "handlePct": 44.0,
           "signedDivergence": 27.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-03T19:00:09-06:00",
+          "pickCategory": "PREMIUM",
+          "publicationTier": "PREMIUM_ONLY",
+          "freeRelease": false,
+          "odds": "+295",
+          "stake": 2.0,
+          "modelProb": 28.48,
+          "modelEdge": 3.16,
+          "ev": 12.5,
+          "betsPct": 17.0,
+          "handlePct": 45.0,
+          "signedDivergence": 28.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
             "SMART_MONEY"
