@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-09",
-  "updatedAt": "2026-09-03T21:04:39+00:00",
+  "updatedAt": "2026-09-04T06:44:27+00:00",
   "count": 2,
   "pendingSettlement": 2,
   "picks": [
@@ -1519,15 +1519,16 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T21:04:39+00:00",
+        "checkedAt": "2026-09-04T06:44:27+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Evento programado para una fecha futura",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -3084,15 +3085,16 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-03T21:04:39+00:00",
+        "checkedAt": "2026-09-04T06:44:27+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Evento programado para una fecha futura",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "matchConfidence": 1000.0
+        "matchConfidence": 1000.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",

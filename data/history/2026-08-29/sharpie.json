@@ -42575,7 +42575,7 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:02:32+00:00",
+        "checkedAt": "2026-09-04T06:40:18+00:00",
         "notes": "No se pudo interpretar el spread",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -42911,7 +42911,7 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:02:33+00:00",
+        "checkedAt": "2026-09-04T06:40:19+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 62.67,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -42930,7 +42930,8 @@
         ],
         "candidateEvents": 6,
         "bestCandidate": "Connecticut Sun at Dallas Wings"
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 239,
@@ -43241,7 +43242,7 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:02:34+00:00",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 62.67,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -43263,7 +43264,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 238,
@@ -43574,7 +43576,7 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:02:34+00:00",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 62.67,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -43593,7 +43595,8 @@
         ],
         "candidateEvents": 6,
         "bestCandidate": "Connecticut Sun at Dallas Wings"
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 230,
@@ -56612,20 +56615,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:34+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "WIN",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Marcador 37-21",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401858423",
         "eventName": "Massachusetts Minutemen at Rutgers Scarlet Knights",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 21.0,
+        "awayScore": 37.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -56641,7 +56645,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": 100.0
     },
     {
       "id": 178,
@@ -58043,20 +58049,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "WIN",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Total final 58 vs línea 52.5",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401858423",
         "eventName": "Massachusetts Minutemen at Rutgers Scarlet Knights",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 21.0,
+        "awayScore": 37.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -58072,7 +58079,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.2321
     },
     {
       "id": 175,
@@ -59474,20 +59483,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "LOSS",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Marcador 16-38",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401858204",
         "eventName": "Akron Zips at Wake Forest Demon Deacons",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 38.0,
+        "awayScore": 16.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -59503,7 +59513,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": -4.0
     },
     {
       "id": 172,
@@ -62045,7 +62057,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "eventLookup": {
@@ -62064,17 +62076,20 @@
         ]
       },
       "settlement": {
-        "status": "PENDING",
+        "status": "LOSS",
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401864425",
         "eventName": "West Georgia Wolves at Kennesaw State Owls",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "homeScore": 0.0,
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "homeScore": 47.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Marcador 0-47",
+        "settledAt": "2026-09-04T06:40:20+00:00"
+      },
+      "needsSettlement": false,
+      "profitUnits": -4.0
     },
     {
       "id": 166,
@@ -62373,7 +62388,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "eventLookup": {
@@ -62392,20 +62407,23 @@
         ]
       },
       "settlement": {
-        "status": "PENDING",
+        "status": "WIN",
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401864425",
         "eventName": "West Georgia Wolves at Kennesaw State Owls",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "homeScore": 0.0,
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "homeScore": 47.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Margen ajustado 24.5 con línea -22.5",
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": false,
+      "profitUnits": 0.9524
     },
     {
       "id": 165,
@@ -64028,20 +64046,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "LOSS",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Marcador 17-21",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401866409",
         "eventName": "UAlbany Great Danes at Buffalo Bulls",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 21.0,
+        "awayScore": 17.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -64057,7 +64076,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": -4.0
     },
     {
       "id": 160,
@@ -64687,20 +64708,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "WIN",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Margen ajustado 20.5 con línea +24.5",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401866409",
         "eventName": "UAlbany Great Danes at Buffalo Bulls",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 21.0,
+        "awayScore": 17.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -64716,7 +64738,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.6786
     },
     {
       "id": 158,
@@ -65015,20 +65039,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "LOSS",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Total final 38 vs línea 48.5",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401866409",
         "eventName": "UAlbany Great Danes at Buffalo Bulls",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 21.0,
+        "awayScore": 17.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -65044,7 +65069,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": -2.0
     },
     {
       "id": 157,
@@ -65674,20 +65701,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "LOSS",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Marcador 7-42",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401864424",
         "eventName": "Merrimack Warriors at Delaware Blue Hens",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 42.0,
+        "awayScore": 7.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -65703,7 +65731,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": -4.0
     },
     {
       "id": 154,
@@ -66664,20 +66694,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "LOSS",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Total final 49 vs línea 55.5",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401864424",
         "eventName": "Merrimack Warriors at Delaware Blue Hens",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 42.0,
+        "awayScore": 7.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -66693,7 +66724,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": -4.0
     },
     {
       "id": 151,
@@ -68144,20 +68177,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "WIN",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Marcador 14-13",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401856776",
         "eventName": "Colorado Buffaloes at Georgia Tech Yellow Jackets",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 13.0,
+        "awayScore": 14.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -68173,7 +68207,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": 4.875
     },
     {
       "id": 148,
@@ -69293,20 +69329,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "WIN",
+        "checkedAt": "2026-09-04T06:40:20+00:00",
+        "notes": "Margen ajustado 7.5 con línea +6.5",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401856776",
         "eventName": "Colorado Buffaloes at Georgia Tech Yellow Jackets",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 13.0,
+        "awayScore": 14.0,
+        "settledAt": "2026-09-04T06:40:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -69322,7 +69359,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": 2.2727
     },
     {
       "id": 146,
@@ -70442,20 +70481,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:35+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "WIN",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Total final 27 vs línea 50.5",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401856776",
         "eventName": "Colorado Buffaloes at Georgia Tech Yellow Jackets",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 13.0,
+        "awayScore": 14.0,
+        "settledAt": "2026-09-04T06:40:21+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -70471,7 +70511,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": 3.8095
     },
     {
       "id": 144,
@@ -71101,20 +71143,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:36+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "LOSS",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Marcador 14-66",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401856768",
         "eventName": "Idaho Vandals at Utah Utes",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 66.0,
+        "awayScore": 14.0,
+        "settledAt": "2026-09-04T06:40:21+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -71130,7 +71173,9 @@
           "2026-09-02",
           "2026-09-04"
         ]
-      }
+      },
+      "needsSettlement": false,
+      "profitUnits": -4.0
     },
     {
       "id": 142,
@@ -71760,20 +71805,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:36+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "LOSS",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Margen ajustado -18.5 con línea +33.5",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401856768",
         "eventName": "Idaho Vandals at Utah Utes",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 66.0,
+        "awayScore": 14.0,
+        "settledAt": "2026-09-04T06:40:21+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -71792,7 +71838,9 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 140,
@@ -72091,20 +72139,21 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:36+00:00",
-        "notes": "Evento aún no finaliza",
+        "status": "WIN",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Total final 80 vs línea 56.5",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401856768",
         "eventName": "Idaho Vandals at Utah Utes",
-        "homeScore": 0.0,
-        "awayScore": 0.0
+        "homeScore": 66.0,
+        "awayScore": 14.0,
+        "settledAt": "2026-09-04T06:40:21+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -72123,7 +72172,9 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": false,
+      "profitUnits": 0.9259
     },
     {
       "id": 139,
@@ -75295,7 +75346,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:36+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -75616,7 +75667,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:36+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -76585,7 +76636,7 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:37+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -76906,7 +76957,7 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:37+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "notes": "Evento aún no finaliza",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -77976,15 +78027,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:37+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856634",
         "eventName": "East Carolina Pirates at Alabama Crimson Tide",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -78000,7 +78052,8 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 124,
@@ -78719,15 +78772,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:37+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856634",
         "eventName": "East Carolina Pirates at Alabama Crimson Tide",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -78743,7 +78797,8 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 122,
@@ -80045,15 +80100,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:38+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856636",
         "eventName": "Baylor Bears at Auburn Tigers",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -80069,7 +80125,8 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 118,
@@ -80520,15 +80577,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:38+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856636",
         "eventName": "Baylor Bears at Auburn Tigers",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -80544,7 +80602,8 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 117,
@@ -81951,15 +82010,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:38+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856636",
         "eventName": "Baylor Bears at Auburn Tigers",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -81975,7 +82035,8 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 114,
@@ -82330,15 +82391,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:38+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856667",
         "eventName": "Texas State Bobcats at Texas Longhorns",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -82354,7 +82416,8 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 112,
@@ -83091,15 +83154,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:38+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856667",
         "eventName": "Texas State Bobcats at Texas Longhorns",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -83115,7 +83179,8 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 108,
@@ -83848,15 +83913,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:38+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856660",
         "eventName": "Clemson Tigers at LSU Tigers",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -83872,7 +83938,8 @@
           "2026-09-04",
           "2026-09-06"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 106,
@@ -85747,15 +85814,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260906&limit=500",
         "eventId": "401856661",
         "eventName": "Louisville Cardinals at Ole Miss Rebels",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -85771,7 +85839,8 @@
           "2026-09-05",
           "2026-09-07"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 100,
@@ -85935,15 +86004,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260906&limit=500",
         "eventId": "401856661",
         "eventName": "Louisville Cardinals at Ole Miss Rebels",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -85962,7 +86032,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 99,
@@ -89336,12 +89407,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 94,
@@ -101314,15 +101387,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260910&limit=500",
         "eventId": "401872657",
         "eventName": "San Francisco 49ers at Los Angeles Rams",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -101341,7 +101415,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 86,
@@ -104314,15 +104389,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260910&limit=500",
         "eventId": "401872657",
         "eventName": "San Francisco 49ers at Los Angeles Rams",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -104338,7 +104414,8 @@
           "2026-09-09",
           "2026-09-11"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 84,
@@ -111811,15 +111888,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872923",
         "eventName": "New Orleans Saints at Detroit Lions",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -111838,7 +111916,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 79,
@@ -117811,15 +117890,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872922",
         "eventName": "Cleveland Browns at Jacksonville Jaguars",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -117835,7 +117915,8 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 75,
@@ -122308,15 +122389,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872922",
         "eventName": "Cleveland Browns at Jacksonville Jaguars",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -122335,7 +122417,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 72,
@@ -123827,15 +123910,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 71,
@@ -131327,15 +131412,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 66,
@@ -138827,12 +138914,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T21:02:39+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 61,
@@ -155804,15 +155893,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872925",
         "eventName": "Tampa Bay Buccaneers at Cincinnati Bengals",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 48,
@@ -160304,15 +160395,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 45,
@@ -164804,12 +164897,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 42,
@@ -172282,15 +172377,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872924",
         "eventName": "New York Jets at Tennessee Titans",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -172309,7 +172405,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 37,
@@ -176801,12 +176898,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 34,
@@ -179798,15 +179897,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 32,
@@ -181580,15 +181681,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 30,
@@ -186080,15 +186183,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 27,
@@ -190566,15 +190671,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 24,
@@ -193566,12 +193673,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 22,
@@ -195063,15 +195172,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 21,
@@ -201063,12 +201174,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 17,
@@ -208560,12 +208673,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 12,
@@ -216057,15 +216172,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 7,
@@ -220557,15 +220674,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 4,
@@ -223557,15 +223676,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 2,
@@ -226557,18 +226678,20 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T21:02:40+00:00",
+        "checkedAt": "2026-09-04T06:40:21+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     }
   ],
-  "updatedAt": "2026-09-03T21:02:40+00:00",
-  "pendingSettlement": 60,
-  "settledCount": 70
+  "updatedAt": "2026-09-04T06:40:21+00:00",
+  "pendingSettlement": 44,
+  "settledCount": 86
 }

@@ -906,7 +906,7 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:01:55+00:00",
+        "checkedAt": "2026-09-04T06:38:36+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 65.76,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -948,7 +948,8 @@
         ],
         "candidateEvents": 15,
         "bestCandidate": "Osasuna at Celta Vigo"
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 267,
@@ -71822,7 +71823,7 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:02:07+00:00",
+        "checkedAt": "2026-09-04T06:38:52+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 60.29,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -71864,7 +71865,8 @@
         ],
         "candidateEvents": 69,
         "bestCandidate": "Seattle Mariners at Toronto Blue Jays"
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 165,
@@ -72825,7 +72827,7 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:02:08+00:00",
+        "checkedAt": "2026-09-04T06:38:57+00:00",
         "notes": "NO_MATCH_PAST",
         "matchConfidence": 71.0,
         "failureCode": "NO_MATCH_PAST"
@@ -72869,7 +72871,8 @@
         "bestCandidate": "San Diego Padres at Tampa Bay Rays"
       },
       "excludedFromResults": true,
-      "exclusionReason": "NO_MATCH_PAST"
+      "exclusionReason": "NO_MATCH_PAST",
+      "needsSettlement": false
     },
     {
       "id": 163,
@@ -77395,7 +77398,7 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:02:09+00:00",
+        "checkedAt": "2026-09-04T06:39:03+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 51.83,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -77437,7 +77440,8 @@
         ],
         "candidateEvents": 69,
         "bestCandidate": "Nottingham Forest at Liverpool"
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 156,
@@ -80428,7 +80432,7 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-03T21:02:09+00:00",
+        "checkedAt": "2026-09-04T06:39:08+00:00",
         "notes": "AMBIGUOUS_MATCH",
         "matchConfidence": 57.71,
         "failureCode": "AMBIGUOUS_MATCH"
@@ -80470,7 +80474,8 @@
         ],
         "candidateEvents": 69,
         "bestCandidate": "SC Paderborn 07 at Mainz"
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 153,
@@ -149551,12 +149556,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 94,
@@ -155548,15 +155555,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260909&limit=500",
         "eventId": "401872656",
         "eventName": "New England Patriots at Seattle Seahawks",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 90,
@@ -161529,15 +161538,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260910&limit=500",
         "eventId": "401872657",
         "eventName": "San Francisco 49ers at Los Angeles Rams",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -161556,7 +161566,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 86,
@@ -164529,15 +164540,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260910&limit=500",
         "eventId": "401872657",
         "eventName": "San Francisco 49ers at Los Angeles Rams",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -164553,7 +164565,8 @@
           "2026-09-09",
           "2026-09-11"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 84,
@@ -171221,15 +171234,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872923",
         "eventName": "New Orleans Saints at Detroit Lions",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -171248,7 +171262,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 79,
@@ -173435,15 +173450,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 77,
@@ -180935,15 +180952,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872660",
         "eventName": "Buffalo Bills at Houston Texans",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 72,
@@ -185416,15 +185435,16 @@
       "freePick": true,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872922",
         "eventName": "Cleveland Browns at Jacksonville Jaguars",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -185440,7 +185460,8 @@
           "2026-09-12",
           "2026-09-14"
         ]
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 69,
@@ -197432,12 +197453,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872661",
         "eventName": "Chicago Bears at Carolina Panthers",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 61,
@@ -221429,15 +221452,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T21:02:10+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 45,
@@ -225929,15 +225954,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872658",
         "eventName": "Atlanta Falcons at Pittsburgh Steelers",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 42,
@@ -228910,15 +228937,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872924",
         "eventName": "New York Jets at Tennessee Titans",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -228937,7 +228965,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 40,
@@ -233410,15 +233439,16 @@
       "freePick": false,
       "settlement": {
         "status": "PENDING",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
-        "notes": "Evento aún no finaliza",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 1000.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872924",
         "eventName": "New York Jets at Tennessee Titans",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -233437,7 +233467,8 @@
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 37,
@@ -237929,12 +237960,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 34,
@@ -240926,15 +240959,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 31,
@@ -242426,15 +242461,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872926",
         "eventName": "Arizona Cardinals at Los Angeles Chargers",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 30,
@@ -246926,15 +246963,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 27,
@@ -251426,15 +251465,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872929",
         "eventName": "Washington Commanders at Philadelphia Eagles",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 24,
@@ -254426,12 +254467,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 22,
@@ -255923,15 +255966,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872928",
         "eventName": "Miami Dolphins at Las Vegas Raiders",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 21,
@@ -261923,12 +261968,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 17,
@@ -269420,12 +269467,14 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872927",
         "eventName": "Green Bay Packers at Minnesota Vikings",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
-      }
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "needsSettlement": true
     },
     {
       "id": 12,
@@ -278417,15 +278466,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260913&limit=500",
         "eventId": "401872930",
         "eventName": "Dallas Cowboys at New York Giants",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 6,
@@ -281417,15 +281468,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 4,
@@ -284417,15 +284470,17 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     },
     {
       "id": 2,
@@ -287417,18 +287472,20 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260914&limit=500",
         "eventId": "401872931",
         "eventName": "Denver Broncos at Kansas City Chiefs",
-        "checkedAt": "2026-09-03T21:02:11+00:00",
+        "checkedAt": "2026-09-04T06:39:13+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
-        "notes": "Evento aún no finaliza"
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
-      "stakeNormalizationReason": "LEGACY_STAKE_MODEL"
+      "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
+      "needsSettlement": true
     }
   ],
-  "updatedAt": "2026-09-03T21:02:11+00:00",
-  "pendingSettlement": 31,
+  "updatedAt": "2026-09-04T06:39:13+00:00",
+  "pendingSettlement": 30,
   "settledCount": 128
 }

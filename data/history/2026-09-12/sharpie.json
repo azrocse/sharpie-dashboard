@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-12",
-  "updatedAt": "2026-09-03T23:55:10-06:00",
+  "updatedAt": "2026-09-04T06:44:27+00:00",
   "count": 1,
   "pendingSettlement": 1,
   "picks": [
@@ -54,13 +54,6 @@
       "time": "21:00",
       "iso": "2026-09-12T21:00:00",
       "history": [
-        {
-          "time": "19:00",
-          "timestamp": "2026-09-02T19:00:11",
-          "betsPct": 10.0,
-          "handlePct": 77.0,
-          "odds": "+275"
-        },
         {
           "time": "19:05",
           "timestamp": "2026-09-02T19:05:10",
@@ -767,6 +760,13 @@
           "betsPct": 9.0,
           "handlePct": 77.0,
           "odds": "+275"
+        },
+        {
+          "time": "00:00",
+          "timestamp": "2026-09-04T00:00:09",
+          "betsPct": 9.0,
+          "handlePct": 77.0,
+          "odds": "+275"
         }
       ],
       "clv": {
@@ -774,7 +774,7 @@
           "odds": "+275",
           "prob": 26.67,
           "divergence": 67.0,
-          "timestamp": "2026-09-02T19:00:11"
+          "timestamp": "2026-09-02T19:05:10"
         },
         "checkpoints": {
           "4h": null,
@@ -791,8 +791,8 @@
       "historyId": "39e1a95e4a571f9b2792e022",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-02T17:50:13-06:00",
-      "lastQualifiedAt": "2026-09-03T23:55:10-06:00",
-      "qualifiedObservations": 116,
+      "lastQualifiedAt": "2026-09-04T00:00:10-06:00",
+      "qualifiedObservations": 117,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-02T17:50:13-06:00",
@@ -837,15 +837,15 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "REVIEW",
+        "status": "PENDING",
         "source": null,
-        "checkedAt": "2026-09-03T21:04:39+00:00",
+        "checkedAt": "2026-09-04T06:44:27+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": "AMBIGUOUS_MATCH",
+        "notes": "Evento programado para una fecha futura",
         "matchConfidence": 61.38,
-        "failureCode": "AMBIGUOUS_MATCH"
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -893,5 +893,6 @@
       },
       "needsSettlement": true
     }
-  ]
+  ],
+  "settledCount": 0
 }
