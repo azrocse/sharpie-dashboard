@@ -2,7 +2,14 @@ import json
 import os
 import unicodedata
 import hashlib
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+try:
+    from .template_loader import atomic_write_json, atomic_write_text, read_utf8, render_template
+except ImportError:
+    from template_loader import atomic_write_json, atomic_write_text, read_utf8, render_template
 
 
 # ============================================================
@@ -10,6 +17,10 @@ from datetime import datetime, timedelta, timezone
 # ============================================================
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
+TEMPLATES_DIR = Path(CURRENT_DIR) / "templates"
+ASSETS_DIR = Path(CURRENT_DIR) / "assets"
+CDMX_TZ = ZoneInfo("America/Mexico_City")
+NEW_YORK_TZ = ZoneInfo("America/New_York")
 
 INPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
 SNAPSHOTS_DIR = os.path.join(BASE_DIR, "data", "snapshots")
@@ -57,7 +68,7 @@ def get_latest_file():
 # FECHAS Y HORAS
 # ============================================================
 def parse_match_datetime(raw):
-    now = datetime.now()
+    now = datetime.now(CDMX_TZ)
 
     if not raw:
         return (
@@ -68,23 +79,27 @@ def parse_match_datetime(raw):
 
     raw = str(raw).strip()
 
-    formats = [
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%d %H:%M:%S",
-    ]
+    try:
+        dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        if dt.tzinfo is not None:
+            dt = dt.astimezone(CDMX_TZ)
+        return (
+            dt.strftime("%Y-%m-%d"),
+            dt.strftime("%H:%M"),
+            dt.strftime("%Y-%m-%dT%H:%M:%S"),
+        )
+    except (TypeError, ValueError):
+        pass
 
-    for fmt in formats:
-        try:
-            dt = datetime.strptime(raw, fmt)
-
-            return (
-                dt.strftime("%Y-%m-%d"),
-                dt.strftime("%H:%M"),
-                dt.strftime("%Y-%m-%dT%H:%M:%S")
-            )
-
-        except Exception:
-            pass
+    try:
+        dt = datetime.strptime(raw, "%Y-%m-%d %H:%M:%S")
+        return (
+            dt.strftime("%Y-%m-%d"),
+            dt.strftime("%H:%M"),
+            dt.strftime("%Y-%m-%dT%H:%M:%S"),
+        )
+    except ValueError:
+        pass
 
     try:
         if "," in raw:
@@ -96,12 +111,11 @@ def parse_match_datetime(raw):
             year = now.year
             full = f"{date_part}/{year} {time_part}"
 
-            dt = datetime.strptime(
+            source_dt = datetime.strptime(
                 full,
                 "%m/%d/%Y %I:%M%p"
-            )
-
-            dt = dt - timedelta(hours=2)
+            ).replace(tzinfo=NEW_YORK_TZ)
+            dt = source_dt.astimezone(CDMX_TZ)
 
             return (
                 dt.strftime("%Y-%m-%d"),
@@ -109,7 +123,7 @@ def parse_match_datetime(raw):
                 dt.strftime("%Y-%m-%dT%H:%M:%S")
             )
 
-    except Exception:
+    except (TypeError, ValueError):
         pass
 
     return (
@@ -209,16 +223,11 @@ def classify_status(market, iso_str):
     if not iso_str:
         return "UPCOMING"
 
-    try:
-        event_dt = datetime.strptime(
-            iso_str,
-            "%Y-%m-%dT%H:%M:%S"
-        )
-
-    except ValueError:
+    event_dt = _parse_iso(iso_str)
+    if event_dt is None:
         return "UPCOMING"
 
-    if event_dt > datetime.now():
+    if event_dt > datetime.now(CDMX_TZ).replace(tzinfo=None):
         return "UPCOMING"
 
     return "LIVE"
@@ -477,7 +486,7 @@ def _load_league_snapshots(league_slug):
 def _count_changed_points(history_full):
     """
     Replica exactamente la deduplicación que hace el frontend
-    (getChangedHistoryEntries en template.html): cuenta solo los puntos donde
+    (getChangedHistoryEntries en assets/js/dashboard.js): cuenta solo los puntos donde
     Bets, Handle o Cuota realmente CAMBIARON respecto al punto anterior. Un
     pick quieto varios días acumula muchos snapshots idénticos (pipeline cada
     30 min) que no aportan nada -- contar esos como "puntos de seguimiento"
@@ -633,7 +642,10 @@ def _parse_iso(value):
     if not value:
         return None
     try:
-        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        if parsed.tzinfo is not None:
+            parsed = parsed.astimezone(CDMX_TZ).replace(tzinfo=None)
+        return parsed
     except (ValueError, TypeError):
         return None
 
@@ -908,19 +920,34 @@ def build_picks(raw_data):
     _clv_log_cache = None
     _load_clv_log()
 
-    def extract_markets(node):
+    event_fields = {
+        "game", "away", "home", "league", "sourceLeague", "sport",
+        "espnSport", "espnLeague", "eventId", "espnEventId", "time",
+        "time_raw", "startIso", "date",
+    }
+
+    def extract_markets(node, inherited=None):
         found = []
+        inherited = inherited or {}
         if isinstance(node, list):
             for item in node:
-                found.extend(extract_markets(item))
+                found.extend(extract_markets(item, inherited))
         elif isinstance(node, dict):
+            context = dict(inherited)
+            context.update({key: node[key] for key in event_fields if node.get(key) not in (None, "")})
             if "markets" in node and isinstance(node["markets"], list):
-                found.extend(node["markets"])
+                for market in node["markets"]:
+                    if isinstance(market, dict):
+                        found.append({**context, **market})
+                    else:
+                        found.extend(extract_markets(market, context))
             elif "game" in node or "pick" in node:
-                found.append(node)
-            for value in node.values():
+                found.append({**context, **node})
+            for key, value in node.items():
+                if key == "markets":
+                    continue
                 if isinstance(value, (dict, list)):
-                    found.extend(extract_markets(value))
+                    found.extend(extract_markets(value, context))
         return found
 
     markets = extract_markets(raw_data)
@@ -939,7 +966,9 @@ def build_picks(raw_data):
             continue
 
         market_name = market.get("market", market.get("type"))
-        unique_key = _market_unique_key(game, pick, market_name)
+        event_time = market.get("time") or market.get("startIso") or market.get("time_raw") or market.get("date") or ""
+        date, time, iso = parse_match_datetime(event_time)
+        unique_key = _market_unique_key(game, pick, market_name, event_date=date)
 
         if unique_key in seen_picks:
             continue
@@ -947,13 +976,11 @@ def build_picks(raw_data):
         seen_picks.add(unique_key)
         counter += 1
 
-        date, time, iso = parse_match_datetime(market.get("time", ""))
-
-        # El evento ya inició hace más de 15 min -- se oculta del dashboard.
-        # Pasada esa tolerancia, ya no es una apuesta pregame válida.
+        # Al iniciar el evento deja de ser una apuesta pregame válida.
         kickoff_dt = _parse_iso(iso)
         if kickoff_dt is not None:
-            minutes_since_kickoff = (datetime.now() - kickoff_dt).total_seconds() / 60.0
+            now_cdmx = datetime.now(CDMX_TZ).replace(tzinfo=None)
+            minutes_since_kickoff = (now_cdmx - kickoff_dt).total_seconds() / 60.0
             if minutes_since_kickoff > GAME_START_HIDE_TOLERANCE_MINUTES:
                 continue
 
@@ -1407,8 +1434,7 @@ def save_value_history(all_events, cdmx_now):
 # GENERATE DASHBOARD
 # ============================================================
 def generate_dashboard():
-    utc_now = datetime.now(timezone.utc)
-    cdmx_now = utc_now - timedelta(hours=6)
+    cdmx_now = datetime.now(CDMX_TZ)
     now_str = cdmx_now.strftime("%Y-%m-%d %H:%M:%S")
 
     template_path = os.path.join(CURRENT_DIR, "template.html")
@@ -1419,9 +1445,6 @@ def generate_dashboard():
 
     if not source_json_path or not os.path.exists(source_json_path):
         raise FileNotFoundError(f"No se encontró sharpie.json en {INPUT_DIR}")
-
-    with open(template_path, "r", encoding="utf-8") as file:
-        html_template = file.read()
 
     try:
         with open(source_json_path, "r", encoding="utf-8") as file:
@@ -1446,23 +1469,29 @@ def generate_dashboard():
 
     save_value_history(all_events, cdmx_now)
 
-    json_data = json.dumps(all_events, ensure_ascii=False)
-
-    html_content = html_template.replace("__GENERATED_AT__", now_str)
-    html_content = html_content.replace("__PICKS_JSON__", json_data)
+    json_data = json.dumps(all_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    html_content = render_template(
+        template_path,
+        {
+            "DASHBOARD_CSS": read_utf8(ASSETS_DIR / "css" / "dashboard.css"),
+            "THEME_INIT_JS": read_utf8(ASSETS_DIR / "js" / "theme-init.js"),
+            "DASHBOARD_BODY": read_utf8(TEMPLATES_DIR / "dashboard_body.html"),
+            "DASHBOARD_JS": read_utf8(ASSETS_DIR / "js" / "dashboard.js"),
+            "GENERATED_AT": now_str,
+            "PICKS_JSON": json_data,
+        },
+    )
 
     output_file = os.path.join(OUTPUT_DIR, "index.html")
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    with open(output_file, "w", encoding="utf-8") as file:
-        file.write(html_content)
+    atomic_write_text(output_file, html_content)
 
     # picks.json separado -- permite que el frontend haga polling liviano
     # (sin volver a descargar todo el HTML) para detectar picks nuevos y
     # refrescarse solo, sin que el usuario tenga que presionar F5.
     picks_json_path = os.path.join(OUTPUT_DIR, "picks.json")
-    with open(picks_json_path, "w", encoding="utf-8") as file:
-        json.dump(all_events, file, ensure_ascii=False)
+    atomic_write_json(picks_json_path, all_events, compact=True)
 
     print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file

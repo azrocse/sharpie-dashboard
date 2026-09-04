@@ -1,0 +1,270 @@
+<!-- HEADER REDISEÑADO CON ELEMENTOS VISUALES AVANZADOS -->
+<div class="header">
+    <div class="brand-container">
+        <div class="brand-logo-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+        </div>
+        <div class="brand-info">
+            <h1>Sharp<span>IE</span> <span class="brand-tag-badge">DASHBOARD v1.3</span></h1>
+            <div class="tagline">⚡ Encuentra lo que el mercado oculta</div>
+        </div>
+    </div>
+    <div class="header-meta">
+        <div class="timestamp-box">
+            <div class="time-display">
+                <span class="time-label">⏱️ Hora</span>
+                <div id="clock" class="mono">--:--:--</div>
+            </div>
+            <div class="time-divider"></div>
+            <div class="updated-display">
+                <span class="time-label">📅 Reporte (Hora CDMX)</span>
+                <div class="updated-val"><span id="generatedAtVal">__GENERATED_AT__</span></div>
+            </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌓</button>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card" id="cardAnalizados" style="border-left-color: var(--teal);">
+        <div class="stat-header">
+            <span class="stat-icon">🎯</span>
+            <div class="stat-body">
+                <div class="label">OPORTUNIDADES</div>
+                <div class="stat-value" id="statAnalizados">0</div>
+                <div class="stat-sub" id="statAnalizadosSub">0 picks analizados</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card expandable" id="cardProximos" data-target="detailProximos" style="border-left-color: var(--amber);">
+        <div class="stat-header">
+            <span class="stat-icon">⏳</span>
+            <div class="stat-body">
+                <div class="label">PRÓX. 30 MIN</div>
+                <div class="stat-value" id="statProximos">0</div>
+                <div class="stat-sub">Cierre de ventana</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-popup" id="detailProximos"></div>
+    </div>
+
+    <div class="stat-card card-featured" id="cardMercado" style="border-left-color: var(--teal);">
+        <div class="stat-header">
+            <span class="stat-icon">📊</span>
+            <div class="stat-body">
+                <div class="label">ANÁLISIS DE MERCADO</div>
+                <div class="market-distribution" id="statMercado"></div>
+                <div class="stat-sub">Misma distribución que Tendencias de Mercado</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card expandable card-featured" id="cardMejor" data-target="detailMejor" style="border-left-color: var(--gold);">
+        <div class="stat-header">
+            <span class="stat-icon">🔥</span>
+            <div class="stat-body">
+                <div class="label">TOP PICK DESTACADO</div>
+                <div class="stat-value textline" id="statMejor">Sin datos</div>
+                <div class="stat-sub">Categoría + señales + EV + Edge + stake + urgencia</div>
+            </div>
+            <span class="stat-chevron">▾</span>
+        </div>
+        <div class="stat-popup" id="detailMejor"></div>
+    </div>
+</div>
+
+<div class="analytics-section">
+    <div class="chart-card">
+        <div class="chart-header">
+            <span>📈 Probabilidad Modelo vs EV</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">X: Prob. Modelo · Y: EV</span>
+        </div>
+        <div class="chart-container">
+            <canvas id="edgeScatterChart"></canvas>
+        </div>
+    </div>
+    <div class="chart-card">
+        <div class="chart-header">
+            <span>🎯 Tendencias de Mercado</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">Señales de flujo</span>
+        </div>
+        <div class="chart-container">
+            <canvas id="marketDoughnutChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="toolbar">
+    <div class="search-box" style="position:relative;">
+        <input id="search" placeholder="Buscar por equipo, liga, mercado..." autocomplete="off" list="searchSuggestions">
+        <datalist id="searchSuggestions"></datalist>
+        <div id="searchSuggest" class="search-suggest"></div>
+    </div>
+    <div class="filter-section-label">🔍 Filtros Cualitativos</div>
+    <div class="filter-row">
+        <select id="fSort">
+            <option value="time">⏱️ Ordenar por: Hora de Inicio</option>
+            <option value="ev">📊 Ordenar por: Mayor EV</option>
+        </select>
+        <select id="fDate"><option value="">📆 Todas las fechas</option></select>
+        <select id="fTimeRange">
+            <option value="">⏱️ Hora / Rango</option>
+            <option value="in_play">🔴 En juego</option>
+            <option value="30m">⏳ Próximos 30 min</option>
+            <option value="1h">⏳ Próxima 1 hora</option>
+            <option value="2h">⏳ Próximas 2 horas</option>
+            <option value="today">📅 Eventos de Hoy</option>
+            <option value="tomorrow">📅 Eventos de Mañana</option>
+            <option value="this_week">📆 Eventos de Esta Semana</option>
+        </select>
+        <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
+        <select id="fTrend">
+            <option value="">📊 Todas las señales</option>
+            <option value="STEAM_MOVE">💨 STEAM MOVE</option>
+            <option value="REVERSE_LINE_MOVEMENT">↩️ REVERSE LINE MOVEMENT</option>
+            <option value="SMART_MONEY">🐋 SMART MONEY</option>
+            <option value="PUBLIC_HEAVY">🚨 PUBLIC HEAVY</option>
+            <option value="CONSENSUS">📊 CONSENSUS</option>
+            <option value="SHARP_VS_PUBLIC">⚔️ SHARP VS PUBLIC</option>
+            <option value="BALANCED_ACTION">⚖️ BALANCED ACTION</option>
+            <option value="LOW_LIQUIDITY">💧 LOW LIQUIDITY</option>
+            <option value="NO_ACTION">⚪ NO ACTION</option>
+        </select>
+        <button class="btn-chip" id="featuredOnly" aria-pressed="false">⭐ Pick Destacado</button>
+        <button class="btn-chip" id="freeReleaseOnly" aria-pressed="false">📣 Free para redes</button>
+        <button class="btn-chip" id="watchlistOnly" aria-pressed="false">👁 My Watchlist</button>
+        <button id="viewModeToggle" type="button" class="view-mode-btn">🎓 Modo Simple</button>
+        <button class="btn-adv-toggle" id="btnAdvToggle" aria-pressed="false">⚙️ Filtros Avanzados</button>
+        <button class="btn-chip" id="fullMarketToggle" aria-pressed="false">🔎 Mostrar mercado completo</button>
+        <button class="clear-btn" id="btnSaveFilter" style="border-color: var(--teal); color: var(--teal);">💾 Guardar filtro</button>
+        <button class="clear-btn" id="clearBtn">🧹 Limpiar filtros</button>
+    </div>
+    <div class="saved-filters-row" id="savedFiltersRow" style="display:none;"></div>
+</div>
+
+<!-- SECCIÓN DE FILTROS AVANZADOS -->
+<div class="adv-filters-panel" id="advFiltersPanel">
+    <div class="adv-panel-header">
+        <div class="adv-panel-title">
+            <span>🔢 Filtros Cuantitativos</span>
+        </div>
+        <span class="mono" style="font-size: 11px; color: var(--muted);">Ajusta los umbrales para aislar valor absoluto</span>
+    </div>
+
+    <div class="adv-filters-grid">
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">🤖 Modelo Prob. (%)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fModeloMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fModeloMax" placeholder="Max %" step="1">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">📈 Edge Modelo (%)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fEdgeMin" placeholder="Min %" step="0.5">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fEdgeMax" placeholder="Max %" step="0.5">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">📊 Valor Esperado EV (%)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fEvMin" placeholder="Min %" step="0.5">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fEvMax" placeholder="Max %" step="0.5">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">💵 Cuota (1.91 / -110)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="text" id="fCuotaMin" placeholder="Min (ej. 1.80)">
+                <span class="adv-sep">-</span>
+                <input type="text" id="fCuotaMax" placeholder="Max (ej. +200)">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">🎯 Stake Recom. (unidades)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fStakeMin" placeholder="Min u" min="1" max="5" step="0.5">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fStakeMax" placeholder="Max u" min="1" max="5" step="0.5">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">🎟️ % Bets (Tickets)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fBetsMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fBetsMax" placeholder="Max %" step="1">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">💵 % Handle (Dinero)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fHandleMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fHandleMax" placeholder="Max %" step="1">
+            </div>
+        </div>
+
+        <div class="adv-card">
+            <div class="adv-card-header">
+                <label class="adv-label">⚡ Divergencia Flujo (%)</label>
+            </div>
+            <div class="adv-inputs">
+                <input type="number" id="fDivergenciaMin" placeholder="Min %" step="1">
+                <span class="adv-sep">-</span>
+                <input type="number" id="fDivergenciaMax" placeholder="Max %" step="1">
+            </div>
+        </div>
+    </div>
+
+    <div class="active-filter-chips" id="activeFilterChips"></div>
+</div>
+
+<!-- Indicador de Registros -->
+<div id="recordsSummary" class="records-summary">
+    Mostrando <strong id="filteredCount">0</strong> <span id="recordsContext">oportunidades de</span>
+    <strong id="totalCount">0</strong> <span id="recordsTotalLabel">recomendadas</span>
+    <span id="analyzedCountSummary"></span>
+</div>
+
+<div id="cardsView"></div>
+
+<div id="emptyState" style="display:none; text-align:center; padding:60px; color:var(--muted);">
+    <h2 style="font-size:32px; margin-bottom:10px;">📭</h2>
+    <p id="emptyStateMsg">No se encontraron registros activos operables bajo estos parámetros.</p>
+</div>
+
+<div id="toast-x">
+  <span>✨</span>
+  <span>¡Copy formateado para X copiado al portapapeles!</span>
+</div>
+
+<div id="reminderNotifContainer" class="reminder-notif-container"></div>
