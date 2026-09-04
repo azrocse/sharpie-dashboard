@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-03",
-  "updatedAt": "2026-09-04T05:10:20+00:00",
+  "updatedAt": "2026-09-04T05:15:21+00:00",
   "count": 30,
-  "pendingSettlement": 6,
+  "pendingSettlement": 4,
   "picks": [
     {
       "id": 267,
@@ -7021,7 +7021,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:10:16+00:00",
+        "checkedAt": "2026-09-04T05:15:17+00:00",
         "settledAt": null,
         "homeScore": 5.0,
         "awayScore": 6.0,
@@ -8697,7 +8697,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:10:18+00:00",
+        "checkedAt": "2026-09-04T05:15:19+00:00",
         "settledAt": null,
         "homeScore": 21.0,
         "awayScore": 17.0,
@@ -26480,7 +26480,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:10:20+00:00",
+        "checkedAt": "2026-09-04T05:15:20+00:00",
         "settledAt": null,
         "homeScore": 21.0,
         "awayScore": 17.0,
@@ -28372,7 +28372,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:10:20+00:00",
+        "checkedAt": "2026-09-04T05:15:20+00:00",
         "settledAt": null,
         "homeScore": 21.0,
         "awayScore": 17.0,
@@ -28768,7 +28768,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freeRelease": true,
       "freeReleaseRank": 5,
@@ -28953,13 +28953,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "LOSS",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:10:20+00:00",
-        "settledAt": null,
-        "homeScore": 1.0,
+        "checkedAt": "2026-09-04T05:15:20+00:00",
+        "settledAt": "2026-09-04T05:15:20+00:00",
+        "homeScore": 3.0,
         "awayScore": 2.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Total final 5 vs línea 8",
         "failureCode": "AMBIGUOUS_MATCH",
         "matchConfidence": 1000.0,
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260903&limit=500",
@@ -28992,7 +28992,8 @@
         "matchedName": "St. Louis Cardinals at Los Angeles Dodgers",
         "matchedDate": "2026-09-03"
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": -2.0
     },
     {
       "id": 234,
@@ -29323,7 +29324,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freeRelease": true,
       "freeReleaseRank": 2,
@@ -29680,13 +29681,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "LOSS",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:10:20+00:00",
-        "settledAt": null,
-        "homeScore": 1.0,
+        "checkedAt": "2026-09-04T05:15:21+00:00",
+        "settledAt": "2026-09-04T05:15:21+00:00",
+        "homeScore": 3.0,
         "awayScore": 2.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Total final 5 vs línea 7.5",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260903&limit=500",
         "eventId": "401816796",
         "eventName": "St. Louis Cardinals at Los Angeles Dodgers",
@@ -29712,8 +29713,9 @@
           "2026-09-04"
         ]
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": -2.0
     }
   ],
-  "settledCount": 24
+  "settledCount": 26
 }
