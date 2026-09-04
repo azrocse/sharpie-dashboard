@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-03",
-  "updatedAt": "2026-09-04T02:15:18+00:00",
+  "updatedAt": "2026-09-04T02:20:16+00:00",
   "count": 30,
-  "pendingSettlement": 27,
+  "pendingSettlement": 24,
   "picks": [
     {
       "id": 267,
@@ -3162,7 +3162,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:14+00:00",
+        "checkedAt": "2026-09-04T02:20:12+00:00",
         "settledAt": null,
         "homeScore": 42.0,
         "awayScore": 7.0,
@@ -3851,7 +3851,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:16+00:00",
+        "checkedAt": "2026-09-04T02:20:14+00:00",
         "settledAt": null,
         "homeScore": 40.0,
         "awayScore": 0.0,
@@ -5131,7 +5131,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:16+00:00",
+        "checkedAt": "2026-09-04T02:20:14+00:00",
         "settledAt": null,
         "homeScore": 73.0,
         "awayScore": 0.0,
@@ -6661,10 +6661,10 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:16+00:00",
+        "checkedAt": "2026-09-04T02:20:14+00:00",
         "settledAt": null,
         "homeScore": 38.0,
-        "awayScore": 10.0,
+        "awayScore": 16.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401858204",
@@ -7017,7 +7017,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:16+00:00",
+        "checkedAt": "2026-09-04T02:20:14+00:00",
         "settledAt": null,
         "homeScore": 5.0,
         "awayScore": 6.0,
@@ -8693,10 +8693,10 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:17+00:00",
+        "checkedAt": "2026-09-04T02:20:15+00:00",
         "settledAt": null,
         "homeScore": 0.0,
-        "awayScore": 0.0,
+        "awayScore": 7.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401866409",
@@ -8914,7 +8914,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freeRelease": false,
       "freeReleaseRank": null,
@@ -8947,13 +8947,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "WIN",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
-        "settledAt": null,
+        "checkedAt": "2026-09-04T02:20:15+00:00",
+        "settledAt": "2026-09-04T02:20:15+00:00",
         "homeScore": 7.0,
         "awayScore": 3.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Total final 10 vs línea 9",
         "failureCode": "AMBIGUOUS_MATCH",
         "matchConfidence": 1000.0,
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260903&limit=500",
@@ -8985,7 +8985,8 @@
         "matchedName": "Miami Marlins at Kansas City Royals",
         "matchedDate": "2026-09-03"
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": 2.2727
     },
     {
       "id": 234,
@@ -9295,7 +9296,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freeRelease": false,
       "freeReleaseRank": null,
@@ -9407,13 +9408,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "LOSS",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
-        "settledAt": null,
+        "checkedAt": "2026-09-04T02:20:16+00:00",
+        "settledAt": "2026-09-04T02:20:16+00:00",
         "homeScore": 7.0,
         "awayScore": 3.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Margen ajustado -5.5 con línea -1.5",
         "failureCode": "AMBIGUOUS_MATCH",
         "matchConfidence": 1000.0,
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260903&limit=500",
@@ -9447,7 +9448,8 @@
         "matchedName": "Miami Marlins at Kansas City Royals",
         "matchedDate": "2026-09-03"
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": -2.0
     },
     {
       "id": 236,
@@ -9758,7 +9760,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freeRelease": false,
       "freeReleaseRank": null,
@@ -9830,13 +9832,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "WIN",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
-        "settledAt": null,
+        "checkedAt": "2026-09-04T02:20:16+00:00",
+        "settledAt": "2026-09-04T02:20:16+00:00",
         "homeScore": 7.0,
         "awayScore": 3.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Marcador 3-7",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260903&limit=500",
         "eventId": "401816792",
         "eventName": "Miami Marlins at Kansas City Royals",
@@ -9862,7 +9864,8 @@
           "2026-09-04"
         ]
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": 2.0833
     },
     {
       "id": 227,
@@ -10777,7 +10780,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 10.0,
         "awayScore": 7.0,
@@ -11333,7 +11336,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 40.0,
         "awayScore": 0.0,
@@ -12277,7 +12280,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 42.0,
         "awayScore": 7.0,
@@ -13030,7 +13033,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 10.0,
         "awayScore": 7.0,
@@ -14286,7 +14289,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 40.0,
         "awayScore": 0.0,
@@ -14763,7 +14766,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 6.0,
         "awayScore": 0.0,
@@ -16488,7 +16491,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 40.0,
         "awayScore": 0.0,
@@ -18502,7 +18505,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 14.0,
         "awayScore": 3.0,
@@ -20421,7 +20424,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 24.0,
         "awayScore": 7.0,
@@ -20884,7 +20887,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 24.0,
         "awayScore": 7.0,
@@ -22398,7 +22401,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 14.0,
         "awayScore": 3.0,
@@ -23869,7 +23872,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 24.0,
         "awayScore": 7.0,
@@ -24223,7 +24226,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 24.0,
         "awayScore": 7.0,
@@ -24699,10 +24702,10 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 3.0,
-        "awayScore": 1.0,
+        "awayScore": 2.0,
         "notes": "Evento aún no finaliza",
         "failureCode": "AMBIGUOUS_MATCH",
         "matchConfidence": 1000.0,
@@ -26459,10 +26462,10 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 0.0,
-        "awayScore": 0.0,
+        "awayScore": 7.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401866409",
@@ -28351,10 +28354,10 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 0.0,
-        "awayScore": 0.0,
+        "awayScore": 7.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260903&limit=500",
         "eventId": "401866409",
@@ -28934,10 +28937,10 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 0.0,
-        "awayScore": 0.0,
+        "awayScore": 1.0,
         "notes": "Evento aún no finaliza",
         "failureCode": "AMBIGUOUS_MATCH",
         "matchConfidence": 1000.0,
@@ -29661,10 +29664,10 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T02:15:18+00:00",
+        "checkedAt": "2026-09-04T02:20:16+00:00",
         "settledAt": null,
         "homeScore": 0.0,
-        "awayScore": 0.0,
+        "awayScore": 1.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260903&limit=500",
         "eventId": "401816796",
@@ -29694,5 +29697,5 @@
       "needsSettlement": true
     }
   ],
-  "settledCount": 3
+  "settledCount": 6
 }
