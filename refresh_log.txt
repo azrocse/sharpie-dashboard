@@ -80347,3 +80347,57 @@ P├ígina repetida; finaliza la paginaci├│n.
 ------------------------------------------------------------
 [2026-09-04 07:25:41] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
 ------------------------------------------------------------
+warning: in the working copy of 'index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'refresh_log.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'results.html', LF will be replaced by CRLF the next time Git touches it
+[INFO] Archivos preparados en el área de stage.
+------------------------------------------------------------
+[2026-09-04 07:25:43] [STEP 3/4] EJECUTANDO: Creación de Commit descriptivo (git commit)
+------------------------------------------------------------
+[main 7c8d34e7a] Auto-update: Datos, scripts y assets (2026-09-04 07:25)
+ 15 files changed, 220083 insertions(+), 3559 deletions(-)
+ delete mode 100644 data/snapshots/sports/20260903_080011.json
+ create mode 100644 data/snapshots/sports/20260904_072509.json
+------------------------------------------------------------
+[2026-09-04 07:25:45] [STEP 4/4] EJECUTANDO: Sincronización con GitHub (git push)
+------------------------------------------------------------
+
+============================================================
+[2026-09-04 07:26:00] PROCESO FINALIZADO: Todo se actualizó y publicó con éxito.
+============================================================
+
+============================================================
+[2026-09-04 07:30:02] INICIANDO SCRIPT DE AUTO-PUBLICACIÓN
+============================================================
+------------------------------------------------------------
+[2026-09-04 07:30:03] [STEP 1/4] EJECUTANDO: Script de Python (src\main.py)
+------------------------------------------------------------
+
+============================================================
+SPORTS
+Rango: n30days
+============================================================
+Descargando p├ígina 1...
+Descargando p├ígina 2...
+Descargando p├ígina 3...
+Descargando p├ígina 4...
+Descargando p├ígina 5...
+Descargando p├ígina 6...
+P├ígina repetida; finaliza la paginaci├│n.
+Γ£ô JSON creado: sports.json (49 juegos, 256 mercados)
+≡ƒôè Calibraci├│n CLV actualizada: 1785 picks en el log, peso medido = -0.0001
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-04\sharpie.json (11 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-05\sharpie.json (38 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-06\sharpie.json (5 picks)
+[OK] Historial de valor actualizado: C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-13\sharpie.json (11 picks)
+[OK] Dashboard generado con ├⌐xito: C:\Users\Administrator\Desktop\sharpie-dashboard\index.html
+[OK] C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-04\sharpie.json
+[AUDITOR├ìA ESPN] C:\Users\Administrator\Desktop\sharpie-dashboard\data\results\settlement_audit.json
+[OK] C:\Users\Administrator\Desktop\sharpie-dashboard\data\history\2026-09-03\sharpie.json
+[AUDITOR├ìA ESPN] C:\Users\Administrator\Desktop\sharpie-dashboard\data\results\settlement_audit.json
+[ESPN] PENDING=11 ┬╖ REVIEW=1
+[OK] Visualizador de resultados: C:\Users\Administrator\Desktop\sharpie-dashboard\results.html (543 picks)
+[SUCCESS] Python finalizó correctamente con código de salida 0.
+------------------------------------------------------------
+[2026-09-04 07:30:45] [STEP 2/4] EJECUTANDO: Rastreo de cambios en Git (git add -A)
+------------------------------------------------------------
