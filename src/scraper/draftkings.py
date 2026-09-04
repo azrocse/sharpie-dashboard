@@ -12,13 +12,7 @@ from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-try:
-    from config.settings import MAX_PAGES
-except ImportError:
-    try:
-        from settings import MAX_PAGES
-    except ImportError:
-        MAX_PAGES = 5
+from config.settings import MAX_PAGES
 
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -164,27 +158,24 @@ class DraftKingsScraper:
         return path
 
     def scrape_league(self, league_name, league_slug, date_range="today"):
-        print()
-        print("=" * 60)
-        print(league_name)
-        print("Rango:", date_range)
-        print("=" * 60)
+        range_label = "últimos 30 días" if date_range == "n30days" else date_range
+        print(f"\n   🏟️  {str(league_name).upper()}  ·  {range_label}")
 
         files = []
         page_fingerprints = set()
 
         for page in range(1, MAX_PAGES + 1):
-            print(f"Descargando página {page}...")
+            print(f"      📥 Página {page}: buscando movimientos...", flush=True)
             html = self.fetch_page(league_slug, date_range, page)
             event_keys = self.extract_event_keys(html)
 
             if not event_keys:
-                print("No se encontraron más eventos.")
+                print("      🛑 Ya no aparecieron eventos nuevos.")
                 break
 
             fingerprint = tuple(sorted(set(event_keys)))
             if fingerprint in page_fingerprints:
-                print("Página repetida; finaliza la paginación.")
+                print(f"      🔁 Página {page} repetida: hasta aquí llegó el chisme.")
                 break
             page_fingerprints.add(fingerprint)
 

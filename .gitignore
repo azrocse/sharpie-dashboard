@@ -8,9 +8,20 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
-refresh_log.txt
-data/raw/
+refresh_log*.txt
+
+# Estado de ejecución local. results.html ya contiene el historial necesario
+# para el sitio público; versionar data/ hacía crecer Git en cada corrida.
+/data/
 /src/data/
+
+*.tmp
+*.log
+cloudflared.exe
+estructura*.txt
+revision*.zip
+picks_public.json
+stats_public.json
 
 debug_*.py
 debug_*.html

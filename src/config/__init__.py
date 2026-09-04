@@ -1,0 +1,2 @@
+"""Configuración única de Sharpie."""
+

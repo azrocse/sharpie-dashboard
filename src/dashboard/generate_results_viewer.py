@@ -145,7 +145,7 @@ def generate_results_viewer(history_dir=HISTORY_DIR, output_file=OUTPUT_FILE):
     )
     output_path = Path(output_file)
     atomic_write_text(output_path, html)
-    print(f"[OK] Visualizador de resultados: {output_path} ({len(picks)} picks)")
+    print(f"   🧾 Resultados listos · {len(picks)} picks históricos · {output_path.name}")
     return str(output_path)
 
 

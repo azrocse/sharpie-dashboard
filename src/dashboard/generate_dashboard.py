@@ -911,7 +911,10 @@ def _save_calibration_report():
     with open(CALIBRATION_OUTPUT_PATH, "w", encoding="utf-8") as file:
         json.dump(report, file, ensure_ascii=False, indent=2)
 
-    print(f"📊 Calibración CLV actualizada: {report['sampleSize']} picks en el log, peso medido = {report['overallWeight']}")
+    print(
+        f"   🧪 Radar CLV · muestra: {report['sampleSize']} picks · "
+        f"ajuste observado: {report['overallWeight']}"
+    )
 
 
 def build_picks(raw_data):
@@ -1371,6 +1374,7 @@ def save_value_history(all_events, cdmx_now):
         records = _load_existing_value_records(history_file, observed_at)
         if records is None:
             continue
+        day_changed = False
 
         for item in current_items:
             history_id = _history_pick_id(item)
@@ -1378,10 +1382,12 @@ def save_value_history(all_events, cdmx_now):
             if previous is None:
                 records[history_id] = _new_history_record(item, observed_at)
                 saved_count += 1
+                day_changed = True
                 continue
 
             settlement = previous.get("settlement") or _new_history_record(item, observed_at)["settlement"]
-            event_lookup = dict(previous.get("eventLookup") or _new_history_record(item, observed_at)["eventLookup"])
+            previous_lookup = previous.get("eventLookup") or _new_history_record(item, observed_at)["eventLookup"]
+            event_lookup = dict(previous_lookup)
             if item.get("espnSport") and item.get("espnLeague"):
                 event_lookup.update({
                     "espnSport": item.get("espnSport"),
@@ -1391,8 +1397,16 @@ def save_value_history(all_events, cdmx_now):
                 })
             snapshots = previous.get("qualificationSnapshots", [])
             new_snapshot = _qualification_snapshot(item, observed_at)
-            if not snapshots or _snapshot_signature(snapshots[-1]) != _snapshot_signature(new_snapshot):
+            snapshot_changed = not snapshots or _snapshot_signature(snapshots[-1]) != _snapshot_signature(new_snapshot)
+            lookup_changed = event_lookup != previous_lookup
+            if snapshot_changed:
                 snapshots.append(new_snapshot)
+
+            # Si la versión viable y la ruta ESPN no cambiaron, conservar el
+            # registro byte por byte. Evita reescribir el historial cada diez
+            # minutos solo por actualizar una marca de tiempo.
+            if not snapshot_changed and not lookup_changed:
+                continue
 
             updated = dict(item)
             updated.update({
@@ -1409,6 +1423,10 @@ def save_value_history(all_events, cdmx_now):
             })
             records[history_id] = updated
             saved_count += 1
+            day_changed = True
+
+        if not day_changed:
+            continue
 
         ordered_records = sorted(
             records.values(),
@@ -1423,10 +1441,13 @@ def save_value_history(all_events, cdmx_now):
             "picks": ordered_records,
         }
         _atomic_write_json(history_file, payload)
-        print(f"[OK] Historial de valor actualizado: {history_file} ({len(ordered_records)} picks)")
+        print(
+            f"   💎 Valor detectado · {event_date}: {len(ordered_records)} picks "
+            f"en seguimiento"
+        )
 
     if not qualified:
-        print("[INFO] Sin nuevos picks con valor; el historial existente permanece intacto.")
+        print("   😴 Sin valor nuevo: el historial quedó intacto.")
     return saved_count
 
 
@@ -1493,7 +1514,7 @@ def generate_dashboard():
     picks_json_path = os.path.join(OUTPUT_DIR, "picks.json")
     atomic_write_json(picks_json_path, all_events, compact=True)
 
-    print(f"[OK] Dashboard generado con éxito: {output_file}")
+    print(f"   ✨ Dashboard listo · {os.path.basename(output_file)}")
     return output_file
 
 

@@ -27,6 +27,7 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from difflib import SequenceMatcher
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 
 CURRENT_DIR = Path(__file__).resolve().parent
@@ -34,7 +35,7 @@ BASE_DIR = CURRENT_DIR.parent.parent
 DEFAULT_HISTORY_DIR = BASE_DIR / "data" / "history"
 ESPN_BASE_URL = "https://site.api.espn.com/apis/site/v2/sports"
 FINAL_RESULTS = {"WIN", "LOSS", "PUSH", "VOID", "HALF_WIN", "HALF_LOSS"}
-CDMX_TIMEZONE = timezone(timedelta(hours=-6))
+CDMX_TIMEZONE = ZoneInfo("America/Mexico_City")
 
 # Se evalúa en orden: las etiquetas específicas deben preceder a las generales.
 LEAGUE_ROUTES = [
@@ -113,6 +114,28 @@ def normalize(value):
 
 def now_iso():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _semantic_pick_state(value):
+    """Estado persistible sin marcas de una consulta que no cambió nada."""
+    if isinstance(value, dict):
+        return {
+            key: _semantic_pick_state(item)
+            for key, item in value.items()
+            if key != "checkedAt"
+        }
+    if isinstance(value, list):
+        return [_semantic_pick_state(item) for item in value]
+    return value
+
+
+def _semantic_fingerprint(pick):
+    return json.dumps(
+        _semantic_pick_state(pick),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
 
 
 def resolve_route(pick):
@@ -648,6 +671,19 @@ def update_pick_from_espn(pick, client, force=False):
         pick["needsSettlement"] = True
         pick["settlement"] = settlement
         return "PENDING"
+
+    # No consultamos ESPN antes de la hora programada. Esto evita recorrer
+    # múltiples ligas para eventos de hoy que todavía no pueden tener resultado.
+    scheduled_at = pick_datetime(pick)
+    if relation == "TODAY" and scheduled_at and datetime.now(timezone.utc) < scheduled_at and not force:
+        settlement.update({
+            "status": "PENDING", "checkedAt": checked_at,
+            "notes": "Evento aún no inicia",
+            "failureCode": "NOT_STARTED_SCHEDULED",
+        })
+        pick["needsSettlement"] = True
+        pick["settlement"] = settlement
+        return "PENDING"
     routes = candidate_routes(pick)
     dates = search_dates(date_text, include_adjacent=len(routes) <= 3)
     candidates = []
@@ -766,7 +802,7 @@ def update_pick_from_espn(pick, client, force=False):
 
 def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=False, force=False, timeout=15.0):
     client = ESPNClient(timeout=timeout)
-    summary = {key: 0 for key in ("FILES", "PICKS", "WIN", "HALF_WIN", "LOSS", "HALF_LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "NORMALIZED", "EXCLUDED", "ERROR", "SKIPPED_FINAL")}
+    summary = {key: 0 for key in ("FILES", "CHANGED_FILES", "PICKS", "WIN", "HALF_WIN", "LOSS", "HALF_LOSS", "PUSH", "VOID", "PENDING", "REVIEW", "NORMALIZED", "EXCLUDED", "ERROR", "SKIPPED_FINAL")}
     for path in history_files(history_dir, date_filter):
         summary["FILES"] += 1
         try:
@@ -783,7 +819,7 @@ def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=Fa
             if not isinstance(pick, dict):
                 continue
             summary["PICKS"] += 1
-            before = json.dumps(pick, ensure_ascii=False, sort_keys=True)
+            before = _semantic_fingerprint(pick)
             try:
                 outcome = update_pick_from_espn(pick, client, force=force)
             except Exception as exc:
@@ -797,7 +833,7 @@ def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=Fa
                 })
                 print(f"[ERROR] {pick.get('historyId') or pick.get('pick')}: {exc}")
             summary[outcome] = summary.get(outcome, 0) + 1
-            changed = changed or before != json.dumps(pick, ensure_ascii=False, sort_keys=True)
+            changed = changed or before != _semantic_fingerprint(pick)
 
         if isinstance(payload, dict):
             payload["updatedAt"] = now_iso()
@@ -810,6 +846,7 @@ def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=Fa
             payload["settledCount"] = sum(1 for pick in picks if (pick.get("settlement") or {}).get("status") in FINAL_RESULTS)
         if changed and not dry_run:
             atomic_write(path, payload)
+            summary["CHANGED_FILES"] += 1
             print(f"[OK] {path}")
         elif changed:
             print(f"[DRY-RUN] {path}")
