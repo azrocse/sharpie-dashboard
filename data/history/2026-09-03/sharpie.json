@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-03",
-  "updatedAt": "2026-09-04T05:05:23+00:00",
+  "updatedAt": "2026-09-04T05:10:20+00:00",
   "count": 30,
-  "pendingSettlement": 7,
+  "pendingSettlement": 6,
   "picks": [
     {
       "id": 267,
@@ -7021,7 +7021,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:05:20+00:00",
+        "checkedAt": "2026-09-04T05:10:16+00:00",
         "settledAt": null,
         "homeScore": 5.0,
         "awayScore": 6.0,
@@ -8697,7 +8697,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:05:21+00:00",
+        "checkedAt": "2026-09-04T05:10:18+00:00",
         "settledAt": null,
         "homeScore": 21.0,
         "awayScore": 17.0,
@@ -24563,7 +24563,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "WIN",
       "roi": null,
       "freeRelease": false,
       "freeReleaseRank": null,
@@ -24717,13 +24717,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "WIN",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:05:23+00:00",
-        "settledAt": null,
+        "checkedAt": "2026-09-04T05:10:20+00:00",
+        "settledAt": "2026-09-04T05:10:20+00:00",
         "homeScore": 4.0,
         "awayScore": 7.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Margen ajustado 4.5 con línea +1.5",
         "failureCode": "AMBIGUOUS_MATCH",
         "matchConfidence": 1000.0,
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260903&limit=500",
@@ -24757,7 +24757,8 @@
         "matchedName": "Athletics Athletics at Seattle Mariners",
         "matchedDate": "2026-09-03"
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": 2.7778
     },
     {
       "id": 253,
@@ -26479,7 +26480,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:05:23+00:00",
+        "checkedAt": "2026-09-04T05:10:20+00:00",
         "settledAt": null,
         "homeScore": 21.0,
         "awayScore": 17.0,
@@ -28371,7 +28372,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:05:23+00:00",
+        "checkedAt": "2026-09-04T05:10:20+00:00",
         "settledAt": null,
         "homeScore": 21.0,
         "awayScore": 17.0,
@@ -28954,7 +28955,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:05:23+00:00",
+        "checkedAt": "2026-09-04T05:10:20+00:00",
         "settledAt": null,
         "homeScore": 1.0,
         "awayScore": 2.0,
@@ -29681,7 +29682,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-04T05:05:23+00:00",
+        "checkedAt": "2026-09-04T05:10:20+00:00",
         "settledAt": null,
         "homeScore": 1.0,
         "awayScore": 2.0,
@@ -29714,5 +29715,5 @@
       "needsSettlement": true
     }
   ],
-  "settledCount": 23
+  "settledCount": 24
 }
