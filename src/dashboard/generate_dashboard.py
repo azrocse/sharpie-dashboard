@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import unicodedata
 import hashlib
 from datetime import datetime, timedelta
@@ -386,11 +387,10 @@ def _normalize_key_part(text):
     """
     if text is None:
         return ""
-    text = str(text)
-    text = unicodedata.normalize("NFKC", text)   # unifica variantes de unicode
-    text = text.replace("\u2212", "-")            # signo menos unicode -> guion ascii
-    text = " ".join(text.split())                 # colapsa espacios/tabs/saltos repetidos
-    return text.strip().casefold()
+    text = unicodedata.normalize("NFKD", str(text))
+    text = "".join(char for char in text if not unicodedata.combining(char))
+    text = text.replace("\u2212", "-").replace("&", " and ").casefold()
+    return " ".join(re.sub(r"[^a-z0-9.+@-]+", " ", text).split())
 
 
 def _market_unique_key(game, pick, market_name, event_date=None):
@@ -1227,7 +1227,6 @@ def _is_qualified_value_pick(item, allow_legacy=False):
 def _history_pick_id(item):
     raw_key = "||".join([
         _normalize_key_part(item.get("date")),
-        _normalize_key_part(item.get("league")),
         _market_unique_key(item.get("game"), item.get("pick"), item.get("market")),
     ])
     return hashlib.sha256(raw_key.encode("utf-8")).hexdigest()[:24]

@@ -2,6 +2,7 @@ from pipeline.download import download_all
 from pipeline.parse import parse_all
 from pipeline.analyze import analyze_all
 from pipeline.settle_history_espn import settle_history
+from pipeline.history_integrity import normalize_history_storage
 
 from dashboard.generate_dashboard import generate_dashboard
 from dashboard.generate_results_viewer import generate_results_viewer
@@ -154,6 +155,16 @@ def main():
     print("\n📊 4/5 · SIRVIENDO EL DASHBOARD")
     dashboard_path = generate_dashboard()
 
+    # El historial se normaliza antes de construir results.html y antes de
+    # consultar ESPN. Toda reescritura crea primero un ZIP recuperable.
+    print("\n🧬 CONTROL DE INTEGRIDAD · CERO DUPLICADOS")
+    integrity_summary = normalize_history_storage()
+    if integrity_summary.get("aborted"):
+        print("   🛑 La liquidación se omite para proteger el historial ilegible")
+        settlement_summary = None
+    else:
+        settlement_summary = None
+
     # Publica de inmediato una vista local coherente. La consulta de ESPN puede
     # tardar o fallar, pero nunca vuelve a dejar results.html sin actualizar.
     results_generated = False
@@ -167,7 +178,11 @@ def main():
     # La liquidación es independiente: una caída de ESPN nunca debe impedir
     # que el dashboard principal se genere.
     print("\n🏁 5/5 · PREGUNTÁNDOLE A ESPN CÓMO TERMINÓ")
-    settlement_summary = settle_history_pipeline()
+    if not integrity_summary.get("aborted"):
+        settlement_summary = settle_history_pipeline()
+        # Actualiza cobertura después de cualquier liquidación sin generar un
+        # segundo respaldo cuando la estructura ya quedó normalizada.
+        normalize_history_storage()
 
     # Si ESPN cambió uno o más archivos, reconstruye una segunda vez para
     # incorporar inmediatamente WIN, LOSS, PUSH, VOID y unidades.
