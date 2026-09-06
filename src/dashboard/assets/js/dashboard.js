@@ -514,9 +514,7 @@ function unifiedDecisionPanelHtml(p) {
 
         `<span class="badge-tag ${oddsBadgeClass(p.odds || p.cuota)}">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
         `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
-        `<span class="badge-tag ${divergenceBadgeClass(smartMoneyVal)}">⚡ Divergencia <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`,
-        `<span class="badge-tag ${confidenceBadgeClass(p.confidenceScore)}">🛡️ Confianza <b>${escapeHTML((p.confidence || '—').replaceAll('_', ' '))}${p.confidenceScore != null ? ` · ${p.confidenceScore}` : ''}</b></span>`,
-        `<span class="badge-tag ${p.riskLevel === 'ALTA' ? 'bad' : p.riskLevel === 'MEDIA' ? 'warn' : 'good'}">⚠️ Riesgo <b>${escapeHTML(p.riskClass || '—')}</b></span>`
+        `<span class="badge-tag ${divergenceBadgeClass(smartMoneyVal)}">⚡ Divergencia <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
     ];
 
     return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div></div>`;

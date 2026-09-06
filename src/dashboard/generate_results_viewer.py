@@ -18,11 +18,12 @@ except ImportError:
 CURRENT_DIR = Path(__file__).resolve().parent
 BASE_DIR = CURRENT_DIR.parent.parent
 HISTORY_DIR = BASE_DIR / "data" / "history"
+RESULTS_SNAPSHOT_FILE = BASE_DIR / "data" / "results_snapshot.json"
 OUTPUT_FILE = BASE_DIR / "results.html"
 TEMPLATES_DIR = CURRENT_DIR / "templates"
 ASSETS_DIR = CURRENT_DIR / "assets"
 CDMX_TZ = ZoneInfo("America/Mexico_City")
-VALUE_CATEGORIES = {"VALUE", "PREMIUM", "LONGSHOT", "WHALE", "FREE"}
+VALUE_CATEGORIES = {"VALUE", "PREMIUM", "LONGSHOT"}
 FINAL_RESULTS = {"WIN", "LOSS", "PUSH", "VOID", "HALF_WIN", "HALF_LOSS"}
 
 
@@ -63,15 +64,24 @@ def _result_of(pick):
 
 def _is_value_pick(pick):
     category = str(pick.get("pickCategory") or "").upper()
-    if category not in VALUE_CATEGORIES and pick.get("actionKey") not in {"bet", "speculative"}:
+    if category == "FREE":
+        category = "VALUE"
+    if category not in VALUE_CATEGORIES:
         return False
     try:
-        minimum_stake = 0.5 if category == "LONGSHOT" else 1.0
-        return (
-            float(pick.get("stake") or 0) >= minimum_stake
-            and float(pick.get("ev") or 0) > 0
-            and float(pick.get("modelEdge") or 0) > 0
-        )
+        ev = float(pick.get("ev") or 0)
+        edge = float(pick.get("modelEdge") or 0)
+        stake = float(pick.get("stake") or 0)
+        odds = float(str(pick.get("odds") or 0).replace("+", ""))
+        if stake < 0.5:
+            return False
+        if category == "PREMIUM":
+            return ev >= 6.0 and edge >= 4.0
+        if category == "VALUE":
+            return ev >= 3.0 and edge >= 2.0 and odds < 151
+        if odds >= 251:
+            return ev >= 8.0 and edge >= 3.0
+        return odds >= 151 and ev >= 5.0 and edge >= 2.0
     except (TypeError, ValueError):
         return False
 
@@ -82,9 +92,23 @@ def _dedupe_key(pick):
     return "||".join(_norm(pick.get(key)) for key in ("date", "league", "game", "market", "pick"))
 
 
-def load_history(history_dir=HISTORY_DIR):
+def load_history(history_dir=HISTORY_DIR, snapshot_file=RESULTS_SNAPSHOT_FILE):
     records = {}
     root = Path(history_dir)
+    snapshot = Path(snapshot_file) if snapshot_file else None
+    if snapshot and snapshot.exists():
+        try:
+            archived = json.loads(snapshot.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            archived = []
+        if isinstance(archived, list):
+            for raw in archived:
+                if isinstance(raw, dict) and _is_value_pick(raw) and not raw.get("excludedFromResults"):
+                    pick = dict(raw)
+                    if str(pick.get("pickCategory") or "").upper() == "FREE":
+                        pick["pickCategory"] = "VALUE"
+                        pick.setdefault("freeRelease", True)
+                    records[_dedupe_key(pick)] = pick
     for path in sorted(root.glob("????-??-??/sharpie.json")):
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
@@ -129,8 +153,8 @@ def load_history(history_dir=HISTORY_DIR):
     return sorted(records.values(), key=lambda p: (p.get("date") or "", p.get("time") or "", p.get("game") or ""), reverse=True)
 
 
-def generate_results_viewer(history_dir=HISTORY_DIR, output_file=OUTPUT_FILE):
-    picks = load_history(history_dir)
+def generate_results_viewer(history_dir=HISTORY_DIR, output_file=OUTPUT_FILE, snapshot_file=RESULTS_SNAPSHOT_FILE):
+    picks = load_history(history_dir, snapshot_file)
     generated_at = datetime.now(CDMX_TZ).isoformat(timespec="seconds")
     json_data = json.dumps(picks, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     html = render_template(
