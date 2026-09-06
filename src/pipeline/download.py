@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import logging
 
-from config.league_config import load_leagues
+try:
+    from config.league_config import load_leagues
+except ImportError:
+    from league_config import load_leagues
 
 from scraper.draftkings import DraftKingsScraper
 

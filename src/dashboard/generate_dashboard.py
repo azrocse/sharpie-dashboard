@@ -1,6 +1,5 @@
 import json
 import os
-import re
 import unicodedata
 import hashlib
 from datetime import datetime, timedelta
@@ -387,10 +386,11 @@ def _normalize_key_part(text):
     """
     if text is None:
         return ""
-    text = unicodedata.normalize("NFKD", str(text))
-    text = "".join(char for char in text if not unicodedata.combining(char))
-    text = text.replace("\u2212", "-").replace("&", " and ").casefold()
-    return " ".join(re.sub(r"[^a-z0-9.+@-]+", " ", text).split())
+    text = str(text)
+    text = unicodedata.normalize("NFKC", text)   # unifica variantes de unicode
+    text = text.replace("\u2212", "-")            # signo menos unicode -> guion ascii
+    text = " ".join(text.split())                 # colapsa espacios/tabs/saltos repetidos
+    return text.strip().casefold()
 
 
 def _market_unique_key(game, pick, market_name, event_date=None):
@@ -911,10 +911,7 @@ def _save_calibration_report():
     with open(CALIBRATION_OUTPUT_PATH, "w", encoding="utf-8") as file:
         json.dump(report, file, ensure_ascii=False, indent=2)
 
-    print(
-        f"   🧪 Radar CLV · muestra: {report['sampleSize']} picks · "
-        f"ajuste observado: {report['overallWeight']}"
-    )
+    print(f"📊 Calibración CLV actualizada: {report['sampleSize']} picks en el log, peso medido = {report['overallWeight']}")
 
 
 def build_picks(raw_data):
@@ -1067,7 +1064,7 @@ def build_picks(raw_data):
         register_clv_entry(
             market.get("league", "Otras Ligas"), game, pick, market_name, date, clv,
             extra={
-                "whale": pick_category == "WHALE",
+                "whale": "SMART_MONEY" in set(market.get("marketSignals") or [market_signal]),
                 "modelSource": market.get("modelSource")
             }
         )
@@ -1097,6 +1094,12 @@ def build_picks(raw_data):
             "priority": market.get("priority", "👀 OBSERVAR"),
             "priorityKey": classify_priority(market.get("priority", "")),
             "stake": stake,
+            "confidenceScore": market.get("confidenceScore"),
+            "confidence": market.get("confidence"),
+            "confidenceStakeCap": market.get("confidenceStakeCap"),
+            "oddsStakeCap": market.get("oddsStakeCap"),
+            "riskClass": market.get("riskClass"),
+            "riskLevel": market.get("riskLevel"),
             "modelProb": round(model_prob, 2) if model_prob is not None else None,
             "fairProb": market.get("fairProb"),
             "flowAdjustment": market.get("flowAdjustment"),
@@ -1109,7 +1112,7 @@ def build_picks(raw_data):
             
             "ev": ev,
             "coherence": coherence,
-            "whale": pick_category == "WHALE",
+            "whale": "SMART_MONEY" in set(market.get("marketSignals") or [market_signal]),
             "handlePct": round(handle, 2),
             "betsPct": round(bets, 2),
             "divergence": divergence,
@@ -1162,7 +1165,8 @@ def _free_release_score(item):
 def assign_free_releases(items):
     """Publica todos los VALUE que cumplen los parámetros de Free Release.
 
-    No existe cupo mínimo ni máximo. PREMIUM y WHALE conservan acceso Premium
+    No existe cupo mínimo ni máximo. PREMIUM conserva acceso Premium y
+    LONGSHOT queda fuera de la publicación automática por su alta varianza.
     y nunca se liberan automáticamente para completar una cuota editorial.
     """
     for item in items:
@@ -1190,10 +1194,12 @@ def assign_free_releases(items):
 
     for item in items:
         if item.get("publicationTier") is not None: continue
-        if item.get("pickCategory") in {"PREMIUM", "WHALE"}:
+        if item.get("pickCategory") == "PREMIUM":
             item["publicationTier"] = "PREMIUM_ONLY"
         elif item.get("pickCategory") == "VALUE":
             item["publicationTier"] = "VALUE_POOL"
+        elif item.get("pickCategory") == "LONGSHOT":
+            item["publicationTier"] = "SPECULATIVE_ONLY"
 
     return items
 
@@ -1201,8 +1207,8 @@ def assign_free_releases(items):
 # ============================================================
 # HISTORIAL PERSISTENTE DE PICKS CON VALOR
 # ============================================================
-VALUE_CATEGORIES = {"VALUE", "PREMIUM", "WHALE"}
-LEGACY_VALUE_CATEGORIES = VALUE_CATEGORIES | {"FREE"}
+VALUE_CATEGORIES = {"VALUE", "PREMIUM", "LONGSHOT"}
+LEGACY_VALUE_CATEGORIES = VALUE_CATEGORIES | {"FREE", "WHALE"}
 HISTORY_SCHEMA_VERSION = 2
 
 
@@ -1211,14 +1217,15 @@ def _is_qualified_value_pick(item, allow_legacy=False):
     if not isinstance(item, dict) or item.get("pickCategory") not in categories:
         return False
     action_key = item.get("actionKey")
-    if (not allow_legacy and action_key != "bet") or (allow_legacy and action_key not in {None, "", "bet"}):
+    valid_actions = {"bet", "speculative"}
+    if (not allow_legacy and action_key not in valid_actions) or (allow_legacy and action_key not in {None, "", *valid_actions}):
         return False
     try:
         ev = float(item.get("ev") or 0)
         return (
             (ev > 0 if allow_legacy else ev >= 1.0)
             and float(item.get("modelEdge") or 0) > 0
-            and float(item.get("stake") or 0) >= 1.0
+            and float(item.get("stake") or 0) >= 0.5
         )
     except (TypeError, ValueError):
         return False
@@ -1227,6 +1234,7 @@ def _is_qualified_value_pick(item, allow_legacy=False):
 def _history_pick_id(item):
     raw_key = "||".join([
         _normalize_key_part(item.get("date")),
+        _normalize_key_part(item.get("league")),
         _market_unique_key(item.get("game"), item.get("pick"), item.get("market")),
     ])
     return hashlib.sha256(raw_key.encode("utf-8")).hexdigest()[:24]
@@ -1241,6 +1249,10 @@ def _qualification_snapshot(item, observed_at):
         "freeRelease": bool(item.get("freeRelease")),
         "odds": item.get("odds"),
         "stake": item.get("stake"),
+        "confidenceScore": item.get("confidenceScore"),
+        "confidence": item.get("confidence"),
+        "riskClass": item.get("riskClass"),
+        "riskLevel": item.get("riskLevel"),
         "modelProb": item.get("modelProb"),
         "modelEdge": item.get("modelEdge"),
         "ev": item.get("ev"),
@@ -1373,7 +1385,6 @@ def save_value_history(all_events, cdmx_now):
         records = _load_existing_value_records(history_file, observed_at)
         if records is None:
             continue
-        day_changed = False
 
         for item in current_items:
             history_id = _history_pick_id(item)
@@ -1381,12 +1392,10 @@ def save_value_history(all_events, cdmx_now):
             if previous is None:
                 records[history_id] = _new_history_record(item, observed_at)
                 saved_count += 1
-                day_changed = True
                 continue
 
             settlement = previous.get("settlement") or _new_history_record(item, observed_at)["settlement"]
-            previous_lookup = previous.get("eventLookup") or _new_history_record(item, observed_at)["eventLookup"]
-            event_lookup = dict(previous_lookup)
+            event_lookup = dict(previous.get("eventLookup") or _new_history_record(item, observed_at)["eventLookup"])
             if item.get("espnSport") and item.get("espnLeague"):
                 event_lookup.update({
                     "espnSport": item.get("espnSport"),
@@ -1396,16 +1405,8 @@ def save_value_history(all_events, cdmx_now):
                 })
             snapshots = previous.get("qualificationSnapshots", [])
             new_snapshot = _qualification_snapshot(item, observed_at)
-            snapshot_changed = not snapshots or _snapshot_signature(snapshots[-1]) != _snapshot_signature(new_snapshot)
-            lookup_changed = event_lookup != previous_lookup
-            if snapshot_changed:
+            if not snapshots or _snapshot_signature(snapshots[-1]) != _snapshot_signature(new_snapshot):
                 snapshots.append(new_snapshot)
-
-            # Si la versión viable y la ruta ESPN no cambiaron, conservar el
-            # registro byte por byte. Evita reescribir el historial cada diez
-            # minutos solo por actualizar una marca de tiempo.
-            if not snapshot_changed and not lookup_changed:
-                continue
 
             updated = dict(item)
             updated.update({
@@ -1422,10 +1423,6 @@ def save_value_history(all_events, cdmx_now):
             })
             records[history_id] = updated
             saved_count += 1
-            day_changed = True
-
-        if not day_changed:
-            continue
 
         ordered_records = sorted(
             records.values(),
@@ -1440,13 +1437,10 @@ def save_value_history(all_events, cdmx_now):
             "picks": ordered_records,
         }
         _atomic_write_json(history_file, payload)
-        print(
-            f"   💎 Valor detectado · {event_date}: {len(ordered_records)} picks "
-            f"en seguimiento"
-        )
+        print(f"[OK] Historial de valor actualizado: {history_file} ({len(ordered_records)} picks)")
 
     if not qualified:
-        print("   😴 Sin valor nuevo: el historial quedó intacto.")
+        print("[INFO] Sin nuevos picks con valor; el historial existente permanece intacto.")
     return saved_count
 
 
@@ -1513,7 +1507,7 @@ def generate_dashboard():
     picks_json_path = os.path.join(OUTPUT_DIR, "picks.json")
     atomic_write_json(picks_json_path, all_events, compact=True)
 
-    print(f"   ✨ Dashboard listo · {os.path.basename(output_file)}")
+    print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file
 
 

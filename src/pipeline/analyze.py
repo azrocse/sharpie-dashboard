@@ -25,6 +25,11 @@ KELLY_FRACTION = 0.50
 MAX_KELLY_FRACTION_PCT = 10.0
 STAKE_MIN_UNITS = 1.0
 STAKE_MAX_UNITS = 5.0
+OPERATIONAL_STAKE_MAX_UNITS = 3.0
+LONGSHOT_ODDS_MIN = 151
+LONGSHOT_STAKE_CAP = 0.5
+EXTREME_LONGSHOT_ODDS_MIN = 251
+MIN_MODEL_PROB_TO_BET = 55.0
 INVALID_TOKENS = {"—", "", "0", "-0", "-1", "NONE", "0%", "NAN"}
 MARKET_SIGNAL_LABELS = {
     "STEAM_MOVE": "💨 STEAM MOVE",
@@ -125,16 +130,74 @@ def calculate_ev(model_prob, decimal_odds):
     if model_prob is None or decimal_odds is None: return None
     return round(((model_prob / 100.0) * decimal_odds - 1.0) * 100.0, 2)
 
-def calculate_stake(model_prob, decimal_odds, ev):
-    """Medio Kelly, limitado a 1-5u y redondeado cada 0.5u."""
-    if model_prob is None or decimal_odds is None or decimal_odds <= 1.0 or ev is None or ev <= 0:
+def american_odds_value(raw_odds):
+    """Convierte una cuota americana/decimal a su equivalente americano."""
+    try:
+        value = float(raw_odds)
+    except (TypeError, ValueError):
+        return None
+    if abs(value) >= 100:
+        return value
+    if 1.01 <= abs(value) <= 50:
+        decimal = abs(value)
+        return (decimal - 1.0) * 100.0 if decimal >= 2.0 else -100.0 / (decimal - 1.0)
+    return None
+
+def classify_odds_risk(raw_odds):
+    american = american_odds_value(raw_odds)
+    if american is not None and american >= EXTREME_LONGSHOT_ODDS_MIN:
+        return "EXTREME_LONGSHOT", "ALTA", LONGSHOT_STAKE_CAP
+    if american is not None and american >= LONGSHOT_ODDS_MIN:
+        return "LONGSHOT", "ALTA", LONGSHOT_STAKE_CAP
+    if american is not None and american >= 101:
+        return "VALUE_ODDS", "MEDIA", 1.5
+    return "STANDARD", "CONTROLADA", OPERATIONAL_STAKE_MAX_UNITS
+
+def calculate_confidence_score(model_prob, model_edge, ev, divergence, market_signals, raw_odds, liquidity):
+    """Mide confianza sin convertir un EV alto en certeza.
+
+    El modelo domina la puntuación; EV aporta como máximo cinco puntos. Las
+    cuotas longshot, divergencias extremas y baja liquidez añaden penalización.
+    """
+    if model_prob is None:
+        return 0.0
+    signals = set(market_signals or [])
+    professional = {"SMART_MONEY", "REVERSE_LINE_MOVEMENT", "STEAM_MOVE", "SHARP_VS_PUBLIC"}
+    model_points = max(0.0, min(50.0, (model_prob - 50.0) * 2.5))
+    edge_points = max(0.0, min(20.0, float(model_edge or 0.0) / 15.0 * 20.0))
+    signal_points = 15.0 if signals.intersection(professional) else (5.0 if "CONSENSUS" in signals else 0.0)
+    divergence_points = max(0.0, min(10.0, float(divergence or 0.0) / 35.0 * 10.0))
+    ev_points = max(0.0, min(5.0, float(ev or 0.0) / 10.0 * 5.0))
+    score = model_points + edge_points + signal_points + divergence_points + ev_points
+    risk_class, _risk_level, _cap = classify_odds_risk(raw_odds)
+    if risk_class == "LONGSHOT": score -= 15.0
+    elif risk_class == "EXTREME_LONGSHOT": score -= 25.0
+    if model_prob < MIN_MODEL_PROB_TO_BET: score -= 20.0
+    if abs(float(divergence or 0.0)) >= 35.0: score -= 10.0
+    if liquidity == "LOW": score -= 25.0
+    return round(max(0.0, min(100.0, score)), 1)
+
+def confidence_band(score):
+    if score >= 80.0: return "MUY_ALTA", 3.0
+    if score >= 70.0: return "ALTA", 2.5
+    if score >= 60.0: return "SOLIDA", 2.0
+    if score >= 50.0: return "MEDIA", 1.5
+    if score >= 40.0: return "BAJA", 1.0
+    return "ESPECULATIVA", 0.5
+
+def calculate_stake(model_prob, decimal_odds, ev, confidence_score, odds_stake_cap, actionable):
+    """Medio Kelly limitado por confianza, riesgo de cuota y techo operativo."""
+    if (not actionable or model_prob is None or decimal_odds is None
+            or decimal_odds <= 1.0 or ev is None or ev <= 0):
         return 0.0
     b, p = decimal_odds - 1.0, model_prob / 100.0
     kelly_full = (b * p - (1.0 - p)) / b
     if kelly_full <= 0: return 0.0
     fractional_pct = kelly_full * KELLY_FRACTION * 100.0
     raw_units = STAKE_MIN_UNITS + min(fractional_pct, MAX_KELLY_FRACTION_PCT) / MAX_KELLY_FRACTION_PCT * (STAKE_MAX_UNITS - STAKE_MIN_UNITS)
-    return round(max(STAKE_MIN_UNITS, min(STAKE_MAX_UNITS, raw_units)) * 2.0) / 2.0
+    _band, confidence_cap = confidence_band(confidence_score)
+    final_units = min(raw_units, confidence_cap, odds_stake_cap, OPERATIONAL_STAKE_MAX_UNITS)
+    return round(max(LONGSHOT_STAKE_CAP, final_units) * 2.0) / 2.0
 
 def evaluate_market_signals(divergence, bets, handle, ev, model_edge, line_move, move_minutes, liquidity):
     """Devuelve todas las señales compatibles, ordenadas por fuerza informativa."""
@@ -156,11 +219,11 @@ def evaluate_market_signals(divergence, bets, handle, ev, model_edge, line_move,
         signals.append("BALANCED_ACTION")
     return signals or ["NO_ACTION"]
 
-def classify_pick_category(ev, market_signals, divergence):
+def classify_pick_category(ev, market_signals, divergence, model_prob, raw_odds, confidence_score):
     """Jerarquía editorial única, evaluada de mayor a menor exigencia.
 
-    WHALE: oportunidad excepcional con Smart Money, EV > 18% y divergencia > 30.
-    PREMIUM: EV > 6% respaldado por al menos una señal profesional.
+    LONGSHOT: pick con valor pero cuota americana >= +151; nunca es oportunidad principal.
+    PREMIUM: EV > 6% respaldado por señal profesional y confianza sólida.
     VALUE: EV moderado de 1% a 6% con señal válida de valor o consenso.
 
     PUBLIC_HEAVY, BALANCED_ACTION, LOW_LIQUIDITY y NO_ACTION son señales de
@@ -172,18 +235,23 @@ def classify_pick_category(ev, market_signals, divergence):
     }
     free_signals = professional_signals | {"CONSENSUS"}
 
-    if "SMART_MONEY" in signals and ev > 18.0 and divergence > 30.0:
-        return "WHALE"
-    if ev > 6.0 and signals.intersection(professional_signals):
+    if model_prob is None or model_prob < MIN_MODEL_PROB_TO_BET:
+        return None
+    qualifies_candidate = ev >= 1.0 and signals.intersection(free_signals)
+    qualifies_premium = ev > 6.0 and signals.intersection(professional_signals) and confidence_score >= 60.0
+    qualifies_value = 1.0 <= ev <= 6.0 and signals.intersection(free_signals) and confidence_score >= 40.0
+    if qualifies_candidate and classify_odds_risk(raw_odds)[0] in {"LONGSHOT", "EXTREME_LONGSHOT"}:
+        return "LONGSHOT"
+    if qualifies_premium:
         return "PREMIUM"
-    if 1.0 <= ev <= 6.0 and signals.intersection(free_signals):
+    if qualifies_value:
         return "VALUE"
     return None
 
 def action_from_category(category):
-    if category == "WHALE": return "🟢 WHALE ALERT", "bet", "🔥 AHORA"
     if category == "PREMIUM": return "🟢 PREMIUM", "bet", "🔥 AHORA"
     if category == "VALUE": return "🟢 VALUE PICK", "bet", "⚡ PRONTO"
+    if category == "LONGSHOT": return "🟠 LONGSHOT", "speculative", "🎲 OPCIONAL"
     return "🟡 SEGUIMIENTO", "pass", "👀 OBSERVAR"
 
 def normalize_history(market):
@@ -285,7 +353,6 @@ def process_market(league_name, game, market, grouped_markets):
     model_prob, fair_prob, flow_adjustment, model_source = calculate_model_probability(decimal_odds, all_decimal_odds, divergence)
     model_edge = calculate_model_edge(model_prob, implied_prob)
     ev = calculate_ev(model_prob, decimal_odds)
-    stake = calculate_stake(model_prob, decimal_odds, ev)
     history = normalize_history(market)
     if (not history or history[-1].get("handlePct") != handle
             or history[-1].get("betsPct") != bets or history[-1].get("odds") != raw_odds):
@@ -297,8 +364,19 @@ def process_market(league_name, game, market, grouped_markets):
         divergence, bets, handle, ev, model_edge, line_move, line_move_minutes, liquidity
     )
     market_signal = market_signals[0]
-    pick_category = classify_pick_category(ev, market_signals, divergence)
+    risk_class, risk_level, odds_stake_cap = classify_odds_risk(raw_odds)
+    confidence_score = calculate_confidence_score(
+        model_prob, model_edge, ev, divergence, market_signals, raw_odds, liquidity
+    )
+    confidence, confidence_stake_cap = confidence_band(confidence_score)
+    pick_category = classify_pick_category(
+        ev, market_signals, divergence, model_prob, raw_odds, confidence_score
+    )
     action, action_key, priority = action_from_category(pick_category)
+    stake = calculate_stake(
+        model_prob, decimal_odds, ev, confidence_score, odds_stake_cap,
+        action_key in {"bet", "speculative"},
+    )
     game_time = game.get("time_raw") or game.get("startIso") or game.get("time") or market.get("time_raw") or datetime.now().strftime("%H:%M")
     route_probe = {
         "league": league_name, "sport": game.get("sport") or market.get("sport"),
@@ -321,9 +399,12 @@ def process_market(league_name, game, market, grouped_markets):
         "flowAdjustment": flow_adjustment, "modelProb": model_prob, "modelSource": model_source,
         "modelEdge": model_edge, "ev": ev, "stake": stake, "marketSignal": market_signal,
         "marketSignals": market_signals,
+        "confidenceScore": confidence_score, "confidence": confidence,
+        "confidenceStakeCap": confidence_stake_cap, "oddsStakeCap": odds_stake_cap,
+        "riskClass": risk_class, "riskLevel": risk_level,
         "lineMove": line_move, "lineMoveMinutes": line_move_minutes, "liquidityStatus": liquidity,
         "trendKey": market_signal, "pattern": MARKET_SIGNAL_LABELS[market_signal], "pickCategory": pick_category,
-        "whale": pick_category == "WHALE", "history": history, "action": action, "actionKey": action_key, "priority": priority,
+        "whale": "SMART_MONEY" in market_signals, "history": history, "action": action, "actionKey": action_key, "priority": priority,
     }
 
 def analyze_all(parsed_files=None):

@@ -248,9 +248,6 @@ def parse_all(downloaded):
         parsed_files.append(filename)
         save_snapshot(data, league_slug, snapshots_root)
         market_count = sum(len(game.get("markets", [])) for game in games)
-        print(
-            f"   ✅ Mercado capturado · {len(games)} encuentros · "
-            f"{market_count} líneas analizadas · {os.path.basename(filename)}"
-        )
+        print(f"✓ JSON creado: {os.path.basename(filename)} ({len(games)} juegos, {market_count} mercados)")
 
     return parsed_files

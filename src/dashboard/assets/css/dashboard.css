@@ -779,6 +779,11 @@
             box-shadow: var(--shadow) !important;
         }
 
+        .pcard.longshot-card {
+            border: 1px solid var(--amber);
+            box-shadow: var(--shadow) !important;
+        }
+
         /* La categoría se comunica mediante la insignia de cabecera, sin contornos. */
         .pcard.free-pick {
             box-shadow: var(--shadow) !important;
@@ -874,6 +879,20 @@
             border-radius: 999px;
             background: rgba(37, 99, 235, 0.12);
             color: var(--blue);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .25px;
+            white-space: nowrap;
+        }
+
+        .longshot-pick-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 7px;
+            border: 1px solid var(--amber);
+            border-radius: 999px;
+            background: var(--amber-soft);
+            color: var(--amber);
             font-size: 9px;
             font-weight: 900;
             letter-spacing: .25px;

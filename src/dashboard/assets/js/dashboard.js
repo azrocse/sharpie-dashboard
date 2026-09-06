@@ -427,6 +427,14 @@ function stakeBadgeClass(stake) {
     return "bad";
 }
 
+function confidenceBadgeClass(score) {
+    const s = Number(score);
+    if (isNaN(s)) return "neutral";
+    if (s >= 60) return "good";
+    if (s >= 40) return "warn";
+    return "bad";
+}
+
 function modelProbColorClass(prob) {
     const p = Number(prob || 0);
     if (p >= 65) return "var(--teal)";
@@ -506,7 +514,9 @@ function unifiedDecisionPanelHtml(p) {
 
         `<span class="badge-tag ${oddsBadgeClass(p.odds || p.cuota)}">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
         `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
-        `<span class="badge-tag ${divergenceBadgeClass(smartMoneyVal)}">⚡ Divergencia <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
+        `<span class="badge-tag ${divergenceBadgeClass(smartMoneyVal)}">⚡ Divergencia <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`,
+        `<span class="badge-tag ${confidenceBadgeClass(p.confidenceScore)}">🛡️ Confianza <b>${escapeHTML((p.confidence || '—').replaceAll('_', ' '))}${p.confidenceScore != null ? ` · ${p.confidenceScore}` : ''}</b></span>`,
+        `<span class="badge-tag ${p.riskLevel === 'ALTA' ? 'bad' : p.riskLevel === 'MEDIA' ? 'warn' : 'good'}">⚠️ Riesgo <b>${escapeHTML(p.riskClass || '—')}</b></span>`
     ];
 
     return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div></div>`;
@@ -563,7 +573,7 @@ function calculateSmartMoney(p) {
     return p.signedDivergence != null ? Number(p.signedDivergence) : 0;
 }
 
-const RECOMMENDED_CATEGORIES = new Set(["VALUE", "PREMIUM", "WHALE"]);
+const RECOMMENDED_CATEGORIES = new Set(["VALUE", "PREMIUM"]);
 
 function isRecommendedPick(p) {
     return Boolean(p && p.actionKey === "bet" && RECOMMENDED_CATEGORIES.has(p.pickCategory));
@@ -617,7 +627,7 @@ function isMediaFeaturedPick(p) {
 
 function topPickRank(p) {
     if (!isRecommendedPick(p)) return -Infinity;
-    const categoryWeight = { WHALE: 4000, PREMIUM: 3000, VALUE: 1500 }[p.pickCategory] || 0;
+    const categoryWeight = { PREMIUM: 3000, VALUE: 1500 }[p.pickCategory] || 0;
     const signals = new Set(Array.isArray(p.marketSignals) ? p.marketSignals : [p.marketSignal]);
     const signalWeight =
         (signals.has("REVERSE_LINE_MOVEMENT") ? 600 : 0) +
@@ -627,7 +637,7 @@ function topPickRank(p) {
         (signals.has("CONSENSUS") ? 100 : 0);
     const minutes = p.iso ? (new Date(p.iso) - new Date()) / 60000 : Infinity;
     const urgencyWeight = minutes >= 0 && minutes <= 120 ? 50 : 0;
-    return categoryWeight + signalWeight + Number(p.ev || 0) * 10 + calculateEdge(p) * 5 + Number(p.stake || 0) * 20 + urgencyWeight;
+    return categoryWeight + signalWeight + Number(p.confidenceScore || 0) * 20 + Math.min(Number(p.ev || 0), 10) * 5 + calculateEdge(p) * 5 + Number(p.stake || 0) * 20 + urgencyWeight;
 }
 
 function selectTopPick(picks) {
@@ -1140,6 +1150,8 @@ function getHeaderTag(category, freeRelease = false) {
     switch (category) {
         case 'WHALE':
             return "🐳 WHALE ALERT PICK";
+        case 'LONGSHOT':
+            return "🎲 LONGSHOT · ALTA VARIANZA";
         case 'PREMIUM':
             return "💎 PREMIUM PICK";
         case 'VALUE':
@@ -1550,7 +1562,8 @@ function render() {
     cardsView.style.display = "grid";
 
     cardsView.innerHTML = activeList.map(p => {
-        const isWhale = p.pickCategory === "WHALE";
+        const isWhale = p.whale === true || (Array.isArray(p.marketSignals) && p.marketSignals.includes("SMART_MONEY"));
+        const isLongshot = p.pickCategory === "LONGSHOT";
         const isValue = p.pickCategory === "VALUE";
         const isPremiumPick = p.pickCategory === "PREMIUM";
         const isFreeRelease = Boolean(p.freeRelease);
@@ -1560,7 +1573,8 @@ function render() {
         const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
 
         let cardClasses = "pcard";
-        if (isWhale) cardClasses += " whale-alert";
+        if (isLongshot) cardClasses += " longshot-card";
+        else if (isWhale) cardClasses += " whale-alert";
         else if (isFreeRelease) cardClasses += " free-pick";
 
         const config = marketSignalVisualConfig(p.marketSignal);
@@ -1598,7 +1612,8 @@ function render() {
                                 ${isUpdated ? `<span class="status-icon" title="Pick actualizado">🔄</span>` : ''}
                                 ${isTop ? `<span class="status-icon" title="Mejor pick del momento">🏆</span>` : ''}
                                 ${isMediaFeatured ? `<span class="status-icon" title="Equipo mediático destacado">⭐</span>` : ''}
-                                ${isWhale ? `<span class="whale-header-badge">WHALE</span>` : ''}
+                                ${isWhale ? `<span class="whale-header-badge">WHALE SIGNAL</span>` : ''}
+                                ${isLongshot ? `<span class="longshot-pick-badge">LONGSHOT · MÁX. 0.5u</span>` : ''}
                                 ${isValue ? `<span class="value-pick-badge">VALUE</span>` : ''}
                                 ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
                                 ${isFreeRelease ? `<span class="free-pick-badge" title="Seleccionado para publicación gratuita #${p.freeReleaseRank || ''}">FREE RELEASE${p.freeReleaseRank ? ` #${p.freeReleaseRank}` : ''}</span>` : ''}
