@@ -29,7 +29,14 @@ OPERATIONAL_STAKE_MAX_UNITS = 3.0
 LONGSHOT_ODDS_MIN = 151
 LONGSHOT_STAKE_CAP = 0.5
 EXTREME_LONGSHOT_ODDS_MIN = 251
-MIN_MODEL_PROB_TO_BET = 55.0
+VALUE_EDGE_MIN = 2.0
+VALUE_EV_MIN = 3.0
+PREMIUM_EDGE_MIN = 4.0
+PREMIUM_EV_MIN = 6.0
+LONGSHOT_EDGE_MIN = 2.0
+LONGSHOT_EV_MIN = 5.0
+EXTREME_LONGSHOT_EDGE_MIN = 3.0
+EXTREME_LONGSHOT_EV_MIN = 8.0
 INVALID_TOKENS = {"—", "", "0", "-0", "-1", "NONE", "0%", "NAN"}
 MARKET_SIGNAL_LABELS = {
     "STEAM_MOVE": "💨 STEAM MOVE",
@@ -156,23 +163,22 @@ def classify_odds_risk(raw_odds):
 def calculate_confidence_score(model_prob, model_edge, ev, divergence, market_signals, raw_odds, liquidity):
     """Mide confianza sin convertir un EV alto en certeza.
 
-    El modelo domina la puntuación; EV aporta como máximo cinco puntos. Las
-    cuotas longshot, divergencias extremas y baja liquidez añaden penalización.
+    La confianza mide la ventaja relativa contra la cuota, no exige una
+    probabilidad absoluta de 55%. EV aporta de forma limitada y las cuotas
+    longshot, divergencias extremas y baja liquidez añaden penalización.
     """
     if model_prob is None:
         return 0.0
     signals = set(market_signals or [])
     professional = {"SMART_MONEY", "REVERSE_LINE_MOVEMENT", "STEAM_MOVE", "SHARP_VS_PUBLIC"}
-    model_points = max(0.0, min(50.0, (model_prob - 50.0) * 2.5))
-    edge_points = max(0.0, min(20.0, float(model_edge or 0.0) / 15.0 * 20.0))
+    edge_points = max(0.0, min(40.0, float(model_edge or 0.0) / 10.0 * 40.0))
     signal_points = 15.0 if signals.intersection(professional) else (5.0 if "CONSENSUS" in signals else 0.0)
-    divergence_points = max(0.0, min(10.0, float(divergence or 0.0) / 35.0 * 10.0))
-    ev_points = max(0.0, min(5.0, float(ev or 0.0) / 10.0 * 5.0))
-    score = model_points + edge_points + signal_points + divergence_points + ev_points
+    divergence_points = max(0.0, min(15.0, float(divergence or 0.0) / 35.0 * 15.0))
+    ev_points = max(0.0, min(10.0, float(ev or 0.0)))
+    score = edge_points + signal_points + divergence_points + ev_points
     risk_class, _risk_level, _cap = classify_odds_risk(raw_odds)
     if risk_class == "LONGSHOT": score -= 15.0
     elif risk_class == "EXTREME_LONGSHOT": score -= 25.0
-    if model_prob < MIN_MODEL_PROB_TO_BET: score -= 20.0
     if abs(float(divergence or 0.0)) >= 35.0: score -= 10.0
     if liquidity == "LOW": score -= 25.0
     return round(max(0.0, min(100.0, score)), 1)
@@ -219,7 +225,7 @@ def evaluate_market_signals(divergence, bets, handle, ev, model_edge, line_move,
         signals.append("BALANCED_ACTION")
     return signals or ["NO_ACTION"]
 
-def classify_pick_category(ev, market_signals, divergence, model_prob, raw_odds, confidence_score):
+def classify_pick_category(ev, model_edge, market_signals, divergence, model_prob, raw_odds, confidence_score):
     """Jerarquía editorial única, evaluada de mayor a menor exigencia.
 
     LONGSHOT: pick con valor pero cuota americana >= +151; nunca es oportunidad principal.
@@ -235,13 +241,23 @@ def classify_pick_category(ev, market_signals, divergence, model_prob, raw_odds,
     }
     free_signals = professional_signals | {"CONSENSUS"}
 
-    if model_prob is None or model_prob < MIN_MODEL_PROB_TO_BET:
+    if model_prob is None or model_edge is None or ev is None:
         return None
-    qualifies_candidate = ev >= 1.0 and signals.intersection(free_signals)
-    qualifies_premium = ev > 6.0 and signals.intersection(professional_signals) and confidence_score >= 60.0
-    qualifies_value = 1.0 <= ev <= 6.0 and signals.intersection(free_signals) and confidence_score >= 40.0
-    if qualifies_candidate and classify_odds_risk(raw_odds)[0] in {"LONGSHOT", "EXTREME_LONGSHOT"}:
-        return "LONGSHOT"
+    risk_class = classify_odds_risk(raw_odds)[0]
+    if risk_class == "EXTREME_LONGSHOT":
+        if (model_edge >= EXTREME_LONGSHOT_EDGE_MIN and ev >= EXTREME_LONGSHOT_EV_MIN
+                and signals.intersection(professional_signals)):
+            return "LONGSHOT"
+        return None
+    if risk_class == "LONGSHOT":
+        if (model_edge >= LONGSHOT_EDGE_MIN and ev >= LONGSHOT_EV_MIN
+                and signals.intersection(professional_signals)):
+            return "LONGSHOT"
+        return None
+    qualifies_premium = (ev >= PREMIUM_EV_MIN and model_edge >= PREMIUM_EDGE_MIN
+                          and signals.intersection(professional_signals) and confidence_score >= 60.0)
+    qualifies_value = (ev >= VALUE_EV_MIN and model_edge >= VALUE_EDGE_MIN
+                        and signals.intersection(free_signals) and confidence_score >= 40.0)
     if qualifies_premium:
         return "PREMIUM"
     if qualifies_value:
@@ -370,7 +386,7 @@ def process_market(league_name, game, market, grouped_markets):
     )
     confidence, confidence_stake_cap = confidence_band(confidence_score)
     pick_category = classify_pick_category(
-        ev, market_signals, divergence, model_prob, raw_odds, confidence_score
+        ev, model_edge, market_signals, divergence, model_prob, raw_odds, confidence_score
     )
     action, action_key, priority = action_from_category(pick_category)
     stake = calculate_stake(

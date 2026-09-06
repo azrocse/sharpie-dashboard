@@ -576,7 +576,7 @@ def calculate_coherence(history):
     return None
 
 
-def build_pick_history_full(league_name, game, pick, market_name, kickoff_iso=None):
+def build_pick_history_full(league_name, game, pick, market_name, kickoff_iso=None, fallback_history=None):
     """
     Historial COMPLETO sin truncar -- fuente de verdad para CLV y para el
     conteo de "historial suficiente". Nunca se le aplica MAX_HISTORY_POINTS
@@ -619,6 +619,28 @@ def build_pick_history_full(league_name, game, pick, market_name, kickoff_iso=No
             "handlePct": point["handlePct"],
             "odds": point["odds"]
         })
+
+    # Los snapshots analizados ya incluyen su historial. Esta ruta permite
+    # regenerar el dashboard aunque los archivos RAW hayan sido limpiados.
+    if not history and isinstance(fallback_history, list):
+        for raw_point in fallback_history:
+            if not isinstance(raw_point, dict):
+                continue
+            bets = safe_pct(raw_point.get("betsPct", raw_point.get("bets")))
+            handle = safe_pct(raw_point.get("handlePct", raw_point.get("handle")))
+            if not _has_valid_volume(bets, handle):
+                continue
+            timestamp = raw_point.get("timestamp") or raw_point.get("observed_at") or raw_point.get("time")
+            point_dt = _parse_iso(timestamp)
+            if kickoff_dt is not None and point_dt is not None and point_dt >= kickoff_dt:
+                continue
+            history.append({
+                "time": raw_point.get("time") or "",
+                "timestamp": timestamp,
+                "betsPct": bets,
+                "handlePct": handle,
+                "odds": raw_point.get("odds"),
+            })
 
     return history
 
@@ -966,7 +988,9 @@ def build_picks(raw_data):
             continue
 
         market_name = market.get("market", market.get("type"))
-        event_time = market.get("time") or market.get("startIso") or market.get("time_raw") or market.get("date") or ""
+        # Un snapshot ya analizado trae `iso`; debe prevalecer sobre una hora
+        # suelta para no reasignar el evento accidentalmente al día actual.
+        event_time = market.get("iso") or market.get("startIso") or market.get("time") or market.get("time_raw") or market.get("date") or ""
         date, time, iso = parse_match_datetime(event_time)
         unique_key = _market_unique_key(game, pick, market_name, event_date=date)
 
@@ -1048,7 +1072,10 @@ def build_picks(raw_data):
         if market_signal not in MARKET_SIGNAL_LABELS:
             continue
 
-        pick_history_full = build_pick_history_full(market.get("league", "Otras Ligas"), game, pick, market_name, kickoff_iso=iso)
+        pick_history_full = build_pick_history_full(
+            market.get("league", "Otras Ligas"), game, pick, market_name,
+            kickoff_iso=iso, fallback_history=market.get("history"),
+        )
 
         # Historial insuficiente: se oculta del dashboard hasta acumular al
         # menos 2 puntos reales de seguimiento (evita mostrar picks recién
