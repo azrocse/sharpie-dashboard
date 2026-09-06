@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-09-06T17:46:48+00:00",
-  "totalPicks": 4521,
-  "excludedPicks": 3093,
+  "generatedAt": "2026-09-06T17:51:51+00:00",
+  "totalPicks": 4523,
+  "excludedPicks": 3089,
   "statusCounts": {
     "REVIEW": 65,
     "LOSS": 683,
     "WIN": 635,
-    "PENDING": 31,
+    "PENDING": 37,
     "PUSH": 9,
     "HALF_LOSS": 3,
     "HALF_WIN": 2
@@ -18,9 +18,10 @@
     "No se pudo identificar al peleador seleccionado": 1,
     "No se pudo interpretar el spread": 1,
     "NO_MATCH_PAST": 1,
-    "Evento aún no finaliza": 6,
+    "Evento aún no finaliza": 8,
     "AMBIGUOUS_MATCH": 2,
-    "NOT_STARTED_FUTURE": 16
+    "NOT_STARTED_FUTURE": 16,
+    "SIN_DETALLE": 4
   },
   "statusByDateRelation": {
     "REVIEW_PAST": 63,
@@ -30,17 +31,17 @@
     "PUSH_PAST": 9,
     "HALF_LOSS_PAST": 3,
     "HALF_WIN_PAST": 2,
-    "PENDING_TODAY": 6,
+    "PENDING_TODAY": 8,
     "REVIEW_TODAY": 2,
-    "PENDING_FUTURE": 16
+    "PENDING_FUTURE": 20
   },
   "resolvedRoutes": {
-    "baseball/mlb": 775,
-    "soccer/mex.1": 6,
+    "baseball/mlb": 776,
+    "soccer/mex.1": 7,
     "basketball/wnba": 143,
     "soccer/usa.1": 33,
     "mma/ufc": 4,
-    "football/nfl": 191,
+    "football/nfl": 192,
     "soccer/conmebol.libertadores": 1,
     "soccer/esp.1": 20,
     "soccer/eng.1": 30,
@@ -48,7 +49,7 @@
     "soccer/ita.1": 13,
     "soccer/ger.1": 7,
     "football/college-football": 187,
-    "SIN_RUTA": 14
+    "SIN_RUTA": 17
   },
   "unresolvedSamples": [
     {
@@ -2034,6 +2035,22 @@
     },
     {
       "date": "2026-09-06",
+      "game": "NY Yankees @ SD Padres",
+      "pick": "SD Padres",
+      "league": "MLB",
+      "status": "PENDING",
+      "reason": "Evento aún no finaliza",
+      "matchConfidence": 116.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
       "game": "MIN Twins @ CHI White Sox",
       "pick": "Over 8.5",
       "league": "MLB",
@@ -2085,6 +2102,20 @@
         "mma/ufc",
         "boxing/boxing"
       ],
+      "attemptedDates": [
+        "2026-09-06"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Cruz Azul vs Santos Laguna",
+      "pick": "Cruz Azul",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "Evento aún no finaliza",
+      "matchConfidence": 120.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
       "attemptedDates": [
         "2026-09-06"
       ]
@@ -2160,6 +2191,18 @@
       "league": "SPORTS",
       "status": "PENDING",
       "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": null,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": []
+    },
+    {
+      "date": "2026-09-12",
+      "game": "Ryan Garcia vs Conor Benn",
+      "pick": "Conor Benn",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "SIN_DETALLE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2256,6 +2299,18 @@
     },
     {
       "date": "2026-09-13",
+      "game": "MIA Dolphins @ LV Raiders",
+      "pick": "MIA Dolphins",
+      "league": "NFL",
+      "status": "PENDING",
+      "reason": "SIN_DETALLE",
+      "matchConfidence": null,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": []
+    },
+    {
+      "date": "2026-09-13",
       "game": "GB Packers @ MIN Vikings",
       "pick": "Under 46.5",
       "league": "SPORTS",
@@ -2300,7 +2355,31 @@
       "pick": "Mauricio Ruffy",
       "league": "SPORTS",
       "status": "PENDING",
+      "reason": "SIN_DETALLE",
+      "matchConfidence": null,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": []
+    },
+    {
+      "date": "2026-09-19",
+      "game": "Arman Tsarukyan vs Mauricio Ruffy",
+      "pick": "Mauricio Ruffy",
+      "league": "SPORTS",
+      "status": "PENDING",
       "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": null,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": []
+    },
+    {
+      "date": "2026-09-19",
+      "game": "Isaac Cruz vs Nestor Bravo",
+      "pick": "Nestor Bravo",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "SIN_DETALLE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],

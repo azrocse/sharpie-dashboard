@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-12",
-  "updatedAt": "2026-09-06T17:46:47+00:00",
+  "updatedAt": "2026-09-06T11:50:13-06:00",
   "count": 3,
-  "pendingSettlement": 2,
+  "pendingSettlement": 3,
   "picks": [
     {
       "id": 102,
@@ -497,7 +497,7 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 24.6,
+      "lineMoveMinutes": 5.4,
       "liquidityStatus": null,
       "impliedProb": 26.67,
       "modelEdge": 6.63,
@@ -1639,6 +1639,13 @@
           "betsPct": 8.0,
           "handlePct": 74.0,
           "odds": "+275"
+        },
+        {
+          "time": "11:50",
+          "timestamp": "2026-09-06T11:50:11",
+          "betsPct": 8.0,
+          "handlePct": 74.0,
+          "odds": "+275"
         }
       ],
       "clv": {
@@ -1663,8 +1670,8 @@
       "historyId": "39e1a95e4a571f9b2792e022",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:44:49-06:00",
-      "lastQualifiedAt": "2026-09-06T11:44:49-06:00",
-      "qualifiedObservations": 1,
+      "lastQualifiedAt": "2026-09-06T11:50:13-06:00",
+      "qualifiedObservations": 2,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:44:49-06:00",
@@ -1692,7 +1699,6 @@
         }
       ],
       "latestViable": true,
-      "needsSettlement": false,
       "settlement": {
         "status": "PENDING",
         "source": null,
@@ -1714,8 +1720,7 @@
         "scheduledAt": "2026-09-12T21:00:00",
         "matchStatus": "UNMATCHED"
       },
-      "excludedFromResults": true,
-      "exclusionReason": "NON_ACTIONABLE_PICK"
+      "needsSettlement": true
     },
     {
       "id": 93,
@@ -3003,6 +3008,5 @@
       },
       "needsSettlement": true
     }
-  ],
-  "settledCount": 0
+  ]
 }
