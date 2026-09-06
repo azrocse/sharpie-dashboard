@@ -681,6 +681,23 @@ function trendArrow(curr, prev) {
 
 const HISTORY_ROWS_CACHE = {};
 
+function historyDateTimeParts(point) {
+    const source = point.timestamp || point.time || '';
+    if (String(source).includes('T')) {
+        const parsed = new Date(source);
+        if (!isNaN(parsed.getTime())) {
+            return {
+                date: parsed.toLocaleDateString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit' }),
+                time: parsed.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false })
+            };
+        }
+    }
+    return {
+        date: point.timestamp ? String(point.timestamp).split('T')[0] : '—',
+        time: /^\d{1,2}:\d{2}/.test(String(point.time || '')) ? String(point.time).slice(0, 5) : '—'
+    };
+}
+
 function buildHistoryRows(list, hasOdds) {
     let rows = '';
     list.forEach((h, i) => {
@@ -688,11 +705,12 @@ function buildHistoryRows(list, hasOdds) {
         const betsTrend = prev ? trendArrow(h.betsPct, prev.betsPct) : { arrow: '', cls: '' };
         const handleTrend = prev ? trendArrow(h.handlePct, prev.handlePct) : { arrow: '', cls: '' };
         const oddsTrend = (prev && hasOdds) ? trendArrow(h.odds, prev.odds) : { arrow: '', cls: '' };
+        const when = historyDateTimeParts(h);
 
         rows += `
             <tr>
-                <td>📅 ${h.timestamp ? escapeHTML(h.timestamp.split('T')[0]) : '—'}</td>
-                <td>🕒 ${escapeHTML(h.time) || '—'}</td>
+                <td><span class="history-cell-icon">📅</span>${escapeHTML(when.date)}</td>
+                <td><span class="history-cell-icon">🕒</span>${escapeHTML(when.time)}</td>
                 <td>${h.betsPct != null ? h.betsPct + '%' : '—'} <span class="${betsTrend.cls}">${betsTrend.arrow}</span></td>
                 <td style="color:var(--teal)">${h.handlePct != null ? h.handlePct + '%' : '—'} <span class="${handleTrend.cls}">${handleTrend.arrow}</span></td>
                 ${hasOdds ? `<td>${h.odds != null ? escapeHTML(h.odds) : '—'} <span class="${oddsTrend.cls}">${oddsTrend.arrow}</span></td>` : ''}
@@ -1600,24 +1618,24 @@ function render() {
             <div class="${cardClasses}">
                 <div>
                     <div class="card-hero-header" style="--signal-color:${config.text}; --signal-bg:${config.bg};">
-                        <div class="signal-orb" title="${escapeHTML(signalSummary)}">${primarySignalIcon}</div>
-                        <div class="signal-copy" title="${escapeHTML(signalSummary)}">
-                            <span class="signal-kicker">SEÑAL DE MERCADO</span>
-                            <strong class="signal-name">${primarySignalName}</strong>
-                        </div>
-                        <div class="card-hero-actions">
-                            <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
-                            <div class="card-hero-tags">
-                                ${isNew ? `<span class="status-icon" title="Pick nuevo">🆕</span>` : ''}
-                                ${isUpdated ? `<span class="status-icon" title="Pick actualizado">🔄</span>` : ''}
-                                ${isTop ? `<span class="status-icon" title="Mejor pick del momento">🏆</span>` : ''}
-                                ${isMediaFeatured ? `<span class="status-icon" title="Equipo mediático destacado">⭐</span>` : ''}
-                                ${isWhale ? `<span class="whale-header-badge">WHALE SIGNAL</span>` : ''}
-                                ${isLongshot ? `<span class="longshot-pick-badge">LONGSHOT · MÁX. 0.5u</span>` : ''}
-                                ${isValue ? `<span class="value-pick-badge">VALUE</span>` : ''}
-                                ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
-                                ${isFreeRelease ? `<span class="free-pick-badge" title="Seleccionado para publicación gratuita #${p.freeReleaseRank || ''}">FREE RELEASE${p.freeReleaseRank ? ` #${p.freeReleaseRank}` : ''}</span>` : ''}
+                        <div class="signal-main">
+                            <div class="signal-orb" title="${escapeHTML(signalSummary)}">${primarySignalIcon}</div>
+                            <div class="signal-copy" title="${escapeHTML(signalSummary)}">
+                                <span class="signal-kicker">SEÑAL DE MERCADO</span>
+                                <strong class="signal-name">${primarySignalName}</strong>
                             </div>
+                        </div>
+                        <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
+                        <div class="card-hero-tags">
+                            ${isNew ? `<span class="status-icon" title="Pick nuevo">🆕</span>` : ''}
+                            ${isUpdated ? `<span class="status-icon" title="Pick actualizado">🔄</span>` : ''}
+                            ${isTop ? `<span class="status-icon" title="Mejor pick del momento">🏆</span>` : ''}
+                            ${isMediaFeatured ? `<span class="status-icon" title="Equipo mediático destacado">⭐</span>` : ''}
+                            ${isWhale ? `<span class="whale-header-badge">WHALE SIGNAL</span>` : ''}
+                            ${isLongshot ? `<span class="longshot-pick-badge">LONGSHOT · MÁX. 0.5u</span>` : ''}
+                            ${isValue ? `<span class="value-pick-badge">VALUE</span>` : ''}
+                            ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
+                            ${isFreeRelease ? `<span class="free-pick-badge" title="Seleccionado para publicación gratuita #${p.freeReleaseRank || ''}">FREE RELEASE${p.freeReleaseRank ? ` #${p.freeReleaseRank}` : ''}</span>` : ''}
                         </div>
                     </div>
 
