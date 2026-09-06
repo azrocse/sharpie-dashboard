@@ -4,23 +4,39 @@
 <div class="kpi"><div class="kpi-label">Récord</div><div id="kRecord" class="kpi-value">0-0-0</div><div class="kpi-sub">WIN · LOSS · PUSH</div></div>
 <div class="kpi"><div class="kpi-label">Balance</div><div id="kUnits" class="kpi-value">0.00u</div><div class="kpi-sub">Ganancia/pérdida neta</div></div>
 <div class="kpi"><div class="kpi-label">ROI</div><div id="kRoi" class="kpi-value">0.00%</div><div id="kRisked" class="kpi-sub">0.00u apostadas</div></div>
+<div class="kpi"><div class="kpi-label">Yield</div><div id="kYield" class="kpi-value">0.00%</div><div class="kpi-sub">Beneficio / stake total</div></div>
 <div class="kpi"><div class="kpi-label">Win rate</div><div id="kWinRate" class="kpi-value">0.00%</div><div class="kpi-sub">Sin contar push/void</div></div>
 <div class="kpi"><div class="kpi-label">Revisión manual</div><div id="kPending" class="kpi-value">0</div><div id="kReview" class="kpi-sub">Sin incidencias reales</div></div>
+<div class="kpi"><div class="kpi-label">Brier Score</div><div id="kBrier" class="kpi-value">—</div><div class="kpi-sub">Menor es mejor</div></div>
+<div class="kpi"><div class="kpi-label">Error calibración</div><div id="kCalibration" class="kpi-value">—</div><div class="kpi-sub">Pronóstico vs realidad</div></div>
+<div class="kpi"><div class="kpi-label">Drawdown máximo</div><div id="kDrawdown" class="kpi-value">—</div><div class="kpi-sub">Caída desde el máximo</div></div>
 </section>
-<section class="panel"><div class="filters">
+<section class="panel filters-panel">
+<div class="filter-group filter-group-primary"><div class="filter-group-title">Búsqueda y periodo</div><div class="filters filters-primary">
 <input id="search" class="filter-wide" placeholder="Buscar evento, pick o liga">
-<select id="range"><option value="2" selected>Hoy y ayer</option><option value="1">Hoy</option><option value="7">Últimos 7 días</option><option value="30">Últimos 30 días</option><option value="all">Todo el historial</option><option value="custom">Rango personalizado</option></select>
-<input id="dateFrom" type="date" title="Desde"><input id="dateTo" type="date" title="Hasta">
+<select id="range" aria-label="Periodo"><option value="today" selected>Hoy</option><option value="yesterday">Ayer</option><option value="7">Últimos 7 días</option><option value="30">Últimos 30 días</option><option value="all">Todo el historial</option><option value="custom">Rango personalizado</option></select>
+<div id="customDates" class="custom-dates" hidden><label>Desde<input id="dateFrom" type="date"></label><label>Hasta<input id="dateTo" type="date"></label></div>
+</div></div>
+<div class="filter-group"><div class="filter-group-title">Clasificación</div><div class="filters">
 <select id="league"><option value="">Todas las ligas</option></select>
 <select id="category"><option value="">Todas las categorías</option><option>VALUE</option><option>PREMIUM</option><option>WHALE</option></select>
+<select id="result"><option value="SETTLED" selected>Solo liquidados</option><option value="">Todos los estados</option><option>WIN</option><option>HALF_WIN</option><option>LOSS</option><option>HALF_LOSS</option><option>PUSH</option><option>VOID</option><option>PENDING</option><option>REVIEW</option></select>
 <select id="stake"><option value="">Todos los stakes</option><option value="1">Stake 1u</option><option value="1.5">Stake 1.5u</option><option value="2">Stake 2u</option><option value="2.5">Stake 2.5u</option><option value="3">Stake 3u</option><option value="3.5">Stake 3.5u</option><option value="4">Stake 4u</option><option value="4.5">Stake 4.5u</option><option value="5">Stake 5u</option></select>
+<label class="check"><input id="freeOnly" type="checkbox"> Free Release</label>
+</div></div>
+<div class="filter-group"><div class="filter-group-title">Valor y modelo</div><div class="filters numeric-filters">
+<input id="oddsMin" type="number" step="1" placeholder="Cuota mín.">
+<input id="oddsMax" type="number" step="1" placeholder="Cuota máx.">
 <input id="modelMin" type="number" min="0" max="100" step="1" placeholder="Modelo mín. %">
+<input id="modelMax" type="number" min="0" max="100" step="1" placeholder="Modelo máx. %">
+<input id="divergenceMin" type="number" step="0.1" placeholder="Divergencia mín. %">
+<input id="divergenceMax" type="number" step="0.1" placeholder="Divergencia máx. %">
 <input id="edgeMin" type="number" min="0" step="0.1" placeholder="Edge mín. %">
 <input id="evMin" type="number" min="0" step="0.1" placeholder="EV mín. %">
-<select id="result"><option value="SETTLED" selected>Solo liquidados</option><option value="">Todos los estados</option><option>WIN</option><option>HALF_WIN</option><option>LOSS</option><option>HALF_LOSS</option><option>PUSH</option><option>VOID</option><option>PENDING</option><option>REVIEW</option></select>
-<label class="check"><input id="freeOnly" type="checkbox"> Free Release</label>
-<button id="clear">Limpiar</button>
-</div><div class="summary">Mostrando <b id="shown">0</b> de <b id="total">0</b> picks con valor</div></section>
-<section class="charts"><article class="chart-card"><div class="chart-title">📈 Balance acumulado por fecha</div><div class="chart-box"><canvas id="unitsChart"></canvas></div></article><article class="chart-card"><div class="chart-title">🎯 Distribución de resultados</div><div class="chart-box"><canvas id="resultChart"></canvas></div></article></section>
+</div></div>
+<div class="filter-actions"><div class="summary">Mostrando <b id="shown">0</b> de <b id="total">0</b> picks con valor</div><div class="action-buttons"><button id="clear" class="secondary-btn">Limpiar filtros</button><button id="analyze" class="analyze-btn">Analizar resultados</button><button id="export" class="export-btn">Exportar Excel (.csv)</button></div></div>
+</section>
+<section class="charts"><article class="chart-card"><div class="chart-title">📈 Balance acumulado por fecha</div><div class="chart-box"><canvas id="unitsChart"></canvas></div></article><article class="chart-card"><div class="chart-title">🎯 Distribución de resultados</div><div class="chart-box"><canvas id="resultChart"></canvas></div></article><article class="chart-card"><div class="chart-title">🧪 Calibración del modelo</div><div class="chart-box"><canvas id="calibrationChart"></canvas></div></article></section>
 <section class="table-panel"><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Evento</th><th>Pick</th><th>Categoría</th><th>Cuota</th><th>Stake</th><th>Modelo</th><th>Edge</th><th>EV</th><th>Resultado</th><th>Marcador</th><th>Balance</th><th></th></tr></thead><tbody id="rows"></tbody></table><div id="empty" class="empty" hidden>No existen resultados con estos filtros.</div></div><div class="pagination"><span id="pageInfo"></span><div><button id="prev">← Anterior</button> <button id="next">Siguiente →</button></div></div></section>
 <dialog id="detailModal"><div class="modal-head"><b id="modalTitle">Detalle</b><button class="close" id="closeModal">×</button></div><div id="modalBody" class="modal-body"></div></dialog>
+<dialog id="analysisModal" class="analysis-modal"><div class="modal-head"><div><b>Análisis de rentabilidad</b><div id="analysisScope" class="modal-subtitle"></div></div><button class="close" id="closeAnalysis">×</button></div><div id="analysisBody" class="modal-body"></div></dialog>
