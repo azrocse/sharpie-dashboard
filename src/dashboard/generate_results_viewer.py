@@ -28,7 +28,7 @@ OUTPUT_FILE = BASE_DIR / "results.html"
 TEMPLATES_DIR = CURRENT_DIR / "templates"
 ASSETS_DIR = CURRENT_DIR / "assets"
 CDMX_TZ = ZoneInfo("America/Mexico_City")
-VALUE_CATEGORIES = {"VALUE", "PREMIUM", "LONGSHOT"}
+VALUE_CATEGORIES = {"VALUE", "PREMIUM", "LONGSHOT", "WHALE", "FREE"}
 FINAL_RESULTS = {"WIN", "LOSS", "PUSH", "VOID", "HALF_WIN", "HALF_LOSS"}
 
 
@@ -69,31 +69,24 @@ def _result_of(pick):
 
 def _is_value_pick(pick):
     category = str(pick.get("pickCategory") or "").upper()
-    if category == "FREE":
-        category = "VALUE"
     if category not in VALUE_CATEGORIES:
         return False
+    if pick.get("actionKey") not in {None, "", "bet", "speculative"}:
+        return False
     try:
-        ev = float(pick.get("ev") or 0)
-        edge = float(pick.get("modelEdge") or 0)
-        stake = float(pick.get("stake") or 0)
-        odds = float(str(pick.get("odds") or 0).replace("+", ""))
-        if stake < 0.5:
-            return False
-        if category == "PREMIUM":
-            return ev >= 6.0 and edge >= 4.0 and odds < 151
-        if category == "VALUE":
-            return ev >= 3.0 and edge >= 2.0 and odds < 151
-        if odds >= 251:
-            return ev >= 8.0 and edge >= 3.0
-        return odds >= 151 and ev >= 5.0 and edge >= 2.0
+        # Se conserva la decisión publicada en su momento. Results no debe
+        # recalibrar retroactivamente oportunidades con reglas posteriores.
+        return (
+            float(pick.get("stake") or 0) >= 0.5
+            and float(pick.get("ev") or 0) > 0
+            and float(pick.get("modelEdge") or 0) > 0
+        )
     except (TypeError, ValueError):
         return False
 
 
 def _dedupe_key(pick):
-    if pick.get("historyId"):
-        return str(pick["historyId"])
+    # Snapshot y carpeta diaria pueden tener IDs distintos para el mismo pick.
     return "||".join(_norm(pick.get(key)) for key in ("date", "league", "game", "market", "pick"))
 
 

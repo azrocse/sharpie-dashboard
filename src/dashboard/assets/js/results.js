@@ -33,7 +33,7 @@ function apply(){
   const q=$('search').value.toLowerCase().trim(),from=$('dateFrom').value,to=$('dateTo').value;
   const league=$('league').value,cat=$('category').value,market=$('market').value,res=$('result').value,stake=$('stake').value;
   scoped=PICKS.filter(p=>{const blob=`${p.game||''} ${p.pick||''} ${p.league||''} ${p.market||''}`.toLowerCase(),date=p.date||'';
-    return Boolean(date)&&date<=TODAY_CDMX&&num(p.ev)>0&&num(p.modelEdge)>0&&(!q||blob.includes(q))&&(!from||date>=from)&&(!to||date<=to)&&(!league||p.league===league)&&(!cat||p.pickCategory===cat)&&(!market||p.market===market)&&(!stake||num(p.stake)===num(stake))&&(!$('freeOnly').checked||p.freeRelease)&&passesBound(americanOdds(p),'oddsMin','oddsMax')&&passesBound(num(p.modelProb),'modelMin','modelMax')&&passesBound(num(p.modelEdge),'edgeMin','edgeMax')&&passesBound(num(p.ev),'evMin','evMax')&&passesBound(divergence(p),'divMin','divMax');
+    return Boolean(date)&&num(p.ev)>0&&num(p.modelEdge)>0&&(!q||blob.includes(q))&&(!from||date>=from)&&(!to||date<=to)&&(!league||p.league===league)&&(!cat||p.pickCategory===cat)&&(!market||p.market===market)&&(!stake||num(p.stake)===num(stake))&&(!$('freeOnly').checked||p.freeRelease)&&passesBound(americanOdds(p),'oddsMin','oddsMax')&&passesBound(num(p.modelProb),'modelMin','modelMax')&&passesBound(num(p.modelEdge),'edgeMin','edgeMax')&&passesBound(num(p.ev),'evMin','evMax')&&passesBound(divergence(p),'divMin','divMax');
   });
   filtered=scoped.filter(p=>!res||(res==='SETTLED'?finalSet.has(p.result):p.result===res));page=1;render();
 }
@@ -91,7 +91,7 @@ function render(){$('shown').textContent=filtered.length;$('total').textContent=
 ['league','category','market','stake','result','freeOnly'].forEach(id=>$(id).addEventListener('change',apply));
 document.querySelectorAll('#rangeTabs button').forEach(b=>b.onclick=()=>{setRange(b.dataset.range);apply();});
 ['dateFrom','dateTo'].forEach(id=>$(id).onchange=apply);
-$('clear').onclick=()=>{$('search').value='';['league','category','market','stake'].forEach(id=>$(id).value='');numericFilters.forEach(id=>$(id).value='');$('result').value='SETTLED';$('freeOnly').checked=false;setRange('all');apply();};
+$('clear').onclick=()=>{$('search').value='';['league','category','market','stake'].forEach(id=>$(id).value='');numericFilters.forEach(id=>$(id).value='');$('result').value='';$('freeOnly').checked=false;setRange('all');apply();};
 $('exportCsv').onclick=exportCsv;$('analyze').onclick=analyze;
 $('prev').onclick=()=>{page--;renderRows();scrollTo(0,0);};$('next').onclick=()=>{page++;renderRows();scrollTo(0,0);};
 $('closeModal').onclick=()=>$('detailModal').close();$('closeAnalysis').onclick=()=>$('analysisModal').close();
