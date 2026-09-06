@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-09-06T20:41:44+00:00",
-  "totalPicks": 4539,
+  "generatedAt": "2026-09-06T20:46:44+00:00",
+  "totalPicks": 4540,
   "excludedPicks": 3091,
   "statusCounts": {
     "REVIEW": 66,
-    "LOSS": 683,
+    "LOSS": 685,
     "WIN": 635,
-    "PENDING": 50,
+    "PENDING": 49,
     "PUSH": 9,
     "HALF_LOSS": 3,
     "HALF_WIN": 2
@@ -18,9 +18,9 @@
     "No se pudo identificar al peleador seleccionado": 1,
     "No se pudo interpretar el spread": 1,
     "NO_MATCH_PAST": 1,
-    "Evento aún no finaliza": 9,
+    "Evento aún no finaliza": 7,
     "AMBIGUOUS_MATCH": 3,
-    "SIN_DETALLE": 21,
+    "SIN_DETALLE": 22,
     "NOT_STARTED_FUTURE": 11
   },
   "statusByDateRelation": {
@@ -31,9 +31,10 @@
     "PUSH_PAST": 9,
     "HALF_LOSS_PAST": 3,
     "HALF_WIN_PAST": 2,
-    "PENDING_TODAY": 9,
+    "PENDING_TODAY": 7,
+    "LOSS_TODAY": 2,
     "REVIEW_TODAY": 3,
-    "PENDING_FUTURE": 32
+    "PENDING_FUTURE": 33
   },
   "resolvedRoutes": {
     "baseball/mlb": 777,
@@ -49,7 +50,7 @@
     "soccer/ita.1": 13,
     "soccer/ger.1": 7,
     "football/college-football": 187,
-    "SIN_RUTA": 30
+    "SIN_RUTA": 31
   },
   "unresolvedSamples": [
     {
@@ -1962,38 +1963,6 @@
     },
     {
       "date": "2026-09-06",
-      "game": "Marseille vs Paris FC",
-      "pick": "Marseille",
-      "league": "SPORTS",
-      "status": "PENDING",
-      "reason": "Evento aún no finaliza",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
-      "attemptedRoutes": [],
-      "attemptedDates": [
-        "2026-09-06",
-        "2026-09-05",
-        "2026-09-07"
-      ]
-    },
-    {
-      "date": "2026-09-06",
-      "game": "Juventus vs AC Milan",
-      "pick": "Juventus",
-      "league": "SPORTS",
-      "status": "PENDING",
-      "reason": "Evento aún no finaliza",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
-      "attemptedRoutes": [],
-      "attemptedDates": [
-        "2026-09-06",
-        "2026-09-05",
-        "2026-09-07"
-      ]
-    },
-    {
-      "date": "2026-09-06",
       "game": "Remo Belem vs Flamengo",
       "pick": "Flamengo",
       "league": "SPORTS",
@@ -2199,6 +2168,18 @@
       "date": "2026-09-07",
       "game": "Alexander Zverev vs Luciano Darderi",
       "pick": "Luciano Darderi",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "SIN_DETALLE",
+      "matchConfidence": null,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": []
+    },
+    {
+      "date": "2026-09-07",
+      "game": "Mirra Andreeva vs Anastasia Potapova",
+      "pick": "Anastasia Potapova",
       "league": "SPORTS",
       "status": "PENDING",
       "reason": "SIN_DETALLE",
