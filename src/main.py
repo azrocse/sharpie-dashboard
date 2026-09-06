@@ -14,7 +14,7 @@ CDMX_TIMEZONE = timezone(timedelta(hours=-6))
 BASE_DIR = Path(__file__).resolve().parent.parent
 SETTLEMENT_STATE_DIR = BASE_DIR / "data" / "results"
 BACKFILL_MARKER = SETTLEMENT_STATE_DIR / ".espn_backfill_date"
-BACKFILL_VERSION = "legacy-stake-normalization-v7"
+BACKFILL_VERSION = "settlement-identity-validation-v9"
 
 
 def settle_recent_history(days=2):

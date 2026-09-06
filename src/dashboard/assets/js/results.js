@@ -33,13 +33,13 @@ function apply(){
   const q=$('search').value.toLowerCase().trim(),from=$('dateFrom').value,to=$('dateTo').value;
   const league=$('league').value,cat=$('category').value,market=$('market').value,res=$('result').value,stake=$('stake').value;
   scoped=PICKS.filter(p=>{const blob=`${p.game||''} ${p.pick||''} ${p.league||''} ${p.market||''}`.toLowerCase(),date=p.date||'';
-    return date<=TODAY_CDMX&&num(p.ev)>0&&num(p.modelEdge)>0&&(!q||blob.includes(q))&&(!from||date>=from)&&(!to||date<=to)&&(!league||p.league===league)&&(!cat||p.pickCategory===cat)&&(!market||p.market===market)&&(!stake||num(p.stake)===num(stake))&&(!$('freeOnly').checked||p.freeRelease)&&passesBound(americanOdds(p),'oddsMin','oddsMax')&&passesBound(num(p.modelProb),'modelMin','modelMax')&&passesBound(num(p.modelEdge),'edgeMin','edgeMax')&&passesBound(num(p.ev),'evMin','evMax')&&passesBound(divergence(p),'divMin','divMax');
+    return Boolean(date)&&date<=TODAY_CDMX&&num(p.ev)>0&&num(p.modelEdge)>0&&(!q||blob.includes(q))&&(!from||date>=from)&&(!to||date<=to)&&(!league||p.league===league)&&(!cat||p.pickCategory===cat)&&(!market||p.market===market)&&(!stake||num(p.stake)===num(stake))&&(!$('freeOnly').checked||p.freeRelease)&&passesBound(americanOdds(p),'oddsMin','oddsMax')&&passesBound(num(p.modelProb),'modelMin','modelMax')&&passesBound(num(p.modelEdge),'edgeMin','edgeMax')&&passesBound(num(p.ev),'evMin','evMax')&&passesBound(divergence(p),'divMin','divMax');
   });
   filtered=scoped.filter(p=>!res||(res==='SETTLED'?finalSet.has(p.result):p.result===res));page=1;render();
 }
 function metrics(){
   const settled=filtered.filter(p=>finalSet.has(p.result)),wins=settled.filter(p=>p.result==='WIN').length+settled.filter(p=>p.result==='HALF_WIN').length*.5,losses=settled.filter(p=>p.result==='LOSS').length+settled.filter(p=>p.result==='HALF_LOSS').length*.5,push=settled.filter(p=>p.result==='PUSH').length;
-  const units=settled.reduce((s,p)=>s+num(p.profitUnits),0),risk=settled.filter(p=>p.result!=='VOID').reduce((s,p)=>s+num(p.stake),0),pending=scoped.filter(p=>p.result==='PENDING').length,review=scoped.filter(p=>p.result==='REVIEW').length,yieldPct=risk?units/risk*100:0,wr=wins+losses?wins/(wins+losses)*100:0;
+  const units=settled.reduce((s,p)=>s+num(p.profitUnits),0),risk=settled.filter(p=>p.result!=='VOID').reduce((s,p)=>s+num(p.stake),0),pending=filtered.filter(p=>p.result==='PENDING').length,review=filtered.filter(p=>p.result==='REVIEW').length,yieldPct=risk?units/risk*100:0,wr=wins+losses?wins/(wins+losses)*100:0;
   $('kSettled').textContent=settled.length;$('kTotalSub').textContent=`${filtered.length} visibles`;$('kRecord').textContent=`${wins}-${losses}-${push}`;$('kUnits').textContent=`${units>=0?'+':''}${fmt(units)}u`;$('kRoi').textContent=`${yieldPct>=0?'+':''}${fmt(yieldPct)}%`;$('kRisked').textContent=`${fmt(risk)}u apostadas`;$('kWinRate').textContent=`${fmt(wr)}%`;$('kPending').textContent=pending+review;$('kReview').textContent=`${review} revisión · ${pending} en curso`;
   $('kUnits').className='kpi-value '+(units>=0?'positive':'negative');$('kRoi').className='kpi-value '+(yieldPct>=0?'positive':'negative');
 }
@@ -98,4 +98,3 @@ $('closeModal').onclick=()=>$('detailModal').close();$('closeAnalysis').onclick=
 [$('detailModal'),$('analysisModal')].forEach(m=>m.onclick=e=>{if(e.target===m)m.close();});
 $('theme').onclick=()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'dark':'light';charts();};
 populate();setRange('all');apply();
-

@@ -1,10 +1,10 @@
 {
   "schemaVersion": 3,
   "eventDate": "2026-08-01",
-  "updatedAt": "2026-09-06T17:28:41+00:00",
+  "updatedAt": "2026-09-06T22:39:03+00:00",
   "count": 171,
-  "pendingSettlement": 5,
-  "settledCount": 126,
+  "pendingSettlement": 8,
+  "settledCount": 123,
   "picks": [
     {
       "id": 152,
@@ -86,15 +86,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:00+00:00",
+        "checkedAt": "2026-09-06T22:37:58+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 68.73,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 68.73,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "football/nfl",
@@ -106,7 +106,7 @@
           "2026-08-02"
         ],
         "candidateEvents": 54,
-        "bestCandidate": "San Francisco Giants at San Diego Padres"
+        "bestCandidate": "St. Louis Cardinals at Toronto Blue Jays"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -320,15 +320,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:02+00:00",
+        "checkedAt": "2026-09-06T22:38:00+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 68.73,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 68.73,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "baseball/mlb",
           "football/nfl",
@@ -340,7 +340,7 @@
           "2026-08-02"
         ],
         "candidateEvents": 54,
-        "bestCandidate": "San Francisco Giants at San Diego Padres"
+        "bestCandidate": "St. Louis Cardinals at Toronto Blue Jays"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -731,17 +731,17 @@
       "freePick": false,
       "settlement": {
         "status": "LOSS",
-        "checkedAt": "2026-09-03T19:18:46+00:00",
+        "checkedAt": "2026-09-06T22:38:00+00:00",
         "notes": "Resultado oficial del combate según ESPN",
-        "matchConfidence": 123.0,
-        "failureCode": "NO_MATCH_PAST",
+        "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260801&limit=500",
         "eventId": "600059339",
         "eventName": "UFC Fight Night: Medić vs. Rodriguez",
         "homeScore": null,
         "awayScore": null,
-        "settledAt": "2026-09-03T19:18:46+00:00"
+        "matchConfidence": 123.0,
+        "settledAt": "2026-09-06T22:38:00+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -1623,15 +1623,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:02+00:00",
+        "checkedAt": "2026-09-06T22:38:15+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 48.74,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 48.74,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -1770,15 +1770,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:17+00:00",
+        "checkedAt": "2026-09-06T22:38:21+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 48.74,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 48.74,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -4034,58 +4034,36 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:23+00:00",
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:38:27+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260801&limit=500",
         "eventId": "401816348",
         "eventName": "Chicago White Sox at Tampa Bay Rays",
         "homeScore": 1.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc"
+          "baseball/mlb"
         ],
         "attemptedDates": [
           "2026-08-01",
           "2026-07-31",
           "2026-08-02"
         ],
-        "candidateEvents": 36,
+        "candidateEvents": 45,
         "eventId": "401816348",
         "espnSport": "baseball",
         "espnLeague": "mlb",
         "matchedName": "Chicago White Sox at Tampa Bay Rays",
-        "matchedDate": "2026-08-01"
+        "matchedDate": "2026-08-01",
+        "bestCandidate": "St. Louis Cardinals at Toronto Blue Jays"
       },
       "needsSettlement": true,
       "historyId": "e78545a15a2e74eb55665a59",
@@ -6646,15 +6624,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:23+00:00",
+        "checkedAt": "2026-09-06T22:38:27+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 57.67,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 57.67,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -6687,7 +6665,7 @@
           "2026-08-01"
         ],
         "candidateEvents": 36,
-        "bestCandidate": "New York Liberty at Phoenix Mercury"
+        "bestCandidate": "Las Vegas Aces at Chicago Sky"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -10111,7 +10089,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260801&limit=500",
         "eventId": "401816350",
         "eventName": "Philadelphia Phillies at Baltimore Orioles",
-        "checkedAt": "2026-09-06T17:28:29+00:00",
+        "checkedAt": "2026-09-06T22:38:33+00:00",
         "homeScore": 0.0,
         "awayScore": 5.0,
         "matchConfidence": 1000.0,
@@ -13720,7 +13698,7 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:29+00:00",
+        "checkedAt": "2026-09-06T22:38:33+00:00",
         "notes": "NO_MATCH_PAST",
         "matchConfidence": 0.0,
         "failureCode": "NO_MATCH_PAST"
@@ -15628,27 +15606,20 @@
         }
       ],
       "status": "LIVE",
-      "result": "LOSS",
+      "result": "REVIEW",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "LOSS",
-        "checkedAt": "2026-09-03T19:19:50+00:00",
-        "notes": "Total final 0 vs línea 8.5",
-        "matchConfidence": 74.0,
-        "failureCode": "NO_MATCH_PAST",
-        "source": "ESPN",
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260801&limit=500",
-        "eventId": "761709",
-        "eventName": "FC Dallas at LA Galaxy",
-        "homeScore": 0.0,
-        "awayScore": 0.0,
-        "settledAt": "2026-09-03T19:19:50+00:00"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:38:33+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 74.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -15674,21 +15645,17 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-01"
         ],
         "candidateEvents": 36,
-        "bestCandidate": "FC Dallas at LA Galaxy",
-        "eventId": "761709",
-        "espnSport": "soccer",
-        "espnLeague": "usa.1",
-        "matchedName": "FC Dallas at LA Galaxy",
-        "matchedDate": "2026-08-01"
+        "bestCandidate": "Las Vegas Aces at Chicago Sky"
       },
-      "needsSettlement": false,
-      "profitUnits": -1.0,
+      "needsSettlement": true,
+      "profitUnits": null,
       "historyId": "1ef84280c3edd61a35b5dd70",
       "historySchemaVersion": 3
     },
@@ -16181,15 +16148,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:29+00:00",
+        "checkedAt": "2026-09-06T22:38:39+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 67.52,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 67.52,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -16222,7 +16189,7 @@
           "2026-08-01"
         ],
         "candidateEvents": 36,
-        "bestCandidate": "St. Louis Cardinals at Toronto Blue Jays"
+        "bestCandidate": "Las Vegas Aces at Chicago Sky"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -16328,58 +16295,36 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:35+00:00",
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:38:45+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260801&limit=500",
         "eventId": "761709",
         "eventName": "FC Dallas at LA Galaxy",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc"
+          "soccer/usa.1"
         ],
         "attemptedDates": [
           "2026-08-01",
           "2026-07-31",
           "2026-08-02"
         ],
-        "candidateEvents": 36,
+        "candidateEvents": 15,
         "eventId": "761709",
         "espnSport": "soccer",
         "espnLeague": "usa.1",
         "matchedName": "FC Dallas at LA Galaxy",
-        "matchedDate": "2026-08-01"
+        "matchedDate": "2026-08-01",
+        "bestCandidate": "New England Revolution at CF Montréal"
       },
       "needsSettlement": true,
       "historyId": "bd486b4c9d3bda239d4605eb",
@@ -20840,7 +20785,7 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:36+00:00",
+        "checkedAt": "2026-09-06T22:38:45+00:00",
         "notes": "No se pudo identificar el equipo Moneyline",
         "matchConfidence": 1000.0,
         "source": "ESPN",
@@ -21457,58 +21402,36 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:36+00:00",
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:38:45+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260801&limit=500",
         "eventId": "761709",
         "eventName": "FC Dallas at LA Galaxy",
         "homeScore": 0.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc"
+          "soccer/usa.1"
         ],
         "attemptedDates": [
           "2026-08-01",
           "2026-07-31",
           "2026-08-02"
         ],
-        "candidateEvents": 36,
+        "candidateEvents": 15,
         "eventId": "761709",
         "espnSport": "soccer",
         "espnLeague": "usa.1",
         "matchedName": "FC Dallas at LA Galaxy",
-        "matchedDate": "2026-08-01"
+        "matchedDate": "2026-08-01",
+        "bestCandidate": "New England Revolution at CF Montréal"
       },
       "needsSettlement": true,
       "historyId": "00afc6ce51427943c0ec4721",
@@ -22040,27 +21963,20 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "LOSS",
+      "result": "REVIEW",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "LOSS",
-        "checkedAt": "2026-09-03T19:16:07+00:00",
-        "notes": "Empate 0-0 en mercado de tres vías",
-        "matchConfidence": 83.0,
-        "failureCode": "NO_MATCH_PAST",
-        "source": "ESPN",
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260801&limit=500",
-        "eventId": "761709",
-        "eventName": "FC Dallas at LA Galaxy",
-        "homeScore": 0.0,
-        "awayScore": 0.0,
-        "settledAt": "2026-09-03T19:16:07+00:00"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:38:45+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 83.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -22086,21 +22002,17 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-01"
         ],
         "candidateEvents": 36,
-        "bestCandidate": "FC Dallas at LA Galaxy",
-        "eventId": "761709",
-        "espnSport": "soccer",
-        "espnLeague": "usa.1",
-        "matchedName": "FC Dallas at LA Galaxy",
-        "matchedDate": "2026-08-01"
+        "bestCandidate": "Las Vegas Aces at Chicago Sky"
       },
-      "needsSettlement": false,
-      "profitUnits": -1.0,
+      "needsSettlement": true,
+      "profitUnits": null,
       "historyId": "53075cbe33393eab4c83828d",
       "historySchemaVersion": 3
     },
@@ -22202,15 +22114,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:28:36+00:00",
+        "checkedAt": "2026-09-06T22:38:51+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 58.84,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 58.84,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -22243,7 +22155,7 @@
           "2026-08-01"
         ],
         "candidateEvents": 36,
-        "bestCandidate": "FC Dallas at LA Galaxy"
+        "bestCandidate": "Las Vegas Aces at Chicago Sky"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -22344,27 +22256,20 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "LOSS",
+      "result": "REVIEW",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "LOSS",
-        "checkedAt": "2026-09-03T19:19:10+00:00",
-        "notes": "Total final 0 vs línea 10.5",
-        "matchConfidence": 83.0,
-        "failureCode": "NO_MATCH_PAST",
-        "source": "ESPN",
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260801&limit=500",
-        "eventId": "761709",
-        "eventName": "FC Dallas at LA Galaxy",
-        "homeScore": 0.0,
-        "awayScore": 0.0,
-        "settledAt": "2026-09-03T19:19:10+00:00"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:38:57+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 83.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -22390,21 +22295,17 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-01"
         ],
         "candidateEvents": 36,
-        "bestCandidate": "FC Dallas at LA Galaxy",
-        "eventId": "761709",
-        "espnSport": "soccer",
-        "espnLeague": "usa.1",
-        "matchedName": "FC Dallas at LA Galaxy",
-        "matchedDate": "2026-08-01"
+        "bestCandidate": "Las Vegas Aces at Chicago Sky"
       },
-      "needsSettlement": false,
-      "profitUnits": -1.0,
+      "needsSettlement": true,
+      "profitUnits": null,
       "historyId": "aedd102d6ebef22298733910",
       "historySchemaVersion": 3
     },

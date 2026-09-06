@@ -1,7 +1,7 @@
 {
   "schemaVersion": 3,
   "eventDate": "2026-07-27",
-  "updatedAt": "2026-09-06T17:23:04+00:00",
+  "updatedAt": "2026-09-06T22:33:03+00:00",
   "count": 72,
   "pendingSettlement": 7,
   "settledCount": 53,
@@ -104,15 +104,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:22:26+00:00",
+        "checkedAt": "2026-09-06T22:32:24+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 49.25,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 49.25,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -398,15 +398,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:22:40+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 50.53,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-06T22:32:39+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 50.53,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -443,7 +443,7 @@
       },
       "excludedFromResults": true,
       "exclusionReason": "NO_MATCH_PAST",
-      "needsSettlement": false,
+      "needsSettlement": true,
       "historyId": "e0cd378b7d8194a408848003",
       "historySchemaVersion": 3
     },
@@ -692,15 +692,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:22:46+00:00",
+        "checkedAt": "2026-09-06T22:32:45+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 54.64,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 54.64,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -839,15 +839,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:22:52+00:00",
+        "checkedAt": "2026-09-06T22:32:50+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 59.01,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 59.01,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -2169,15 +2169,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:22:57+00:00",
+        "checkedAt": "2026-09-06T22:32:56+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 50.78,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 50.78,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -2210,7 +2210,7 @@
           "2026-07-27"
         ],
         "candidateEvents": 12,
-        "bestCandidate": "Cleveland Guardians at Cincinnati Reds"
+        "bestCandidate": "Seattle Mariners at Texas Rangers"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -2316,58 +2316,36 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:23:03+00:00",
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:33:02+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260727&limit=500",
         "eventId": "401816291",
         "eventName": "Milwaukee Brewers at San Francisco Giants",
         "homeScore": 3.0,
-        "awayScore": 0.0
+        "awayScore": 0.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc"
+          "baseball/mlb"
         ],
         "attemptedDates": [
           "2026-07-27",
           "2026-07-26",
           "2026-07-28"
         ],
-        "candidateEvents": 12,
+        "candidateEvents": 43,
         "eventId": "401816291",
         "espnSport": "baseball",
         "espnLeague": "mlb",
         "matchedName": "Milwaukee Brewers at San Francisco Giants",
-        "matchedDate": "2026-07-27"
+        "matchedDate": "2026-07-27",
+        "bestCandidate": "Seattle Mariners at Texas Rangers"
       },
       "needsSettlement": true,
       "historyId": "845a5160ace69f8e1a1f49cc",
@@ -3239,7 +3217,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260727&limit=500",
         "eventId": "401816282",
         "eventName": "Baltimore Orioles at Detroit Tigers",
-        "checkedAt": "2026-09-06T17:23:03+00:00",
+        "checkedAt": "2026-09-06T22:33:03+00:00",
         "homeScore": 5.0,
         "awayScore": 8.0,
         "matchConfidence": 1000.0,
@@ -4976,7 +4954,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260727&limit=500",
         "eventId": "401816283",
         "eventName": "Cleveland Guardians at Cincinnati Reds",
-        "checkedAt": "2026-09-06T17:23:03+00:00",
+        "checkedAt": "2026-09-06T22:33:03+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -5104,7 +5082,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260727&limit=500",
         "eventId": "401816283",
         "eventName": "Cleveland Guardians at Cincinnati Reds",
-        "checkedAt": "2026-09-06T17:23:04+00:00",
+        "checkedAt": "2026-09-06T22:33:03+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -5355,7 +5333,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260727&limit=500",
         "eventId": "401816283",
         "eventName": "Cleveland Guardians at Cincinnati Reds",
-        "checkedAt": "2026-09-06T17:23:04+00:00",
+        "checkedAt": "2026-09-06T22:33:03+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -5737,7 +5715,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260727&limit=500",
         "eventId": "401816283",
         "eventName": "Cleveland Guardians at Cincinnati Reds",
-        "checkedAt": "2026-09-06T17:23:04+00:00",
+        "checkedAt": "2026-09-06T22:33:03+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,
@@ -6012,7 +5990,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260727&limit=500",
         "eventId": "401816283",
         "eventName": "Cleveland Guardians at Cincinnati Reds",
-        "checkedAt": "2026-09-06T17:23:04+00:00",
+        "checkedAt": "2026-09-06T22:33:03+00:00",
         "homeScore": 0.0,
         "awayScore": 0.0,
         "matchConfidence": 1000.0,

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 3,
   "eventDate": "2026-09-01",
-  "updatedAt": "2026-09-04T17:52:08-06:00",
+  "updatedAt": "2026-09-06T22:58:17+00:00",
   "count": 4,
   "pendingSettlement": 0,
   "settledCount": 3,
@@ -769,17 +769,17 @@
       "freePick": true,
       "settlement": {
         "status": "LOSS",
-        "checkedAt": "2026-09-03T19:35:16+00:00",
+        "checkedAt": "2026-09-06T22:57:56+00:00",
         "notes": "Resultado oficial del combate según ESPN",
-        "matchConfidence": 123.0,
         "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 123.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260901&limit=500",
         "eventId": "600060735",
         "eventName": "Dana White's Contender Series: Season 10, Week 4",
         "homeScore": null,
         "awayScore": null,
-        "settledAt": "2026-09-03T19:35:16+00:00"
+        "settledAt": "2026-09-06T22:57:56+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -810,13 +810,14 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-09-01"
         ],
-        "candidateEvents": 16,
-        "bestCandidate": "Atlanta Braves at Washington Nationals",
+        "candidateEvents": 15,
+        "bestCandidate": "New York Mets at Tampa Bay Rays",
         "eventId": "600060735",
         "espnSport": "mma",
         "espnLeague": "ufc",

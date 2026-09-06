@@ -32,6 +32,7 @@ from pathlib import Path
 CURRENT_DIR = Path(__file__).resolve().parent
 BASE_DIR = CURRENT_DIR.parent.parent
 DEFAULT_HISTORY_DIR = BASE_DIR / "data" / "history"
+DEFAULT_RESULTS_SNAPSHOT = BASE_DIR / "data" / "results_snapshot.json"
 ESPN_BASE_URL = "https://site.api.espn.com/apis/site/v2/sports"
 FINAL_RESULTS = {"WIN", "LOSS", "PUSH", "VOID", "HALF_WIN", "HALF_LOSS"}
 CDMX_TIMEZONE = timezone(timedelta(hours=-6))
@@ -67,6 +68,11 @@ LEAGUE_ROUTES = [
 ]
 
 TEAM_ROUTE_HINTS = {
+    ("soccer", "mex.1"): (
+        "club america", "america", "tijuana", "xolos", "puebla", "cruz azul",
+        "guadalajara", "chivas", "pumas", "tigres", "monterrey", "toluca",
+        "pachuca", "necaxa", "juarez", "atlas", "santos laguna", "leon",
+    ),
     ("baseball", "mlb"): (
         "diamondbacks", "braves", "orioles", "red sox", "cubs", "white sox",
         "reds", "guardians", "rockies", "tigers", "astros", "royals",
@@ -292,6 +298,14 @@ def side_similarity(expected, competitor):
     expected_n = normalize(expected)
     score = max((text_similarity(expected, alias) for alias in competitor.get("aliases", set())), default=0.0)
     expected_tokens = expected_n.split()
+    generic_tokens = {"club", "united", "city", "state", "university", "caliente"}
+    distinctive = {token for token in expected_tokens if len(token) >= 5 and token not in generic_tokens}
+    alias_tokens = {
+        token for alias in competitor.get("aliases", set())
+        for token in normalize(alias).split()
+    }
+    if distinctive.intersection(alias_tokens):
+        score = max(score, 0.82)
     if expected_tokens:
         nickname = expected_tokens[-1]
         if len(nickname) >= 4 and any(nickname == normalize(alias).split()[-1] for alias in competitor.get("aliases", set()) if normalize(alias)):
@@ -329,9 +343,6 @@ def pick_datetime(pick):
 def event_match_score(pick, event):
     lookup = pick.get("eventLookup") or {}
     stored_id = str(lookup.get("eventId") or pick.get("sourceEventId") or "").strip()
-    if stored_id and stored_id == str(event.get("id") or ""):
-        return 1000.0
-
     competitors, _competition = event_competitors(event)
     expected_home = lookup.get("home") or pick.get("home")
     expected_away = lookup.get("away") or pick.get("away")
@@ -340,14 +351,21 @@ def event_match_score(pick, event):
         expected_away = expected_away or left
         expected_home = expected_home or right
     if expected_home and expected_away:
-        direct = side_similarity(expected_home, competitors.get("home")) + side_similarity(expected_away, competitors.get("away"))
-        reverse = side_similarity(expected_home, competitors.get("away")) + side_similarity(expected_away, competitors.get("home"))
-        score = max(direct, reverse) * 50.0
+        direct = (side_similarity(expected_home, competitors.get("home")), side_similarity(expected_away, competitors.get("away")))
+        reverse = (side_similarity(expected_home, competitors.get("away")), side_similarity(expected_away, competitors.get("home")))
+        best_pair = max((direct, reverse), key=sum)
+        # Una coincidencia fuerte de un solo equipo nunca basta para liquidar:
+        # ambos participantes deben corresponder al evento consultado.
+        if min(best_pair) < 0.72:
+            return 0.0
+        score = sum(best_pair) * 50.0
         expected_time = pick_datetime(pick)
         event_time = parse_event_datetime(event.get("date"))
         if expected_time and event_time:
             hours = abs((expected_time - event_time).total_seconds()) / 3600.0
             score += max(0.0, 24.0 - hours * 4.0)
+        if stored_id and stored_id == str(event.get("id") or ""):
+            return 1000.0
         return score
 
     game = pick.get("game") or ""
@@ -358,13 +376,6 @@ def event_match_score(pick, event):
 
 
 def find_event(pick, events):
-    lookup = pick.get("eventLookup") or {}
-    stored_id = str(lookup.get("eventId") or pick.get("sourceEventId") or "").strip()
-    if stored_id:
-        exact = [event for event in events if str(event.get("id") or "") == stored_id]
-        if len(exact) == 1:
-            return exact[0], 1000.0, None
-
     ranked = sorted(
         ((event_match_score(pick, event), event) for event in events),
         key=lambda pair: pair[0],
@@ -544,8 +555,13 @@ def history_files(history_dir, date_filter=None):
     root = Path(history_dir)
     if date_filter:
         candidate = root / date_filter / "sharpie.json"
-        return [candidate] if candidate.exists() else []
-    return sorted(root.glob("????-??-??/sharpie.json"))
+        files = [candidate] if candidate.exists() else []
+    else:
+        files = sorted(root.glob("????-??-??/sharpie.json"))
+    snapshot = root.parent / "results_snapshot.json"
+    if snapshot.exists():
+        files.append(snapshot)
+    return files
 
 
 def write_settlement_audit(history_dir):
@@ -602,6 +618,51 @@ def write_settlement_audit(history_dir):
     return report
 
 
+def settlement_identity_valid(pick):
+    """Comprueba que una liquidación guardada pertenezca al evento del pick."""
+    settlement = pick.get("settlement") or {}
+    lookup = pick.get("eventLookup") or {}
+    matched_name = settlement.get("eventName") or lookup.get("matchedName")
+    expected_away = lookup.get("away") or pick.get("away")
+    expected_home = lookup.get("home") or pick.get("home")
+    if not expected_away or not expected_home:
+        left, right = game_teams(pick.get("game"))
+        expected_away = expected_away or left
+        expected_home = expected_home or right
+    # Los finales heredados sin metadatos ESPN se conservan; sólo invalidamos
+    # una liquidación cuando existe evidencia verificable de cruce incorrecto.
+    if not matched_name or not expected_away or not expected_home:
+        return True
+    def name_similarity(expected, actual):
+        expected_n, actual_n = normalize(expected), normalize(actual)
+        score = text_similarity(expected_n, actual_n)
+        tokens = [token for token in expected_n.split() if len(token) >= 4]
+        if tokens and tokens[-1] in actual_n.split():
+            score = max(score, 0.88)
+        actual_compact = actual_n.replace(" ", "")
+        if any(len(token) >= 5 and token.replace(" ", "") in actual_compact for token in tokens):
+            score = max(score, 0.82)
+        # UMass/Massachusetts y abreviaturas similares.
+        if len(expected_n) >= 5 and expected_n.startswith("u") and expected_n[1:] in actual_n:
+            score = max(score, 0.82)
+        return score
+
+    matched_parts = re.split(r"\s+(?:at|@|vs\.?|versus)\s+", str(matched_name), maxsplit=1, flags=re.IGNORECASE)
+    if len(matched_parts) == 2:
+        direct = (name_similarity(expected_away, matched_parts[0]), name_similarity(expected_home, matched_parts[1]))
+        reverse = (name_similarity(expected_away, matched_parts[1]), name_similarity(expected_home, matched_parts[0]))
+        identity_pair = max((direct, reverse), key=sum)
+    else:
+        identity_pair = (name_similarity(expected_away, matched_name), name_similarity(expected_home, matched_name))
+    if min(identity_pair) < 0.58:
+        return False
+    sport = str(lookup.get("espnSport") or "").lower()
+    scores = (parse_score(settlement.get("awayScore")), parse_score(settlement.get("homeScore")))
+    if sport == "soccer" and any(score is not None and score > 15 for score in scores):
+        return False
+    return True
+
+
 def update_pick_from_espn(pick, client, force=False):
     try:
         positive_value = float(pick.get("ev") or 0) > 0 and float(pick.get("modelEdge") or 0) > 0
@@ -616,7 +677,8 @@ def update_pick_from_espn(pick, client, force=False):
         pick["stakeNormalized"] = True
         pick["stakeNormalizationReason"] = "LEGACY_STAKE_MODEL"
 
-    actionable = positive_value and float(pick.get("stake") or 0) >= 1.0
+    minimum_stake = 0.5 if str(pick.get("pickCategory") or "").upper() == "LONGSHOT" else 1.0
+    actionable = positive_value and float(pick.get("stake") or 0) >= minimum_stake
 
     if not actionable:
         pick["excludedFromResults"] = True
@@ -630,11 +692,23 @@ def update_pick_from_espn(pick, client, force=False):
 
     settlement = pick.get("settlement") or {"status": "PENDING"}
     settlement["status"] = str(settlement.get("status") or "PENDING").upper()
-    if settlement.get("status") in FINAL_RESULTS and not force:
+    if settlement.get("status") in FINAL_RESULTS and not force and settlement_identity_valid(pick):
         if stake_normalized:
             pick["profitUnits"] = american_profit_units(pick.get("odds"), pick.get("stake"), settlement.get("status"))
             return "NORMALIZED"
         return "SKIPPED_FINAL"
+    if settlement.get("status") in FINAL_RESULTS and not settlement_identity_valid(pick):
+        settlement = {
+            "status": "REVIEW", "checkedAt": now_iso(),
+            "notes": "La liquidación previa no coincide con ambos equipos",
+            "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
+        }
+        pick["settlement"] = settlement
+        pick["result"] = "REVIEW"
+        pick["profitUnits"] = None
+        lookup = pick.setdefault("eventLookup", {})
+        for key in ("eventId", "espnSport", "espnLeague", "matchedName", "matchedDate"):
+            lookup.pop(key, None)
 
     checked_at = now_iso()
     date_text = pick.get("date") or (pick.get("eventLookup") or {}).get("scheduledAt", "")[:10]
@@ -664,8 +738,6 @@ def update_pick_from_espn(pick, client, force=False):
             successful_requests += 1
             for route_event in route_response["payload"].get("events") or []:
                 confidence = event_match_score(pick, route_event)
-                if stored_id and stored_id == str(route_event.get("id") or ""):
-                    confidence = 1000.0
                 candidates.append((confidence, route_event, route_response, route, query_date))
 
         # Una liga ya identificada no debe provocar una búsqueda innecesaria.
@@ -777,10 +849,12 @@ def settle_history(history_dir=DEFAULT_HISTORY_DIR, date_filter=None, dry_run=Fa
             summary["ERROR"] += 1
             continue
 
-        picks = payload.get("picks", []) if isinstance(payload, dict) else []
+        picks = payload.get("picks", []) if isinstance(payload, dict) else payload if isinstance(payload, list) else []
         changed = False
         for pick in picks:
             if not isinstance(pick, dict):
+                continue
+            if date_filter and str(pick.get("date") or "")[:10] != date_filter:
                 continue
             summary["PICKS"] += 1
             before = json.dumps(pick, ensure_ascii=False, sort_keys=True)

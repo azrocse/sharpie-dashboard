@@ -14,6 +14,11 @@ try:
 except ImportError:
     from template_loader import atomic_write_text, read_utf8, render_template
 
+try:
+    from pipeline.settle_history_espn import settlement_identity_valid
+except ImportError:
+    from settle_history_espn import settlement_identity_valid
+
 
 CURRENT_DIR = Path(__file__).resolve().parent
 BASE_DIR = CURRENT_DIR.parent.parent
@@ -76,7 +81,7 @@ def _is_value_pick(pick):
         if stake < 0.5:
             return False
         if category == "PREMIUM":
-            return ev >= 6.0 and edge >= 4.0
+            return ev >= 6.0 and edge >= 4.0 and odds < 151
         if category == "VALUE":
             return ev >= 3.0 and edge >= 2.0 and odds < 151
         if odds >= 251:
@@ -92,6 +97,22 @@ def _dedupe_key(pick):
     return "||".join(_norm(pick.get(key)) for key in ("date", "league", "game", "market", "pick"))
 
 
+def _invalidate_mismatched_settlement(pick):
+    settlement = pick.get("settlement") or {}
+    status = str(settlement.get("status") or pick.get("result") or "").upper()
+    if status not in FINAL_RESULTS or settlement_identity_valid(pick):
+        return pick
+    pick["result"] = "REVIEW"
+    pick["profitUnits"] = None
+    pick["needsSettlement"] = True
+    pick["settlement"] = {
+        "status": "REVIEW",
+        "notes": "Liquidación excluida: el evento ESPN no coincide con ambos participantes",
+        "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
+    }
+    return pick
+
+
 def load_history(history_dir=HISTORY_DIR, snapshot_file=RESULTS_SNAPSHOT_FILE):
     records = {}
     root = Path(history_dir)
@@ -105,6 +126,7 @@ def load_history(history_dir=HISTORY_DIR, snapshot_file=RESULTS_SNAPSHOT_FILE):
             for raw in archived:
                 if isinstance(raw, dict) and _is_value_pick(raw) and not raw.get("excludedFromResults"):
                     pick = dict(raw)
+                    _invalidate_mismatched_settlement(pick)
                     if str(pick.get("pickCategory") or "").upper() == "FREE":
                         pick["pickCategory"] = "VALUE"
                         pick.setdefault("freeRelease", True)
@@ -143,6 +165,8 @@ def load_history(history_dir=HISTORY_DIR, snapshot_file=RESULTS_SNAPSHOT_FILE):
                 pick.setdefault("freeRelease", True)
             result = _result_of(pick)
             pick["result"] = result
+            _invalidate_mismatched_settlement(pick)
+            result = pick["result"]
             if stake_normalized or pick.get("profitUnits") is None:
                 pick["profitUnits"] = _american_profit(pick.get("odds"), pick.get("stake"), result)
             pick["historyFile"] = str(path.relative_to(root)).replace("\\", "/")

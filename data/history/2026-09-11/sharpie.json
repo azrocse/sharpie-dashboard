@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-11",
-  "updatedAt": "2026-09-06T16:25:15-06:00",
-  "count": 3,
-  "pendingSettlement": 3,
+  "updatedAt": "2026-09-06T23:00:58+00:00",
+  "count": 4,
+  "pendingSettlement": 4,
   "picks": [
     {
       "id": 149,
@@ -44,7 +44,7 @@
       "flowAdjustment": 6.15,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 5.0,
+      "lineMoveMinutes": 2.0,
       "liquidityStatus": null,
       "impliedProb": 40.82,
       "modelEdge": 4.41,
@@ -164,6 +164,20 @@
           "betsPct": 24.0,
           "handlePct": 65.0,
           "odds": "+145"
+        },
+        {
+          "time": "16:28",
+          "timestamp": "2026-09-06T16:28:10",
+          "betsPct": 24.0,
+          "handlePct": 65.0,
+          "odds": "+145"
+        },
+        {
+          "time": "16:30",
+          "timestamp": "2026-09-06T16:30:09",
+          "betsPct": 24.0,
+          "handlePct": 65.0,
+          "odds": "+145"
         }
       ],
       "clv": {
@@ -183,13 +197,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 6,
+      "freeReleaseRank": 5,
       "publicationTier": "FREE_RELEASE",
       "historyId": "f6b12ce03570a8bd76fe570f",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T15:20:10-06:00",
-      "lastQualifiedAt": "2026-09-06T16:25:15-06:00",
-      "qualifiedObservations": 14,
+      "lastQualifiedAt": "2026-09-06T16:30:11-06:00",
+      "qualifiedObservations": 16,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T15:20:10-06:00",
@@ -268,11 +282,12 @@
       "settlement": {
         "status": "PENDING",
         "source": null,
-        "checkedAt": null,
+        "checkedAt": "2026-09-06T23:00:58+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": null
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -284,6 +299,156 @@
         "away": "Rutgers",
         "home": "Boston College",
         "scheduledAt": "2026-09-11T17:30:00",
+        "matchStatus": "UNMATCHED"
+      },
+      "needsSettlement": true
+    },
+    {
+      "id": 141,
+      "game": "Missouri @ Kansas",
+      "away": "Missouri",
+      "home": "Kansas",
+      "league": "SPORTS",
+      "sourceLeague": "SPORTS",
+      "sport": "",
+      "espnSport": null,
+      "espnLeague": null,
+      "sourceEventId": null,
+      "market": "Spread",
+      "pick": "Kansas +6",
+      "odds": "-105",
+      "action": "🟢 VALUE PICK",
+      "actionKey": "bet",
+      "pattern": "🐋 SMART MONEY",
+      "trend": "🐋 SMART MONEY",
+      "trendKey": "SMART_MONEY",
+      "marketSignal": "SMART_MONEY",
+      "marketSignals": [
+        "SMART_MONEY"
+      ],
+      "pickCategory": "VALUE",
+      "priority": "⚡ PRONTO",
+      "priorityKey": "soon",
+      "stake": 1.0,
+      "confidenceScore": 49.2,
+      "confidence": "BAJA",
+      "confidenceStakeCap": 1.0,
+      "oddsStakeCap": 3.0,
+      "riskClass": "STANDARD",
+      "riskLevel": "CONTROLADA",
+      "modelProb": 56.12,
+      "fairProb": 48.92,
+      "flowAdjustment": 7.2,
+      "modelSource": "propio_devig_divergencia",
+      "lineMove": 0.0,
+      "lineMoveMinutes": 2.0,
+      "liquidityStatus": null,
+      "impliedProb": 51.22,
+      "modelEdge": 4.9,
+      "ev": 9.57,
+      "coherence": null,
+      "whale": true,
+      "handlePct": 93.0,
+      "betsPct": 45.0,
+      "divergence": 48.0,
+      "signedDivergence": 48.0,
+      "reason": "SMART MONEY. historial insuficiente para evaluar coherencia.",
+      "date": "2026-09-11",
+      "time": "18:00",
+      "iso": "2026-09-11T18:00:00",
+      "history": [
+        {
+          "time": "16:25",
+          "timestamp": "2026-09-06T16:25:12",
+          "betsPct": 45.0,
+          "handlePct": 93.0,
+          "odds": "-105"
+        },
+        {
+          "time": "16:28",
+          "timestamp": "2026-09-06T16:28:10",
+          "betsPct": 45.0,
+          "handlePct": 93.0,
+          "odds": "-105"
+        },
+        {
+          "time": "16:30",
+          "timestamp": "2026-09-06T16:30:09",
+          "betsPct": 45.0,
+          "handlePct": 93.0,
+          "odds": "-105"
+        }
+      ],
+      "clv": {
+        "opening": {
+          "odds": "-105",
+          "prob": 51.22,
+          "divergence": 48.0,
+          "timestamp": "2026-09-06T16:25:12"
+        },
+        "checkpoints": {
+          "4h": null,
+          "2h": null,
+          "1h": null
+        }
+      },
+      "status": "UPCOMING",
+      "result": "PENDING",
+      "roi": null,
+      "freeRelease": true,
+      "freeReleaseRank": 6,
+      "publicationTier": "FREE_RELEASE",
+      "historyId": "2fb81b5e5b7e8a25f1e8a37f",
+      "historySchemaVersion": 2,
+      "firstQualifiedAt": "2026-09-06T16:28:13-06:00",
+      "lastQualifiedAt": "2026-09-06T16:30:11-06:00",
+      "qualifiedObservations": 2,
+      "qualificationSnapshots": [
+        {
+          "observedAt": "2026-09-06T16:28:13-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-105",
+          "stake": 1.0,
+          "confidenceScore": 49.2,
+          "confidence": "BAJA",
+          "riskClass": "STANDARD",
+          "riskLevel": "CONTROLADA",
+          "modelProb": 56.12,
+          "modelEdge": 4.9,
+          "ev": 9.57,
+          "betsPct": 45.0,
+          "handlePct": 93.0,
+          "signedDivergence": 48.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        }
+      ],
+      "latestViable": true,
+      "settlement": {
+        "status": "PENDING",
+        "source": null,
+        "checkedAt": "2026-09-06T23:00:58+00:00",
+        "settledAt": null,
+        "homeScore": null,
+        "awayScore": null,
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
+      },
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": null,
+        "league": "SPORTS",
+        "sport": "",
+        "espnSport": null,
+        "espnLeague": null,
+        "away": "Missouri",
+        "home": "Kansas",
+        "scheduledAt": "2026-09-11T18:00:00",
         "matchStatus": "UNMATCHED"
       },
       "needsSettlement": true
@@ -327,7 +492,7 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 5.0,
+      "lineMoveMinutes": 2.0,
       "liquidityStatus": null,
       "impliedProb": 33.33,
       "modelEdge": 6.61,
@@ -552,6 +717,20 @@
           "betsPct": 9.0,
           "handlePct": 78.0,
           "odds": "+200"
+        },
+        {
+          "time": "16:28",
+          "timestamp": "2026-09-06T16:28:10",
+          "betsPct": 9.0,
+          "handlePct": 78.0,
+          "odds": "+200"
+        },
+        {
+          "time": "16:30",
+          "timestamp": "2026-09-06T16:30:09",
+          "betsPct": 9.0,
+          "handlePct": 78.0,
+          "odds": "+200"
         }
       ],
       "clv": {
@@ -576,8 +755,8 @@
       "historyId": "42adbe0bbe313a323bd9f98f",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T14:40:10-06:00",
-      "lastQualifiedAt": "2026-09-06T16:25:15-06:00",
-      "qualifiedObservations": 23,
+      "lastQualifiedAt": "2026-09-06T16:30:11-06:00",
+      "qualifiedObservations": 25,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T14:40:10-06:00",
@@ -656,11 +835,12 @@
       "settlement": {
         "status": "PENDING",
         "source": null,
-        "checkedAt": null,
+        "checkedAt": "2026-09-06T23:00:58+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": null
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -1058,11 +1238,12 @@
       "settlement": {
         "status": "PENDING",
         "source": null,
-        "checkedAt": null,
+        "checkedAt": "2026-09-06T23:00:58+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": null
+        "notes": "Evento programado para una fecha futura",
+        "failureCode": "NOT_STARTED_FUTURE"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -1078,5 +1259,6 @@
       },
       "needsSettlement": true
     }
-  ]
+  ],
+  "settledCount": 0
 }

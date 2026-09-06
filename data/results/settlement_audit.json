@@ -1,55 +1,58 @@
 {
-  "generatedAt": "2026-09-06T22:26:42+00:00",
-  "totalPicks": 4529,
-  "excludedPicks": 3084,
+  "generatedAt": "2026-09-06T23:07:39+00:00",
+  "totalPicks": 5076,
+  "excludedPicks": 3093,
   "statusCounts": {
-    "REVIEW": 65,
-    "LOSS": 683,
-    "WIN": 635,
-    "PENDING": 48,
-    "PUSH": 9,
-    "HALF_LOSS": 3,
-    "HALF_WIN": 2
+    "REVIEW": 126,
+    "LOSS": 891,
+    "WIN": 819,
+    "PENDING": 130,
+    "PUSH": 10,
+    "HALF_LOSS": 4,
+    "HALF_WIN": 3
   },
   "unresolvedReasons": {
-    "No se pudo identificar el equipo del spread": 28,
-    "No se pudo identificar el equipo Moneyline": 32,
+    "No se pudo identificar el equipo del spread": 30,
+    "AMBIGUOUS_MATCH": 84,
     "EVENT_POSTPONED": 9,
-    "No se pudo identificar al peleador seleccionado": 1,
+    "No se pudo identificar el equipo Moneyline": 7,
     "No se pudo interpretar el spread": 1,
-    "NO_MATCH_PAST": 1,
-    "AMBIGUOUS_MATCH": 2,
-    "Evento aún no finaliza": 3,
-    "SIN_DETALLE": 25,
-    "NOT_STARTED_FUTURE": 11
+    "Evento aún no finaliza": 18,
+    "NOT_STARTED_FUTURE": 107
   },
   "statusByDateRelation": {
-    "REVIEW_PAST": 63,
-    "LOSS_PAST": 683,
-    "WIN_PAST": 635,
+    "REVIEW_PAST": 107,
+    "LOSS_PAST": 882,
+    "WIN_PAST": 813,
     "PENDING_PAST": 9,
-    "PUSH_PAST": 9,
-    "HALF_LOSS_PAST": 3,
-    "HALF_WIN_PAST": 2,
+    "PUSH_PAST": 10,
+    "HALF_LOSS_PAST": 4,
+    "HALF_WIN_PAST": 3,
     "REVIEW_TODAY": 2,
-    "PENDING_TODAY": 3,
-    "PENDING_FUTURE": 36
+    "PENDING_TODAY": 13,
+    "PENDING_FUTURE": 93,
+    "PENDING_INVALID": 15,
+    "LOSS_INVALID": 9,
+    "WIN_INVALID": 6,
+    "REVIEW_INVALID": 17
   },
   "resolvedRoutes": {
-    "baseball/mlb": 773,
-    "soccer/mex.1": 7,
-    "basketball/wnba": 143,
-    "soccer/usa.1": 33,
+    "baseball/mlb": 860,
+    "soccer/mex.1": 8,
+    "basketball/wnba": 141,
+    "soccer/usa.1": 34,
     "mma/ufc": 4,
-    "football/nfl": 192,
+    "SIN_RUTA": 90,
+    "football/nfl": 322,
     "soccer/conmebol.libertadores": 1,
-    "soccer/esp.1": 20,
-    "soccer/eng.1": 30,
-    "soccer/fra.1": 3,
-    "soccer/ita.1": 12,
-    "soccer/ger.1": 7,
-    "football/college-football": 187,
-    "SIN_RUTA": 33
+    "soccer/esp.1": 33,
+    "soccer/eng.1": 60,
+    "soccer/fra.1": 6,
+    "soccer/ita.1": 24,
+    "soccer/ger.1": 15,
+    "football/college-football": 382,
+    "basketball/mens-college-basketball": 2,
+    "hockey/mens-college-hockey": 1
   },
   "unresolvedSamples": [
     {
@@ -90,36 +93,11 @@
       "pick": "Palmeiras",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Cleveland Guardians at Tampa Bay Rays",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc",
-        "boxing/boxing"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-07-26",
@@ -133,35 +111,11 @@
       "pick": "Madison Keys",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Seattle Mariners at Texas Rangers",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-07-27",
@@ -355,35 +309,11 @@
       "pick": "Taylor Fritz",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Philadelphia Phillies at Miami Marlins",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-07-29",
@@ -397,35 +327,11 @@
       "pick": "Slovan Bratislava",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Philadelphia Phillies at Miami Marlins",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-07-29",
@@ -471,35 +377,11 @@
       "pick": "Salzburg",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "St. Louis Cardinals at Toronto Blue Jays",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-01",
@@ -526,12 +408,12 @@
     {
       "date": "2026-08-01",
       "game": "Raul Curiel vs Quinton Randall",
-      "pick": "Raul Curiel",
+      "pick": "Over 8.5",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Chicago Sky",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -557,7 +439,24 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-01"
+      ]
+    },
+    {
+      "date": "2026-08-01",
+      "game": "Raul Curiel vs Quinton Randall",
+      "pick": "Raul Curiel",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "New England Revolution at CF Montréal",
+      "attemptedRoutes": [
+        "soccer/usa.1"
       ],
       "attemptedDates": [
         "2026-08-01",
@@ -587,9 +486,27 @@
       "pick": "William Zepeda",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "New England Revolution at CF Montréal",
+      "attemptedRoutes": [
+        "soccer/usa.1"
+      ],
+      "attemptedDates": [
+        "2026-08-01",
+        "2026-07-31",
+        "2026-08-02"
+      ]
+    },
+    {
+      "date": "2026-08-01",
+      "game": "Lamont Roach vs William Zepeda",
+      "pick": "Lamont Roach",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Chicago Sky",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -615,12 +532,52 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
       ],
       "attemptedDates": [
-        "2026-08-01",
-        "2026-07-31",
-        "2026-08-02"
+        "2026-08-01"
+      ]
+    },
+    {
+      "date": "2026-08-01",
+      "game": "Lamont Roach vs William Zepeda",
+      "pick": "Over 10.5",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Chicago Sky",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-01"
       ]
     },
     {
@@ -661,35 +618,11 @@
       "pick": "Independiente",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Washington Nationals at Philadelphia Phillies",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-03",
@@ -703,35 +636,11 @@
       "pick": "Huracan",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Atlanta Dream",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "basketball/wnba"
       ],
       "attemptedDates": [
         "2026-08-03",
@@ -753,22 +662,6 @@
         "2026-08-05",
         "2026-08-04",
         "2026-08-06"
-      ]
-    },
-    {
-      "date": "2026-08-06",
-      "game": "Mariano Navone vs Arthur Fils",
-      "pick": "Arthur Fils",
-      "league": "SPORTS",
-      "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
-      "attemptedRoutes": [],
-      "attemptedDates": [
-        "2026-08-06",
-        "2026-08-05",
-        "2026-08-07"
       ]
     },
     {
@@ -813,35 +706,11 @@
       "pick": "Cruz Azul",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Los Angeles Angels at Baltimore Orioles",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-06",
@@ -887,9 +756,43 @@
       "pick": "Club America",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Los Angeles Angels at Baltimore Orioles",
+      "attemptedRoutes": [
+        "baseball/mlb"
+      ],
+      "attemptedDates": [
+        "2026-08-06",
+        "2026-08-05",
+        "2026-08-07"
+      ]
+    },
+    {
+      "date": "2026-08-07",
+      "game": "BAL Orioles @ TEX Rangers",
+      "pick": "TEX Rangers -1.5",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "No se pudo identificar el equipo del spread",
       "matchConfidence": 1000.0,
       "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-08-07",
+        "2026-08-06",
+        "2026-08-08"
+      ]
+    },
+    {
+      "date": "2026-08-07",
+      "game": "Bryan Battle vs Dalton Rosta",
+      "pick": "Dalton Rosta",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Phoenix Mercury at Connecticut Sun",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -915,27 +818,51 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
       ],
       "attemptedDates": [
-        "2026-08-06",
-        "2026-08-05",
         "2026-08-07"
       ]
     },
     {
-      "date": "2026-08-07",
-      "game": "BAL Orioles @ TEX Rangers",
-      "pick": "TEX Rangers -1.5",
+      "date": "2026-08-08",
+      "game": "PSV Eindhoven vs Fortuna Sittard",
+      "pick": "PSV Eindhoven",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo del spread",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
-      "attemptedRoutes": [],
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Minnesota Lynx",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
       "attemptedDates": [
-        "2026-08-07",
-        "2026-08-06",
         "2026-08-08"
       ]
     },
@@ -961,35 +888,11 @@
       "pick": "Jessie Rosas",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Atlanta Braves at New York Yankees",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-08",
@@ -1000,12 +903,12 @@
     {
       "date": "2026-08-08",
       "game": "Juliana Miller vs Ravena Oliveira",
-      "pick": "Ravena Oliveira",
+      "pick": "Juliana Miller",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Minnesota Lynx",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -1031,7 +934,65 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-08"
+      ]
+    },
+    {
+      "date": "2026-08-08",
+      "game": "Miles Johns vs Jessie Rosas",
+      "pick": "Miles Johns",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Minnesota Lynx",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-08"
+      ]
+    },
+    {
+      "date": "2026-08-08",
+      "game": "Juliana Miller vs Ravena Oliveira",
+      "pick": "Ravena Oliveira",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Atlanta Braves at New York Yankees",
+      "attemptedRoutes": [
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-08",
@@ -1045,9 +1006,27 @@
       "pick": "Manoel Sousa",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Minnesota Lynx",
+      "attemptedRoutes": [
+        "basketball/wnba"
+      ],
+      "attemptedDates": [
+        "2026-08-08",
+        "2026-08-07",
+        "2026-08-09"
+      ]
+    },
+    {
+      "date": "2026-08-08",
+      "game": "Manoel Sousa vs Richie Miranda",
+      "pick": "Richie Miranda",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Minnesota Lynx",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -1073,12 +1052,11 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
       ],
       "attemptedDates": [
-        "2026-08-08",
-        "2026-08-07",
-        "2026-08-09"
+        "2026-08-08"
       ]
     },
     {
@@ -1087,35 +1065,11 @@
       "pick": "Club Leon",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Atlanta Braves at New York Yankees",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-08",
@@ -1125,13 +1079,13 @@
     },
     {
       "date": "2026-08-08",
-      "game": "Billy Ray Goff vs Ty Miller",
-      "pick": "Billy Ray Goff",
+      "game": "Aryna Sabalenka vs Ekaterina Alexandrova",
+      "pick": "Aryna Sabalenka",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at Minnesota Lynx",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -1157,7 +1111,24 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-08"
+      ]
+    },
+    {
+      "date": "2026-08-08",
+      "game": "Billy Ray Goff vs Ty Miller",
+      "pick": "Billy Ray Goff",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Atlanta Braves at New York Yankees",
+      "attemptedRoutes": [
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-08",
@@ -1171,35 +1142,11 @@
       "pick": "Elena Rybakina",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Cincinnati Reds at Washington Nationals",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-09",
@@ -1245,35 +1192,11 @@
       "pick": "Naomi Osaka",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Las Vegas Aces at New York Liberty",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "basketball/wnba"
       ],
       "attemptedDates": [
         "2026-08-09",
@@ -1315,13 +1238,13 @@
     },
     {
       "date": "2026-08-11",
-      "game": "Daniel Merida Aguilar vs Learner Tien",
-      "pick": "Learner Tien",
+      "game": "Belinda Bencic vs Coco Gauff",
+      "pick": "Belinda Bencic",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "New York Liberty at Indiana Fever",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -1347,7 +1270,65 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-11"
+      ]
+    },
+    {
+      "date": "2026-08-11",
+      "game": "Daniel Merida Aguilar vs Learner Tien",
+      "pick": "Daniel Merida Aguilar",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "New York Liberty at Indiana Fever",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-11"
+      ]
+    },
+    {
+      "date": "2026-08-11",
+      "game": "Daniel Merida Aguilar vs Learner Tien",
+      "pick": "Learner Tien",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "New York Liberty at Indiana Fever",
+      "attemptedRoutes": [
+        "basketball/wnba"
       ],
       "attemptedDates": [
         "2026-08-11",
@@ -1393,35 +1374,11 @@
       "pick": "Midtjylland",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Cleveland Guardians at Detroit Tigers",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-13",
@@ -1471,35 +1428,11 @@
       "pick": "Ramiz Brahimaj",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Red Bull New York at Atlanta United FC",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "soccer/usa.1"
       ],
       "attemptedDates": [
         "2026-08-15",
@@ -1509,13 +1442,13 @@
     },
     {
       "date": "2026-08-15",
-      "game": "Jalin Turner vs Kaue Fernandes",
-      "pick": "Kaue Fernandes",
+      "game": "Neil Magny vs Ramiz Brahimaj",
+      "pick": "Neil Magny",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "New York Liberty at Connecticut Sun",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -1541,7 +1474,65 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-15"
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "game": "Jalin Turner vs Kaue Fernandes",
+      "pick": "Jalin Turner",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "New York Liberty at Connecticut Sun",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-08-15"
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "game": "Jalin Turner vs Kaue Fernandes",
+      "pick": "Kaue Fernandes",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Red Bull New York at Atlanta United FC",
+      "attemptedRoutes": [
+        "soccer/usa.1"
       ],
       "attemptedDates": [
         "2026-08-15",
@@ -1555,35 +1546,11 @@
       "pick": "Chidi Njokuani",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "New York Liberty at Connecticut Sun",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "basketball/wnba"
       ],
       "attemptedDates": [
         "2026-08-15",
@@ -1597,35 +1564,11 @@
       "pick": "Mahamed Aly",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "St. Louis Cardinals at Cincinnati Reds",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "baseball/mlb"
       ],
       "attemptedDates": [
         "2026-08-17",
@@ -1655,35 +1598,11 @@
       "pick": "Serghei Spivac",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar el equipo Moneyline",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "LA Galaxy at CF Montréal",
       "attemptedRoutes": [
-        "basketball/wnba",
-        "basketball/nba",
-        "football/nfl",
-        "football/college-football",
-        "football/ufl",
-        "basketball/womens-college-basketball",
-        "basketball/mens-college-basketball",
-        "baseball/mlb",
-        "baseball/college-baseball",
-        "baseball/kbo",
-        "baseball/jpn.1",
-        "soccer/uefa.champions",
-        "soccer/uefa.europa",
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/ita.1",
-        "soccer/fra.1",
-        "soccer/ger.1",
-        "soccer/mex.1",
-        "soccer/usa.1",
-        "soccer/conmebol.libertadores",
-        "soccer/fifa.world",
-        "hockey/nhl",
-        "hockey/mens-college-hockey",
-        "mma/ufc"
+        "soccer/usa.1"
       ],
       "attemptedDates": [
         "2026-08-22",
@@ -1712,14 +1631,14 @@
       ]
     },
     {
-      "date": "2026-08-29",
-      "game": "Meng Ding vs Cameron Nelson",
-      "pick": "Meng Ding",
+      "date": "2026-08-25",
+      "game": "Mario Piazzon vs Guilherme Uriel",
+      "pick": "Mario Piazzon",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "No se pudo identificar al peleador seleccionado",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Chicago Sky at Connecticut Sun",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -1745,12 +1664,11 @@
         "soccer/fifa.world",
         "hockey/nhl",
         "hockey/mens-college-hockey",
-        "mma/ufc"
+        "mma/ufc",
+        "boxing/boxing"
       ],
       "attemptedDates": [
-        "2026-08-29",
-        "2026-08-28",
-        "2026-08-30"
+        "2026-08-25"
       ]
     },
     {
@@ -1807,13 +1725,13 @@
     },
     {
       "date": "2026-09-05",
-      "game": "Mario Pinto vs Ryan Spann",
-      "pick": "Ryan Spann",
+      "game": "Oumar Sy vs Modestas Bukauskas",
+      "pick": "Modestas Bukauskas",
       "league": "SPORTS",
       "status": "REVIEW",
-      "reason": "NO_MATCH_PAST",
-      "matchConfidence": 1000.0,
-      "bestCandidate": "Toronto Blue Jays at Kansas City Royals",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -1841,6 +1759,22 @@
         "hockey/mens-college-hockey",
         "mma/ufc",
         "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-09-05"
+      ]
+    },
+    {
+      "date": "2026-09-05",
+      "game": "Mario Pinto vs Ryan Spann",
+      "pick": "Ryan Spann",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Torino at Fiorentina",
+      "attemptedRoutes": [
+        "soccer/ita.1"
       ],
       "attemptedDates": [
         "2026-09-05",
@@ -1914,6 +1848,24 @@
     },
     {
       "date": "2026-09-05",
+      "game": "Club America vs Tijuana Caliente",
+      "pick": "Tijuana Caliente",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Guadalajara at Atlético de San Luis",
+      "attemptedRoutes": [
+        "soccer/mex.1"
+      ],
+      "attemptedDates": [
+        "2026-09-05",
+        "2026-09-04",
+        "2026-09-06"
+      ]
+    },
+    {
+      "date": "2026-09-05",
       "game": "Northern Arizona @ Arizona",
       "pick": "Northern Arizona",
       "league": "SPORTS",
@@ -1930,13 +1882,13 @@
     },
     {
       "date": "2026-09-06",
-      "game": "Botafogo RJ vs Palmeiras",
-      "pick": "Palmeiras",
+      "game": "Corinthians vs Chapecoense",
+      "pick": "Corinthians",
       "league": "SPORTS",
       "status": "REVIEW",
       "reason": "AMBIGUOUS_MATCH",
-      "matchConfidence": 60.44,
-      "bestCandidate": "Wisconsin Badgers at Notre Dame Fighting Irish",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Washington State Cougars at Washington Huskies",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -1971,29 +1923,13 @@
     },
     {
       "date": "2026-09-06",
-      "game": "MIN Twins @ CHI White Sox",
-      "pick": "Over 8.5",
-      "league": "MLB",
-      "status": "PENDING",
-      "reason": "Evento aún no finaliza",
-      "matchConfidence": 1000.0,
-      "bestCandidate": null,
-      "attemptedRoutes": [],
-      "attemptedDates": [
-        "2026-09-06",
-        "2026-09-05",
-        "2026-09-07"
-      ]
-    },
-    {
-      "date": "2026-09-06",
-      "game": "Corinthians vs Chapecoense",
-      "pick": "Corinthians",
+      "game": "Ben Shelton vs Stefanos Tsitsipas",
+      "pick": "Stefanos Tsitsipas",
       "league": "SPORTS",
       "status": "REVIEW",
       "reason": "AMBIGUOUS_MATCH",
-      "matchConfidence": 68.63,
-      "bestCandidate": "Minnesota Twins at Chicago White Sox",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Washington State Cougars at Washington Huskies",
       "attemptedRoutes": [
         "basketball/wnba",
         "basketball/nba",
@@ -2030,7 +1966,7 @@
       "date": "2026-09-06",
       "game": "Cruz Azul vs Santos Laguna",
       "pick": "Cruz Azul",
-      "league": "SPORTS",
+      "league": "LIGA MX",
       "status": "PENDING",
       "reason": "Evento aún no finaliza",
       "matchConfidence": 1000.0,
@@ -2059,12 +1995,28 @@
       ]
     },
     {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Louisville",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "Evento aún no finaliza",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
       "date": "2026-09-07",
       "game": "Mirra Andreeva vs Anastasia Potapova",
       "pick": "Anastasia Potapova",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2076,7 +2028,7 @@
       "pick": "Arthur Gea",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2088,7 +2040,7 @@
       "pick": "Iva Jovic",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2100,7 +2052,7 @@
       "pick": "Luciano Darderi",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2160,7 +2112,19 @@
       "pick": "Rutgers",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": null,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": []
+    },
+    {
+      "date": "2026-09-11",
+      "game": "Missouri @ Kansas",
+      "pick": "Kansas +6",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2172,7 +2136,7 @@
       "pick": "Kansas",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2184,7 +2148,7 @@
       "pick": "Kansas +6.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2196,7 +2160,7 @@
       "pick": "Liverpool",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2208,7 +2172,7 @@
       "pick": "Crystal Palace",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2220,7 +2184,7 @@
       "pick": "Arizona State",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2232,7 +2196,7 @@
       "pick": "Under 44.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2244,7 +2208,7 @@
       "pick": "Under 43.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2256,7 +2220,7 @@
       "pick": "Under 45.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2268,7 +2232,7 @@
       "pick": "Oklahoma State",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2292,7 +2256,7 @@
       "pick": "Conor Benn",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2345,7 +2309,7 @@
       "pick": "Barcelona",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2357,7 +2321,7 @@
       "pick": "Under 39.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2369,7 +2333,19 @@
       "pick": "Over 47.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": null,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": []
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ATL Falcons @ PIT Steelers",
+      "pick": "Under 41.5",
+      "league": "NFL",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2381,7 +2357,7 @@
       "pick": "MIN Vikings",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2393,7 +2369,7 @@
       "pick": "Under 45.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2405,7 +2381,7 @@
       "pick": "Under 46.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2417,7 +2393,7 @@
       "pick": "MIA Dolphins",
       "league": "NFL",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2429,7 +2405,7 @@
       "pick": "Under 46.5",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2469,7 +2445,7 @@
       "pick": "Mauricio Ruffy",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2493,7 +2469,7 @@
       "pick": "Nestor Bravo",
       "league": "SPORTS",
       "status": "PENDING",
-      "reason": "SIN_DETALLE",
+      "reason": "NOT_STARTED_FUTURE",
       "matchConfidence": null,
       "bestCandidate": null,
       "attemptedRoutes": [],
@@ -2534,6 +2510,1242 @@
       "bestCandidate": null,
       "attemptedRoutes": [],
       "attemptedDates": []
+    },
+    {
+      "date": "2026-09-14",
+      "game": "DEN Broncos @ KC Chiefs",
+      "pick": "DEN Broncos +3",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-14",
+        "2026-09-13",
+        "2026-09-15"
+      ]
+    },
+    {
+      "date": "2026-09-14",
+      "game": "DEN Broncos @ KC Chiefs",
+      "pick": "Under 42.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-14",
+        "2026-09-13",
+        "2026-09-15"
+      ]
+    },
+    {
+      "date": "2026-09-14",
+      "game": "DEN Broncos @ KC Chiefs",
+      "pick": "DEN Broncos",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-14",
+        "2026-09-13",
+        "2026-09-15"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "DAL Cowboys @ NY Giants",
+      "pick": "Under 48.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "DAL Cowboys @ NY Giants",
+      "pick": "Over 48.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "DAL Cowboys @ NY Giants",
+      "pick": "DAL Cowboys -2.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "WAS Commanders @ PHI Eagles",
+      "pick": "PHI Eagles -4.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "WAS Commanders @ PHI Eagles",
+      "pick": "Under 47.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "WAS Commanders @ PHI Eagles",
+      "pick": "Under 46.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "WAS Commanders @ PHI Eagles",
+      "pick": "Under 45.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "MIA Dolphins @ LV Raiders",
+      "pick": "LV Raiders -3.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "MIA Dolphins @ LV Raiders",
+      "pick": "MIA Dolphins",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "MIA Dolphins @ LV Raiders",
+      "pick": "LV Raiders -3.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "MIA Dolphins @ LV Raiders",
+      "pick": "MIA Dolphins",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "GB Packers @ MIN Vikings",
+      "pick": "MIN Vikings",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "GB Packers @ MIN Vikings",
+      "pick": "Under 45.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "GB Packers @ MIN Vikings",
+      "pick": "MIN Vikings",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "GB Packers @ MIN Vikings",
+      "pick": "Under 45.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ARI Cardinals @ LA Chargers",
+      "pick": "ARI Cardinals",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ARI Cardinals @ LA Chargers",
+      "pick": "ARI Cardinals +10.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ARI Cardinals @ LA Chargers",
+      "pick": "Under 46.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ARI Cardinals @ LA Chargers",
+      "pick": "ARI Cardinals",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ARI Cardinals @ LA Chargers",
+      "pick": "Under 46.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ARI Cardinals @ LA Chargers",
+      "pick": "ARI Cardinals +10.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "TB Buccaneers @ CIN Bengals",
+      "pick": "TB Buccaneers",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "TB Buccaneers @ CIN Bengals",
+      "pick": "Under 50.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "TB Buccaneers @ CIN Bengals",
+      "pick": "Under 51.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "NY Jets @ TEN Titans",
+      "pick": "NY Jets",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "NY Jets @ TEN Titans",
+      "pick": "TEN Titans -3",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "NY Jets @ TEN Titans",
+      "pick": "Over 38.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "NY Jets @ TEN Titans",
+      "pick": "Over 38.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "NO Saints @ DET Lions",
+      "pick": "DET Lions -7",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "NO Saints @ DET Lions",
+      "pick": "Over 48.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "NO Saints @ DET Lions",
+      "pick": "Over 49.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "NO Saints @ DET Lions",
+      "pick": "Over 49.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "CLE Browns @ JAX Jaguars",
+      "pick": "JAX Jaguars -7.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "CLE Browns @ JAX Jaguars",
+      "pick": "Under 40.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "CLE Browns @ JAX Jaguars",
+      "pick": "JAX Jaguars -7.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "CHI Bears @ CAR Panthers",
+      "pick": "Over 47.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "CHI Bears @ CAR Panthers",
+      "pick": "Over 47.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "BUF Bills @ HOU Texans",
+      "pick": "HOU Texans",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "BUF Bills @ HOU Texans",
+      "pick": "Under 44.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "BAL Ravens @ IND Colts",
+      "pick": "Over 48.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ATL Falcons @ PIT Steelers",
+      "pick": "PIT Steelers -3",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ATL Falcons @ PIT Steelers",
+      "pick": "Under 42.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-13",
+      "game": "ATL Falcons @ PIT Steelers",
+      "pick": "Under 41.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-13",
+        "2026-09-12",
+        "2026-09-14"
+      ]
+    },
+    {
+      "date": "2026-09-12",
+      "game": "Ryan Garcia vs Conor Benn",
+      "pick": "Conor Benn",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 61.38,
+      "bestCandidate": "New Mexico State Aggies at Hawai'i Rainbow Warriors",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-09-12"
+      ]
+    },
+    {
+      "date": "2026-09-12",
+      "game": "Ryan Garcia vs Conor Benn",
+      "pick": "Conor Benn",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 61.38,
+      "bestCandidate": "New Mexico State Aggies at Hawai'i Rainbow Warriors",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-09-12"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "game": "SF 49ers @ LA Rams",
+      "pick": "Under 48.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-10",
+        "2026-09-09",
+        "2026-09-11"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "game": "SF 49ers @ LA Rams",
+      "pick": "SF 49ers +3.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-10",
+        "2026-09-09",
+        "2026-09-11"
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "game": "NE Patriots @ SEA Seahawks",
+      "pick": "NE Patriots",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-09",
+        "2026-09-08",
+        "2026-09-10"
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "game": "NE Patriots @ SEA Seahawks",
+      "pick": "Over 44.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-09",
+        "2026-09-08",
+        "2026-09-10"
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "game": "NE Patriots @ SEA Seahawks",
+      "pick": "NE Patriots",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-09",
+        "2026-09-08",
+        "2026-09-10"
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "game": "NE Patriots @ SEA Seahawks",
+      "pick": "Under 44.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-09",
+        "2026-09-08",
+        "2026-09-10"
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "game": "NE Patriots @ SEA Seahawks",
+      "pick": "Over 44.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-09",
+        "2026-09-08",
+        "2026-09-10"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Wisconsin @ Notre Dame",
+      "pick": "Wisconsin",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Wisconsin @ Notre Dame",
+      "pick": "Wisconsin",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Louisville",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Ole Miss -6.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Over 55.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Louisville +7",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Under 55.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Louisville +6.5",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Louisville",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "game": "Louisville @ Ole Miss",
+      "pick": "Louisville +7",
+      "league": "SPORTS",
+      "status": "PENDING",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-06",
+        "2026-09-05",
+        "2026-09-07"
+      ]
+    },
+    {
+      "date": "2026-09-05",
+      "game": "Texas State @ Texas",
+      "pick": "Texas State",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-05",
+        "2026-09-04",
+        "2026-09-06"
+      ]
+    },
+    {
+      "date": "2026-09-05",
+      "game": "Texas State @ Texas",
+      "pick": "Texas State +29.5",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-05",
+        "2026-09-04",
+        "2026-09-06"
+      ]
+    },
+    {
+      "date": "2026-09-05",
+      "game": "Texas State @ Texas",
+      "pick": "Texas State",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-05",
+        "2026-09-04",
+        "2026-09-06"
+      ]
+    },
+    {
+      "date": "2026-09-05",
+      "game": "Texas State @ Texas",
+      "pick": "Texas State +29.5",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "NOT_STARTED_FUTURE",
+      "matchConfidence": 1000.0,
+      "bestCandidate": null,
+      "attemptedRoutes": [],
+      "attemptedDates": [
+        "2026-09-05",
+        "2026-09-04",
+        "2026-09-06"
+      ]
+    },
+    {
+      "date": "2026-09-05",
+      "game": "Morgan Charriere vs Felipe Lima",
+      "pick": "Morgan Charriere",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-09-05"
+      ]
+    },
+    {
+      "date": "2026-09-05",
+      "game": "Mario Pinto vs Ryan Spann",
+      "pick": "Ryan Spann",
+      "league": "SPORTS",
+      "status": "REVIEW",
+      "reason": "AMBIGUOUS_MATCH",
+      "matchConfidence": 0.0,
+      "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes",
+      "attemptedRoutes": [
+        "basketball/wnba",
+        "basketball/nba",
+        "football/nfl",
+        "football/college-football",
+        "football/ufl",
+        "basketball/womens-college-basketball",
+        "basketball/mens-college-basketball",
+        "baseball/mlb",
+        "baseball/college-baseball",
+        "baseball/kbo",
+        "baseball/jpn.1",
+        "soccer/uefa.champions",
+        "soccer/uefa.europa",
+        "soccer/eng.1",
+        "soccer/esp.1",
+        "soccer/ita.1",
+        "soccer/fra.1",
+        "soccer/ger.1",
+        "soccer/mex.1",
+        "soccer/usa.1",
+        "soccer/conmebol.libertadores",
+        "soccer/fifa.world",
+        "hockey/nhl",
+        "hockey/mens-college-hockey",
+        "mma/ufc",
+        "boxing/boxing"
+      ],
+      "attemptedDates": [
+        "2026-09-05"
+      ]
     }
   ]
 }

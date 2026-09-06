@@ -1,10 +1,10 @@
 {
   "schemaVersion": 3,
   "eventDate": "2026-08-15",
-  "updatedAt": "2026-09-06T17:42:40+00:00",
+  "updatedAt": "2026-09-06T22:54:47+00:00",
   "count": 108,
-  "pendingSettlement": 4,
-  "settledCount": 83,
+  "pendingSettlement": 6,
+  "settledCount": 81,
   "picks": [
     {
       "id": 84,
@@ -624,7 +624,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260815&limit=500",
         "eventId": "401874393",
         "eventName": "Cleveland Browns at Chicago Bears",
-        "checkedAt": "2026-09-06T17:42:05+00:00",
+        "checkedAt": "2026-09-06T22:53:54+00:00",
         "homeScore": 34.0,
         "awayScore": 10.0,
         "matchConfidence": 1000.0,
@@ -7609,58 +7609,36 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:42:06+00:00",
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:53:55+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260815&limit=500",
         "eventId": "761714",
         "eventName": "New England Revolution at Toronto FC",
         "homeScore": 2.0,
-        "awayScore": 1.0
+        "awayScore": 1.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc"
+          "soccer/usa.1"
         ],
         "attemptedDates": [
           "2026-08-15",
           "2026-08-14",
           "2026-08-16"
         ],
-        "candidateEvents": 42,
+        "candidateEvents": 15,
         "eventId": "761714",
         "espnSport": "soccer",
         "espnLeague": "usa.1",
         "matchedName": "New England Revolution at Toronto FC",
-        "matchedDate": "2026-08-15"
+        "matchedDate": "2026-08-15",
+        "bestCandidate": "Red Bull New York at Atlanta United FC"
       },
       "needsSettlement": true,
       "historyId": "0e4c2be4544e7ae23a1a85d9",
@@ -7759,27 +7737,20 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "LOSS",
+      "result": "REVIEW",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "LOSS",
-        "checkedAt": "2026-09-03T19:26:59+00:00",
-        "notes": "Marcador 1-2",
-        "matchConfidence": 73.33,
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:53:56+00:00",
+        "notes": "AMBIGUOUS_MATCH",
         "failureCode": "AMBIGUOUS_MATCH",
-        "source": "ESPN",
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260815&limit=500",
-        "eventId": "761714",
-        "eventName": "New England Revolution at Toronto FC",
-        "homeScore": 2.0,
-        "awayScore": 1.0,
-        "settledAt": "2026-09-03T19:26:59+00:00"
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 73.33,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -7805,21 +7776,17 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "New England Revolution at Toronto FC",
-        "eventId": "761714",
-        "espnSport": "soccer",
-        "espnLeague": "usa.1",
-        "matchedName": "New England Revolution at Toronto FC",
-        "matchedDate": "2026-08-15"
+        "bestCandidate": "New York Liberty at Connecticut Sun"
       },
-      "needsSettlement": false,
-      "profitUnits": -1.3,
+      "needsSettlement": true,
+      "profitUnits": null,
       "historyId": "ccd689594f0fa5123f442ea3",
       "historySchemaVersion": 3
     },
@@ -11731,27 +11698,20 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "LOSS",
+      "result": "REVIEW",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "LOSS",
-        "checkedAt": "2026-09-03T19:27:03+00:00",
-        "notes": "Marcador 1-2",
-        "matchConfidence": 76.52,
-        "failureCode": "NO_MATCH_PAST",
-        "source": "ESPN",
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260815&limit=500",
-        "eventId": "761714",
-        "eventName": "New England Revolution at Toronto FC",
-        "homeScore": 2.0,
-        "awayScore": 1.0,
-        "settledAt": "2026-09-03T19:27:03+00:00"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:54:11+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 76.52,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -11777,21 +11737,17 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "New England Revolution at Toronto FC",
-        "eventId": "761714",
-        "espnSport": "soccer",
-        "espnLeague": "usa.1",
-        "matchedName": "New England Revolution at Toronto FC",
-        "matchedDate": "2026-08-15"
+        "bestCandidate": "New York Liberty at Connecticut Sun"
       },
-      "needsSettlement": false,
-      "profitUnits": -1.0,
+      "needsSettlement": true,
+      "profitUnits": null,
       "historyId": "208111b5f4687ab4e082405d",
       "historySchemaVersion": 3
     },
@@ -12187,58 +12143,36 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:42:07+00:00",
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:54:17+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=20260815&limit=500",
         "eventId": "761714",
         "eventName": "New England Revolution at Toronto FC",
         "homeScore": 2.0,
-        "awayScore": 1.0
+        "awayScore": 1.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc"
+          "soccer/usa.1"
         ],
         "attemptedDates": [
           "2026-08-15",
           "2026-08-14",
           "2026-08-16"
         ],
-        "candidateEvents": 42,
+        "candidateEvents": 15,
         "eventId": "761714",
         "espnSport": "soccer",
         "espnLeague": "usa.1",
         "matchedName": "New England Revolution at Toronto FC",
-        "matchedDate": "2026-08-15"
+        "matchedDate": "2026-08-15",
+        "bestCandidate": "Red Bull New York at Atlanta United FC"
       },
       "needsSettlement": true,
       "historyId": "7274b5d43e6232ccd95c6ff1",
@@ -12501,58 +12435,36 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:42:07+00:00",
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:54:17+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260815&limit=500",
         "eventId": "401857147",
         "eventName": "Minnesota Lynx at Las Vegas Aces",
         "homeScore": 87.0,
-        "awayScore": 92.0
+        "awayScore": 92.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc"
+          "basketball/wnba"
         ],
         "attemptedDates": [
           "2026-08-15",
           "2026-08-14",
           "2026-08-16"
         ],
-        "candidateEvents": 42,
+        "candidateEvents": 8,
         "eventId": "401857147",
         "espnSport": "basketball",
         "espnLeague": "wnba",
         "matchedName": "Minnesota Lynx at Las Vegas Aces",
-        "matchedDate": "2026-08-15"
+        "matchedDate": "2026-08-15",
+        "bestCandidate": "New York Liberty at Connecticut Sun"
       },
       "needsSettlement": true,
       "historyId": "fff1129b8c08bb72ad7dca0e",
@@ -12950,15 +12862,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:42:08+00:00",
+        "checkedAt": "2026-09-06T22:54:17+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 68.52,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 68.52,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -12991,7 +12903,7 @@
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Toluca at Atlante"
+        "bestCandidate": "New York Liberty at Connecticut Sun"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -13097,15 +13009,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:42:23+00:00",
+        "checkedAt": "2026-09-06T22:54:23+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 68.52,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 68.52,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -13138,7 +13050,7 @@
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Toluca at Atlante"
+        "bestCandidate": "New York Liberty at Connecticut Sun"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -13403,17 +13315,17 @@
       "freePick": false,
       "settlement": {
         "status": "WIN",
-        "checkedAt": "2026-09-03T19:27:07+00:00",
+        "checkedAt": "2026-09-06T22:54:29+00:00",
         "notes": "Resultado oficial del combate según ESPN",
-        "matchConfidence": 107.0,
-        "failureCode": "AMBIGUOUS_MATCH",
+        "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260815&limit=500",
         "eventId": "600059185",
         "eventName": "UFC 330: Makhachev vs. Machado Garry",
         "homeScore": null,
         "awayScore": null,
-        "settledAt": "2026-09-03T19:27:07+00:00"
+        "matchConfidence": 107.0,
+        "settledAt": "2026-09-06T22:54:29+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -14148,15 +14060,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:42:28+00:00",
+        "checkedAt": "2026-09-06T22:54:35+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 65.65,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 65.65,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -14189,7 +14101,7 @@
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Los Angeles Sparks at Washington Mystics"
+        "bestCandidate": "New York Liberty at Connecticut Sun"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -14295,15 +14207,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:42:34+00:00",
+        "checkedAt": "2026-09-06T22:54:42+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 65.65,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 65.65,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -14336,7 +14248,7 @@
           "2026-08-15"
         ],
         "candidateEvents": 42,
-        "bestCandidate": "Los Angeles Sparks at Washington Mystics"
+        "bestCandidate": "New York Liberty at Connecticut Sun"
       },
       "needsSettlement": true,
       "excludedFromResults": true,

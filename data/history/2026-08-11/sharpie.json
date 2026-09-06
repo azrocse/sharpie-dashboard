@@ -1,10 +1,10 @@
 {
   "schemaVersion": 3,
   "eventDate": "2026-08-11",
-  "updatedAt": "2026-09-06T17:40:54+00:00",
+  "updatedAt": "2026-09-06T22:52:31+00:00",
   "count": 74,
-  "pendingSettlement": 3,
-  "settledCount": 54,
+  "pendingSettlement": 5,
+  "settledCount": 52,
   "picks": [
     {
       "id": 187,
@@ -251,15 +251,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:40:08+00:00",
+        "checkedAt": "2026-09-06T22:51:26+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 45.33,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 45.33,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -292,7 +292,7 @@
           "2026-08-11"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Independiente Rivadavia at Fluminense"
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -398,15 +398,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:40:25+00:00",
+        "checkedAt": "2026-09-06T22:51:42+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 42.01,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 42.01,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -439,7 +439,7 @@
           "2026-08-11"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Boston Red Sox at Toronto Blue Jays"
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -986,15 +986,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:40:31+00:00",
+        "checkedAt": "2026-09-06T22:51:48+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.56,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.56,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -1027,7 +1027,7 @@
           "2026-08-11"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Chicago Cubs at Washington Nationals"
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -2266,7 +2266,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260811&limit=500",
         "eventId": "401816481",
         "eventName": "Cleveland Guardians at Detroit Tigers",
-        "checkedAt": "2026-09-06T17:40:37+00:00",
+        "checkedAt": "2026-09-06T22:51:54+00:00",
         "homeScore": 6.0,
         "awayScore": 4.0,
         "matchConfidence": 1000.0,
@@ -3062,27 +3062,20 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "WIN",
+      "result": "REVIEW",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "WIN",
-        "checkedAt": "2026-09-03T19:27:20+00:00",
-        "notes": "Marcador 92-106",
-        "matchConfidence": 75.69,
-        "failureCode": "NO_MATCH_PAST",
-        "source": "ESPN",
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260811&limit=500",
-        "eventId": "401857134",
-        "eventName": "New York Liberty at Indiana Fever",
-        "homeScore": 106.0,
-        "awayScore": 92.0,
-        "settledAt": "2026-09-03T19:27:20+00:00"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:51:56+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 75.69,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -3108,21 +3101,17 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-11"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "New York Liberty at Indiana Fever",
-        "eventId": "401857134",
-        "espnSport": "basketball",
-        "espnLeague": "wnba",
-        "matchedName": "New York Liberty at Indiana Fever",
-        "matchedDate": "2026-08-11"
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
-      "needsSettlement": false,
-      "profitUnits": 1.34,
+      "needsSettlement": true,
+      "profitUnits": null,
       "historyId": "5412ef482ceaba8b73c9c4f0",
       "historySchemaVersion": 3
     },
@@ -4561,15 +4550,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:40:38+00:00",
+        "checkedAt": "2026-09-06T22:52:05+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 57.56,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 57.56,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -4602,7 +4591,7 @@
           "2026-08-11"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Philadelphia Phillies at St. Louis Cardinals"
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -4703,27 +4692,20 @@
         }
       ],
       "status": "UPCOMING",
-      "result": "LOSS",
+      "result": "REVIEW",
       "roi": null,
       "freePick": false,
       "settlement": {
-        "status": "LOSS",
-        "checkedAt": "2026-09-03T19:27:22+00:00",
-        "notes": "Marcador 94-87",
-        "matchConfidence": 73.48,
-        "failureCode": "NO_MATCH_PAST",
-        "source": "ESPN",
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260811&limit=500",
-        "eventId": "401857136",
-        "eventName": "Phoenix Mercury at Los Angeles Sparks",
-        "homeScore": 87.0,
-        "awayScore": 94.0,
-        "settledAt": "2026-09-03T19:27:22+00:00"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:52:12+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 73.48,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -4749,21 +4731,17 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-11"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Phoenix Mercury at Los Angeles Sparks",
-        "eventId": "401857136",
-        "espnSport": "basketball",
-        "espnLeague": "wnba",
-        "matchedName": "Phoenix Mercury at Los Angeles Sparks",
-        "matchedDate": "2026-08-11"
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
-      "needsSettlement": false,
-      "profitUnits": -1.3,
+      "needsSettlement": true,
+      "profitUnits": null,
       "historyId": "5a7cf9f613295191099f952b",
       "historySchemaVersion": 3
     },
@@ -4865,58 +4843,36 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:40:44+00:00",
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:52:19+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260811&limit=500",
         "eventId": "401857136",
         "eventName": "Phoenix Mercury at Los Angeles Sparks",
         "homeScore": 87.0,
-        "awayScore": 94.0
+        "awayScore": 94.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc"
+          "basketball/wnba"
         ],
         "attemptedDates": [
           "2026-08-11",
           "2026-08-10",
           "2026-08-12"
         ],
-        "candidateEvents": 21,
+        "candidateEvents": 8,
         "eventId": "401857136",
         "espnSport": "basketball",
         "espnLeague": "wnba",
         "matchedName": "Phoenix Mercury at Los Angeles Sparks",
-        "matchedDate": "2026-08-11"
+        "matchedDate": "2026-08-11",
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
       "needsSettlement": true,
       "historyId": "a67e5975a0b4899c68dc3097",
@@ -5020,15 +4976,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:40:44+00:00",
+        "checkedAt": "2026-09-06T22:52:19+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 57.56,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 57.56,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -5061,7 +5017,7 @@
           "2026-08-11"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Philadelphia Phillies at St. Louis Cardinals"
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -6225,15 +6181,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:40:49+00:00",
+        "checkedAt": "2026-09-06T22:52:25+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 61.96,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 61.96,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -6266,7 +6222,7 @@
           "2026-08-11"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Baltimore Orioles at Minnesota Twins"
+        "bestCandidate": "New York Liberty at Indiana Fever"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -6392,7 +6348,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=20260811&limit=500",
         "eventId": "401857134",
         "eventName": "New York Liberty at Indiana Fever",
-        "checkedAt": "2026-09-06T17:40:54+00:00",
+        "checkedAt": "2026-09-06T22:52:31+00:00",
         "homeScore": 106.0,
         "awayScore": 92.0,
         "matchConfidence": 1000.0,

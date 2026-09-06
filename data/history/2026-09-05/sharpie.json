@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-05",
-  "updatedAt": "2026-09-06T22:26:41+00:00",
+  "updatedAt": "2026-09-06T23:00:29+00:00",
   "count": 119,
-  "pendingSettlement": 6,
+  "pendingSettlement": 8,
   "picks": [
     {
       "id": 19,
@@ -13612,7 +13612,7 @@
       "latestViable": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T22:25:57+00:00",
+        "checkedAt": "2026-09-06T22:58:56+00:00",
         "notes": "NO_MATCH_PAST",
         "matchConfidence": 0.0,
         "failureCode": "NO_MATCH_PAST"
@@ -21513,7 +21513,7 @@
       "latestViable": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T22:25:59+00:00",
+        "checkedAt": "2026-09-06T22:58:58+00:00",
         "notes": "NO_MATCH_PAST",
         "matchConfidence": 0.0,
         "failureCode": "NO_MATCH_PAST"
@@ -41532,13 +41532,13 @@
       "settlement": {
         "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T22:25:59+00:00",
+        "checkedAt": "2026-09-06T22:58:58+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
         "notes": "AMBIGUOUS_MATCH",
         "failureCode": "AMBIGUOUS_MATCH",
-        "matchConfidence": 81.67
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -41551,7 +41551,7 @@
         "home": "Nathaniel Wood",
         "scheduledAt": "2026-09-05T12:00:00",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 81.67,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -41584,7 +41584,7 @@
           "2026-09-05"
         ],
         "candidateEvents": 123,
-        "bestCandidate": "Kent State Golden Flashes at South Carolina Gamecocks"
+        "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -41814,7 +41814,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "WIN",
+      "result": "REVIEW",
       "roi": null,
       "freeRelease": false,
       "freeReleaseRank": null,
@@ -41866,31 +41866,21 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "WIN",
-        "source": "ESPN",
-        "checkedAt": "2026-09-06T17:42:56+00:00",
-        "settledAt": "2026-09-06T17:42:56+00:00",
-        "homeScore": 45.0,
-        "awayScore": 13.0,
-        "notes": "Marcador 13-45",
-        "failureCode": "NO_MATCH_PAST",
-        "matchConfidence": 84.05,
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
-        "eventId": "401856659",
-        "eventName": "Youngstown State Penguins at Kentucky Wildcats"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:59:20+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": "401856659",
         "league": "SPORTS",
         "sport": "",
-        "espnSport": "football",
-        "espnLeague": "college-football",
         "away": "Modestas Bukauskas",
         "home": "Oumar Sy",
         "scheduledAt": "2026-09-05T12:15:00",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 84.05,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -41923,12 +41913,10 @@
           "2026-09-05"
         ],
         "candidateEvents": 123,
-        "bestCandidate": "Youngstown State Penguins at Kentucky Wildcats",
-        "matchedName": "Youngstown State Penguins at Kentucky Wildcats",
-        "matchedDate": "2026-09-05"
+        "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes"
       },
-      "needsSettlement": false,
-      "profitUnits": 4.3
+      "needsSettlement": true,
+      "profitUnits": null
     },
     {
       "id": 81,
@@ -43647,13 +43635,13 @@
       "settlement": {
         "status": "REVIEW",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T22:26:14+00:00",
+        "checkedAt": "2026-09-06T22:59:27+00:00",
         "settledAt": null,
         "homeScore": 3.0,
         "awayScore": 2.0,
-        "notes": "No se pudo identificar el equipo Moneyline",
-        "failureCode": "NO_MATCH_PAST",
-        "matchConfidence": 1000.0,
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard?dates=20260905&limit=500",
         "eventId": "401874937",
         "eventName": "Napoli at Internazionale"
@@ -43668,43 +43656,18 @@
         "away": "Ryan Spann",
         "home": "Mario Pinto",
         "scheduledAt": "2026-09-05T12:30:00",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc",
-          "boxing/boxing"
+          "soccer/ita.1"
         ],
         "attemptedDates": [
           "2026-09-05",
           "2026-09-04",
           "2026-09-06"
         ],
-        "candidateEvents": 123,
-        "bestCandidate": "Toronto Blue Jays at Kansas City Royals",
+        "candidateEvents": 8,
+        "bestCandidate": "Torino at Fiorentina",
         "matchedName": "Napoli at Internazionale",
         "matchedDate": "2026-09-05"
       },
@@ -45229,13 +45192,13 @@
       "settlement": {
         "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T22:26:15+00:00",
+        "checkedAt": "2026-09-06T22:59:28+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
         "notes": "AMBIGUOUS_MATCH",
         "failureCode": "AMBIGUOUS_MATCH",
-        "matchConfidence": 66.78
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -45248,7 +45211,7 @@
         "home": "Morgan Charriere",
         "scheduledAt": "2026-09-05T12:45:00",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 66.78,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -45281,7 +45244,7 @@
           "2026-09-05"
         ],
         "candidateEvents": 123,
-        "bestCandidate": "Le Mans at Nice"
+        "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -58023,7 +57986,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T22:26:21+00:00",
+        "checkedAt": "2026-09-06T22:59:35+00:00",
         "settledAt": null,
         "homeScore": 59.0,
         "awayScore": 7.0,
@@ -62661,7 +62624,7 @@
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856667",
         "eventName": "Texas State Bobcats at Texas Longhorns",
-        "checkedAt": "2026-09-06T22:26:22+00:00",
+        "checkedAt": "2026-09-06T22:59:35+00:00",
         "homeScore": 59.0,
         "awayScore": 7.0,
         "matchConfidence": 1000.0,
@@ -75243,13 +75206,13 @@
       "settlement": {
         "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T22:26:22+00:00",
+        "checkedAt": "2026-09-06T22:59:36+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
         "notes": "AMBIGUOUS_MATCH",
         "failureCode": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.97
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -75262,7 +75225,7 @@
         "home": "Kurtis Campbell",
         "scheduledAt": "2026-09-05T13:45:00",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 63.97,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -75295,7 +75258,7 @@
           "2026-09-05"
         ],
         "candidateEvents": 123,
-        "bestCandidate": "Boise State Broncos at Oregon Ducks"
+        "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -82982,13 +82945,13 @@
       "settlement": {
         "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T22:26:28+00:00",
+        "checkedAt": "2026-09-06T22:59:43+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
         "notes": "AMBIGUOUS_MATCH",
         "failureCode": "AMBIGUOUS_MATCH",
-        "matchConfidence": 65.5
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -83001,7 +82964,7 @@
         "home": "Fares Ziam",
         "scheduledAt": "2026-09-05T15:15:00",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 65.5,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -83034,7 +82997,7 @@
           "2026-09-05"
         ],
         "candidateEvents": 123,
-        "bestCandidate": "New England Revolution at LA Galaxy"
+        "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes"
       },
       "excludedFromResults": true,
       "exclusionReason": "NO_MATCH_PAST"
@@ -85132,13 +85095,13 @@
       "settlement": {
         "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T22:26:34+00:00",
+        "checkedAt": "2026-09-06T22:59:50+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
         "notes": "AMBIGUOUS_MATCH",
         "failureCode": "AMBIGUOUS_MATCH",
-        "matchConfidence": 71.67
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -85151,7 +85114,7 @@
         "home": "Dan Hooker",
         "scheduledAt": "2026-09-05T15:45:00",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 71.67,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -85184,7 +85147,7 @@
           "2026-09-05"
         ],
         "candidateEvents": 123,
-        "bestCandidate": "New England Revolution at LA Galaxy"
+        "bestCandidate": "Ball State Cardinals at Ohio State Buckeyes"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -86563,36 +86526,35 @@
       "latestViable": true,
       "settlement": {
         "status": "WIN",
-        "source": "ESPN",
-        "checkedAt": "2026-09-06T02:16:29+00:00",
-        "settledAt": "2026-09-06T02:16:29+00:00",
-        "homeScore": 19.0,
-        "awayScore": 9.0,
+        "checkedAt": "2026-09-06T22:59:57+00:00",
         "notes": "Total final 28 vs línea 53.5",
+        "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
+        "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401862699",
         "eventName": "Florida International Panthers at South Florida Bulls",
-        "matchConfidence": 1000.0
+        "homeScore": 19.0,
+        "awayScore": 9.0,
+        "matchConfidence": 124.0,
+        "settledAt": "2026-09-06T22:59:57+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": "401862699",
         "league": "SPORTS",
         "sport": "",
-        "espnSport": "football",
-        "espnLeague": "college-football",
         "away": "FIU",
         "home": "South Florida",
         "scheduledAt": "2026-09-05T17:00:00",
         "matchStatus": "MATCHED",
-        "matchedName": "Florida International Panthers at South Florida Bulls",
-        "matchConfidence": 1000.0,
-        "matchedDate": "2026-09-05",
+        "matchConfidence": 124.0,
         "attemptedDates": [
-          "2026-09-05",
-          "2026-09-04",
-          "2026-09-06"
-        ]
+          "2026-09-05"
+        ],
+        "eventId": "401862699",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Florida International Panthers at South Florida Bulls",
+        "matchedDate": "2026-09-05"
       },
       "needsSettlement": false,
       "profitUnits": 1.7391
@@ -89172,36 +89134,35 @@
       "latestViable": true,
       "settlement": {
         "status": "LOSS",
-        "source": "ESPN",
-        "checkedAt": "2026-09-06T02:16:29+00:00",
-        "settledAt": "2026-09-06T02:16:29+00:00",
-        "homeScore": 19.0,
-        "awayScore": 9.0,
+        "checkedAt": "2026-09-06T23:00:04+00:00",
         "notes": "Marcador 9-19",
+        "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
+        "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401862699",
         "eventName": "Florida International Panthers at South Florida Bulls",
-        "matchConfidence": 1000.0
+        "homeScore": 19.0,
+        "awayScore": 9.0,
+        "matchConfidence": 124.0,
+        "settledAt": "2026-09-06T23:00:04+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": "401862699",
         "league": "SPORTS",
         "sport": "",
-        "espnSport": "football",
-        "espnLeague": "college-football",
         "away": "FIU",
         "home": "South Florida",
         "scheduledAt": "2026-09-05T17:00:00",
         "matchStatus": "MATCHED",
-        "matchedName": "Florida International Panthers at South Florida Bulls",
-        "matchConfidence": 1000.0,
-        "matchedDate": "2026-09-05",
+        "matchConfidence": 124.0,
         "attemptedDates": [
-          "2026-09-05",
-          "2026-09-04",
-          "2026-09-06"
-        ]
+          "2026-09-05"
+        ],
+        "eventId": "401862699",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Florida International Panthers at South Florida Bulls",
+        "matchedDate": "2026-09-05"
       },
       "needsSettlement": false,
       "profitUnits": -2.5
@@ -89481,36 +89442,35 @@
       "latestViable": true,
       "settlement": {
         "status": "WIN",
-        "source": "ESPN",
-        "checkedAt": "2026-09-06T02:16:29+00:00",
-        "settledAt": "2026-09-06T02:16:29+00:00",
-        "homeScore": 19.0,
-        "awayScore": 9.0,
+        "checkedAt": "2026-09-06T23:00:11+00:00",
         "notes": "Margen ajustado 4.5 con línea +14.5",
+        "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
+        "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401862699",
         "eventName": "Florida International Panthers at South Florida Bulls",
-        "matchConfidence": 1000.0
+        "homeScore": 19.0,
+        "awayScore": 9.0,
+        "matchConfidence": 124.0,
+        "settledAt": "2026-09-06T23:00:11+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": "401862699",
         "league": "SPORTS",
         "sport": "",
-        "espnSport": "football",
-        "espnLeague": "college-football",
         "away": "FIU",
         "home": "South Florida",
         "scheduledAt": "2026-09-05T17:00:00",
         "matchStatus": "MATCHED",
-        "matchedName": "Florida International Panthers at South Florida Bulls",
-        "matchConfidence": 1000.0,
-        "matchedDate": "2026-09-05",
+        "matchConfidence": 124.0,
         "attemptedDates": [
-          "2026-09-05",
-          "2026-09-04",
-          "2026-09-06"
-        ]
+          "2026-09-05"
+        ],
+        "eventId": "401862699",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "Florida International Panthers at South Florida Bulls",
+        "matchedDate": "2026-09-05"
       },
       "needsSettlement": false,
       "profitUnits": 1.7391
@@ -91799,7 +91759,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T22:26:41+00:00",
+        "checkedAt": "2026-09-06T23:00:18+00:00",
         "settledAt": null,
         "homeScore": 13.0,
         "awayScore": 12.0,
@@ -93421,36 +93381,35 @@
       "needsSettlement": false,
       "settlement": {
         "status": "LOSS",
-        "source": "ESPN",
-        "checkedAt": "2026-09-06T03:26:29+00:00",
-        "settledAt": "2026-09-06T03:26:29+00:00",
-        "homeScore": 62.0,
-        "awayScore": 13.0,
+        "checkedAt": "2026-09-06T23:00:20+00:00",
         "notes": "Marcador 13-62",
+        "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
+        "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
         "eventId": "401856662",
         "eventName": "UL Monroe Warhawks at Mississippi State Bulldogs",
-        "matchConfidence": 1000.0
+        "homeScore": 62.0,
+        "awayScore": 13.0,
+        "matchConfidence": 124.0,
+        "settledAt": "2026-09-06T23:00:20+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": "401856662",
         "league": "SPORTS",
         "sport": "",
-        "espnSport": "football",
-        "espnLeague": "college-football",
         "away": "ULM",
         "home": "Mississippi State",
         "scheduledAt": "2026-09-05T17:30:00",
         "matchStatus": "MATCHED",
-        "matchedName": "UL Monroe Warhawks at Mississippi State Bulldogs",
-        "matchConfidence": 1000.0,
-        "matchedDate": "2026-09-05",
+        "matchConfidence": 124.0,
         "attemptedDates": [
-          "2026-09-05",
-          "2026-09-04",
-          "2026-09-06"
-        ]
+          "2026-09-05"
+        ],
+        "eventId": "401856662",
+        "espnSport": "football",
+        "espnLeague": "college-football",
+        "matchedName": "UL Monroe Warhawks at Mississippi State Bulldogs",
+        "matchedDate": "2026-09-05"
       },
       "profitUnits": -2.5
     },
@@ -95903,7 +95862,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T22:26:41+00:00",
+        "checkedAt": "2026-09-06T23:00:28+00:00",
         "settledAt": null,
         "homeScore": 66.0,
         "awayScore": 21.0,
@@ -98821,7 +98780,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "LOSS",
+      "result": "REVIEW",
       "roi": null,
       "freeRelease": false,
       "freeReleaseRank": null,
@@ -98853,70 +98812,35 @@
         }
       ],
       "latestViable": true,
-      "needsSettlement": false,
+      "needsSettlement": true,
       "settlement": {
-        "status": "LOSS",
-        "source": "ESPN",
-        "checkedAt": "2026-09-06T17:43:32+00:00",
-        "settledAt": "2026-09-06T17:43:32+00:00",
-        "homeScore": 24.0,
-        "awayScore": 45.0,
-        "notes": "Marcador 45-24",
-        "failureCode": "NO_MATCH_PAST",
-        "matchConfidence": 82.75,
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260905&limit=500",
-        "eventId": "401858210",
-        "eventName": "UCLA Bruins at California Golden Bears"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T23:00:28+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": "401858210",
         "league": "SPORTS",
         "sport": "",
-        "espnSport": "football",
-        "espnLeague": "college-football",
         "away": "Tijuana Caliente",
         "home": "Club America",
         "scheduledAt": "2026-09-05T19:00:00",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 82.75,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
-          "mma/ufc",
-          "boxing/boxing"
+          "soccer/mex.1"
         ],
         "attemptedDates": [
-          "2026-09-05"
+          "2026-09-05",
+          "2026-09-04",
+          "2026-09-06"
         ],
-        "candidateEvents": 123,
-        "bestCandidate": "UCLA Bruins at California Golden Bears",
-        "matchedName": "UCLA Bruins at California Golden Bears",
-        "matchedDate": "2026-09-05"
+        "candidateEvents": 5,
+        "bestCandidate": "Guadalajara at Atlético de San Luis"
       },
-      "profitUnits": -2.5
+      "profitUnits": null
     },
     {
       "id": 184,
@@ -99185,7 +99109,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T22:26:41+00:00",
+        "checkedAt": "2026-09-06T23:00:29+00:00",
         "settledAt": null,
         "homeScore": 35.0,
         "awayScore": 7.0,
@@ -104132,5 +104056,5 @@
       "profitUnits": 2.1186
     }
   ],
-  "settledCount": 106
+  "settledCount": 104
 }

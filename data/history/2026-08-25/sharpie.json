@@ -1,10 +1,10 @@
 {
   "schemaVersion": 3,
   "eventDate": "2026-08-25",
-  "updatedAt": "2026-09-06T17:43:25+00:00",
+  "updatedAt": "2026-09-06T22:55:42+00:00",
   "count": 29,
-  "pendingSettlement": 0,
-  "settledCount": 22,
+  "pendingSettlement": 1,
+  "settledCount": 21,
   "picks": [
     {
       "id": 241,
@@ -7191,15 +7191,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:43:04+00:00",
+        "checkedAt": "2026-09-06T22:55:13+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 81.64,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 81.64,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -7232,7 +7232,7 @@
           "2026-08-25"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Baltimore Orioles at St. Louis Cardinals"
+        "bestCandidate": "Chicago Sky at Connecticut Sun"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -7761,27 +7761,20 @@
         }
       },
       "status": "UPCOMING",
-      "result": "WIN",
+      "result": "REVIEW",
       "roi": null,
       "freePick": true,
       "settlement": {
-        "status": "WIN",
-        "checkedAt": "2026-09-03T19:32:15+00:00",
-        "notes": "Marcador 4-5",
-        "matchConfidence": 73.74,
-        "failureCode": "NO_MATCH_PAST",
-        "source": "ESPN",
-        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260825&limit=500",
-        "eventId": "401816674",
-        "eventName": "Chicago Cubs at Arizona Diamondbacks",
-        "homeScore": 5.0,
-        "awayScore": 4.0,
-        "settledAt": "2026-09-03T19:32:15+00:00"
+        "status": "REVIEW",
+        "checkedAt": "2026-09-06T22:55:29+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 73.74,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -7807,21 +7800,17 @@
           "soccer/fifa.world",
           "hockey/nhl",
           "hockey/mens-college-hockey",
-          "mma/ufc"
+          "mma/ufc",
+          "boxing/boxing"
         ],
         "attemptedDates": [
           "2026-08-25"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Chicago Cubs at Arizona Diamondbacks",
-        "eventId": "401816674",
-        "espnSport": "baseball",
-        "espnLeague": "mlb",
-        "matchedName": "Chicago Cubs at Arizona Diamondbacks",
-        "matchedDate": "2026-08-25"
+        "bestCandidate": "Chicago Sky at Connecticut Sun"
       },
-      "needsSettlement": false,
-      "profitUnits": 3.55,
+      "needsSettlement": true,
+      "profitUnits": null,
       "historyId": "09d54f4dc07d8e6b908dd8bd",
       "historySchemaVersion": 3
     },
@@ -8672,15 +8661,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:43:19+00:00",
+        "checkedAt": "2026-09-06T22:55:35+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 58.83,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 58.83,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -8713,7 +8702,7 @@
           "2026-08-25"
         ],
         "candidateEvents": 21,
-        "bestCandidate": "Philadelphia Phillies at Seattle Mariners"
+        "bestCandidate": "Chicago Sky at Connecticut Sun"
       },
       "needsSettlement": true,
       "excludedFromResults": true,

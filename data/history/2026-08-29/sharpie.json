@@ -1,9 +1,9 @@
 {
   "schemaVersion": 3,
   "eventDate": "2026-08-29",
-  "updatedAt": "2026-09-06T17:45:15+00:00",
+  "updatedAt": "2026-09-06T22:57:52+00:00",
   "count": 207,
-  "pendingSettlement": 1,
+  "pendingSettlement": 0,
   "settledCount": 174,
   "picks": [
     {
@@ -728,45 +728,22 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:44:16+00:00",
-        "notes": "No se pudo identificar al peleador seleccionado",
-        "matchConfidence": 1000.0,
+        "checkedAt": "2026-09-06T22:56:45+00:00",
+        "notes": "NO_MATCH_PAST",
+        "matchConfidence": 0.0,
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260829&limit=500",
         "eventId": "600060620",
         "eventName": "UFC Fight Night: Nurmagomedov vs. Song",
         "homeScore": null,
-        "awayScore": null
+        "awayScore": null,
+        "failureCode": "NO_MATCH_PAST"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "MATCHED",
-        "matchConfidence": 1000.0,
+        "matchStatus": "NO_MATCH_PAST",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
-          "basketball/wnba",
-          "basketball/nba",
-          "football/nfl",
-          "football/college-football",
-          "football/ufl",
-          "basketball/womens-college-basketball",
-          "basketball/mens-college-basketball",
-          "baseball/mlb",
-          "baseball/college-baseball",
-          "baseball/kbo",
-          "baseball/jpn.1",
-          "soccer/uefa.champions",
-          "soccer/uefa.europa",
-          "soccer/eng.1",
-          "soccer/esp.1",
-          "soccer/ita.1",
-          "soccer/fra.1",
-          "soccer/ger.1",
-          "soccer/mex.1",
-          "soccer/usa.1",
-          "soccer/conmebol.libertadores",
-          "soccer/fifa.world",
-          "hockey/nhl",
-          "hockey/mens-college-hockey",
           "mma/ufc"
         ],
         "attemptedDates": [
@@ -774,19 +751,22 @@
           "2026-08-28",
           "2026-08-30"
         ],
-        "candidateEvents": 69,
+        "candidateEvents": 1,
         "eventId": "600060620",
         "espnSport": "mma",
         "espnLeague": "ufc",
         "matchedName": "UFC Fight Night: Nurmagomedov vs. Song",
-        "matchedDate": "2026-08-29"
+        "matchedDate": "2026-08-29",
+        "bestCandidate": "UFC Fight Night: Nurmagomedov vs. Song"
       },
-      "needsSettlement": true,
+      "needsSettlement": false,
       "originalStake": 0.0,
       "stakeNormalized": true,
       "stakeNormalizationReason": "LEGACY_STAKE_MODEL",
       "historyId": "83c9488a502cb6044de5cf6b",
-      "historySchemaVersion": 3
+      "historySchemaVersion": 3,
+      "excludedFromResults": true,
+      "exclusionReason": "NO_MATCH_PAST"
     },
     {
       "id": 283,
@@ -2854,15 +2834,15 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:44:18+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 68.73,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-06T22:56:46+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 68.73,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -2895,11 +2875,11 @@
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "LA Galaxy at San Diego FC"
+        "bestCandidate": "Chicago Sky at New York Liberty"
       },
       "excludedFromResults": true,
       "exclusionReason": "NO_MATCH_PAST",
-      "needsSettlement": false,
+      "needsSettlement": true,
       "historyId": "d69e0f7eeba031d4c20fd2e4",
       "historySchemaVersion": 3
     },
@@ -4908,15 +4888,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:44:34+00:00",
+        "checkedAt": "2026-09-06T22:57:05+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 49.26,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 49.26,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -4949,7 +4929,7 @@
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "Arizona Diamondbacks at San Francisco Giants"
+        "bestCandidate": "Chicago Sky at New York Liberty"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
@@ -7771,15 +7751,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:44:40+00:00",
+        "checkedAt": "2026-09-06T22:57:12+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 45.5,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 45.5,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -7812,7 +7792,7 @@
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "Eintracht Frankfurt at 1. FC Union Berlin"
+        "bestCandidate": "Chicago Sky at New York Liberty"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
@@ -9057,15 +9037,15 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:44:46+00:00",
-        "notes": "NO_MATCH_PAST",
-        "matchConfidence": 71.0,
-        "failureCode": "NO_MATCH_PAST"
+        "checkedAt": "2026-09-06T22:57:18+00:00",
+        "notes": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
+        "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
-        "matchStatus": "NO_MATCH_PAST",
-        "matchConfidence": 71.0,
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -9098,11 +9078,11 @@
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "San Diego Padres at Tampa Bay Rays"
+        "bestCandidate": "Chicago Sky at New York Liberty"
       },
       "excludedFromResults": true,
       "exclusionReason": "NO_MATCH_PAST",
-      "needsSettlement": false,
+      "needsSettlement": true,
       "historyId": "1eda02d6f5882e3a9bc75792",
       "historySchemaVersion": 3
     },
@@ -10936,15 +10916,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:44:52+00:00",
+        "checkedAt": "2026-09-06T22:57:25+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 65.05,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 65.05,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -10977,7 +10957,7 @@
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "LA Galaxy at San Diego FC"
+        "bestCandidate": "Chicago Sky at New York Liberty"
       },
       "originalStake": 0.0,
       "stakeNormalized": true,
@@ -17890,15 +17870,15 @@
       "freePick": true,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:44:57+00:00",
+        "checkedAt": "2026-09-06T22:57:31+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 51.83,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 51.83,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -17931,7 +17911,7 @@
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "Nottingham Forest at Liverpool"
+        "bestCandidate": "Chicago Sky at New York Liberty"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -52671,15 +52651,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:45:03+00:00",
+        "checkedAt": "2026-09-06T22:57:38+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 69.14,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 69.14,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -52712,7 +52692,7 @@
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "Colorado Rockies at Atlanta Braves"
+        "bestCandidate": "Chicago Sky at New York Liberty"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
@@ -60379,15 +60359,15 @@
       "freePick": false,
       "settlement": {
         "status": "REVIEW",
-        "checkedAt": "2026-09-06T17:45:09+00:00",
+        "checkedAt": "2026-09-06T22:57:45+00:00",
         "notes": "AMBIGUOUS_MATCH",
-        "matchConfidence": 58.43,
+        "matchConfidence": 0.0,
         "failureCode": "AMBIGUOUS_MATCH"
       },
       "eventLookup": {
         "provider": "ESPN",
         "matchStatus": "AMBIGUOUS_MATCH",
-        "matchConfidence": 58.43,
+        "matchConfidence": 0.0,
         "attemptedRoutes": [
           "basketball/wnba",
           "basketball/nba",
@@ -60420,7 +60400,7 @@
           "2026-08-29"
         ],
         "candidateEvents": 69,
-        "bestCandidate": "Chicago Bears at Tennessee Titans"
+        "bestCandidate": "Chicago Sky at New York Liberty"
       },
       "needsSettlement": true,
       "excludedFromResults": true,
