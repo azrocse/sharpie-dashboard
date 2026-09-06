@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-12",
-  "updatedAt": "2026-09-06T17:45:22-06:00",
+  "updatedAt": "2026-09-06T17:50:09-06:00",
   "count": 13,
   "pendingSettlement": 13,
   "picks": [
@@ -43,7 +43,7 @@
       "flowAdjustment": 0.15,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 5.2,
+      "lineMoveMinutes": 4.8,
       "liquidityStatus": null,
       "impliedProb": 69.23,
       "modelEdge": 11.52,
@@ -534,6 +534,13 @@
           "betsPct": 99.0,
           "handlePct": 100.0,
           "odds": "-225"
+        },
+        {
+          "time": "17:50",
+          "timestamp": "2026-09-06T17:50:08",
+          "betsPct": 99.0,
+          "handlePct": 100.0,
+          "odds": "-225"
         }
       ],
       "clv": {
@@ -558,8 +565,8 @@
       "historyId": "6f77913fc39c9ca0554929f2",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:55:10-06:00",
-      "lastQualifiedAt": "2026-09-06T17:45:22-06:00",
-      "qualifiedObservations": 67,
+      "lastQualifiedAt": "2026-09-06T17:50:09-06:00",
+      "qualifiedObservations": 68,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:55:10-06:00",
@@ -637,29 +644,29 @@
       "priority": "⚡ PRONTO",
       "priorityKey": "soon",
       "stake": 1.5,
-      "confidenceScore": 55.4,
+      "confidenceScore": 55.9,
       "confidence": "MEDIA",
       "confidenceStakeCap": 1.5,
       "oddsStakeCap": 3.0,
       "riskClass": "STANDARD",
       "riskLevel": "CONTROLADA",
-      "modelProb": 67.75,
+      "modelProb": 67.9,
       "fairProb": 67.6,
-      "flowAdjustment": 0.15,
+      "flowAdjustment": 0.3,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 5.2,
+      "lineMoveMinutes": 4.8,
       "liquidityStatus": null,
       "impliedProb": 53.49,
-      "modelEdge": 14.26,
-      "ev": 26.66,
-      "coherence": null,
+      "modelEdge": 14.41,
+      "ev": 26.94,
+      "coherence": "contradictoria",
       "whale": false,
-      "handlePct": 99.0,
+      "handlePct": 100.0,
       "betsPct": 98.0,
-      "divergence": 1.0,
-      "signedDivergence": 1.0,
-      "reason": "CONSENSUS. historial insuficiente para evaluar coherencia.",
+      "divergence": 2.0,
+      "signedDivergence": 2.0,
+      "reason": "CONSENSUS. la cuota se movió en contra de la dirección del dinero, coherencia contradictoria.",
       "date": "2026-09-12",
       "time": "08:00",
       "iso": "2026-09-12T08:00:00",
@@ -1041,6 +1048,13 @@
           "betsPct": 98.0,
           "handlePct": 99.0,
           "odds": "-115"
+        },
+        {
+          "time": "17:50",
+          "timestamp": "2026-09-06T17:50:08",
+          "betsPct": 98.0,
+          "handlePct": 100.0,
+          "odds": "-115"
         }
       ],
       "clv": {
@@ -1065,8 +1079,8 @@
       "historyId": "bba1c0d3e1920b28a9c21cb9",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T13:00:14-06:00",
-      "lastQualifiedAt": "2026-09-06T17:45:22-06:00",
-      "qualifiedObservations": 53,
+      "lastQualifiedAt": "2026-09-06T17:50:09-06:00",
+      "qualifiedObservations": 54,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T13:00:14-06:00",
@@ -1085,6 +1099,29 @@
           "betsPct": 98.0,
           "handlePct": 99.0,
           "signedDivergence": 1.0,
+          "marketSignal": "CONSENSUS",
+          "marketSignals": [
+            "CONSENSUS"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-06T17:50:09-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-115",
+          "stake": 1.5,
+          "confidenceScore": 55.9,
+          "confidence": "MEDIA",
+          "riskClass": "STANDARD",
+          "riskLevel": "CONTROLADA",
+          "modelProb": 67.9,
+          "modelEdge": 14.41,
+          "ev": 26.94,
+          "betsPct": 98.0,
+          "handlePct": 100.0,
+          "signedDivergence": 2.0,
           "marketSignal": "CONSENSUS",
           "marketSignals": [
             "CONSENSUS"
@@ -1118,7 +1155,7 @@
       "needsSettlement": true
     },
     {
-      "id": 141,
+      "id": 139,
       "game": "Arizona State @ Texas A&M",
       "away": "Arizona State",
       "home": "Texas A&M",
@@ -1144,29 +1181,29 @@
       "priority": "🎲 OPCIONAL",
       "priorityKey": "watch",
       "stake": 0.5,
-      "confidenceScore": 24.8,
+      "confidenceScore": 23.7,
       "confidence": "ESPECULATIVA",
       "confidenceStakeCap": 0.5,
       "oddsStakeCap": 0.5,
       "riskClass": "EXTREME_LONGSHOT",
       "riskLevel": "ALTA",
-      "modelProb": 21.82,
+      "modelProb": 21.67,
       "fairProb": 17.77,
-      "flowAdjustment": 4.05,
+      "flowAdjustment": 3.9,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 5.2,
+      "lineMoveMinutes": 4.8,
       "liquidityStatus": null,
       "impliedProb": 18.52,
-      "modelEdge": 3.3,
-      "ev": 17.83,
+      "modelEdge": 3.15,
+      "ev": 17.02,
       "coherence": null,
       "whale": true,
-      "handlePct": 33.0,
+      "handlePct": 32.0,
       "betsPct": 6.0,
-      "divergence": 27.0,
-      "signedDivergence": 27.0,
-      "reason": "SMART MONEY. 7 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "divergence": 26.0,
+      "signedDivergence": 26.0,
+      "reason": "SMART MONEY. 8 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-12",
       "time": "10:00",
       "iso": "2026-09-12T10:00:00",
@@ -1646,6 +1683,13 @@
           "betsPct": 6.0,
           "handlePct": 33.0,
           "odds": "+440"
+        },
+        {
+          "time": "17:50",
+          "timestamp": "2026-09-06T17:50:08",
+          "betsPct": 6.0,
+          "handlePct": 32.0,
+          "odds": "+440"
         }
       ],
       "clv": {
@@ -1670,8 +1714,8 @@
       "historyId": "1158130df859c503c970d9ef",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:55:10-06:00",
-      "lastQualifiedAt": "2026-09-06T17:45:22-06:00",
-      "qualifiedObservations": 67,
+      "lastQualifiedAt": "2026-09-06T17:50:09-06:00",
+      "qualifiedObservations": 68,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:55:10-06:00",
@@ -1853,6 +1897,29 @@
           "betsPct": 6.0,
           "handlePct": 33.0,
           "signedDivergence": 27.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-06T17:50:09-06:00",
+          "pickCategory": "LONGSHOT",
+          "publicationTier": "SPECULATIVE_ONLY",
+          "freeRelease": false,
+          "odds": "+440",
+          "stake": 0.5,
+          "confidenceScore": 23.7,
+          "confidence": "ESPECULATIVA",
+          "riskClass": "EXTREME_LONGSHOT",
+          "riskLevel": "ALTA",
+          "modelProb": 21.67,
+          "modelEdge": 3.15,
+          "ev": 17.02,
+          "betsPct": 6.0,
+          "handlePct": 32.0,
+          "signedDivergence": 26.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
             "SMART_MONEY"
@@ -2115,7 +2182,7 @@
       "needsSettlement": true
     },
     {
-      "id": 131,
+      "id": 129,
       "game": "Oklahoma @ Michigan",
       "away": "Oklahoma",
       "home": "Michigan",
@@ -2153,7 +2220,7 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 5.2,
+      "lineMoveMinutes": 4.8,
       "liquidityStatus": null,
       "impliedProb": 51.92,
       "modelEdge": 5.65,
@@ -2161,10 +2228,10 @@
       "coherence": null,
       "whale": true,
       "handlePct": 91.0,
-      "betsPct": 36.0,
-      "divergence": 55.0,
-      "signedDivergence": 55.0,
-      "reason": "SMART MONEY. 3 puntos de seguimiento, sin señal de coherencia clara todavía.",
+      "betsPct": 33.0,
+      "divergence": 58.0,
+      "signedDivergence": 58.0,
+      "reason": "SMART MONEY. 4 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-12",
       "time": "10:00",
       "iso": "2026-09-12T10:00:00",
@@ -2497,6 +2564,13 @@
           "betsPct": 36.0,
           "handlePct": 91.0,
           "odds": "-108"
+        },
+        {
+          "time": "17:50",
+          "timestamp": "2026-09-06T17:50:08",
+          "betsPct": 33.0,
+          "handlePct": 91.0,
+          "odds": "-108"
         }
       ],
       "clv": {
@@ -2521,8 +2595,8 @@
       "historyId": "853e63f035f44e595f482a4f",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T13:35:11-06:00",
-      "lastQualifiedAt": "2026-09-06T17:45:22-06:00",
-      "qualifiedObservations": 46,
+      "lastQualifiedAt": "2026-09-06T17:50:09-06:00",
+      "qualifiedObservations": 47,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T13:35:11-06:00",
@@ -2613,6 +2687,30 @@
           "betsPct": 36.0,
           "handlePct": 91.0,
           "signedDivergence": 55.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY",
+            "SHARP_VS_PUBLIC"
+          ],
+          "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-06T17:50:09-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-108",
+          "stake": 1.5,
+          "confidenceScore": 52.6,
+          "confidence": "MEDIA",
+          "riskClass": "STANDARD",
+          "riskLevel": "CONTROLADA",
+          "modelProb": 57.57,
+          "modelEdge": 5.65,
+          "ev": 10.88,
+          "betsPct": 33.0,
+          "handlePct": 91.0,
+          "signedDivergence": 58.0,
           "marketSignal": "SMART_MONEY",
           "marketSignals": [
             "SMART_MONEY",
@@ -2827,7 +2925,7 @@
       "needsSettlement": true
     },
     {
-      "id": 130,
+      "id": 128,
       "game": "Oregon @ Oklahoma State",
       "away": "Oregon",
       "home": "Oklahoma State",
@@ -2864,7 +2962,7 @@
       "flowAdjustment": 5.7,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 5.2,
+      "lineMoveMinutes": 4.8,
       "liquidityStatus": null,
       "impliedProb": 8.33,
       "modelEdge": 5.4,
@@ -3257,6 +3355,13 @@
           "betsPct": 10.0,
           "handlePct": 48.0,
           "odds": "+1100"
+        },
+        {
+          "time": "17:50",
+          "timestamp": "2026-09-06T17:50:08",
+          "betsPct": 10.0,
+          "handlePct": 48.0,
+          "odds": "+1100"
         }
       ],
       "clv": {
@@ -3281,8 +3386,8 @@
       "historyId": "e889b0a04ab7e4eb31cc6d10",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T13:00:14-06:00",
-      "lastQualifiedAt": "2026-09-06T17:45:22-06:00",
-      "qualifiedObservations": 53,
+      "lastQualifiedAt": "2026-09-06T17:50:09-06:00",
+      "qualifiedObservations": 54,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T13:00:14-06:00",
@@ -4270,7 +4375,7 @@
       "sourceEventId": null,
       "market": "Moneyline",
       "pick": "Kentucky",
-      "odds": "+310",
+      "odds": "+300",
       "action": "🟠 LONGSHOT",
       "actionKey": "speculative",
       "pattern": "🐋 SMART MONEY",
@@ -4284,29 +4389,29 @@
       "priority": "🎲 OPCIONAL",
       "priorityKey": "watch",
       "stake": 0.5,
-      "confidenceScore": 27.5,
+      "confidenceScore": 27.4,
       "confidence": "ESPECULATIVA",
       "confidenceStakeCap": 0.5,
       "oddsStakeCap": 0.5,
       "riskClass": "EXTREME_LONGSHOT",
       "riskLevel": "ALTA",
-      "modelProb": 30.01,
-      "fairProb": 23.41,
+      "modelProb": 30.6,
+      "fairProb": 24.0,
       "flowAdjustment": 6.6,
       "modelSource": "propio_devig_divergencia",
-      "lineMove": 0.0,
-      "lineMoveMinutes": 5.2,
+      "lineMove": 0.61,
+      "lineMoveMinutes": 4.8,
       "liquidityStatus": null,
-      "impliedProb": 24.39,
-      "modelEdge": 5.62,
-      "ev": 23.04,
+      "impliedProb": 25.0,
+      "modelEdge": 5.6,
+      "ev": 22.4,
       "coherence": null,
       "whale": true,
       "handlePct": 53.0,
       "betsPct": 9.0,
       "divergence": 44.0,
       "signedDivergence": 44.0,
-      "reason": "SMART MONEY. historial insuficiente para evaluar coherencia.",
+      "reason": "SMART MONEY. 2 puntos de seguimiento, sin señal de coherencia clara todavía.",
       "date": "2026-09-12",
       "time": "13:30",
       "iso": "2026-09-12T13:30:00",
@@ -4359,6 +4464,13 @@
           "betsPct": 9.0,
           "handlePct": 53.0,
           "odds": "+310"
+        },
+        {
+          "time": "17:50",
+          "timestamp": "2026-09-06T17:50:08",
+          "betsPct": 9.0,
+          "handlePct": 53.0,
+          "odds": "+300"
         }
       ],
       "clv": {
@@ -4383,8 +4495,8 @@
       "historyId": "8eaed494580b7efedfd0ab01",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T17:20:13-06:00",
-      "lastQualifiedAt": "2026-09-06T17:45:22-06:00",
-      "qualifiedObservations": 6,
+      "lastQualifiedAt": "2026-09-06T17:50:09-06:00",
+      "qualifiedObservations": 7,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T17:20:13-06:00",
@@ -4408,6 +4520,29 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.0
+        },
+        {
+          "observedAt": "2026-09-06T17:50:09-06:00",
+          "pickCategory": "LONGSHOT",
+          "publicationTier": "SPECULATIVE_ONLY",
+          "freeRelease": false,
+          "odds": "+300",
+          "stake": 0.5,
+          "confidenceScore": 27.4,
+          "confidence": "ESPECULATIVA",
+          "riskClass": "EXTREME_LONGSHOT",
+          "riskLevel": "ALTA",
+          "modelProb": 30.6,
+          "modelEdge": 5.6,
+          "ev": 22.4,
+          "betsPct": 9.0,
+          "handlePct": 53.0,
+          "signedDivergence": 44.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.61
         }
       ],
       "latestViable": true,
@@ -4473,7 +4608,7 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": 5.2,
+      "lineMoveMinutes": 4.8,
       "liquidityStatus": null,
       "impliedProb": 26.67,
       "modelEdge": 6.63,
@@ -4489,13 +4624,6 @@
       "time": "21:00",
       "iso": "2026-09-12T21:00:00",
       "history": [
-        {
-          "time": "23:40",
-          "timestamp": "2026-09-05T23:40:08",
-          "betsPct": 8.0,
-          "handlePct": 79.0,
-          "odds": "+275"
-        },
         {
           "time": "23:45",
           "timestamp": "2026-09-05T23:45:09",
@@ -5797,6 +5925,13 @@
           "betsPct": 8.0,
           "handlePct": 74.0,
           "odds": "+275"
+        },
+        {
+          "time": "17:50",
+          "timestamp": "2026-09-06T17:50:08",
+          "betsPct": 8.0,
+          "handlePct": 74.0,
+          "odds": "+275"
         }
       ],
       "clv": {
@@ -5804,7 +5939,7 @@
           "odds": "+275",
           "prob": 26.67,
           "divergence": 71.0,
-          "timestamp": "2026-09-05T23:40:08"
+          "timestamp": "2026-09-05T23:45:09"
         },
         "checkpoints": {
           "4h": null,
@@ -5821,8 +5956,8 @@
       "historyId": "39e1a95e4a571f9b2792e022",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:44:49-06:00",
-      "lastQualifiedAt": "2026-09-06T17:45:22-06:00",
-      "qualifiedObservations": 69,
+      "lastQualifiedAt": "2026-09-06T17:50:09-06:00",
+      "qualifiedObservations": 70,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:44:49-06:00",
