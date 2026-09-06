@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-06",
-  "updatedAt": "2026-09-06T20:15:55+00:00",
-  "count": 20,
-  "pendingSettlement": 11,
+  "updatedAt": "2026-09-06T20:20:57+00:00",
+  "count": 21,
+  "pendingSettlement": 12,
   "picks": [
     {
       "id": 226,
@@ -2214,7 +2214,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:29+00:00",
+        "checkedAt": "2026-09-06T20:20:23+00:00",
         "settledAt": null,
         "homeScore": 6.0,
         "awayScore": 1.0,
@@ -3042,7 +3042,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:31+00:00",
+        "checkedAt": "2026-09-06T20:20:25+00:00",
         "settledAt": null,
         "homeScore": 6.0,
         "awayScore": 1.0,
@@ -6232,7 +6232,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:31+00:00",
+        "checkedAt": "2026-09-06T20:20:25+00:00",
         "settledAt": null,
         "homeScore": 2.0,
         "awayScore": 2.0,
@@ -6967,7 +6967,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:33+00:00",
+        "checkedAt": "2026-09-06T20:20:27+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 1.0,
@@ -9357,7 +9357,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T20:15:34+00:00",
+        "checkedAt": "2026-09-06T20:20:28+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
@@ -13433,9 +13433,9 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:48+00:00",
+        "checkedAt": "2026-09-06T20:20:43+00:00",
         "settledAt": null,
-        "homeScore": 0.0,
+        "homeScore": 1.0,
         "awayScore": 0.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260906&limit=500",
@@ -14496,9 +14496,9 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:48+00:00",
+        "checkedAt": "2026-09-06T20:20:43+00:00",
         "settledAt": null,
-        "homeScore": 0.0,
+        "homeScore": 1.0,
         "awayScore": 0.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260906&limit=500",
@@ -14567,7 +14567,7 @@
       "flowAdjustment": 8.0,
       "modelSource": "propio_devig_divergencia",
       "lineMove": 0.0,
-      "lineMoveMinutes": null,
+      "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 11.9,
       "modelEdge": 7.4,
@@ -14638,6 +14638,13 @@
           "betsPct": 22.0,
           "handlePct": 99.0,
           "odds": "+740"
+        },
+        {
+          "time": "14:20",
+          "timestamp": "2026-09-06T14:20:09",
+          "betsPct": 22.0,
+          "handlePct": 99.0,
+          "odds": "+740"
         }
       ],
       "clv": {
@@ -14669,8 +14676,8 @@
       "historyId": "409f1382753ba10796b64051",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T13:45:18-06:00",
-      "lastQualifiedAt": "2026-09-06T14:15:14-06:00",
-      "qualifiedObservations": 5,
+      "lastQualifiedAt": "2026-09-06T14:20:10-06:00",
+      "qualifiedObservations": 6,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T13:45:18-06:00",
@@ -14748,6 +14755,191 @@
       "exclusionReason": "NON_ACTIONABLE_PICK"
     },
     {
+      "id": 199,
+      "game": "Botafogo RJ vs Palmeiras",
+      "away": "Palmeiras",
+      "home": "Botafogo RJ",
+      "league": "SPORTS",
+      "sourceLeague": "SPORTS",
+      "sport": "",
+      "espnSport": null,
+      "espnLeague": null,
+      "sourceEventId": null,
+      "market": "Moneyline",
+      "pick": "Palmeiras",
+      "odds": "+110",
+      "action": "🟢 VALUE PICK",
+      "actionKey": "bet",
+      "pattern": "📊 CONSENSUS",
+      "trend": "📊 CONSENSUS",
+      "trendKey": "CONSENSUS",
+      "marketSignal": "CONSENSUS",
+      "marketSignals": [
+        "CONSENSUS"
+      ],
+      "pickCategory": "VALUE",
+      "priority": "⚡ PRONTO",
+      "priorityKey": "soon",
+      "stake": 1.5,
+      "confidenceScore": 58.4,
+      "confidence": "MEDIA",
+      "confidenceStakeCap": 1.5,
+      "oddsStakeCap": 1.5,
+      "riskClass": "VALUE_ODDS",
+      "riskLevel": "MEDIA",
+      "modelProb": 63.02,
+      "fairProb": 61.82,
+      "flowAdjustment": 1.2,
+      "modelSource": "propio_devig_divergencia",
+      "lineMove": 0.0,
+      "lineMoveMinutes": 5.0,
+      "liquidityStatus": null,
+      "impliedProb": 47.62,
+      "modelEdge": 15.4,
+      "ev": 32.34,
+      "coherence": null,
+      "whale": false,
+      "handlePct": 100.0,
+      "betsPct": 92.0,
+      "divergence": 8.0,
+      "signedDivergence": 8.0,
+      "reason": "CONSENSUS. historial insuficiente para evaluar coherencia.",
+      "date": "2026-09-06",
+      "time": "15:30",
+      "iso": "2026-09-06T15:30:00",
+      "history": [
+        {
+          "time": "14:15",
+          "timestamp": "2026-09-06T14:15:11",
+          "betsPct": 92.0,
+          "handlePct": 100.0,
+          "odds": "+110"
+        },
+        {
+          "time": "14:20",
+          "timestamp": "2026-09-06T14:20:09",
+          "betsPct": 92.0,
+          "handlePct": 100.0,
+          "odds": "+110"
+        }
+      ],
+      "clv": {
+        "opening": {
+          "odds": "+110",
+          "prob": 47.62,
+          "divergence": 8.0,
+          "timestamp": "2026-09-06T14:15:11"
+        },
+        "checkpoints": {
+          "4h": null,
+          "2h": null,
+          "1h": {
+            "odds": "+110",
+            "prob": 47.62,
+            "clv": 0.0,
+            "divergence": 8.0,
+            "timestamp": "2026-09-06T14:20:09",
+            "minutesFromTarget": 9.8
+          }
+        }
+      },
+      "status": "UPCOMING",
+      "result": "PENDING",
+      "roi": null,
+      "freeRelease": true,
+      "freeReleaseRank": 1,
+      "publicationTier": "FREE_RELEASE",
+      "historyId": "009636c75019a9c3fb98be1f",
+      "historySchemaVersion": 2,
+      "firstQualifiedAt": "2026-09-06T14:20:10-06:00",
+      "lastQualifiedAt": "2026-09-06T14:20:10-06:00",
+      "qualifiedObservations": 1,
+      "qualificationSnapshots": [
+        {
+          "observedAt": "2026-09-06T14:20:10-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "+110",
+          "stake": 1.5,
+          "confidenceScore": 58.4,
+          "confidence": "MEDIA",
+          "riskClass": "VALUE_ODDS",
+          "riskLevel": "MEDIA",
+          "modelProb": 63.02,
+          "modelEdge": 15.4,
+          "ev": 32.34,
+          "betsPct": 92.0,
+          "handlePct": 100.0,
+          "signedDivergence": 8.0,
+          "marketSignal": "CONSENSUS",
+          "marketSignals": [
+            "CONSENSUS"
+          ],
+          "lineMove": 0.0
+        }
+      ],
+      "latestViable": true,
+      "needsSettlement": true,
+      "settlement": {
+        "status": "REVIEW",
+        "source": null,
+        "checkedAt": "2026-09-06T20:20:43+00:00",
+        "settledAt": null,
+        "homeScore": null,
+        "awayScore": null,
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 60.44
+      },
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": null,
+        "league": "SPORTS",
+        "sport": "",
+        "espnSport": null,
+        "espnLeague": null,
+        "away": "Palmeiras",
+        "home": "Botafogo RJ",
+        "scheduledAt": "2026-09-06T15:30:00",
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 60.44,
+        "attemptedRoutes": [
+          "basketball/wnba",
+          "basketball/nba",
+          "football/nfl",
+          "football/college-football",
+          "football/ufl",
+          "basketball/womens-college-basketball",
+          "basketball/mens-college-basketball",
+          "baseball/mlb",
+          "baseball/college-baseball",
+          "baseball/kbo",
+          "baseball/jpn.1",
+          "soccer/uefa.champions",
+          "soccer/uefa.europa",
+          "soccer/eng.1",
+          "soccer/esp.1",
+          "soccer/ita.1",
+          "soccer/fra.1",
+          "soccer/ger.1",
+          "soccer/mex.1",
+          "soccer/usa.1",
+          "soccer/conmebol.libertadores",
+          "soccer/fifa.world",
+          "hockey/nhl",
+          "hockey/mens-college-hockey",
+          "mma/ufc",
+          "boxing/boxing"
+        ],
+        "attemptedDates": [
+          "2026-09-06"
+        ],
+        "candidateEvents": 34,
+        "bestCandidate": "Wisconsin Badgers at Notre Dame Fighting Irish"
+      }
+    },
+    {
       "id": 194,
       "game": "MIN Twins @ CHI White Sox",
       "away": "MIN Twins",
@@ -14784,7 +14976,7 @@
       "fairProb": 50.76,
       "flowAdjustment": 4.65,
       "modelSource": "propio_devig_divergencia",
-      "lineMove": -0.22,
+      "lineMove": 0.0,
       "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 53.05,
@@ -15451,6 +15643,13 @@
           "betsPct": 61.0,
           "handlePct": 92.0,
           "odds": "-113"
+        },
+        {
+          "time": "2026-09-06T20:20:05+00:00",
+          "timestamp": "2026-09-06T20:20:05+00:00",
+          "betsPct": 61.0,
+          "handlePct": 92.0,
+          "odds": "-113"
         }
       ],
       "clv": {
@@ -15474,8 +15673,8 @@
             "prob": 53.05,
             "clv": 0.9,
             "divergence": 31.0,
-            "timestamp": "2026-09-06T20:15:04+00:00",
-            "minutesFromTarget": 4.9
+            "timestamp": "2026-09-06T20:20:05+00:00",
+            "minutesFromTarget": 0.1
           },
           "1h": null
         }
@@ -15484,13 +15683,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 12,
+      "freeReleaseRank": 13,
       "publicationTier": "FREE_RELEASE",
       "historyId": "63c6eae788ee8dc4a35e54fa",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:44:49-06:00",
-      "lastQualifiedAt": "2026-09-06T14:15:14-06:00",
-      "qualifiedObservations": 23,
+      "lastQualifiedAt": "2026-09-06T14:20:10-06:00",
+      "qualifiedObservations": 24,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:44:49-06:00",
@@ -15606,13 +15805,36 @@
             "SMART_MONEY"
           ],
           "lineMove": -0.22
+        },
+        {
+          "observedAt": "2026-09-06T14:20:10-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-113",
+          "stake": 1.0,
+          "confidenceScore": 42.2,
+          "confidence": "BAJA",
+          "riskClass": "STANDARD",
+          "riskLevel": "CONTROLADA",
+          "modelProb": 55.41,
+          "modelEdge": 2.36,
+          "ev": 4.45,
+          "betsPct": 61.0,
+          "handlePct": 92.0,
+          "signedDivergence": 31.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:48+00:00",
+        "checkedAt": "2026-09-06T20:20:49+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -15698,13 +15920,6 @@
       "time": "16:30",
       "iso": "2026-09-06T16:30:00",
       "history": [
-        {
-          "time": "20:35",
-          "timestamp": "2026-09-05T20:35:08",
-          "betsPct": 100.0,
-          "handlePct": 100.0,
-          "odds": "-260"
-        },
         {
           "time": "20:40",
           "timestamp": "2026-09-05T20:40:08",
@@ -16362,6 +16577,13 @@
           "betsPct": 99.0,
           "handlePct": 100.0,
           "odds": "-220"
+        },
+        {
+          "time": "14:20",
+          "timestamp": "2026-09-06T14:20:09",
+          "betsPct": 99.0,
+          "handlePct": 100.0,
+          "odds": "-220"
         }
       ],
       "clv": {
@@ -16369,7 +16591,7 @@
           "odds": "-260",
           "prob": 72.22,
           "divergence": 0.0,
-          "timestamp": "2026-09-05T20:35:08"
+          "timestamp": "2026-09-05T20:40:08"
         },
         "checkpoints": {
           "4h": {
@@ -16385,8 +16607,8 @@
             "prob": 68.75,
             "clv": -3.47,
             "divergence": 1.0,
-            "timestamp": "2026-09-06T14:15:11",
-            "minutesFromTarget": 14.8
+            "timestamp": "2026-09-06T14:20:09",
+            "minutesFromTarget": 9.8
           },
           "1h": null
         }
@@ -16395,13 +16617,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 2,
+      "freeReleaseRank": 3,
       "publicationTier": "FREE_RELEASE",
       "historyId": "d8b04e972cd4c14179052e5b",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:44:49-06:00",
-      "lastQualifiedAt": "2026-09-06T14:15:14-06:00",
-      "qualifiedObservations": 32,
+      "lastQualifiedAt": "2026-09-06T14:20:10-06:00",
+      "qualifiedObservations": 33,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:44:49-06:00",
@@ -16569,7 +16791,7 @@
       "settlement": {
         "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T20:15:48+00:00",
+        "checkedAt": "2026-09-06T20:20:49+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
@@ -16679,13 +16901,6 @@
       "time": "17:00",
       "iso": "2026-09-06T17:00:00",
       "history": [
-        {
-          "time": "20:35",
-          "timestamp": "2026-09-05T20:35:08",
-          "betsPct": 99.0,
-          "handlePct": 92.0,
-          "odds": "-255"
-        },
         {
           "time": "20:40",
           "timestamp": "2026-09-05T20:40:08",
@@ -17329,6 +17544,13 @@
           "betsPct": 98.0,
           "handlePct": 95.0,
           "odds": "-260"
+        },
+        {
+          "time": "14:20",
+          "timestamp": "2026-09-06T14:20:09",
+          "betsPct": 98.0,
+          "handlePct": 95.0,
+          "odds": "-260"
         }
       ],
       "clv": {
@@ -17336,7 +17558,7 @@
           "odds": "-255",
           "prob": 71.83,
           "divergence": -7.0,
-          "timestamp": "2026-09-05T20:35:08"
+          "timestamp": "2026-09-05T20:40:08"
         },
         "checkpoints": {
           "4h": {
@@ -17355,13 +17577,13 @@
       "result": "PENDING",
       "roi": null,
       "freeRelease": true,
-      "freeReleaseRank": 4,
+      "freeReleaseRank": 5,
       "publicationTier": "FREE_RELEASE",
       "historyId": "1de4a6747d47162a3e71ade2",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:50:13-06:00",
-      "lastQualifiedAt": "2026-09-06T14:15:14-06:00",
-      "qualifiedObservations": 29,
+      "lastQualifiedAt": "2026-09-06T14:20:10-06:00",
+      "qualifiedObservations": 30,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:50:13-06:00",
@@ -17460,7 +17682,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:53+00:00",
+        "checkedAt": "2026-09-06T20:20:55+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -18940,7 +19162,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-06T20:15:54+00:00",
+        "checkedAt": "2026-09-06T20:20:56+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
