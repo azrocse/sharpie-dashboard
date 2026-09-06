@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-12",
-  "updatedAt": "2026-09-06T12:55:10-06:00",
-  "count": 7,
-  "pendingSettlement": 7,
+  "updatedAt": "2026-09-06T13:00:14-06:00",
+  "count": 9,
+  "pendingSettlement": 9,
   "picks": [
     {
       "id": 130,
@@ -163,6 +163,13 @@
           "betsPct": 99.0,
           "handlePct": 100.0,
           "odds": "-225"
+        },
+        {
+          "time": "13:00",
+          "timestamp": "2026-09-06T13:00:12",
+          "betsPct": 99.0,
+          "handlePct": 100.0,
+          "odds": "-225"
         }
       ],
       "clv": {
@@ -187,8 +194,8 @@
       "historyId": "6f77913fc39c9ca0554929f2",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:55:10-06:00",
-      "lastQualifiedAt": "2026-09-06T12:55:10-06:00",
-      "qualifiedObservations": 14,
+      "lastQualifiedAt": "2026-09-06T13:00:14-06:00",
+      "qualifiedObservations": 15,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:55:10-06:00",
@@ -237,6 +244,148 @@
         "matchStatus": "UNMATCHED"
       },
       "needsSettlement": true
+    },
+    {
+      "id": 128,
+      "game": "Crystal Palace vs Ipswich",
+      "away": "Ipswich",
+      "home": "Crystal Palace",
+      "league": "SPORTS",
+      "sourceLeague": "SPORTS",
+      "sport": "",
+      "espnSport": null,
+      "espnLeague": null,
+      "sourceEventId": null,
+      "market": "Moneyline",
+      "pick": "Crystal Palace",
+      "odds": "-115",
+      "action": "🟢 VALUE PICK",
+      "actionKey": "bet",
+      "pattern": "📊 CONSENSUS",
+      "trend": "📊 CONSENSUS",
+      "trendKey": "CONSENSUS",
+      "marketSignal": "CONSENSUS",
+      "marketSignals": [
+        "CONSENSUS"
+      ],
+      "pickCategory": "VALUE",
+      "priority": "⚡ PRONTO",
+      "priorityKey": "soon",
+      "stake": 1.5,
+      "confidenceScore": 55.4,
+      "confidence": "MEDIA",
+      "confidenceStakeCap": 1.5,
+      "oddsStakeCap": 3.0,
+      "riskClass": "STANDARD",
+      "riskLevel": "CONTROLADA",
+      "modelProb": 67.75,
+      "fairProb": 67.6,
+      "flowAdjustment": 0.15,
+      "modelSource": "propio_devig_divergencia",
+      "lineMove": 0.0,
+      "lineMoveMinutes": 5.0,
+      "liquidityStatus": null,
+      "impliedProb": 53.49,
+      "modelEdge": 14.26,
+      "ev": 26.66,
+      "coherence": null,
+      "whale": false,
+      "handlePct": 99.0,
+      "betsPct": 98.0,
+      "divergence": 1.0,
+      "signedDivergence": 1.0,
+      "reason": "CONSENSUS. historial insuficiente para evaluar coherencia.",
+      "date": "2026-09-12",
+      "time": "08:00",
+      "iso": "2026-09-12T08:00:00",
+      "history": [
+        {
+          "time": "12:55",
+          "timestamp": "2026-09-06T12:55:09",
+          "betsPct": 98.0,
+          "handlePct": 99.0,
+          "odds": "-115"
+        },
+        {
+          "time": "13:00",
+          "timestamp": "2026-09-06T13:00:12",
+          "betsPct": 98.0,
+          "handlePct": 99.0,
+          "odds": "-115"
+        }
+      ],
+      "clv": {
+        "opening": {
+          "odds": "-115",
+          "prob": 53.49,
+          "divergence": 1.0,
+          "timestamp": "2026-09-06T12:55:09"
+        },
+        "checkpoints": {
+          "4h": null,
+          "2h": null,
+          "1h": null
+        }
+      },
+      "status": "UPCOMING",
+      "result": "PENDING",
+      "roi": null,
+      "freeRelease": true,
+      "freeReleaseRank": 1,
+      "publicationTier": "FREE_RELEASE",
+      "historyId": "bba1c0d3e1920b28a9c21cb9",
+      "historySchemaVersion": 2,
+      "firstQualifiedAt": "2026-09-06T13:00:14-06:00",
+      "lastQualifiedAt": "2026-09-06T13:00:14-06:00",
+      "qualifiedObservations": 1,
+      "qualificationSnapshots": [
+        {
+          "observedAt": "2026-09-06T13:00:14-06:00",
+          "pickCategory": "VALUE",
+          "publicationTier": "FREE_RELEASE",
+          "freeRelease": true,
+          "odds": "-115",
+          "stake": 1.5,
+          "confidenceScore": 55.4,
+          "confidence": "MEDIA",
+          "riskClass": "STANDARD",
+          "riskLevel": "CONTROLADA",
+          "modelProb": 67.75,
+          "modelEdge": 14.26,
+          "ev": 26.66,
+          "betsPct": 98.0,
+          "handlePct": 99.0,
+          "signedDivergence": 1.0,
+          "marketSignal": "CONSENSUS",
+          "marketSignals": [
+            "CONSENSUS"
+          ],
+          "lineMove": 0.0
+        }
+      ],
+      "latestViable": true,
+      "needsSettlement": true,
+      "settlement": {
+        "status": "PENDING",
+        "source": null,
+        "checkedAt": null,
+        "settledAt": null,
+        "homeScore": null,
+        "awayScore": null,
+        "notes": null
+      },
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": null,
+        "league": "SPORTS",
+        "sport": "",
+        "espnSport": null,
+        "espnLeague": null,
+        "away": "Ipswich",
+        "home": "Crystal Palace",
+        "scheduledAt": "2026-09-12T08:00:00",
+        "matchStatus": "UNMATCHED"
+      }
     },
     {
       "id": 125,
@@ -396,6 +545,13 @@
           "betsPct": 8.0,
           "handlePct": 38.0,
           "odds": "+490"
+        },
+        {
+          "time": "13:00",
+          "timestamp": "2026-09-06T13:00:12",
+          "betsPct": 8.0,
+          "handlePct": 38.0,
+          "odds": "+490"
         }
       ],
       "clv": {
@@ -420,8 +576,8 @@
       "historyId": "1158130df859c503c970d9ef",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:55:10-06:00",
-      "lastQualifiedAt": "2026-09-06T12:55:10-06:00",
-      "qualifiedObservations": 14,
+      "lastQualifiedAt": "2026-09-06T13:00:14-06:00",
+      "qualifiedObservations": 15,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:55:10-06:00",
@@ -604,6 +760,13 @@
           "betsPct": 33.0,
           "handlePct": 91.0,
           "odds": "-108"
+        },
+        {
+          "time": "13:00",
+          "timestamp": "2026-09-06T13:00:12",
+          "betsPct": 33.0,
+          "handlePct": 91.0,
+          "odds": "-108"
         }
       ],
       "clv": {
@@ -628,8 +791,8 @@
       "historyId": "221b26502f3913564895b799",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T12:25:16-06:00",
-      "lastQualifiedAt": "2026-09-06T12:55:10-06:00",
-      "qualifiedObservations": 7,
+      "lastQualifiedAt": "2026-09-06T13:00:14-06:00",
+      "qualifiedObservations": 8,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T12:25:16-06:00",
@@ -858,6 +1021,148 @@
         "matchStatus": "UNMATCHED"
       },
       "needsSettlement": true
+    },
+    {
+      "id": 114,
+      "game": "Oregon @ Oklahoma State",
+      "away": "Oregon",
+      "home": "Oklahoma State",
+      "league": "SPORTS",
+      "sourceLeague": "SPORTS",
+      "sport": "",
+      "espnSport": null,
+      "espnLeague": null,
+      "sourceEventId": null,
+      "market": "Moneyline",
+      "pick": "Oklahoma State",
+      "odds": "+1200",
+      "action": "🟠 LONGSHOT",
+      "actionKey": "speculative",
+      "pattern": "🐋 SMART MONEY",
+      "trend": "🐋 SMART MONEY",
+      "trendKey": "SMART_MONEY",
+      "marketSignal": "SMART_MONEY",
+      "marketSignals": [
+        "SMART_MONEY"
+      ],
+      "pickCategory": "LONGSHOT",
+      "priority": "🎲 OPCIONAL",
+      "priorityKey": "watch",
+      "stake": 0.5,
+      "confidenceScore": 26.1,
+      "confidence": "ESPECULATIVA",
+      "confidenceStakeCap": 0.5,
+      "oddsStakeCap": 0.5,
+      "riskClass": "EXTREME_LONGSHOT",
+      "riskLevel": "ALTA",
+      "modelProb": 12.97,
+      "fairProb": 7.42,
+      "flowAdjustment": 5.55,
+      "modelSource": "propio_devig_divergencia",
+      "lineMove": 0.0,
+      "lineMoveMinutes": 5.0,
+      "liquidityStatus": null,
+      "impliedProb": 7.69,
+      "modelEdge": 5.28,
+      "ev": 68.61,
+      "coherence": null,
+      "whale": true,
+      "handlePct": 49.0,
+      "betsPct": 12.0,
+      "divergence": 37.0,
+      "signedDivergence": 37.0,
+      "reason": "SMART MONEY. historial insuficiente para evaluar coherencia.",
+      "date": "2026-09-12",
+      "time": "10:00",
+      "iso": "2026-09-12T10:00:00",
+      "history": [
+        {
+          "time": "12:55",
+          "timestamp": "2026-09-06T12:55:09",
+          "betsPct": 12.0,
+          "handlePct": 49.0,
+          "odds": "+1200"
+        },
+        {
+          "time": "13:00",
+          "timestamp": "2026-09-06T13:00:12",
+          "betsPct": 12.0,
+          "handlePct": 49.0,
+          "odds": "+1200"
+        }
+      ],
+      "clv": {
+        "opening": {
+          "odds": "+1200",
+          "prob": 7.69,
+          "divergence": 37.0,
+          "timestamp": "2026-09-06T12:55:09"
+        },
+        "checkpoints": {
+          "4h": null,
+          "2h": null,
+          "1h": null
+        }
+      },
+      "status": "UPCOMING",
+      "result": "PENDING",
+      "roi": null,
+      "freeRelease": false,
+      "freeReleaseRank": null,
+      "publicationTier": "SPECULATIVE_ONLY",
+      "historyId": "e889b0a04ab7e4eb31cc6d10",
+      "historySchemaVersion": 2,
+      "firstQualifiedAt": "2026-09-06T13:00:14-06:00",
+      "lastQualifiedAt": "2026-09-06T13:00:14-06:00",
+      "qualifiedObservations": 1,
+      "qualificationSnapshots": [
+        {
+          "observedAt": "2026-09-06T13:00:14-06:00",
+          "pickCategory": "LONGSHOT",
+          "publicationTier": "SPECULATIVE_ONLY",
+          "freeRelease": false,
+          "odds": "+1200",
+          "stake": 0.5,
+          "confidenceScore": 26.1,
+          "confidence": "ESPECULATIVA",
+          "riskClass": "EXTREME_LONGSHOT",
+          "riskLevel": "ALTA",
+          "modelProb": 12.97,
+          "modelEdge": 5.28,
+          "ev": 68.61,
+          "betsPct": 12.0,
+          "handlePct": 49.0,
+          "signedDivergence": 37.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
+        }
+      ],
+      "latestViable": true,
+      "needsSettlement": true,
+      "settlement": {
+        "status": "PENDING",
+        "source": null,
+        "checkedAt": null,
+        "settledAt": null,
+        "homeScore": null,
+        "awayScore": null,
+        "notes": null
+      },
+      "eventLookup": {
+        "provider": "ESPN",
+        "eventId": null,
+        "league": "SPORTS",
+        "sport": "",
+        "espnSport": null,
+        "espnLeague": null,
+        "away": "Oregon",
+        "home": "Oklahoma State",
+        "scheduledAt": "2026-09-12T10:00:00",
+        "matchStatus": "UNMATCHED"
+      }
     },
     {
       "id": 102,
@@ -2549,6 +2854,13 @@
           "betsPct": 8.0,
           "handlePct": 74.0,
           "odds": "+275"
+        },
+        {
+          "time": "13:00",
+          "timestamp": "2026-09-06T13:00:12",
+          "betsPct": 8.0,
+          "handlePct": 74.0,
+          "odds": "+275"
         }
       ],
       "clv": {
@@ -2573,8 +2885,8 @@
       "historyId": "39e1a95e4a571f9b2792e022",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T11:44:49-06:00",
-      "lastQualifiedAt": "2026-09-06T12:55:10-06:00",
-      "qualifiedObservations": 16,
+      "lastQualifiedAt": "2026-09-06T13:00:14-06:00",
+      "qualifiedObservations": 17,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T11:44:49-06:00",
