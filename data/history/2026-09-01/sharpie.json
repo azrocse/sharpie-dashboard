@@ -1,7 +1,7 @@
 {
   "schemaVersion": 3,
   "eventDate": "2026-09-01",
-  "updatedAt": "2026-09-06T22:58:17+00:00",
+  "updatedAt": "2026-09-07T06:27:14+00:00",
   "count": 4,
   "pendingSettlement": 0,
   "settledCount": 3,
@@ -769,17 +769,17 @@
       "freePick": true,
       "settlement": {
         "status": "LOSS",
-        "checkedAt": "2026-09-06T22:57:56+00:00",
+        "checkedAt": "2026-09-07T06:26:58+00:00",
         "notes": "Resultado oficial del combate según ESPN",
-        "failureCode": "AMBIGUOUS_MATCH",
-        "matchConfidence": 123.0,
+        "failureCode": "SETTLEMENT_IDENTITY_MISMATCH",
         "source": "ESPN",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates=20260901&limit=500",
         "eventId": "600060735",
         "eventName": "Dana White's Contender Series: Season 10, Week 4",
         "homeScore": null,
         "awayScore": null,
-        "settledAt": "2026-09-06T22:57:56+00:00"
+        "matchConfidence": 123.0,
+        "settledAt": "2026-09-07T06:26:58+00:00"
       },
       "eventLookup": {
         "provider": "ESPN",

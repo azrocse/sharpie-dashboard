@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-07",
-  "updatedAt": "2026-09-06T23:55:10-06:00",
+  "updatedAt": "2026-09-07T06:29:31+00:00",
   "count": 11,
   "pendingSettlement": 11,
   "picks": [
@@ -787,6 +787,13 @@
           "betsPct": 19.0,
           "handlePct": 67.0,
           "odds": "+461"
+        },
+        {
+          "time": "00:00",
+          "timestamp": "2026-09-07T00:00:08",
+          "betsPct": 19.0,
+          "handlePct": 67.0,
+          "odds": "+461"
         }
       ],
       "clv": {
@@ -811,8 +818,8 @@
       "historyId": "9e3c35955c8953136a559bfd",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T14:45:09-06:00",
-      "lastQualifiedAt": "2026-09-06T23:55:10-06:00",
-      "qualifiedObservations": 48,
+      "lastQualifiedAt": "2026-09-07T00:00:09-06:00",
+      "qualifiedObservations": 49,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T14:45:09-06:00",
@@ -1004,14 +1011,15 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T23:00:58+00:00",
+        "checkedAt": "2026-09-07T06:28:56+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": "Evento programado para una fecha futura",
-        "failureCode": "NOT_STARTED_FUTURE"
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -1023,7 +1031,41 @@
         "away": "Anastasia Potapova",
         "home": "Mirra Andreeva",
         "scheduledAt": "2026-09-07T09:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
+        "attemptedRoutes": [
+          "basketball/wnba",
+          "basketball/nba",
+          "football/nfl",
+          "football/college-football",
+          "football/ufl",
+          "basketball/womens-college-basketball",
+          "basketball/mens-college-basketball",
+          "baseball/mlb",
+          "baseball/college-baseball",
+          "baseball/kbo",
+          "baseball/jpn.1",
+          "soccer/uefa.champions",
+          "soccer/uefa.europa",
+          "soccer/eng.1",
+          "soccer/esp.1",
+          "soccer/ita.1",
+          "soccer/fra.1",
+          "soccer/ger.1",
+          "soccer/mex.1",
+          "soccer/usa.1",
+          "soccer/conmebol.libertadores",
+          "soccer/fifa.world",
+          "hockey/nhl",
+          "hockey/mens-college-hockey",
+          "mma/ufc",
+          "boxing/boxing"
+        ],
+        "attemptedDates": [
+          "2026-09-07"
+        ],
+        "candidateEvents": 16,
+        "bestCandidate": "SMU Mustangs at Florida State Seminoles"
       },
       "needsSettlement": true
     },
@@ -1451,6 +1493,13 @@
           "betsPct": 42.0,
           "handlePct": 91.0,
           "odds": "+125"
+        },
+        {
+          "time": "2026-09-07T06:00:04+00:00",
+          "timestamp": "2026-09-07T06:00:04+00:00",
+          "betsPct": 42.0,
+          "handlePct": 91.0,
+          "odds": "+125"
         }
       ],
       "clv": {
@@ -1475,8 +1524,8 @@
       "historyId": "1b6f59089b32467af757236d",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T21:20:10-06:00",
-      "lastQualifiedAt": "2026-09-06T23:55:10-06:00",
-      "qualifiedObservations": 32,
+      "lastQualifiedAt": "2026-09-07T00:00:09-06:00",
+      "qualifiedObservations": 33,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T21:20:10-06:00",
@@ -1575,16 +1624,20 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-07T06:29:12+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260907&limit=500",
+        "eventId": "401816843",
+        "eventName": "Atlanta Braves at Philadelphia Phillies",
+        "matchConfidence": 116.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401816843",
         "league": "MLB",
         "sport": "baseball",
         "espnSport": "baseball",
@@ -1592,7 +1645,15 @@
         "away": "ATL Braves",
         "home": "PHI Phillies",
         "scheduledAt": "2026-09-07T11:05:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "matchedName": "Atlanta Braves at Philadelphia Phillies",
+        "matchConfidence": 116.0,
+        "matchedDate": "2026-09-07",
+        "attemptedDates": [
+          "2026-09-07",
+          "2026-09-06",
+          "2026-09-08"
+        ]
       },
       "needsSettlement": true
     },
@@ -2020,6 +2081,13 @@
           "betsPct": 58.0,
           "handlePct": 97.0,
           "odds": "-110"
+        },
+        {
+          "time": "2026-09-07T06:00:04+00:00",
+          "timestamp": "2026-09-07T06:00:04+00:00",
+          "betsPct": 58.0,
+          "handlePct": 97.0,
+          "odds": "-110"
         }
       ],
       "clv": {
@@ -2044,8 +2112,8 @@
       "historyId": "56f27ea46ecafaa628b22549",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T23:40:10-06:00",
-      "lastQualifiedAt": "2026-09-06T23:55:10-06:00",
-      "qualifiedObservations": 4,
+      "lastQualifiedAt": "2026-09-07T00:00:09-06:00",
+      "qualifiedObservations": 5,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T23:40:10-06:00",
@@ -2074,16 +2142,20 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-07T06:29:14+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260907&limit=500",
+        "eventId": "401816843",
+        "eventName": "Atlanta Braves at Philadelphia Phillies",
+        "matchConfidence": 116.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401816843",
         "league": "MLB",
         "sport": "baseball",
         "espnSport": "baseball",
@@ -2091,7 +2163,15 @@
         "away": "ATL Braves",
         "home": "PHI Phillies",
         "scheduledAt": "2026-09-07T11:05:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "matchedName": "Atlanta Braves at Philadelphia Phillies",
+        "matchConfidence": 116.0,
+        "matchedDate": "2026-09-07",
+        "attemptedDates": [
+          "2026-09-07",
+          "2026-09-06",
+          "2026-09-08"
+        ]
       },
       "needsSettlement": true
     },
@@ -2467,16 +2547,20 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-07T06:29:14+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260907&limit=500",
+        "eventId": "401816842",
+        "eventName": "Los Angeles Angels at Boston Red Sox",
+        "matchConfidence": 116.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401816842",
         "league": "MLB",
         "sport": "baseball",
         "espnSport": "baseball",
@@ -2484,7 +2568,15 @@
         "away": "LA Angels",
         "home": "BOS Red Sox",
         "scheduledAt": "2026-09-07T11:35:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "matchedName": "Los Angeles Angels at Boston Red Sox",
+        "matchConfidence": 116.0,
+        "matchedDate": "2026-09-07",
+        "attemptedDates": [
+          "2026-09-07",
+          "2026-09-06",
+          "2026-09-08"
+        ]
       },
       "needsSettlement": true
     },
@@ -2716,6 +2808,13 @@
           "betsPct": 42.0,
           "handlePct": 84.0,
           "odds": "-105"
+        },
+        {
+          "time": "2026-09-07T06:00:04+00:00",
+          "timestamp": "2026-09-07T06:00:04+00:00",
+          "betsPct": 42.0,
+          "handlePct": 84.0,
+          "odds": "-105"
         }
       ],
       "clv": {
@@ -2740,8 +2839,8 @@
       "historyId": "37239c48461d03ffd7d72a81",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T22:00:10-06:00",
-      "lastQualifiedAt": "2026-09-06T23:55:10-06:00",
-      "qualifiedObservations": 24,
+      "lastQualifiedAt": "2026-09-07T00:00:09-06:00",
+      "qualifiedObservations": 25,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T22:00:10-06:00",
@@ -2818,16 +2917,20 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-07T06:29:14+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260907&limit=500",
+        "eventId": "401816848",
+        "eventName": "Chicago Cubs at Milwaukee Brewers",
+        "matchConfidence": 116.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401816848",
         "league": "MLB",
         "sport": "baseball",
         "espnSport": "baseball",
@@ -2835,7 +2938,15 @@
         "away": "CHI Cubs",
         "home": "MIL Brewers",
         "scheduledAt": "2026-09-07T12:10:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "matchedName": "Chicago Cubs at Milwaukee Brewers",
+        "matchConfidence": 116.0,
+        "matchedDate": "2026-09-07",
+        "attemptedDates": [
+          "2026-09-07",
+          "2026-09-06",
+          "2026-09-08"
+        ]
       },
       "needsSettlement": true
     },
@@ -3199,14 +3310,15 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T23:00:58+00:00",
+        "checkedAt": "2026-09-07T06:29:14+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": "Evento programado para una fecha futura",
-        "failureCode": "NOT_STARTED_FUTURE"
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -3218,7 +3330,41 @@
         "away": "Botic Van De Zandschulp",
         "home": "Arthur Gea",
         "scheduledAt": "2026-09-07T14:30:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
+        "attemptedRoutes": [
+          "basketball/wnba",
+          "basketball/nba",
+          "football/nfl",
+          "football/college-football",
+          "football/ufl",
+          "basketball/womens-college-basketball",
+          "basketball/mens-college-basketball",
+          "baseball/mlb",
+          "baseball/college-baseball",
+          "baseball/kbo",
+          "baseball/jpn.1",
+          "soccer/uefa.champions",
+          "soccer/uefa.europa",
+          "soccer/eng.1",
+          "soccer/esp.1",
+          "soccer/ita.1",
+          "soccer/fra.1",
+          "soccer/ger.1",
+          "soccer/mex.1",
+          "soccer/usa.1",
+          "soccer/conmebol.libertadores",
+          "soccer/fifa.world",
+          "hockey/nhl",
+          "hockey/mens-college-hockey",
+          "mma/ufc",
+          "boxing/boxing"
+        ],
+        "attemptedDates": [
+          "2026-09-07"
+        ],
+        "candidateEvents": 16,
+        "bestCandidate": "SMU Mustangs at Florida State Seminoles"
       },
       "needsSettlement": true
     },
@@ -4079,14 +4225,15 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T23:00:58+00:00",
+        "checkedAt": "2026-09-07T06:29:19+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": "Evento programado para una fecha futura",
-        "failureCode": "NOT_STARTED_FUTURE"
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -4098,7 +4245,41 @@
         "away": "Coco Gauff",
         "home": "Iva Jovic",
         "scheduledAt": "2026-09-07T09:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
+        "attemptedRoutes": [
+          "basketball/wnba",
+          "basketball/nba",
+          "football/nfl",
+          "football/college-football",
+          "football/ufl",
+          "basketball/womens-college-basketball",
+          "basketball/mens-college-basketball",
+          "baseball/mlb",
+          "baseball/college-baseball",
+          "baseball/kbo",
+          "baseball/jpn.1",
+          "soccer/uefa.champions",
+          "soccer/uefa.europa",
+          "soccer/eng.1",
+          "soccer/esp.1",
+          "soccer/ita.1",
+          "soccer/fra.1",
+          "soccer/ger.1",
+          "soccer/mex.1",
+          "soccer/usa.1",
+          "soccer/conmebol.libertadores",
+          "soccer/fifa.world",
+          "hockey/nhl",
+          "hockey/mens-college-hockey",
+          "mma/ufc",
+          "boxing/boxing"
+        ],
+        "attemptedDates": [
+          "2026-09-07"
+        ],
+        "candidateEvents": 16,
+        "bestCandidate": "SMU Mustangs at Florida State Seminoles"
       },
       "needsSettlement": true
     },
@@ -5247,6 +5428,13 @@
           "betsPct": 8.0,
           "handlePct": 43.0,
           "odds": "+740"
+        },
+        {
+          "time": "00:00",
+          "timestamp": "2026-09-07T00:00:08",
+          "betsPct": 8.0,
+          "handlePct": 43.0,
+          "odds": "+740"
         }
       ],
       "clv": {
@@ -5271,8 +5459,8 @@
       "historyId": "72892461ccf3ea193f68eaa5",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T14:40:10-06:00",
-      "lastQualifiedAt": "2026-09-06T23:55:10-06:00",
-      "qualifiedObservations": 106,
+      "lastQualifiedAt": "2026-09-07T00:00:09-06:00",
+      "qualifiedObservations": 107,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T14:40:10-06:00",
@@ -5530,14 +5718,15 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "REVIEW",
         "source": null,
-        "checkedAt": "2026-09-06T23:00:58+00:00",
+        "checkedAt": "2026-09-07T06:29:25+00:00",
         "settledAt": null,
         "homeScore": null,
         "awayScore": null,
-        "notes": "Evento programado para una fecha futura",
-        "failureCode": "NOT_STARTED_FUTURE"
+        "notes": "AMBIGUOUS_MATCH",
+        "failureCode": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0
       },
       "eventLookup": {
         "provider": "ESPN",
@@ -5549,7 +5738,41 @@
         "away": "Luciano Darderi",
         "home": "Alexander Zverev",
         "scheduledAt": "2026-09-07T09:00:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "AMBIGUOUS_MATCH",
+        "matchConfidence": 0.0,
+        "attemptedRoutes": [
+          "basketball/wnba",
+          "basketball/nba",
+          "football/nfl",
+          "football/college-football",
+          "football/ufl",
+          "basketball/womens-college-basketball",
+          "basketball/mens-college-basketball",
+          "baseball/mlb",
+          "baseball/college-baseball",
+          "baseball/kbo",
+          "baseball/jpn.1",
+          "soccer/uefa.champions",
+          "soccer/uefa.europa",
+          "soccer/eng.1",
+          "soccer/esp.1",
+          "soccer/ita.1",
+          "soccer/fra.1",
+          "soccer/ger.1",
+          "soccer/mex.1",
+          "soccer/usa.1",
+          "soccer/conmebol.libertadores",
+          "soccer/fifa.world",
+          "hockey/nhl",
+          "hockey/mens-college-hockey",
+          "mma/ufc",
+          "boxing/boxing"
+        ],
+        "attemptedDates": [
+          "2026-09-07"
+        ],
+        "candidateEvents": 16,
+        "bestCandidate": "SMU Mustangs at Florida State Seminoles"
       },
       "needsSettlement": true
     },
@@ -5634,6 +5857,13 @@
           "betsPct": 60.0,
           "handlePct": 92.0,
           "odds": "+141"
+        },
+        {
+          "time": "2026-09-07T06:00:04+00:00",
+          "timestamp": "2026-09-07T06:00:04+00:00",
+          "betsPct": 60.0,
+          "handlePct": 92.0,
+          "odds": "+141"
         }
       ],
       "clv": {
@@ -5658,8 +5888,8 @@
       "historyId": "46fa5148b540acd4df8a66a1",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T23:45:10-06:00",
-      "lastQualifiedAt": "2026-09-06T23:55:10-06:00",
-      "qualifiedObservations": 3,
+      "lastQualifiedAt": "2026-09-07T00:00:09-06:00",
+      "qualifiedObservations": 4,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T23:45:10-06:00",
@@ -5688,16 +5918,20 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-07T06:29:31+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260907&limit=500",
+        "eventId": "401816849",
+        "eventName": "Cincinnati Reds at Los Angeles Dodgers",
+        "matchConfidence": 116.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401816849",
         "league": "MLB",
         "sport": "baseball",
         "espnSport": "baseball",
@@ -5705,7 +5939,15 @@
         "away": "CIN Reds",
         "home": "LA Dodgers",
         "scheduledAt": "2026-09-07T19:10:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "matchedName": "Cincinnati Reds at Los Angeles Dodgers",
+        "matchConfidence": 116.0,
+        "matchedDate": "2026-09-07",
+        "attemptedDates": [
+          "2026-09-07",
+          "2026-09-06",
+          "2026-09-08"
+        ]
       },
       "needsSettlement": true
     },
@@ -5790,6 +6032,13 @@
           "betsPct": 50.0,
           "handlePct": 98.0,
           "odds": "-105"
+        },
+        {
+          "time": "2026-09-07T06:00:04+00:00",
+          "timestamp": "2026-09-07T06:00:04+00:00",
+          "betsPct": 50.0,
+          "handlePct": 98.0,
+          "odds": "-105"
         }
       ],
       "clv": {
@@ -5814,8 +6063,8 @@
       "historyId": "8b79da96124f7bba8102c01b",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T23:45:10-06:00",
-      "lastQualifiedAt": "2026-09-06T23:55:10-06:00",
-      "qualifiedObservations": 3,
+      "lastQualifiedAt": "2026-09-07T00:00:09-06:00",
+      "qualifiedObservations": 4,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T23:45:10-06:00",
@@ -5844,16 +6093,20 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-07T06:29:31+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260907&limit=500",
+        "eventId": "401816849",
+        "eventName": "Cincinnati Reds at Los Angeles Dodgers",
+        "matchConfidence": 116.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401816849",
         "league": "MLB",
         "sport": "baseball",
         "espnSport": "baseball",
@@ -5861,7 +6114,15 @@
         "away": "CIN Reds",
         "home": "LA Dodgers",
         "scheduledAt": "2026-09-07T19:10:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "matchedName": "Cincinnati Reds at Los Angeles Dodgers",
+        "matchConfidence": 116.0,
+        "matchedDate": "2026-09-07",
+        "attemptedDates": [
+          "2026-09-07",
+          "2026-09-06",
+          "2026-09-08"
+        ]
       },
       "needsSettlement": true
     },
@@ -6217,16 +6478,20 @@
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
-        "source": null,
-        "checkedAt": null,
+        "source": "ESPN",
+        "checkedAt": "2026-09-07T06:29:31+00:00",
         "settledAt": null,
-        "homeScore": null,
-        "awayScore": null,
-        "notes": null
+        "homeScore": 0.0,
+        "awayScore": 0.0,
+        "notes": "Evento aún no finaliza",
+        "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260907&limit=500",
+        "eventId": "401816851",
+        "eventName": "Toronto Blue Jays at Athletics Athletics",
+        "matchConfidence": 120.0
       },
       "eventLookup": {
         "provider": "ESPN",
-        "eventId": null,
+        "eventId": "401816851",
         "league": "MLB",
         "sport": "baseball",
         "espnSport": "baseball",
@@ -6234,9 +6499,18 @@
         "away": "TOR Blue Jays",
         "home": "Athletics",
         "scheduledAt": "2026-09-07T20:05:00",
-        "matchStatus": "UNMATCHED"
+        "matchStatus": "MATCHED",
+        "matchedName": "Toronto Blue Jays at Athletics Athletics",
+        "matchConfidence": 120.0,
+        "matchedDate": "2026-09-07",
+        "attemptedDates": [
+          "2026-09-07",
+          "2026-09-06",
+          "2026-09-08"
+        ]
       },
       "needsSettlement": true
     }
-  ]
+  ],
+  "settledCount": 0
 }
