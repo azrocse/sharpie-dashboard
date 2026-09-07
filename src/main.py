@@ -1,7 +1,7 @@
 from pipeline.download import download_all
 from pipeline.parse import parse_all
 from pipeline.analyze import analyze_all
-from pipeline.lock_ev_history import sync_locked_ev_history
+from pipeline.lock_ev_history import sync_locked_ev_history, generate_history_html
 
 from dashboard.generate_dashboard import generate_dashboard
 
@@ -11,12 +11,13 @@ def main():
     parsed = parse_all(downloaded)
     analyze_all(parsed)
 
-    # Dashboard: conserva exactamente su flujo y renderizado previo.
+    # Dashboard principal: queda exactamente en su flujo anterior.
     generate_dashboard()
 
-    # Sábana histórica lateral: sólo lee picks.json ya generado.
-    # No toca template.html, index.html ni la lógica visual del dashboard.
+    # Proceso lateral: congela la última versión pregame y genera history.html.
+    # No modifica template.html ni index.html.
     sync_locked_ev_history()
+    generate_history_html()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sharpie · Sábana Histórica EV+</title>
+<style>
+:root{--bg:#0b1220;--panel:#111a2b;--line:#263449;--text:#e6edf7;--muted:#92a4bc;--accent:#2dd4bf;--good:#22c55e;--warn:#f59e0b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;padding:20px}
+.wrap{max-width:1900px;margin:auto}h1{margin:0 0 4px;font-size:25px}.sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px;margin-bottom:14px}.metric{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}.metric small{display:block;color:var(--muted);margin-bottom:5px}.metric b{font-size:21px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:12px}input,select{background:#0d1626;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:8px 10px}
+.tablebox{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);max-height:75vh}table{border-collapse:collapse;width:100%;min-width:1750px}th,td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12px;text-align:left;white-space:nowrap}th{position:sticky;top:0;background:#162237;z-index:2;color:#cbd7e7}tr:hover td{background:#142036}.num{text-align:right;font-variant-numeric:tabular-nums}.evpos{color:var(--good);font-weight:700}.muted{color:var(--muted)}
+@media(max-width:700px){body{padding:10px}.metrics{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Sharpie · Sábana Histórica EV+</h1>
+<div class="sub">Snapshot congelado al inicio del evento · sólo última versión pregame con EV &gt; 0 · generado 2026-09-07 01:05:29</div>
+<div class="metrics">
+ <div class="metric"><small>Registros congelados</small><b id="mCount">0</b></div>
+ <div class="metric"><small>EV promedio</small><b id="mEv">—</b></div>
+ <div class="metric"><small>Stake total</small><b id="mStake">—</b></div>
+ <div class="metric"><small>Con resultado</small><b id="mSettled">0</b></div>
+</div>
+<div class="filters">
+<input id="q" placeholder="Buscar evento / pick / liga" size="32">
+<select id="league"><option value="">Todas las ligas</option></select>
+<input id="evMin" type="number" step="0.1" placeholder="EV mín %">
+<input id="edgeMin" type="number" step="0.1" placeholder="Edge mín %">
+<select id="result"><option value="">Todos los resultados</option><option>PENDING</option><option>WIN</option><option>LOSS</option><option>PUSH</option><option>VOID</option></select>
+</div>
+<div class="tablebox"><table><thead><tr>
+<th>Fecha</th><th>Hora</th><th>Liga</th><th>Evento</th><th>Pick</th><th>Mercado</th><th class="num">Cuota</th><th class="num">Modelo</th><th class="num">Edge</th><th class="num">EV</th><th class="num">Stake</th><th>Señal</th><th>Categoría</th><th class="num">Bets</th><th class="num">Handle</th><th class="num">Diverg.</th><th>Capturado</th><th>Congelado</th><th>Resultado</th><th class="num">Unidades</th><th class="num">Profit</th>
+</tr></thead><tbody id="body"></tbody></table></div>
+</div>
+<script>
+const DATA=[];
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const num=(v,d=2)=>{const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—'};
+const first=(p,...keys)=>{for(const k of keys)if(p[k]!==undefined&&p[k]!==null&&p[k]!=='')return p[k];return null};
+const resultOf=p=>p.result||'PENDING';
+const league=document.getElementById('league');
+[...new Set(DATA.map(p=>p.league).filter(Boolean))].sort().forEach(v=>league.insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`));
+function render(){
+ const q=document.getElementById('q').value.toLowerCase().trim();
+ const l=league.value; const evm=Number(document.getElementById('evMin').value); const edm=Number(document.getElementById('edgeMin').value); const r=document.getElementById('result').value;
+ const useEv=document.getElementById('evMin').value!==''; const useEdge=document.getElementById('edgeMin').value!=='';
+ const rows=DATA.filter(p=>{
+   const hay=`${p.game||''} ${p.pick||''} ${p.market||''} ${p.league||''}`.toLowerCase();
+   if(q&&!hay.includes(q))return false;if(l&&p.league!==l)return false;if(useEv&&Number(p.ev)<evm)return false;
+   const edge=Number(first(p,'modelEdge','edge'));if(useEdge&&edge<edm)return false;if(r&&resultOf(p)!==r)return false;return true;
+ });
+ document.getElementById('mCount').textContent=rows.length;
+ const evs=rows.map(p=>Number(p.ev)).filter(Number.isFinite); document.getElementById('mEv').textContent=evs.length?(evs.reduce((a,b)=>a+b,0)/evs.length).toFixed(2)+'%':'—';
+ const stakes=rows.map(p=>Number(p.stake)).filter(Number.isFinite);document.getElementById('mStake').textContent=stakes.length?stakes.reduce((a,b)=>a+b,0).toFixed(1)+'u':'—';
+ document.getElementById('mSettled').textContent=rows.filter(p=>!['PENDING','',null,undefined].includes(resultOf(p))).length;
+ document.getElementById('body').innerHTML=rows.map(p=>`<tr>
+ <td>${esc(p.date||'—')}</td><td>${esc(p.time||'—')}</td><td>${esc(p.league||'—')}</td><td>${esc(p.game||'—')}</td><td><b>${esc(p.pick||'—')}</b></td><td>${esc(p.market||'—')}</td>
+ <td class="num">${esc(first(p,'odds','cuota')??'—')}</td><td class="num">${num(first(p,'modelProb','modelProbability'))}%</td><td class="num">${num(first(p,'modelEdge','edge'))}%</td><td class="num evpos">${num(p.ev)}%</td><td class="num">${num(p.stake,1)}u</td>
+ <td>${esc(first(p,'marketSignal','trend','signal')??'—')}</td><td>${esc(first(p,'pickCategory','evaluation','category')??'—')}</td><td class="num">${num(first(p,'betsPct','bets'),1)}%</td><td class="num">${num(first(p,'handlePct','handle'),1)}%</td><td class="num">${num(first(p,'signedDivergence','divergence'),1)}%</td>
+ <td class="muted">${esc(p.capturedAt||'—')}</td><td class="muted">${esc(p.lockedAt||'—')}</td><td>${esc(resultOf(p))}</td><td class="num">${p.unitsResult==null?'—':num(p.unitsResult,2)}</td><td class="num">${p.profit==null?'—':num(p.profit,2)}</td></tr>`).join('');
+}
+['q','league','evMin','edgeMin','result'].forEach(id=>document.getElementById(id).addEventListener(id==='q'?'input':'change',render));
+render();
+</script></body></html>

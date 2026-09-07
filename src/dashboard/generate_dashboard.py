@@ -1,7 +1,6 @@
 import json
 import os
-import unicodedata
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 
 # ============================================================
@@ -15,16 +14,7 @@ SNAPSHOTS_DIR = os.path.join(BASE_DIR, "data", "snapshots")
 HISTORY_DIR = os.path.join(BASE_DIR, "data", "history")
 OUTPUT_DIR = BASE_DIR
 
-MAX_HISTORY_POINTS = None  # sin tope -- el frontend colapsa a los últimos 5 y expande a pedido
-
-# Mínimo de puntos de historial REALES (bets% y handle% ambos > 0) que debe
-# tener un pick antes de mostrarse en el dashboard. Por debajo de este umbral
-# se considera que el dato es demasiado nuevo/incompleto para confiar en él.
-MIN_HISTORY_POINTS = 2
-
-# Tolerancia tras el inicio del evento antes de ocultarlo del dashboard --
-# pasado este tiempo ya no es una apuesta pregame válida.
-GAME_START_HIDE_TOLERANCE_MINUTES = 0  # sin tolerancia -- se oculta apenas inicia el evento
+MAX_HISTORY_POINTS = 8
 
 
 # ============================================================
@@ -132,10 +122,7 @@ def classify_action(text):
             "BET",
             "SHARP LEAN",
             "LEAN",
-            "TAKE",
-            "PREMIUM",
-            "VALOR OPERATIVO",
-            "VALOR"
+            "TAKE"
         ]
     ):
         return "bet"
@@ -226,9 +213,9 @@ def classify_status(market, iso_str):
 # ============================================================
 # CONVERSORES Y VALIDACIONES
 # ============================================================
-def safe_float(val, default=0.0):
+def safe_float(val):
     if val is None:
-        return default
+        return 0.0
 
     try:
         if isinstance(val, str):
@@ -242,7 +229,7 @@ def safe_float(val, default=0.0):
         return float(val)
 
     except Exception:
-        return default
+        return 0.0
 
 
 def safe_score(value):
@@ -327,6 +314,14 @@ def american_to_decimal(american_odds):
 
 
 def american_implied_probability(american_odds):
+    """
+    Probabilidad implícita de la cuota.
+
+    +120 = 45.45%
+    -110 = 52.38%
+    -140 = 58.33%
+    """
+
     try:
         odds = float(american_odds)
 
@@ -358,37 +353,49 @@ def american_implied_probability(american_odds):
 # WHALE / SHARP MONEY
 # ============================================================
 def detect_whale(market):
-    if market.get("whale") is True:
+    if market.get("whale"):
         return True
 
     handle = safe_pct(
         market.get(
-            "handlePct",
+            "handle_pct",
             market.get(
-                "handle_pct",
-                market.get("handle")
+                "handle"
             )
         )
     )
 
     bets = safe_pct(
         market.get(
-            "betsPct",
+            "bets_pct",
             market.get(
-                "bets_pct",
-                market.get("bets")
+                "bets"
             )
         )
     )
 
-    if handle is not None and bets is not None:
+    if (
+        handle is not None
+        and bets is not None
+    ):
         diff = handle - bets
 
-        if diff >= 30 or (diff >= 15 and handle >= 70):
+        if (
+            diff >= 30
+            or (
+                diff >= 15
+                and handle >= 70
+            )
+        ):
             return True
 
     blob = " ".join(
-        str(market.get(k, ""))
+        str(
+            market.get(
+                k,
+                ""
+            )
+        )
         for k in [
             "priority",
             "action",
@@ -411,63 +418,225 @@ def detect_whale(market):
 
 
 # ============================================================
-# CONFIABILIDAD DEL DATO (multiplicador continuo)
+# SCORE DE SHARP MONEY
 # ============================================================
-def calculate_reliability_multiplier(
-    model_is_real,
-    is_valid_price,
-    ev_is_suspicious
+def calculate_sharp_money_score(
+    handle,
+    bets
 ):
-    if model_is_real and is_valid_price and not ev_is_suspicious:
-        return 1.00
+    if (
+        handle is None
+        or bets is None
+    ):
+        return {
+            "score": 0.0,
+            "divergence": 0.0,
+            "signedDivergence": 0.0
+        }
 
-    if model_is_real and is_valid_price and ev_is_suspicious:
-        return 0.80
+    signed_divergence = (
+        handle - bets
+    )
 
-    if not model_is_real and is_valid_price:
-        return 0.65
+    divergence = abs(
+        signed_divergence
+    )
 
-    return 0.40
+    if signed_divergence <= 0:
+        score = 0.0
+
+    elif signed_divergence < 10:
+        score = 20.0
+
+    elif signed_divergence < 15:
+        score = 35.0
+
+    elif signed_divergence < 20:
+        score = 50.0
+
+    elif signed_divergence < 30:
+        score = 65.0
+
+    elif signed_divergence < 40:
+        score = 80.0
+
+    else:
+        score = 95.0
+
+    if (
+        handle >= 70
+        and signed_divergence >= 15
+    ):
+        score += 5.0
+
+    score = max(
+        0.0,
+        min(
+            100.0,
+            score
+        )
+    )
+
+    return {
+        "score": round(
+            score,
+            1
+        ),
+        "divergence": round(
+            divergence,
+            1
+        ),
+        "signedDivergence": round(
+            signed_divergence,
+            1
+        )
+    }
 
 
 # ============================================================
-# SCORE DE MODEL EDGE (Sensibilidad Ampliada)
+# SCORE DE MODEL EDGE
 # ============================================================
-def calculate_model_edge_score(model_edge):
+def calculate_model_edge_score(
+    model_edge
+):
     if model_edge is None:
         return 0.0
-    elif model_edge <= 0:
-        return max(0.0, 20.0 + (model_edge * 20.0))
-    elif model_edge < 0.5:
-        score = (model_edge / 0.5) * 40.0
-    elif model_edge < 1.0:
-        score = 40.0 + ((model_edge - 0.5) / 0.5) * 20.0
-    elif model_edge < 2.0:
-        score = 60.0 + ((model_edge - 1.0) / 1.0) * 20.0
+
+    if model_edge <= 0:
+        return 0.0
+
+    if model_edge < 2:
+        score = (
+            model_edge /
+            2.0
+        ) * 20.0
+
+    elif model_edge < 4:
+        score = 20.0 + (
+            (
+                model_edge - 2.0
+            ) /
+            2.0
+        ) * 20.0
+
+    elif model_edge < 6:
+        score = 40.0 + (
+            (
+                model_edge - 4.0
+            ) /
+            2.0
+        ) * 20.0
+
+    elif model_edge < 8:
+        score = 60.0 + (
+            (
+                model_edge - 6.0
+            ) /
+            2.0
+        ) * 15.0
+
+    elif model_edge < 10:
+        score = 75.0 + (
+            (
+                model_edge - 8.0
+            ) /
+            2.0
+        ) * 10.0
+
+    elif model_edge < 12:
+        score = 85.0 + (
+            (
+                model_edge - 10.0
+            ) /
+            2.0
+        ) * 15.0
+
     else:
         score = 100.0
 
-    return round(max(0.0, min(100.0, score)), 1)
+    return round(
+        max(
+            0.0,
+            min(
+                100.0,
+                score
+            )
+        ),
+        1
+    )
 
 
 # ============================================================
-# SCORE DE EV (Valor Esperado Ampliado)
+# SCORE DE EV
 # ============================================================
-def calculate_ev_score(ev):
+def calculate_ev_score(
+    ev
+):
     if ev is None:
         return 0.0
-    elif ev <= 0:
-        return max(0.0, 20.0 + (ev * 20.0))
-    elif ev < 0.5:
-        score = (ev / 0.5) * 40.0
-    elif ev < 1.0:
-        score = 40.0 + ((ev - 0.5) / 0.5) * 20.0
-    elif ev < 2.0:
-        score = 60.0 + ((ev - 1.0) / 1.0) * 20.0
+
+    if ev <= 0:
+        return 0.0
+
+    if ev < 2:
+        score = (
+            ev /
+            2.0
+        ) * 25.0
+
+    elif ev < 4:
+        score = 25.0 + (
+            (
+                ev - 2.0
+            ) /
+            2.0
+        ) * 20.0
+
+    elif ev < 6:
+        score = 45.0 + (
+            (
+                ev - 4.0
+            ) /
+            2.0
+        ) * 15.0
+
+    elif ev < 8:
+        score = 60.0 + (
+            (
+                ev - 6.0
+            ) /
+            2.0
+        ) * 15.0
+
+    elif ev < 10:
+        score = 75.0 + (
+            (
+                ev - 8.0
+            ) /
+            2.0
+        ) * 10.0
+
+    elif ev < 12:
+        score = 85.0 + (
+            (
+                ev - 10.0
+            ) /
+            2.0
+        ) * 15.0
+
     else:
         score = 100.0
 
-    return round(max(0.0, min(100.0, score)), 1)
+    return round(
+        max(
+            0.0,
+            min(
+                100.0,
+                score
+            )
+        ),
+        1
+    )
 
 
 # ============================================================
@@ -479,48 +648,49 @@ def calculate_value_score(
 ):
     score = (
         model_edge_score * 0.60
-        + ev_score * 0.40
+        +
+        ev_score * 0.40
     )
 
     return round(
-        max(0.0, min(100.0, score)),
+        max(
+            0.0,
+            min(
+                100.0,
+                score
+            )
+        ),
         1
     )
 
 
 # ============================================================
-# FINAL SCORE (PESO REAL AL SMART MONEY + FALLBACK)
+# FINAL SCORE
 # ============================================================
 def calculate_final_score(
     value_score,
+    sharp_money_score,
     market_score,
-    reliability_multiplier,
-    edge_dinero,
-    is_whale,
-    is_smart_money,
-    weights=None
+    confidence
 ):
-    if edge_dinero is None:
-        dinero_score = 0.0
-    else:
-        dinero_score = min(100.0, max(0.0, 50.0 + (edge_dinero * 1.25)))
-
-    if weights:
-        w_value, w_market, w_dinero = weights
-    elif is_whale or is_smart_money:
-        w_value, w_market, w_dinero = 0.20, 0.20, 0.60
-    else:
-        w_value, w_market, w_dinero = 0.40, 0.30, 0.30
-
-    base_score = (value_score * w_value) + (market_score * w_market) + (dinero_score * w_dinero)
-    if is_whale or is_smart_money:
-        base_score = max(base_score, 55.0)
-
-    base_score = max(0.0, min(100.0, base_score))
-    final = base_score * reliability_multiplier
+    score = (
+        value_score * 0.45
+        +
+        sharp_money_score * 0.25
+        +
+        market_score * 0.15
+        +
+        confidence * 0.15
+    )
 
     return round(
-        max(0.0, min(100.0, final)),
+        max(
+            0.0,
+            min(
+                100.0,
+                score
+            )
+        ),
         1
     )
 
@@ -528,714 +698,368 @@ def calculate_final_score(
 # ============================================================
 # EVALUACIÓN GENERAL
 # ============================================================
-def classify_evaluation(final_score):
-    if final_score >= 48:
+def classify_evaluation(
+    final_score,
+    value_score,
+    sharp_money_score,
+    model_edge,
+    ev
+):
+    if (
+        final_score >= 80
+        and value_score >= 70
+        and model_edge is not None
+        and model_edge > 0
+        and ev > 0
+    ):
         return "PREMIUM"
-    if final_score >= 35:
+
+    if (
+        final_score >= 70
+        and value_score >= 60
+        and ev > 0
+    ):
         return "STRONG"
-    if final_score >= 22:
+
+    if (
+        final_score >= 60
+        and value_score >= 50
+        and ev > 0
+    ):
         return "LEAN"
-    if final_score >= 12:
+
+    if final_score >= 45:
         return "WATCH"
-    return "DESCARTAR"
+
+    return "PASS"
 
 
 # ============================================================
-# STAKE
-# ============================================================
-# ============================================================
-# PARTE 3: SEÑALES DE MERCADO -- 5 categorías exclusivas, homologadas a
-# inglés. Única fuente de verdad (antes se recalculaba distinto en backend
-# y frontend -- ahora vive solo aquí).
-# ============================================================
-def classify_market_signal(signed_divergence, bets, handle, ev, model_edge):
-    if signed_divergence >= 15 and ev >= 3.0 and model_edge >= 2.0:
-        return "SMART_MONEY"
-
-    if signed_divergence <= -15:
-        return "PUBLIC_HEAVY"
-
-    if -10 <= signed_divergence <= 10:
-        avg_volume = (bets + handle) / 2.0
-        if avg_volume >= 70:
-            return "CONSENSUS"
-        if avg_volume >= 50:
-            return "MIXED"
-
-    return "NO_ACTION"
-
-
-MARKET_SIGNAL_LABELS = {
-    "SMART_MONEY": "🐋 SMART MONEY",
-    "PUBLIC_HEAVY": "🚨 PUBLIC HEAVY",
-    "CONSENSUS": "📊 CONSENSUS",
-    "MIXED": "🔀 MIXED",
-    "NO_ACTION": "⚪ NO ACTION"
-}
-
-
-# ============================================================
-# PARTE 2: CATEGORÍA DE PICK -- FREE / EDITORS / WHALE, exclusivas por
-# construcción (los rangos de bets/handle/divergencia entre las 3 nunca
-# se solapan, aunque el rango de cuota sí toque límites entre ellas).
-# ============================================================
-def _raw_american_odds(odds_raw):
-    if odds_raw is None:
-        return None
-    s = str(odds_raw).strip().upper()
-    if s in ("EVEN", "PK", "PICK", "—", ""):
-        return 100 if s == "EVEN" or s == "PK" or s == "PICK" else None
-    try:
-        return int(float(s.replace("+", "")))
-    except (TypeError, ValueError):
-        return None
-
-
-def classify_pick_category(ev, market_signal, signed_divergence):
-    if ev is None or market_signal is None:
-        return None
-
-    if market_signal == "SMART_MONEY" and ev > 6.0:
-        if signed_divergence is not None and signed_divergence > 30.0:
-            return "WHALE"
-        return "PREMIUM"
-
-    if market_signal in ("CONSENSUS", "PUBLIC_HEAVY"):
-        if 3.0 <= ev <= 6.0:
-            return "EDITORS"
-        if 1.0 <= ev <= 3.0:
-            return "FREE"
-
-    return None
-
-
-# ============================================================
-# PARTE 4: STAKE AUTOMÁTICO POR SEÑAL -- reemplaza el stake Kelly anterior.
-# Determinístico: solo depende de la señal de mercado (y del EV dentro de
-# SMART_MONEY, por interpolación lineal).
-# ============================================================
-def calculate_kelly_stake(ev, model_prob, decimal_odds):
-    """
-    Kelly fraccionado: si no hay ventaja real (EV<=0) o faltan datos para
-    calcularlo, no hay stake. Con ventaja, el tamaño de Kelly completo se
-    reduce a una fracción conservadora y se ajusta a la escala fija
-    1.0-5.0 en bloques de 0.5 (nunca 2.1, 3.7, etc.).
-    """
-    if ev is None or ev <= 0 or model_prob is None or decimal_odds is None or decimal_odds <= 1:
-        return 0.0
-
-    p = model_prob / 100.0
-    q = 1.0 - p
-    b = decimal_odds - 1.0
-
-    kelly_full = (b * p - q) / b
-    if kelly_full <= 0:
-        return 0.0
-
-    KELLY_FRACTION = 0.5  # medio-Kelly -- estándar conservador de la industria
-    kelly_fraction_pct = kelly_full * KELLY_FRACTION * 100.0
-
-    # Se mapea a la escala fija 1.0-5.0: 0% de Kelly fraccionado -> piso 1.0,
-    # 10%+ de Kelly fraccionado -> techo 5.0, lineal entre medio.
-    raw = 1.0 + min(kelly_fraction_pct, 10.0) / 10.0 * 4.0
-    raw = max(1.0, min(5.0, raw))
-    return round(raw * 2) / 2.0  # bloques de 0.5
-
-
-# ============================================================
-# RIESGO (CON MONTE CARLO)
+# RIESGO
 # ============================================================
 def calculate_risk(
     final_score,
-    reliability_multiplier,
-    odds_str,
-    monte_carlo=None
+    value_score,
+    ev,
+    model_edge,
+    odds_str
 ):
     try:
         odds_val = int(
-            str(odds_str)
-            .replace("+", "")
+            str(
+                odds_str
+            )
+            .replace(
+                "+",
+                ""
+            )
             .strip()
         )
-    except (ValueError, TypeError):
+
+    except (
+        ValueError,
+        TypeError
+    ):
         odds_val = -110
 
-    if final_score >= 62:
-        risk = "LOW"
-    elif final_score >= 45:
-        risk = "LOW" if reliability_multiplier >= 0.65 else "MEDIUM"
-    elif final_score >= 28:
-        risk = "MEDIUM"
-    else:
-        risk = "HIGH"
+    if (
+        ev <= 0
+        or model_edge is None
+        or model_edge <= 0
+    ):
+        return "HIGH"
 
-    if risk == "LOW" and odds_val >= 200:
-        risk = "MEDIUM"
+    if (
+        final_score >= 80
+        and value_score >= 70
+        and ev >= 5
+    ):
+        if odds_val >= 200:
+            return "MEDIUM"
 
-    if isinstance(monte_carlo, dict):
-        mc_win = monte_carlo.get("win_probability")
-        if mc_win is not None:
-            order = ["LOW", "MEDIUM", "HIGH"]
-            idx = order.index(risk) if risk in order else 2
-            if mc_win < 20:
-                idx = min(idx + 2, 2)
-            elif mc_win < 35:
-                idx = min(idx + 1, 2)
-            risk = order[idx]
+        return "LOW"
 
-    return risk
+    if (
+        final_score >= 70
+        and value_score >= 60
+        and ev >= 3
+    ):
+        if odds_val >= 200:
+            return "MEDIUM"
+
+        return "LOW"
+
+    if (
+        final_score >= 60
+        and value_score >= 50
+        and ev > 0
+    ):
+        return "MEDIUM"
+
+    return "HIGH"
 
 
 # ============================================================
-# EVOLUCIÓN HISTÓRICA & SNAPSHOTS
+# EVOLUCIÓN HISTÓRICA
 # ============================================================
 _snapshot_cache = {}
 
 
 def _league_slug(league_name):
-    return (league_name or "").strip().lower().replace(" ", "_")
-
-
-def _normalize_key_part(text):
-    """
-    Normalización defensiva para que un mismo pick (ej. "Cowboys -3.5") siempre
-    produzca la misma clave, sin importar espacios extra, mayúsculas o
-    variantes de unicode que DraftKings pueda introducir al reaparecer un
-    mercado en el HTML. NO toca el valor de la línea (-3.5 vs -4.5 siguen
-    siendo picks distintos a propósito -- eso es continuidad real, no un bug).
-    """
-    if text is None:
-        return ""
-    text = str(text)
-    text = unicodedata.normalize("NFKC", text)   # unifica variantes de unicode
-    text = text.replace("\u2212", "-")            # signo menos unicode -> guion ascii
-    text = " ".join(text.split())                 # colapsa espacios/tabs/saltos repetidos
-    return text.strip().casefold()
-
-
-def _market_unique_key(game, pick, market_name, event_date=None):
-    parts = [
-        _normalize_key_part(game),
-        _normalize_key_part(pick),
-        _normalize_key_part(market_name)
-    ]
-    if event_date:
-        parts.append(_normalize_key_part(event_date))
-    return "||".join(parts)
-
-
-def _has_valid_volume(bets_pct, handle_pct):
-    """
-    Bets% y Handle% nunca deberían ser 0% en un mercado real -- si aparece 0%
-    es una lectura incompleta/rota, no un dato válido. Se descarta el punto
-    entero (no solo se ignora el campo) para no contaminar el historial ni el
-    conteo de "historial suficiente".
-    """
     return (
-        bets_pct is not None and handle_pct is not None
-        and bets_pct > 0 and handle_pct > 0
+        league_name or ""
+    ).strip().lower().replace(
+        " ",
+        "_"
     )
 
 
-def _load_league_snapshots(league_slug):
-    if league_slug in _snapshot_cache:
-        return _snapshot_cache[league_slug]
+def _market_unique_key(
+    game,
+    pick,
+    market_name
+):
+    return (
+        f"{game}||"
+        f"{pick}||"
+        f"{market_name}"
+    )
 
-    league_folder = os.path.join(SNAPSHOTS_DIR, league_slug)
+
+def _load_league_snapshots(
+    league_slug
+):
+    if league_slug in _snapshot_cache:
+        return _snapshot_cache[
+            league_slug
+        ]
+
+    league_folder = os.path.join(
+        SNAPSHOTS_DIR,
+        league_slug
+    )
+
     indexed = []
 
-    if os.path.isdir(league_folder):
-        files = sorted(f for f in os.listdir(league_folder) if f.endswith(".json"))
+    if os.path.isdir(
+        league_folder
+    ):
+        files = sorted(
+            f
+            for f in os.listdir(
+                league_folder
+            )
+            if f.endswith(
+                ".json"
+            )
+        )
 
         for filename in files:
-            path = os.path.join(league_folder, filename)
+            path = os.path.join(
+                league_folder,
+                filename
+            )
 
             try:
-                with open(path, "r", encoding="utf-8") as file:
-                    snap_data = json.load(file)
-            except (json.JSONDecodeError, OSError):
+                with open(
+                    path,
+                    "r",
+                    encoding="utf-8"
+                ) as file:
+                    snap_data = json.load(
+                        file
+                    )
+
+            except (
+                json.JSONDecodeError,
+                OSError
+            ):
                 continue
 
-            timestamp_raw = filename.replace(".json", "")
+            timestamp_raw = (
+                filename.replace(
+                    ".json",
+                    ""
+                )
+            )
 
             try:
-                dt = datetime.strptime(timestamp_raw, "%Y%m%d_%H%M%S")
-                time_label = dt.strftime("%H:%M")
-                timestamp_iso = dt.strftime("%Y-%m-%dT%H:%M:%S")  # fecha+hora completa -- necesaria para checkpoints CLV (-4h/-2h/-1h)
+                dt = datetime.strptime(
+                    timestamp_raw,
+                    "%Y%m%d_%H%M%S"
+                )
+
+                time_label = dt.strftime(
+                    "%H:%M"
+                )
+
             except ValueError:
                 time_label = timestamp_raw
-                timestamp_iso = None
 
             market_index = {}
 
-            for game_entry in snap_data.get("games", []):
-                game_name = game_entry.get("game")
-                raw_time_for_date = game_entry.get("time_raw", game_entry.get("time", ""))
-                if raw_time_for_date:
-                    game_date, _t, _iso = parse_match_datetime(raw_time_for_date)
-                else:
-                    game_date = None  # sin texto de hora real -- no confiar en el fallback a "hoy"
+            for game_entry in snap_data.get(
+                "games",
+                []
+            ):
+                game_name = game_entry.get(
+                    "game"
+                )
 
-                for market in game_entry.get("markets", []):
-                    pick = market.get("pick")
-                    market_name = market.get("market", market.get("type"))
+                for market in game_entry.get(
+                    "markets",
+                    []
+                ):
+                    pick = market.get(
+                        "pick"
+                    )
 
-                    if not game_name or not pick:
+                    market_name = market.get(
+                        "market",
+                        market.get(
+                            "type"
+                        )
+                    )
+
+                    if (
+                        not game_name
+                        or not pick
+                    ):
                         continue
 
-                    key = _market_unique_key(game_name, pick, market_name, event_date=game_date)
+                    key = _market_unique_key(
+                        game_name,
+                        pick,
+                        market_name
+                    )
 
-                    raw_bets = market.get("bets_pct", market.get("betsPct", market.get("bets")))
-                    raw_handle = market.get("handle_pct", market.get("handlePct", market.get("handle")))
-                    raw_odds = market.get("odds", market.get("cuota"))
+                    raw_bets = market.get(
+                        "bets_pct",
+                        market.get(
+                            "betsPct",
+                            market.get(
+                                "bets"
+                            )
+                        )
+                    )
+
+                    raw_handle = market.get(
+                        "handle_pct",
+                        market.get(
+                            "handlePct",
+                            market.get(
+                                "handle"
+                            )
+                        )
+                    )
+
+                    raw_odds = market.get(
+                        "odds",
+                        market.get(
+                            "cuota"
+                        )
+                    )
 
                     market_index[key] = {
                         "time": time_label,
-                        "timestamp": timestamp_iso,
-                        "betsPct": safe_pct(raw_bets),
-                        "handlePct": safe_pct(raw_handle),
-                        "odds": raw_odds if raw_odds not in (None, "—") else None
+                        "betsPct": safe_pct(
+                            raw_bets
+                        ),
+                        "handlePct": safe_pct(
+                            raw_handle
+                        ),
+                        "odds": (
+                            raw_odds
+                            if raw_odds
+                            not in (
+                                None,
+                                "—"
+                            )
+                            else None
+                        )
                     }
 
-            indexed.append(market_index)
+            indexed.append(
+                market_index
+            )
 
-    _snapshot_cache[league_slug] = indexed
+    _snapshot_cache[
+        league_slug
+    ] = indexed
+
     return indexed
 
 
-def _count_changed_points(history_full):
-    """
-    Replica exactamente la deduplicación que hace el frontend
-    (getChangedHistoryEntries en template.html): cuenta solo los puntos donde
-    Bets, Handle o Cuota realmente CAMBIARON respecto al punto anterior. Un
-    pick quieto varios días acumula muchos snapshots idénticos (pipeline cada
-    30 min) que no aportan nada -- contar esos como "puntos de seguimiento"
-    infla el número y ya no coincide con lo que se ve en la tabla expandida.
-    """
-    valid = [h for h in history_full if h.get("betsPct") is not None or h.get("handlePct") is not None or h.get("odds") not in (None, "—")]
-    if not valid:
-        return 0
+def build_pick_history(
+    league_name,
+    game,
+    pick,
+    market_name
+):
+    league_slug = _league_slug(
+        league_name
+    )
 
-    has_odds = any(h.get("odds") not in (None, "—") for h in valid)
+    key = _market_unique_key(
+        game,
+        pick,
+        market_name
+    )
 
-    count = 0
-    for i, h in enumerate(valid):
-        if i == 0:
-            count += 1
-            continue
-        prev = valid[i - 1]
-        changed = (
-            h.get("betsPct") != prev.get("betsPct")
-            or h.get("handlePct") != prev.get("handlePct")
-            or (has_odds and h.get("odds") != prev.get("odds"))
-        )
-        if changed:
-            count += 1
-    return count
-
-
-def build_real_reason(pattern_tag, coherence, history_count):
-    """
-    Texto de análisis regenerado con el historial REAL (persistente, cruzando
-    corridas), no con el texto que trae analyze.py -- ese se arma con una
-    sola lectura del scraper (siempre <=1 punto local), así que decía cosas
-    como "un solo punto de historial" incluso cuando la tabla del dashboard
-    ya mostraba 4+ puntos reales.
-    """
-    parts = [pattern_tag.split(" ", 1)[-1] if " " in pattern_tag else pattern_tag]
-
-    if coherence == "confirmada":
-        parts.append("cuota y dinero se mueven en la misma dirección, coherencia confirmada")
-    elif coherence == "contradictoria":
-        parts.append("la cuota se movió en contra de la dirección del dinero, coherencia contradictoria")
-    elif history_count >= 2:
-        parts.append(f"{history_count} puntos de seguimiento, sin señal de coherencia clara todavía")
-    else:
-        parts.append("historial insuficiente para evaluar coherencia")
-
-    return ". ".join(dict.fromkeys(parts)) + "."
-
-
-def calculate_coherence(history):
-    """
-    Coherencia cuota <-> dinero: compara la APERTURA (primer punto real) contra
-    el punto MÁS RECIENTE, no solo los últimos dos. Comparar solo 2 puntos
-    consecutivos es frágil -- si el último paso individual quedó plano (misma
-    cuota que el punto anterior), se perdía la tendencia real que sí se ve
-    comparando contra la apertura (ej. handle sube 46%->50% mientras la cuota
-    se alarga +153->+168 en el camino: eso SÍ es contradictorio aunque el
-    último paso no haya movido nada).
-    """
-    if not isinstance(history, list) or len(history) < 2:
-        return None
-
-    valid_points = [
-        h for h in history
-        if h.get("odds") not in (None, "—") and h.get("handlePct") is not None
-    ]
-
-    if len(valid_points) < 2:
-        return None
-
-    opening, current = valid_points[0], valid_points[-1]
-    opening_odds = american_to_decimal(opening.get("odds"))
-    current_odds = american_to_decimal(current.get("odds"))
-    opening_handle = opening.get("handlePct")
-    current_handle = current.get("handlePct")
-
-    if opening_odds is None or current_odds is None:
-        return None
-
-    odds_shortened = (opening_odds - current_odds) > 0.0005
-    handle_grew = current_handle > opening_handle
-
-    if handle_grew and odds_shortened:
-        return "confirmada"
-    if handle_grew and not odds_shortened:
-        return "contradictoria"
-    return None
-
-
-def build_pick_history_full(league_name, game, pick, market_name, kickoff_iso=None):
-    """
-    Historial COMPLETO sin truncar -- fuente de verdad para CLV y para el
-    conteo de "historial suficiente". Nunca se le aplica MAX_HISTORY_POINTS
-    aquí, porque cortar antes de calcular CLV perdería la apertura real del
-    pick (bug ya detectado: MAX_HISTORY_POINTS=8 ~= solo 4h a cadencia de 30min).
-
-    Los puntos con timestamp >= kickoff NO se cuentan: una vez que el evento
-    arrancó, esos snapshots son movimiento en vivo, no seguimiento pregame --
-    no deben alimentar coherencia, CLV, ni el conteo de "historial suficiente".
-    """
-    league_slug = _league_slug(league_name)
-    event_date = kickoff_iso.split("T")[0] if kickoff_iso else None
-    key = _market_unique_key(game, pick, market_name, event_date=event_date)
-    snapshots = _load_league_snapshots(league_slug)
-    kickoff_dt = _parse_iso(kickoff_iso)
+    snapshots = _load_league_snapshots(
+        league_slug
+    )
 
     history = []
 
     for market_index in snapshots:
-        point = market_index.get(key)
+        point = market_index.get(
+            key
+        )
 
         if point is None:
             continue
 
-        # Punto inválido: bets/handle en 0% (o ausentes) -- nunca es un dato
-        # real, se descarta por completo en vez de mostrarlo como si lo fuera.
-        if not _has_valid_volume(point["betsPct"], point["handlePct"]):
+        if (
+            point["betsPct"] is None
+            and point["handlePct"] is None
+            and point["odds"] is None
+        ):
             continue
 
-        # Punto posterior al inicio del evento -- ya no es historial pregame.
-        if kickoff_dt is not None:
-            point_dt = _parse_iso(point.get("timestamp"))
-            if point_dt is not None and point_dt >= kickoff_dt:
-                continue
+        history.append(
+            {
+                "time": point[
+                    "time"
+                ],
+                "betsPct": point[
+                    "betsPct"
+                ],
+                "handlePct": point[
+                    "handlePct"
+                ],
+                "odds": point[
+                    "odds"
+                ]
+            }
+        )
 
-        history.append({
-            "time": point["time"],
-            "timestamp": point["timestamp"],
-            "betsPct": point["betsPct"],
-            "handlePct": point["handlePct"],
-            "odds": point["odds"]
-        })
+    if (
+        MAX_HISTORY_POINTS is not None
+        and len(history)
+        > MAX_HISTORY_POINTS
+    ):
+        history = history[
+            -MAX_HISTORY_POINTS:
+        ]
 
     return history
 
-
-def build_pick_history_display(full_history):
-    """Recorte SOLO para lo que se manda al frontend (gráfica de evolución)."""
-    if MAX_HISTORY_POINTS and len(full_history) > MAX_HISTORY_POINTS:
-        return full_history[-MAX_HISTORY_POINTS:]
-    return full_history
-
-
-# Tolerancia para emparejar un checkpoint (-4h/-2h/-1h) con el snapshot real
-# más cercano. La cadencia del pipeline es cada 30 min, así que el match
-# nunca es exacto -- 20 min de margen cubre eso sin cruzar hacia el checkpoint
-# vecino.
-CLV_CHECKPOINTS_HOURS = (4, 2, 1)
-CLV_MATCH_TOLERANCE_MINUTES = 20
-
-
-def _parse_iso(value):
-    if not value:
-        return None
-    try:
-        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
-    except (ValueError, TypeError):
-        return None
-
-
-def calculate_clv(full_history, kickoff_iso):
-    """
-    CLV (Closing Line Value) medido en 3 momentos fijos antes del encuentro:
-    -4h, -2h y -1h. Se compara la probabilidad implícita de la cuota en cada
-    checkpoint contra la probabilidad implícita de la cuota de APERTURA
-    (primer punto real del historial). CLV positivo = el mercado se movió a
-    favor del pick desde que apareció (buena señal); negativo = se movió en
-    contra.
-    """
-    kickoff_dt = _parse_iso(kickoff_iso)
-    if kickoff_dt is None or not full_history:
-        return None
-
-    # Apertura: primer punto del historial que tenga cuota real.
-    opening_point = next((p for p in full_history if p.get("odds") not in (None, "—")), None)
-    if opening_point is None:
-        return None
-
-    opening_odds = opening_point["odds"]
-    opening_prob = american_implied_probability(opening_odds)
-    if opening_prob is None:
-        return None
-
-    def _divergence(point):
-        bets = point.get("betsPct")
-        handle = point.get("handlePct")
-        if bets is None or handle is None:
-            return None
-        return round(handle - bets, 2)
-
-    result = {
-        "opening": {
-            "odds": opening_odds,
-            "prob": round(opening_prob, 2),
-            "divergence": _divergence(opening_point),
-            "timestamp": opening_point.get("timestamp")
-        },
-        "checkpoints": {}
-    }
-
-    for hours_before in CLV_CHECKPOINTS_HOURS:
-        target_dt = kickoff_dt - timedelta(hours=hours_before)
-
-        best_point = None
-        best_diff = None
-
-        for point in full_history:
-            point_dt = _parse_iso(point.get("timestamp"))
-            if point_dt is None or point.get("odds") in (None, "—"):
-                continue
-
-            diff_minutes = abs((point_dt - target_dt).total_seconds()) / 60.0
-            if diff_minutes > CLV_MATCH_TOLERANCE_MINUTES:
-                continue
-
-            if best_diff is None or diff_minutes < best_diff:
-                best_diff = diff_minutes
-                best_point = point
-
-        label = f"{hours_before}h"
-
-        if best_point is None:
-            result["checkpoints"][label] = None
-            continue
-
-        checkpoint_prob = american_implied_probability(best_point["odds"])
-        if checkpoint_prob is None:
-            result["checkpoints"][label] = None
-            continue
-
-        result["checkpoints"][label] = {
-            "odds": best_point["odds"],
-            "prob": round(checkpoint_prob, 2),
-            "clv": round(checkpoint_prob - opening_prob, 2),
-            "divergence": _divergence(best_point),
-            "timestamp": best_point.get("timestamp"),
-            "minutesFromTarget": round(best_diff, 1)
-        }
-
-    return result
-
-
 # ============================================================
-# LOG DE CLV -- base de datos para calibrar el modelo (de-vig + divergencia)
+# BUILD PICKS (CÓDIGO COMPLETO Y CORREGIDO FINAL)
 # ============================================================
-# Un registro por pick, escrito/actualizado solo cuando el checkpoint -1h ya
-# está disponible (lo más cerca de "cierre" que el pipeline puede capturar
-# antes de que el mercado pregame desaparezca). No es tracking en vivo: es la
-# tabla de la que después se mide, por rango de divergencia, cuál es el CLV
-# promedio real -- de ahí sale el peso calibrado del ajuste del modelo.
-CLV_LOG_DIR = os.path.join(BASE_DIR, "data", "results")
-CLV_LOG_PATH = os.path.join(CLV_LOG_DIR, "clv_log.json")
-
-_clv_log_cache = None
-
-
-def _load_clv_log():
-    global _clv_log_cache
-    if _clv_log_cache is not None:
-        return _clv_log_cache
-
-    if os.path.exists(CLV_LOG_PATH):
-        try:
-            with open(CLV_LOG_PATH, "r", encoding="utf-8") as file:
-                _clv_log_cache = json.load(file)
-        except (json.JSONDecodeError, OSError):
-            _clv_log_cache = {}
-    else:
-        _clv_log_cache = {}
-
-    return _clv_log_cache
-
-
-def _save_clv_log():
-    if _clv_log_cache is None:
-        return
-    os.makedirs(CLV_LOG_DIR, exist_ok=True)
-    with open(CLV_LOG_PATH, "w", encoding="utf-8") as file:
-        json.dump(_clv_log_cache, file, ensure_ascii=False, indent=2)
-
-
-def _clv_log_key(league, game, pick, market_name, date_str):
-    # Incluye la fecha para que un mismo enfrentamiento (mismos equipos) en
-    # otra temporada/jornada no colisione con un registro viejo.
-    return "||".join([_market_unique_key(game, pick, market_name), _league_slug(league), date_str or ""])
-
-
-def register_clv_entry(league, game, pick, market_name, date_str, clv, extra=None):
-    if not clv:
-        return
-    if not clv.get("checkpoints", {}).get("1h"):
-        return  # todavía no llega a -1h: nada "cercano a cierre" que loggear aún
-
-    log = _load_clv_log()
-    key = _clv_log_key(league, game, pick, market_name, date_str)
-
-    entry = {
-        "league": league,
-        "game": game,
-        "pick": pick,
-        "market": market_name,
-        "date": date_str,
-        "opening": clv.get("opening"),
-        "checkpoints": clv.get("checkpoints"),
-        "loggedAt": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-    }
-
-    if extra:
-        entry.update(extra)
-
-    log[key] = entry  # upsert -- misma key sobreescribe, no acumula duplicados por corrida
-
-
-# ============================================================
-# CALIBRACIÓN AUTOMÁTICA DEL PESO DE DIVERGENCIA
-# ------------------------------------------------------------
-# Corre sola en cada ejecución del pipeline (no hay que llamarla a mano).
-# Lee TODO clv_log.json acumulado hasta ahora, agrupa por rango de
-# divergencia de apertura y mide el CLV real en -1h de cada grupo. De ahí
-# sale el peso "medido" que reemplaza a PROVISIONAL_DIVERGENCE_WEIGHT en
-# analyze.py cuando haya suficiente muestra.
-#
-# Con pocos datos el reporte va a salir casi vacío/poco confiable -- por eso
-# cada bucket trae "sufficientSample" para saber cuáles ya sirven y cuáles
-# todavía no.
-# ============================================================
-CALIBRATION_OUTPUT_PATH = os.path.join(CLV_LOG_DIR, "calibration_report.json")
-MIN_SAMPLES_PER_BUCKET = 5
-DIVERGENCE_BUCKETS = [
-    (-100, -35), (-35, -25), (-25, -15), (-15, -5), (-5, 5),
-    (5, 15), (15, 25), (25, 35), (35, 100)
-]
-
-
-def _bucket_label(low, high):
-    if low <= -100:
-        return f"< {high}%"
-    if high >= 100:
-        return f">= {low}%"
-    return f"{low}% a {high}%"
-
-
-def _regression_weight(points):
-    """Pendiente por mínimos cuadrados forzando intercepto 0 (clv ~= peso * divergencia)."""
-    num = sum(d * c for d, c in points)
-    den = sum(d * d for d, c in points)
-    if den == 0:
-        return None
-    return round(num / den, 4)
-
-
-def _extract_calibration_points(log):
-    """
-    Un punto por pick: divergencia de APERTURA (lo que el modelo habría visto
-    al calcular la probabilidad) vs CLV en el checkpoint -1h (el movimiento
-    real de mercado más cercano a cierre que el pipeline logra capturar).
-    """
-    points = []
-    for entry in log.values():
-        opening = entry.get("opening") or {}
-        checkpoint_1h = (entry.get("checkpoints") or {}).get("1h")
-
-        divergence = opening.get("divergence")
-        clv = checkpoint_1h.get("clv") if checkpoint_1h else None
-
-        if divergence is None or clv is None:
-            continue
-
-        points.append((divergence, clv))
-    return points
-
-
-def build_calibration_report(log):
-    points = _extract_calibration_points(log)
-
-    report = {
-        "generatedAt": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "sampleSize": len(points),
-        "overallWeight": None,
-        "currentProvisionalWeight": 0.15,  # debe coincidir con analyze.PROVISIONAL_DIVERGENCE_WEIGHT
-        "buckets": []
-    }
-
-    if not points:
-        return report
-
-    report["overallWeight"] = _regression_weight(points)
-
-    for low, high in DIVERGENCE_BUCKETS:
-        bucket_points = [(d, c) for d, c in points if low <= d < high]
-        count = len(bucket_points)
-
-        if count == 0:
-            continue
-
-        avg_divergence = round(sum(d for d, _ in bucket_points) / count, 2)
-        avg_clv = round(sum(c for _, c in bucket_points) / count, 2)
-        implied_weight = round(avg_clv / avg_divergence, 4) if avg_divergence != 0 else None
-
-        report["buckets"].append({
-            "range": _bucket_label(low, high),
-            "count": count,
-            "avgDivergence": avg_divergence,
-            "avgClv": avg_clv,
-            "impliedWeight": implied_weight,
-            "sufficientSample": count >= MIN_SAMPLES_PER_BUCKET
-        })
-
-    return report
-
-
-def _save_calibration_report():
-    if _clv_log_cache is None:
-        return
-
-    report = build_calibration_report(_clv_log_cache)
-
-    os.makedirs(CLV_LOG_DIR, exist_ok=True)
-    with open(CALIBRATION_OUTPUT_PATH, "w", encoding="utf-8") as file:
-        json.dump(report, file, ensure_ascii=False, indent=2)
-
-    print(f"📊 Calibración CLV actualizada: {report['sampleSize']} picks en el log, peso medido = {report['overallWeight']}")
-
-
 def build_picks(raw_data):
     _snapshot_cache.clear()
-    global _clv_log_cache
-    _clv_log_cache = None
-    _load_clv_log()
 
     def extract_markets(node):
         found = []
@@ -1268,7 +1092,7 @@ def build_picks(raw_data):
             continue
 
         market_name = market.get("market", market.get("type"))
-        unique_key = _market_unique_key(game, pick, market_name)
+        unique_key = f"{game}||{pick}||{market_name}"
 
         if unique_key in seen_picks:
             continue
@@ -1278,42 +1102,27 @@ def build_picks(raw_data):
 
         date, time, iso = parse_match_datetime(market.get("time", ""))
 
-        # El evento ya inició hace más de 15 min -- se oculta del dashboard.
-        # Pasada esa tolerancia, ya no es una apuesta pregame válida.
-        kickoff_dt = _parse_iso(iso)
-        if kickoff_dt is not None:
-            minutes_since_kickoff = (datetime.now() - kickoff_dt).total_seconds() / 60.0
-            if minutes_since_kickoff > GAME_START_HIDE_TOLERANCE_MINUTES:
-                continue
-
         # ----------------------------------------------------
-        # 1. MÉTRICAS DE VOLUMEN (HANDLE / BETS / MONEY EDGE)
+        # 1. METRICAS DE VOLUMEN (HANDLE / BETS / MONEY EDGE)
         # ----------------------------------------------------
-        raw_bets = market.get("betsPct", market.get("bets_pct", market.get("bets", 50.0)))
-        raw_handle = market.get("handlePct", market.get("handle_pct", market.get("handle", 50.0)))
+        raw_bets = market.get("bets", 50.0)
+        raw_handle = market.get("handle", 50.0)
 
         bets = safe_pct(raw_bets) if safe_pct(raw_bets) is not None else 50.0
         handle = safe_pct(raw_handle) if safe_pct(raw_handle) is not None else 50.0
-
-        # Bets/Handle en 0% = lectura en vivo incompleta/rota (nunca es un
-        # valor real) -- se oculta el pick de este ciclo en vez de mostrarlo
-        # con un dato que sabemos que está mal.
-        if not _has_valid_volume(bets, handle):
-            continue
         
-        # (Edge Dinero eliminado -- era el mismo cálculo que Divergencia, handle-bets, con otro nombre)
+        # El 3.0 de tu JSON (Diferencia de Handle vs Bets)
+        json_money_edge = float(market.get("edge", handle - bets))
 
         # ----------------------------------------------------
         # 2. CUOTA Y PROBABILIDAD IMPLÍCITA
         # ----------------------------------------------------
         raw_odds = market.get("odds", "—")
         odds_str = str(raw_odds).strip() if raw_odds is not None else "—"
-        implied_prob = market.get("impliedProb")
-        if implied_prob is None and odds_str != "—":
-            implied_prob = american_implied_probability(odds_str)
+        implied_prob = american_implied_probability(odds_str) if odds_str != "—" else None
 
         # ----------------------------------------------------
-        # 3. PROBABILIDAD DEL MODELO Y MODEL EDGE
+        # 3. PROBABILIDAD DEL MODELO Y MODEL EDGE REAL
         # ----------------------------------------------------
         raw_model = market.get("modelProb")
         model_prob = None
@@ -1325,9 +1134,8 @@ def build_picks(raw_data):
             except (ValueError, TypeError):
                 model_prob = None
 
-        if market.get("modelEdge") is not None:
-            model_edge = safe_float(market.get("modelEdge"))
-        elif model_prob is not None and implied_prob is not None:
+        # Cálculo preciso del Model Edge: Modelo - Cuota Implícita
+        if model_prob is not None and implied_prob is not None:
             model_edge = model_prob - implied_prob
         else:
             model_edge = 0.0
@@ -1335,15 +1143,14 @@ def build_picks(raw_data):
         model_is_real = bool(market.get("modelIsReal", False))
 
         # ----------------------------------------------------
-        # 4. EV Y ESTIMACIÓN
+        # 4. EV Y ESTRUCTURA DE SCORE
         # ----------------------------------------------------
-        decimal_odds = american_to_decimal(odds_str) if odds_str != "—" else None
-
         raw_ev = market.get("ev")
-        if raw_ev is not None:
+        if raw_ev is not None and safe_float(raw_ev) != 0:
             ev = round(safe_float(raw_ev), 2)
             ev_estimated = bool(market.get("evEstimated", False))
         else:
+            decimal_odds = american_to_decimal(odds_str) if odds_str != "—" else None
             if model_prob is not None and decimal_odds is not None:
                 ev = round(((model_prob / 100.0) * decimal_odds - 1.0) * 100.0, 2)
                 ev_estimated = False
@@ -1352,91 +1159,21 @@ def build_picks(raw_data):
                 ev_estimated = True
 
         action_text = market.get("action", "🔴 PASAR")
+        pattern_tag = market.get("pattern", market.get("trend", "⚪ Neutral"))
 
-        market_score = safe_score(market.get("divergenceScore", market.get("marketScore", market.get("market_score", 0))))
+        market_score = safe_score(market.get("market_score", 0))
+        confidence = safe_score(market.get("confidence", market_score))
+        sharp_money = calculate_sharp_money_score(handle, bets)
+        sharp_money_score = sharp_money["score"]
 
-        signed_divergence = round(market.get("signedDivergence", handle - bets), 1)
-        divergence = round(abs(market.get("divergence", signed_divergence)), 1)
+        model_edge_score = calculate_model_edge_score(model_edge)
+        ev_score = calculate_ev_score(ev)
+        value_score = calculate_value_score(model_edge_score, ev_score)
+        final_score = calculate_final_score(value_score, sharp_money_score, market_score, confidence)
 
-        # Señal de mercado (Parte 3) y categoría de pick (Parte 2): única
-        # fuente de verdad en inglés, ya no se recalculan heurísticamente en
-        # el frontend ni con el texto viejo en español.
-        market_signal = classify_market_signal(signed_divergence, bets, handle, ev, model_edge)
-
-        # generate_dashboard.py es la autoridad única de reliability/score/risk/stake:
-        # ya NO se confía en los valores que traiga analyze.py para estos 4 campos
-        # (antes se usaban tal cual si venían presentes, y como analyze.py siempre
-        # los manda, generate_dashboard.py nunca los recalculaba en la práctica --
-        # eso es lo que rompía la cadena cuando corregimos model_is_real).
-        reliability_multiplier = calculate_reliability_multiplier(
-            model_is_real,
-            bool(market.get("isPrice", market.get("is_price", False))),
-            bool(market.get("evSuspicious", False))
-        )
-        reliability_multiplier = max(0.0, min(1.0, safe_float(reliability_multiplier)))
-
-        model_edge_score = safe_float(market.get("modelEdgeScore", calculate_model_edge_score(model_edge)))
-        ev_score = safe_float(market.get("evScore", calculate_ev_score(ev)))
-        value_score = safe_float(market.get("valueScore", calculate_value_score(model_edge_score, ev_score)))
-        
-        is_whale_flag = detect_whale(market)
-
-        model_is_real_flag = bool(market.get("modelIsReal", model_is_real))
-        if not model_is_real_flag:
-            if is_whale_flag or market_signal == "SMART_MONEY":
-                w_value, w_market, w_dinero = 0.10, 0.20, 0.70
-            else:
-                w_value, w_market, w_dinero = 0.15, 0.425, 0.425
-        else:
-            w_value, w_market, w_dinero = (0.20, 0.20, 0.60) if (is_whale_flag or market_signal == "SMART_MONEY") else (0.40, 0.30, 0.30)
-
-        final_score = calculate_final_score(
-            value_score, 
-            market_score, 
-            reliability_multiplier, 
-            signed_divergence, 
-            is_whale_flag, 
-            market_signal == "SMART_MONEY",
-            weights=(w_value, w_market, w_dinero)
-        )
-
-        monte_carlo = market.get("monteCarlo") if isinstance(market.get("monteCarlo"), dict) else None
-        
-        evaluation = classify_evaluation(final_score)
-        if ev <= -0.5 and evaluation in ("PREMIUM", "STRONG"):
-            evaluation = "LEAN"
-
-        risk = calculate_risk(final_score, reliability_multiplier, odds_str, monte_carlo)
-
-        pick_category = classify_pick_category(ev, market_signal, signed_divergence)
-
-        # Stake determinístico por señal (Parte 4) -- reemplaza el Kelly anterior.
-        stake = calculate_kelly_stake(ev, model_prob, decimal_odds)
-
-        qualitative_confidence = safe_float(market.get("confidence", 1.0))
-
-        pick_history_full = build_pick_history_full(market.get("league", "Otras Ligas"), game, pick, market_name, kickoff_iso=iso)
-
-        # Historial insuficiente: se oculta del dashboard hasta acumular al
-        # menos 2 puntos reales de seguimiento (evita mostrar picks recién
-        # aparecidos sin suficiente evidencia de movimiento).
-        if len(pick_history_full) < MIN_HISTORY_POINTS:
-            continue
-
-        coherence = calculate_coherence(pick_history_full)
-        real_reason = build_real_reason(MARKET_SIGNAL_LABELS[market_signal], coherence, _count_changed_points(pick_history_full))
-        clv = calculate_clv(pick_history_full, iso)
-        pick_history = build_pick_history_display(pick_history_full)
-
-        register_clv_entry(
-            market.get("league", "Otras Ligas"), game, pick, market_name, date, clv,
-            extra={
-                "whale": is_whale_flag,
-                "modelIsReal": model_is_real_flag,
-                "finalScore": final_score
-            }
-        )
-
+        # ----------------------------------------------------
+        # 5. OBJETO FINAL PARA EL DASHBOARD
+        # ----------------------------------------------------
         item = {
             "id": counter,
             "game": game or "Evento desconocido",
@@ -1445,67 +1182,53 @@ def build_picks(raw_data):
             "pick": pick or "Sin selección",
             "odds": odds_str,
             "action": action_text,
-            "actionKey": market.get("actionKey", classify_action(action_text)),
-            "pattern": MARKET_SIGNAL_LABELS[market_signal],
-            "trend": MARKET_SIGNAL_LABELS[market_signal],
-            "trendKey": market_signal,
-            "marketSignal": market_signal,
-            "pickCategory": pick_category,
+            "actionKey": classify_action(action_text),
+            "pattern": pattern_tag,
+            "trend": pattern_tag,
+            "trendKey": classify_trend(pattern_tag),
             "priority": market.get("priority", "👀 OBSERVAR"),
             "priorityKey": classify_priority(market.get("priority", "")),
-            "stake": stake,
+            "stake": safe_float(market.get("stake", 0)),
             "score": final_score,
             "finalScore": final_score,
             "valueScore": value_score,
-            "sharpScore": market_score,
+            "sharpScore": sharp_money_score,
             "modelEdgeScore": model_edge_score,
             "evScore": ev_score,
             "marketScore": market_score,
-            "divergenceScore": market_score,
-            "confidence": qualitative_confidence,
-
+            "confidence": confidence,
+            
+            # PROBABILIDADES Y VENTAJAS
             "modelProb": round(model_prob, 2) if model_prob is not None else None,
             "modelEstimated": not model_is_real,
             "impliedProb": round(implied_prob, 2) if implied_prob is not None else None,
-            "modelEdge": round(model_edge, 2),
+            "modelEdge": round(model_edge, 2),        # Ej: 0.5% (Modelo vs Cuota)
+            "moneyEdge": round(json_money_edge, 2),   # Ej: 3.0% (Handle vs Bets)
             
             "ev": ev,
             "evEstimated": ev_estimated,
-            "evaluation": evaluation,
-            "risk": risk,
-            "monteCarlo": monte_carlo,
-            "coherence": coherence,
-            "reliability": round(reliability_multiplier, 2),
-            "whale": is_whale_flag,
+            "evaluation": classify_evaluation(final_score, value_score, sharp_money_score, model_edge, ev),
+            "risk": calculate_risk(final_score, value_score, ev, model_edge, odds_str),
+            "whale": detect_whale(market),
             "handlePct": round(handle, 2),
             "betsPct": round(bets, 2),
-            "divergence": divergence,
-            "signedDivergence": signed_divergence,
-            "reason": real_reason,
+            "divergence": round(sharp_money["divergence"], 2),
+            "signedDivergence": round(sharp_money["signedDivergence"], 2),
+            "reason": market.get("reason", ""),
             "date": date,
             "time": time,
             "iso": iso,
-            "history": pick_history,
-            "clv": clv,
+            "history": build_pick_history(market.get("league", "Otras Ligas"), game, pick, market_name),
             "status": classify_status(market, iso),
             "result": market.get("result", "PENDING"),
             "roi": market.get("roi"),
         }
 
-        item["freePick"] = (
-            evaluation in ("PREMIUM", "STRONG", "LEAN")
-            and risk != "HIGH"
-            and ev > -0.5
-            and stake > 0
-        )
+        item["freePick"] = action_text in ["🟢 APOSTAR", "🟡 LEAN"] and final_score >= 50
         all_items.append(item)
 
     all_items.reverse()
-    _save_clv_log()
-    _save_calibration_report()
     return all_items
-
-
 # ============================================================
 # GUARDAR HISTORIAL DIARIO
 # ============================================================
@@ -1513,86 +1236,188 @@ def save_daily_history(
     all_events,
     cdmx_now
 ):
-    date_str = cdmx_now.strftime("%Y-%m-%d")
-    day_folder = os.path.join(HISTORY_DIR, date_str)
+    date_str = (
+        cdmx_now.strftime(
+            "%Y-%m-%d"
+        )
+    )
 
-    os.makedirs(day_folder, exist_ok=True)
-    history_file = os.path.join(day_folder, "sharpie.json")
+    day_folder = os.path.join(
+        HISTORY_DIR,
+        date_str
+    )
+
+    os.makedirs(
+        day_folder,
+        exist_ok=True
+    )
+
+    history_file = os.path.join(
+        day_folder,
+        "sharpie.json"
+    )
 
     payload = {
-        "generated_at": cdmx_now.strftime("%Y-%m-%d %H:%M:%S"),
-        "count": len(all_events),
-        "picks": all_events
+        "generated_at":
+            cdmx_now.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+        "count":
+            len(
+                all_events
+            ),
+        "picks":
+            all_events
     }
 
-    with open(history_file, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=2)
+    with open(
+        history_file,
+        "w",
+        encoding="utf-8"
+    ) as f:
+        json.dump(
+            payload,
+            f,
+            ensure_ascii=False,
+            indent=2
+        )
 
-    print(f"[OK] Historial del día guardado en: {history_file}")
+    print(
+        "[OK] Historial del día "
+        f"guardado en: {history_file}"
+    )
 
 
 # ============================================================
 # GENERATE DASHBOARD
 # ============================================================
 def generate_dashboard():
-    utc_now = datetime.now(timezone.utc)
-    cdmx_now = utc_now - timedelta(hours=6)
-    now_str = cdmx_now.strftime("%Y-%m-%d %H:%M:%S")
+    utc_now = datetime.utcnow()
 
-    template_path = os.path.join(CURRENT_DIR, "template.html")
-    source_json_path = get_latest_file()
+    cdmx_now = (
+        utc_now
+        - timedelta(
+            hours=6
+        )
+    )
 
-    if not os.path.exists(template_path):
-        raise FileNotFoundError(f"No existe template.html: {template_path}")
+    now_str = (
+        cdmx_now.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+    )
 
-    if not source_json_path or not os.path.exists(source_json_path):
-        raise FileNotFoundError(f"No se encontró sharpie.json en {INPUT_DIR}")
+    template_path = os.path.join(
+        CURRENT_DIR,
+        "template.html"
+    )
 
-    with open(template_path, "r", encoding="utf-8") as file:
+    source_json_path = (
+        get_latest_file()
+    )
+
+    if not os.path.exists(
+        template_path
+    ):
+        raise FileNotFoundError(
+            "No existe template.html: "
+            f"{template_path}"
+        )
+
+    if (
+        not source_json_path
+        or not os.path.exists(
+            source_json_path
+        )
+    ):
+        raise FileNotFoundError(
+            "No se encontró sharpie.json "
+            f"en {INPUT_DIR}"
+        )
+
+    with open(
+        template_path,
+        "r",
+        encoding="utf-8"
+    ) as file:
         html_template = file.read()
 
     try:
-        with open(source_json_path, "r", encoding="utf-8") as file:
-            raw_data = json.load(file)
+        with open(
+            source_json_path,
+            "r",
+            encoding="utf-8"
+        ) as file:
+            raw_data = json.load(
+                file
+            )
 
     except json.JSONDecodeError as e:
-        print(f"[ERROR CRÍTICO] El archivo {source_json_path} está corrupto o truncado: {e}")
-        raise SystemExit("Proceso detenido para evitar generar un index.html corrupto.")
+        print(
+            "[ERROR CRÍTICO] "
+            f"El archivo {source_json_path} "
+            f"está corrupto o truncado: {e}"
+        )
 
-    all_events = build_picks(raw_data)
+        raise SystemExit(
+            "Proceso detenido para evitar "
+            "generar un index.html corrupto."
+        )
 
-    # ------------------------------------------------------------
-    # BARRERA ANTI-SOBREESCRITURA (BLOQUEA VACÍOS)
-    # ------------------------------------------------------------
-    if not all_events or len(all_events) == 0:
-        print("\n" + "!" * 70)
-        print("[⚠️ ALERTA ANTI-SOBREESCRITURA] 0 picks válidos extraídos del JSON fuente.")
-        print("[INFO] Se canceló la actualización del historial y del dashboard.")
-        print("[INFO] El sitio 'index.html' y los registros previos conservarán su información.")
-        print("!" * 70 + "\n")
-        return None
+    all_events = build_picks(
+        raw_data
+    )
 
-    save_daily_history(all_events, cdmx_now)
+    save_daily_history(
+        all_events,
+        cdmx_now
+    )
 
-    json_data = json.dumps(all_events, ensure_ascii=False)
+    json_data = json.dumps(
+        all_events,
+        ensure_ascii=False
+    )
 
-    html_content = html_template.replace("__GENERATED_AT__", now_str)
-    html_content = html_content.replace("__PICKS_JSON__", json_data)
+    html_content = (
+        html_template.replace(
+            "__GENERATED_AT__",
+            now_str
+        )
+    )
 
-    output_file = os.path.join(OUTPUT_DIR, "index.html")
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    html_content = (
+        html_content.replace(
+            "__PICKS_JSON__",
+            json_data
+        )
+    )
 
-    with open(output_file, "w", encoding="utf-8") as file:
-        file.write(html_content)
+    output_file = os.path.join(
+        OUTPUT_DIR,
+        "index.html"
+    )
 
-    # picks.json separado -- permite que el frontend haga polling liviano
-    # (sin volver a descargar todo el HTML) para detectar picks nuevos y
-    # refrescarse solo, sin que el usuario tenga que presionar F5.
-    picks_json_path = os.path.join(OUTPUT_DIR, "picks.json")
-    with open(picks_json_path, "w", encoding="utf-8") as file:
-        json.dump(all_events, file, ensure_ascii=False)
+    os.makedirs(
+        os.path.dirname(
+            output_file
+        ),
+        exist_ok=True
+    )
 
-    print(f"[OK] Dashboard generado con éxito: {output_file}")
+    with open(
+        output_file,
+        "w",
+        encoding="utf-8"
+    ) as file:
+        file.write(
+            html_content
+        )
+
+    print(
+        "[OK] Dashboard generado "
+        f"con éxito: {output_file}"
+    )
+
     return output_file
 
 
