@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-06",
-  "updatedAt": "2026-09-07T00:25:27+00:00",
+  "updatedAt": "2026-09-07T00:35:28+00:00",
   "count": 4,
   "pendingSettlement": 4,
   "picks": [
@@ -1452,9 +1452,9 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T00:25:23+00:00",
+        "checkedAt": "2026-09-07T00:35:23+00:00",
         "settledAt": null,
-        "homeScore": 0.0,
+        "homeScore": 3.0,
         "awayScore": 3.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260906&limit=500",
@@ -2929,9 +2929,9 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T00:25:25+00:00",
+        "checkedAt": "2026-09-07T00:35:26+00:00",
         "settledAt": null,
-        "homeScore": 0.0,
+        "homeScore": 3.0,
         "awayScore": 3.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260906&limit=500",
@@ -4066,7 +4066,7 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T00:25:25+00:00",
+        "checkedAt": "2026-09-07T00:35:26+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
@@ -4135,8 +4135,8 @@
       "fairProb": 36.36,
       "flowAdjustment": 4.65,
       "modelSource": "propio_devig_divergencia",
-      "lineMove": 0.57,
-      "lineMoveMinutes": 5.0,
+      "lineMove": 0.0,
+      "lineMoveMinutes": 10.0,
       "liquidityStatus": null,
       "impliedProb": 38.02,
       "modelEdge": 2.99,
@@ -5411,6 +5411,13 @@
           "betsPct": 12.0,
           "handlePct": 43.0,
           "odds": "+163"
+        },
+        {
+          "time": "2026-09-07T00:35:04+00:00",
+          "timestamp": "2026-09-07T00:35:04+00:00",
+          "betsPct": 12.0,
+          "handlePct": 43.0,
+          "odds": "+163"
         }
       ],
       "clv": {
@@ -5449,8 +5456,8 @@
       "historyId": "a65f0baa91208732adfa9b8a",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T17:12:25-06:00",
-      "lastQualifiedAt": "2026-09-06T18:25:09-06:00",
-      "qualifiedObservations": 15,
+      "lastQualifiedAt": "2026-09-06T18:35:09-06:00",
+      "qualifiedObservations": 16,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T17:12:25-06:00",
@@ -5520,13 +5527,36 @@
             "SMART_MONEY"
           ],
           "lineMove": 0.57
+        },
+        {
+          "observedAt": "2026-09-06T18:35:09-06:00",
+          "pickCategory": "LONGSHOT",
+          "publicationTier": "SPECULATIVE_ONLY",
+          "freeRelease": false,
+          "odds": "+163",
+          "stake": 0.5,
+          "confidenceScore": 33.1,
+          "confidence": "ESPECULATIVA",
+          "riskClass": "LONGSHOT",
+          "riskLevel": "ALTA",
+          "modelProb": 41.01,
+          "modelEdge": 2.99,
+          "ev": 7.86,
+          "betsPct": 12.0,
+          "handlePct": 43.0,
+          "signedDivergence": 31.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T00:25:27+00:00",
+        "checkedAt": "2026-09-07T00:35:28+00:00",
         "settledAt": null,
         "homeScore": 0.0,
         "awayScore": 0.0,
