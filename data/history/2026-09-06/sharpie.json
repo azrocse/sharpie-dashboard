@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-06",
-  "updatedAt": "2026-09-07T03:35:28+00:00",
+  "updatedAt": "2026-09-07T03:40:28+00:00",
   "count": 4,
-  "pendingSettlement": 4,
+  "pendingSettlement": 2,
   "picks": [
     {
       "id": 42,
@@ -1412,7 +1412,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freeRelease": true,
       "freeReleaseRank": 1,
@@ -1450,13 +1450,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "LOSS",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T03:35:24+00:00",
-        "settledAt": null,
-        "homeScore": 38.0,
+        "checkedAt": "2026-09-07T03:40:24+00:00",
+        "settledAt": "2026-09-07T03:40:24+00:00",
+        "homeScore": 41.0,
         "awayScore": 38.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Total final 79 vs línea 55.5",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260906&limit=500",
         "eventId": "401856661",
         "eventName": "Louisville Cardinals at Ole Miss Rebels",
@@ -1482,7 +1482,8 @@
           "2026-09-07"
         ]
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": -1.5
     },
     {
       "id": 46,
@@ -2890,7 +2891,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freeRelease": false,
       "freeReleaseRank": null,
@@ -2927,13 +2928,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "LOSS",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T03:35:26+00:00",
-        "settledAt": null,
-        "homeScore": 38.0,
+        "checkedAt": "2026-09-07T03:40:26+00:00",
+        "settledAt": "2026-09-07T03:40:26+00:00",
+        "homeScore": 41.0,
         "awayScore": 38.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Marcador 38-41",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=20260906&limit=500",
         "eventId": "401856661",
         "eventName": "Louisville Cardinals at Ole Miss Rebels",
@@ -2959,7 +2960,8 @@
           "2026-09-07"
         ]
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": -0.5
     },
     {
       "id": 195,
@@ -4066,9 +4068,9 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T03:35:26+00:00",
+        "checkedAt": "2026-09-07T03:40:26+00:00",
         "settledAt": null,
-        "homeScore": 1.0,
+        "homeScore": 2.0,
         "awayScore": 4.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260906&limit=500",
@@ -5735,9 +5737,9 @@
       "settlement": {
         "status": "PENDING",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T03:35:28+00:00",
+        "checkedAt": "2026-09-07T03:40:28+00:00",
         "settledAt": null,
-        "homeScore": 1.0,
+        "homeScore": 2.0,
         "awayScore": 4.0,
         "notes": "Evento aún no finaliza",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260906&limit=500",
@@ -5768,5 +5770,5 @@
       "needsSettlement": true
     }
   ],
-  "settledCount": 0
+  "settledCount": 2
 }
