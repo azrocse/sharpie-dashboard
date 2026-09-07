@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-07",
-  "updatedAt": "2026-09-06T21:20:10-06:00",
+  "updatedAt": "2026-09-06T21:25:10-06:00",
   "count": 6,
   "pendingSettlement": 6,
   "picks": [
@@ -650,6 +650,13 @@
           "betsPct": 50.0,
           "handlePct": 98.0,
           "odds": "+125"
+        },
+        {
+          "time": "2026-09-07T03:25:05+00:00",
+          "timestamp": "2026-09-07T03:25:05+00:00",
+          "betsPct": 50.0,
+          "handlePct": 98.0,
+          "odds": "+125"
         }
       ],
       "clv": {
@@ -674,8 +681,8 @@
       "historyId": "1b6f59089b32467af757236d",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T21:20:10-06:00",
-      "lastQualifiedAt": "2026-09-06T21:20:10-06:00",
-      "qualifiedObservations": 1,
+      "lastQualifiedAt": "2026-09-06T21:25:10-06:00",
+      "qualifiedObservations": 2,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T21:20:10-06:00",
@@ -702,7 +709,6 @@
         }
       ],
       "latestViable": true,
-      "needsSettlement": true,
       "settlement": {
         "status": "PENDING",
         "source": null,
@@ -723,7 +729,8 @@
         "home": "PHI Phillies",
         "scheduledAt": "2026-09-07T11:05:00",
         "matchStatus": "UNMATCHED"
-      }
+      },
+      "needsSettlement": true
     },
     {
       "id": 204,
@@ -883,6 +890,13 @@
           "betsPct": 50.0,
           "handlePct": 90.0,
           "odds": "-112"
+        },
+        {
+          "time": "2026-09-07T03:25:05+00:00",
+          "timestamp": "2026-09-07T03:25:05+00:00",
+          "betsPct": 50.0,
+          "handlePct": 90.0,
+          "odds": "-112"
         }
       ],
       "clv": {
@@ -907,8 +921,8 @@
       "historyId": "03378b54b2237e62576c594a",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T20:15:10-06:00",
-      "lastQualifiedAt": "2026-09-06T21:20:10-06:00",
-      "qualifiedObservations": 14,
+      "lastQualifiedAt": "2026-09-06T21:25:10-06:00",
+      "qualifiedObservations": 15,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T20:15:10-06:00",
@@ -2327,7 +2341,7 @@
       "fairProb": 11.37,
       "flowAdjustment": 5.85,
       "modelSource": "propio_devig_divergencia",
-      "lineMove": -0.3,
+      "lineMove": 0.0,
       "lineMoveMinutes": 5.0,
       "liquidityStatus": null,
       "impliedProb": 11.9,
@@ -3218,6 +3232,13 @@
           "betsPct": 7.0,
           "handlePct": 46.0,
           "odds": "+740"
+        },
+        {
+          "time": "21:25",
+          "timestamp": "2026-09-06T21:25:09",
+          "betsPct": 7.0,
+          "handlePct": 46.0,
+          "odds": "+740"
         }
       ],
       "clv": {
@@ -3242,8 +3263,8 @@
       "historyId": "72892461ccf3ea193f68eaa5",
       "historySchemaVersion": 2,
       "firstQualifiedAt": "2026-09-06T14:40:10-06:00",
-      "lastQualifiedAt": "2026-09-06T21:20:10-06:00",
-      "qualifiedObservations": 75,
+      "lastQualifiedAt": "2026-09-06T21:25:10-06:00",
+      "qualifiedObservations": 76,
       "qualificationSnapshots": [
         {
           "observedAt": "2026-09-06T14:40:10-06:00",
@@ -3405,6 +3426,29 @@
             "SMART_MONEY"
           ],
           "lineMove": -0.3
+        },
+        {
+          "observedAt": "2026-09-06T21:25:10-06:00",
+          "pickCategory": "LONGSHOT",
+          "publicationTier": "SPECULATIVE_ONLY",
+          "freeRelease": false,
+          "odds": "+740",
+          "stake": 0.5,
+          "confidenceScore": 26.3,
+          "confidence": "ESPECULATIVA",
+          "riskClass": "EXTREME_LONGSHOT",
+          "riskLevel": "ALTA",
+          "modelProb": 17.22,
+          "modelEdge": 5.32,
+          "ev": 44.65,
+          "betsPct": 7.0,
+          "handlePct": 46.0,
+          "signedDivergence": 39.0,
+          "marketSignal": "SMART_MONEY",
+          "marketSignals": [
+            "SMART_MONEY"
+          ],
+          "lineMove": 0.0
         }
       ],
       "latestViable": true,
