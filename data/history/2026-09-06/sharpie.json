@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "eventDate": "2026-09-06",
-  "updatedAt": "2026-09-07T05:05:26+00:00",
+  "updatedAt": "2026-09-07T05:10:26+00:00",
   "count": 4,
-  "pendingSettlement": 2,
+  "pendingSettlement": 0,
   "picks": [
     {
       "id": 42,
@@ -4005,7 +4005,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freeRelease": true,
       "freeReleaseRank": 12,
@@ -4066,13 +4066,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "LOSS",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T05:05:24+00:00",
-        "settledAt": null,
+        "checkedAt": "2026-09-07T05:10:24+00:00",
+        "settledAt": "2026-09-07T05:10:24+00:00",
         "homeScore": 7.0,
         "awayScore": 5.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Margen ajustado -0.5 con línea +1.5",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260906&limit=500",
         "eventId": "401816841",
         "eventName": "Washington Nationals at Los Angeles Dodgers",
@@ -4098,7 +4098,8 @@
           "2026-09-07"
         ]
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": -1.0
     },
     {
       "id": 211,
@@ -5583,7 +5584,7 @@
         }
       },
       "status": "UPCOMING",
-      "result": "PENDING",
+      "result": "LOSS",
       "roi": null,
       "freeRelease": false,
       "freeReleaseRank": null,
@@ -5735,13 +5736,13 @@
       ],
       "latestViable": true,
       "settlement": {
-        "status": "PENDING",
+        "status": "LOSS",
         "source": "ESPN",
-        "checkedAt": "2026-09-07T05:05:26+00:00",
-        "settledAt": null,
+        "checkedAt": "2026-09-07T05:10:26+00:00",
+        "settledAt": "2026-09-07T05:10:26+00:00",
         "homeScore": 7.0,
         "awayScore": 5.0,
-        "notes": "Evento aún no finaliza",
+        "notes": "Marcador 5-7",
         "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates=20260906&limit=500",
         "eventId": "401816841",
         "eventName": "Washington Nationals at Los Angeles Dodgers",
@@ -5767,8 +5768,9 @@
           "2026-09-07"
         ]
       },
-      "needsSettlement": true
+      "needsSettlement": false,
+      "profitUnits": -0.5
     }
   ],
-  "settledCount": 2
+  "settledCount": 4
 }
