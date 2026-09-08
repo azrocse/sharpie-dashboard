@@ -1321,19 +1321,19 @@ function watchlistPanelHtml(p) {
 
     const snap = entry.snapshot || {};
     const followedDate = entry.followedAt ? new Date(entry.followedAt) : null;
-    const followedText = followedDate ? followedDate.toLocaleString() : '';
+    const followedText = followedDate && !isNaN(followedDate) ? followedDate.toLocaleString('es-MX', {timeZone:'America/Mexico_City',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}) : '—';
     const v = watchlistVerdict(p, snap);
     const verdictCls = v.verdict === 'APOSTAR' ? 'good' : (v.verdict === 'DESCARTAR' ? 'bad' : 'warn');
     const verdictIcon = v.verdict === 'APOSTAR' ? '✅' : (v.verdict === 'DESCARTAR' ? '🗑️' : '👀');
 
     return `<div class="watchlist-panel">
-        <div class="watchlist-panel-title">👁 En seguimiento desde ${escapeHTML(followedText)}</div>
-        <div class="badge-tag-grid">
-            <span class="badge-tag neutral">💰 Cuota apertura <b>${escapeHTML(String(snap.odds ?? '—'))}</b> → <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>
-            <span class="badge-tag neutral">📈 Edge Modelo <b>${snap.edge != null ? snap.edge + '%' : '—'}</b>${watchlistDeltaArrow(p.modelEdge, snap.edge)}</span>
-            <span class="badge-tag neutral">📊 EV <b>${snap.ev != null ? snap.ev + '%' : '—'}</b>${watchlistDeltaArrow(p.ev, snap.ev)}</span>
-        </div>
-        <div class="reasoning-text"><span class="badge-tag ${verdictCls}" style="margin-right:6px;">${verdictIcon} ${v.verdict} (desde seguimiento)</span>${escapeHTML(v.text)}</div>
+        <div class="watchlist-panel-title"><strong>En seguimiento</strong><span>${escapeHTML(followedText)} · CDMX</span></div>
+        <table class="watchlist-comparison"><thead><tr><th scope="col">Métrica</th><th scope="col">Al seguir</th><th scope="col">Actual</th></tr></thead><tbody>
+            <tr><th scope="row">Cuota</th><td>${escapeHTML(String(snap.odds ?? '—'))}</td><td>${escapeHTML(p.odds || p.cuota || '—')}</td></tr>
+            <tr><th scope="row">Edge modelo</th><td>${snap.edge != null ? escapeHTML(snap.edge)+'%' : '—'}</td><td>${p.modelEdge != null ? escapeHTML(p.modelEdge)+'%' : '—'}${watchlistDeltaArrow(p.modelEdge, snap.edge)}</td></tr>
+            <tr><th scope="row">EV</th><td>${snap.ev != null ? escapeHTML(snap.ev)+'%' : '—'}</td><td>${p.ev != null ? escapeHTML(p.ev)+'%' : '—'}${watchlistDeltaArrow(p.ev, snap.ev)}</td></tr>
+        </tbody></table>
+        <div class="watchlist-verdict"><span class="watchlist-verdict-label ${verdictCls}">${verdictIcon} ${v.verdict}</span><p>${escapeHTML(v.text)}</p></div>
     </div>`;
 }
 
