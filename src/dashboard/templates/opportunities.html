@@ -25,7 +25,7 @@ __VIEWER_CSS__</style>
   </header>
   <main>
     <section class="archive-intro" aria-labelledby="archiveTitle">
-      <div><p class="eyebrow"><span class="signal-dot"></span> SHARPIE / ARCHIVO DE OPORTUNIDADES</p><h2 id="archiveTitle">Tu lectura del mercado.<br><span>En perspectiva.</span></h2><p class="intro-copy">Explora las señales, compara oportunidades y consulta cada selección guardada.</p></div>
+      <div><p class="eyebrow"><span class="signal-dot"></span> SHARPIE / ARCHIVO DE OPORTUNIDADES</p><h2 id="archiveTitle">Oportunidades <span>guardadas.</span></h2><p class="intro-copy">Todos tus picks, sus señales y métricas. Encuentra lo importante de un vistazo.</p></div>
       <div class="archive-actions"><span class="archive-coordinate" aria-hidden="true">OP / 01 — HISTÓRICO</span><div id="exportSlot"></div><a href="#filters" class="archive-jump">Explorar registros ↓</a></div>
     </section>
     <section class="stats-grid" aria-label="Métricas de oportunidades filtradas">
@@ -69,10 +69,7 @@ __VIEWER_CSS__</style>
     </form>
     <div class="records-summary"><span>Mostrando <strong id="summaryCount">0</strong> oportunidades de <span id="summaryTotal">0</span> guardadas</span><span id="since"></span></div>
     <div class="table-controls"><span class="eyebrow">REGISTROS / <span id="activeFilters" aria-live="polite">Sin filtros activos</span></span><button id="densityToggle" type="button" class="btn-chip" aria-pressed="false">Vista compacta</button></div>
-    <p class="table-hint">Desliza la tabla para consultar todas las métricas. El evento permanece visible.</p>
-    <div class="history-table-wrap" tabindex="0" role="region" aria-label="Sábana histórica, desplazable horizontalmente">
-      <table><thead><tr><th scope="col">Evento / selección</th><th scope="col">Inicio (CDMX)</th><th scope="col">Liga</th><th scope="col">Mercado</th><th scope="col">Categoría</th><th scope="col">Cuota</th><th scope="col">Modelo %</th><th scope="col">Edge %</th><th scope="col">EV %</th><th scope="col">Stake (u)</th><th scope="col">Bets %</th><th scope="col">Handle %</th><th scope="col">Divergencia</th><th scope="col">Señal</th><th scope="col">Primera captura</th><th scope="col">Última actualización</th><th scope="col">Registro</th></tr></thead><tbody id="rows"></tbody></table>
-    </div>
+    <section class="history-table-wrap" aria-label="Oportunidades guardadas"><div id="rows" class="event-list"></div></section>
     <p id="empty" class="historical-empty" hidden>No hay oportunidades que coincidan con estos filtros.</p>
     <nav class="historical-pagination" aria-label="Páginas del historial"><span id="range" aria-live="polite"></span><div><button id="prev" class="btn-chip" type="button">← Anterior</button><button id="next" class="btn-chip" type="button">Siguiente →</button></div></nav>
   </main>

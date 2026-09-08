@@ -1,7 +1,7 @@
 'use strict';
 let archive = window.OPPORTUNITIES;
 let page = 0;
-const pageSize = 100;
+const pageSize = 20;
 const byId = id => document.getElementById(id);
 const bounds = {model:'modelProb', edge:'modelEdge', ev:'ev', stake:'stake', odds:'odds', bets:'betsPct', handle:'handlePct', divergence:'divergence'};
 const filterIds = ['search','date','from','to','league','signal','category','sort', ...Object.keys(bounds).flatMap(key => [key+'Min',key+'Max'])];
@@ -80,7 +80,7 @@ function updateCharts(rows) {
 function render() {
     const rows=matchingRows();
     const activeCount=filterIds.filter(id=>id!=='sort' && byId(id).value!=='').length;
-    byId('activeFilters').textContent=activeCount ? `${activeCount} filtros activos` : 'Sin filtros activos';
+    byId('activeFilters').textContent=activeCount ? `${activeCount} ${activeCount===1?'filtro activo':'filtros activos'}` : 'Sin filtros activos';
     byId('exportXls').disabled=rows.length===0;
     page=Math.min(page,Math.max(0,Math.ceil(rows.length/pageSize)-1));
     const offset=page*pageSize;
@@ -95,12 +95,12 @@ function render() {
     byId('since').textContent='Desde '+dateText(archive.startedAt);
     byId('updated').textContent=dateText(archive.updatedAt);
     updateCharts(rows);
-    byId('rows').innerHTML=rows.slice(offset,offset+pageSize).map(p=>`<tr>
-      <td>${escape(p.game)}<span class="selection">${escape(p.pick)}</span>${p.freeRelease ? '<span class="saved-tag">FREE PICK</span>' : ''}</td>
-      <td>${dateText(p.iso)}</td><td>${escape(p.league)}</td><td>${escape(p.market)}</td><td><span class="saved-tag ${p.pickCategory==='PREMIUM'?'premium':''}">${escape(p.pickCategory)}</span></td>
-      <td class="number">${escape(p.odds ?? '—')}</td>${['modelProb','modelEdge','ev','stake','betsPct','handlePct','divergence'].map(key=>`<td class="number">${number(p[key])}</td>`).join('')}
-      <td>${escape((p.marketSignal||'—').replaceAll('_',' '))}</td><td>${dateText(p.firstCapturedAt)}</td><td>${dateText(p.lastUpdatedAt)}</td><td><button type="button" class="btn-chip" data-detail="${escape(p.opportunityId)}">Ver detalle</button></td>
-    </tr>`).join('');
+    byId('rows').innerHTML=rows.slice(offset,offset+pageSize).map(p=>`<article class="event-card">
+      <div class="event-topline"><span class="event-league">${escape(p.league)}</span><time>${dateText(p.iso)} · CDMX</time><span class="saved-tag ${p.pickCategory==='PREMIUM'?'premium':''}">${escape(p.pickCategory)}</span></div>
+      <div class="event-overview"><div class="event-identity"><h3>${escape(p.game)}</h3><p class="event-selection">${escape(p.pick)} ${p.freeRelease ? '<span class="free-label">FREE PICK</span>' : ''}</p><p class="event-market">${escape(p.market)} <span>·</span> ${escape((p.marketSignal||'—').replaceAll('_',' '))}</p></div>
+      <dl class="event-metrics">${[['Cuota',p.odds],['Modelo',numeric(p.modelProb)===null?null:number(p.modelProb)+'%'],['EV',numeric(p.ev)===null?null:number(p.ev)+'%'],['Stake',numeric(p.stake)===null?null:number(p.stake)+' u']].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value??'—')}</dd></div>`).join('')}</dl></div>
+      <details class="event-details"><summary><span>Ver métricas y registro</span><span class="expand-icon" aria-hidden="true">+</span></summary><div class="event-expanded"><dl class="secondary-metrics">${[['Edge',number(p.modelEdge)+'%'],['Bets',number(p.betsPct)+'%'],['Handle',number(p.handlePct)+'%'],['Divergencia',number(p.divergence)],['Primera captura',dateText(p.firstCapturedAt)],['Última actualización',dateText(p.lastUpdatedAt)]].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl><button type="button" class="btn-chip" data-detail="${escape(p.opportunityId)}">Consultar JSON original</button></div></details>
+    </article>`).join('');
     byId('empty').hidden=rows.length!==0;
     byId('empty').textContent=archive.picks.length ? 'No hay oportunidades que coincidan con estos filtros.' : 'Aún no hay oportunidades guardadas.';
     byId('range').textContent=rows.length ? `${offset+1}–${Math.min(offset+pageSize,rows.length)} de ${rows.length} oportunidades` : '0 oportunidades';
@@ -157,8 +157,8 @@ byId('filters').addEventListener('submit',event=>event.preventDefault());
 filterIds.forEach(id=>byId(id).addEventListener('input',()=>{page=0;render();}));
 byId('advancedToggle').addEventListener('click',()=>{byId('advanced').hidden=!byId('advanced').hidden;byId('advancedToggle').setAttribute('aria-expanded',String(!byId('advanced').hidden));});
 byId('clear').addEventListener('click',()=>{byId('filters').reset();page=0;render();});
-byId('prev').addEventListener('click',()=>{page--;render();});
-byId('next').addEventListener('click',()=>{page++;render();});
+byId('prev').addEventListener('click',()=>{page--;render();byId('rows').scrollIntoView({block:'start'});});
+byId('next').addEventListener('click',()=>{page++;render();byId('rows').scrollIntoView({block:'start'});});
 byId('refresh').addEventListener('click',refresh);
 byId('themeToggle').addEventListener('click',()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';initCharts();render();});
 byId('rows').addEventListener('click',event=>{const button=event.target.closest('button[data-detail]');if(!button)return;byId('detailJson').textContent=JSON.stringify(archive.picks.find(p=>p.opportunityId===button.dataset.detail),null,2);byId('detail').showModal();});
