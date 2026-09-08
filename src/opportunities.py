@@ -12,6 +12,17 @@ from storage import atomic_write_json
 
 
 CDMX = ZoneInfo("America/Mexico_City")
+OPPORTUNITY_FIELDS = (
+    "game", "league", "sourceLeague", "market", "pick", "odds", "pickCategory",
+    "modelProb", "modelEdge", "ev", "stake", "betsPct", "handlePct", "divergence",
+    "marketSignal", "date", "iso", "freeRelease",
+    "opportunityId", "firstCapturedAt", "lastUpdatedAt", "frozenAt",
+)
+
+
+def compact_record(record):
+    """Contrato de consulta: no duplica campos de cálculo ni series del dashboard."""
+    return {key: deepcopy(record[key]) for key in OPPORTUNITY_FIELDS if key in record}
 
 
 def _event_time(pick):
@@ -56,7 +67,7 @@ def save_opportunities(picks, path, now=None):
         key = record["opportunityId"]
         if key in records:
             raise ValueError(f"Oportunidad duplicada en {path}: {key}")
-        records[key] = record
+        records[key] = compact_record(record)
 
     for record in records.values():
         kickoff = _event_time(record)
@@ -74,7 +85,7 @@ def save_opportunities(picks, path, now=None):
         if previous and previous.get("frozenAt"):
             continue
         records[key] = {
-            **deepcopy(pick),
+            **compact_record(pick),
             "opportunityId": key,
             "firstCapturedAt": previous["firstCapturedAt"] if previous else timestamp,
             "lastUpdatedAt": timestamp,

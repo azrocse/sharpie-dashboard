@@ -16,6 +16,12 @@ const dateValue = value => {
     return isNaN(date) ? null : date;
 };
 const dateText = value => dateValue(value)?.toLocaleString('es-MX',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}) || '—';
+const cdmxDay = date => new Intl.DateTimeFormat('en-CA',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
+const eventDay = p => { const date=dateValue(p.iso); return date ? cdmxDay(date) : ''; };
+function historicalRows() {
+    const today=cdmxDay(new Date());
+    return archive.picks.filter(p=>{ const day=eventDay(p); return day && day<=today; });
+}
 const signalColors = {SMART_MONEY:'#2563eb',CONSENSUS:'#2dd4bf',STEAM_MOVE:'#14b8a6',REVERSE_LINE_MOVEMENT:'#8b5cf6',PUBLIC_HEAVY:'#f43f5e',SHARP_VS_PUBLIC:'#f59e0b',BALANCED_ACTION:'#94a3b8',LOW_LIQUIDITY:'#38bdf8',NO_ACTION:'#64748b'};
 let modelChart = null;
 let signalsChart = null;
@@ -23,7 +29,8 @@ let signalsChart = null;
 function populateOptions() {
     for (const [id,key,label] of [['league','league','🏆 Todas las ligas'],['date','date','📆 Todas las fechas'],['signal','marketSignal','📊 Todas las señales']]) {
         const selected = byId(id).value;
-        const values = [...new Set(archive.picks.map(p => p[key]).filter(Boolean))].sort();
+        const values = [...new Set(historicalRows().map(p => key==='date' ? eventDay(p) : p[key]).filter(Boolean))].sort();
+        if (key==='date') values.reverse();
         byId(id).innerHTML = `<option value="">${label} (${values.length})</option>` + values.map(value => `<option value="${escape(value)}">${escape(value.replaceAll('_',' '))}</option>`).join('');
         byId(id).value = values.includes(selected) ? selected : '';
     }
@@ -32,9 +39,9 @@ function populateOptions() {
 function matchingRows() {
     const filters = Object.fromEntries(filterIds.map(id => [id,byId(id).value]));
     const query = normalize(filters.search.trim());
-    return archive.picks.filter(p => {
+    return historicalRows().filter(p => {
         if (query && !normalize([p.game,p.pick,p.market,p.league,p.opportunityId].join(' ')).includes(query)) return false;
-        const day = p.date || String(p.iso || '').slice(0,10);
+        const day = eventDay(p);
         if (filters.date && day !== filters.date || filters.from && day < filters.from || filters.to && day > filters.to) return false;
         if (filters.league && p.league !== filters.league || filters.category && p.pickCategory !== filters.category || filters.signal && p.marketSignal !== filters.signal) return false;
         for (const [prefix,key] of Object.entries(bounds)) {
@@ -85,10 +92,10 @@ function render() {
     page=Math.min(page,Math.max(0,Math.ceil(rows.length/pageSize)-1));
     const offset=page*pageSize;
     const average = key => { const values=rows.map(p=>numeric(p[key])).filter(n=>n!==null); return values.length ? number(values.reduce((a,b)=>a+b,0)/values.length)+'%' : '—'; };
-    byId('total').textContent=archive.picks.length;
+    byId('total').textContent=historicalRows().length;
     byId('matches').textContent=rows.length;
     byId('summaryCount').textContent=rows.length;
-    byId('summaryTotal').textContent=archive.picks.length;
+    byId('summaryTotal').textContent=historicalRows().length;
     byId('avgEv').textContent=average('ev');
     byId('avgEdge').textContent=average('modelEdge');
     byId('stake').textContent=number(rows.reduce((sum,p)=>sum+(Number(p.stake)||0),0))+' u';
@@ -102,7 +109,7 @@ function render() {
       <details class="event-details"><summary><span>Ver métricas y registro</span><span class="expand-icon" aria-hidden="true">+</span></summary><div class="event-expanded"><dl class="secondary-metrics">${[['Edge',number(p.modelEdge)+'%'],['Bets',number(p.betsPct)+'%'],['Handle',number(p.handlePct)+'%'],['Divergencia',number(p.divergence)],['Primera captura',dateText(p.firstCapturedAt)],['Última actualización',dateText(p.lastUpdatedAt)]].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl><button type="button" class="btn-chip" data-detail="${escape(p.opportunityId)}">Consultar JSON original</button></div></details>
     </article>`).join('');
     byId('empty').hidden=rows.length!==0;
-    byId('empty').textContent=archive.picks.length ? 'No hay oportunidades que coincidan con estos filtros.' : 'Aún no hay oportunidades guardadas.';
+    byId('empty').textContent=historicalRows().length ? 'No hay oportunidades que coincidan con estos filtros.' : 'Aún no hay oportunidades con fecha de hoy o anterior.';
     byId('range').textContent=rows.length ? `${offset+1}–${Math.min(offset+pageSize,rows.length)} de ${rows.length} oportunidades` : '0 oportunidades';
     byId('prev').disabled=page===0;
     byId('next').disabled=offset+pageSize>=rows.length;

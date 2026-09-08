@@ -33,6 +33,13 @@ no se deducen ligas a partir de nombres de equipos, selecciones o mercados.
 | `data/opportunities.json` | Oportunidades guardadas desde la activación del registro. |
 | `opportunities.html` | Sábana de consulta con filtros y detalle de cada oportunidad. |
 
+La sábana muestra eventos de hoy hacia atrás, por fecha del encuentro en CDMX.
+Los eventos futuros permanecen guardados pero no participan en la consulta,
+opciones de filtros, contadores, gráficos ni exportación XLS hasta su fecha.
+El archivo histórico conserva solo 22 campos: identificación del evento, selección,
+métricas de consulta, señal, FREE PICK e identificadores y fechas de captura.
+No duplica la serie `history` ni etiquetas y valores internos del modelo.
+
 Abre `opportunities.html` en el navegador o usa **Oportunidades guardadas** en el
 dashboard. Comparte sus estilos, tema claro/oscuro y gráficos de Modelo vs EV y
 señales de mercado. Las métricas y gráficos responden a los filtros de fecha,

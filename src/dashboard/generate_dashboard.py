@@ -624,23 +624,6 @@ FREE_RELEASE_SIGNALS = {
 }
 
 
-def _free_release_score(item):
-    signals = set(item.get("marketSignals") or [item.get("marketSignal")])
-    signal_weight = sum({
-        "REVERSE_LINE_MOVEMENT": 60,
-        "STEAM_MOVE": 50,
-        "SMART_MONEY": 40,
-        "SHARP_VS_PUBLIC": 25,
-        "CONSENSUS": 10,
-    }.get(signal, 0) for signal in signals)
-    return (
-        signal_weight
-        + float(item.get("ev") or 0) * 10
-        + float(item.get("modelEdge") or 0) * 5
-        + float(item.get("stake") or 0) * 20
-    )
-
-
 def assign_free_releases(items):
     """Publica todos los VALUE que cumplen los parámetros de Free Release.
 
@@ -650,8 +633,6 @@ def assign_free_releases(items):
     """
     for item in items:
         item["freeRelease"] = False
-        item["freeReleaseRank"] = None
-        item["publicationTier"] = None
 
     eligible = []
     for item in items:
@@ -664,21 +645,8 @@ def assign_free_releases(items):
         if not signals.intersection(FREE_RELEASE_SIGNALS): continue
         eligible.append(item)
 
-    ordered = sorted(eligible, key=_free_release_score, reverse=True)
-
-    for rank, item in enumerate(ordered, start=1):
+    for item in eligible:
         item["freeRelease"] = True
-        item["freeReleaseRank"] = rank
-        item["publicationTier"] = "FREE_RELEASE"
-
-    for item in items:
-        if item.get("publicationTier") is not None: continue
-        if item.get("pickCategory") == "PREMIUM":
-            item["publicationTier"] = "PREMIUM_ONLY"
-        elif item.get("pickCategory") == "VALUE":
-            item["publicationTier"] = "VALUE_POOL"
-        elif item.get("pickCategory") == "LONGSHOT":
-            item["publicationTier"] = "SPECULATIVE_ONLY"
 
     return items
 
@@ -710,8 +678,17 @@ def generate_dashboard(source_json_path=None, output_dir=None):
 
     all_events = assign_free_releases(build_picks(raw_data))
 
+    # Campos de cálculo y etiquetas antiguas sin consumidores en el frontend.
+    unused_fields = {
+        "action", "pattern", "trend", "priority", "priorityKey", "confidence",
+        "confidenceStakeCap", "oddsStakeCap", "riskClass", "riskLevel",
+        "fairProb", "flowAdjustment", "modelSource", "lineMove", "lineMoveMinutes",
+        "liquidityStatus", "impliedProb", "coherence",
+    }
+    public_events = [{key: value for key, value in pick.items() if key not in unused_fields} for pick in all_events]
+
     # Una descarga válida sin picks pregame muestra el estado vacío actual.
-    json_data = json.dumps(all_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    json_data = json.dumps(public_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     html_content = render_template(
         template_path,
         {
@@ -735,7 +712,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
     # (sin volver a descargar todo el HTML) para detectar picks nuevos y
     # refrescarse solo, sin que el usuario tenga que presionar F5.
     picks_json_path = os.path.join(output_dir, "picks.json")
-    atomic_write_json(picks_json_path, all_events, compact=True)
+    atomic_write_json(picks_json_path, public_events, compact=True)
 
     print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file

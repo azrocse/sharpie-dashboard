@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from opportunities import CDMX, save_opportunities
+from opportunities import CDMX, OPPORTUNITY_FIELDS, save_opportunities
 
 
 class OpportunityTests(unittest.TestCase):
@@ -30,7 +30,22 @@ class OpportunityTests(unittest.TestCase):
         self.assertEqual(data["count"], 2)
         saved = next(p for p in data["picks"] if p["pick"] == "Dodgers")
         for key, value in self.pick.items():
-            self.assertEqual(saved[key], value)
+            if key in OPPORTUNITY_FIELDS:
+                self.assertEqual(saved[key], value)
+            else:
+                self.assertNotIn(key, saved)
+
+    def test_compacts_existing_records_without_changing_saved_values(self):
+        first = save_opportunities([self.pick], self.path, self.now)
+        first['picks'][0].update(history=[{'odds': '+100'}], publicationTier='FREE_RELEASE', freeReleaseRank=14)
+        self.path.write_text(json.dumps(first), encoding='utf-8')
+        saved = save_opportunities([], self.path, self.now)['picks'][0]
+        for key in OPPORTUNITY_FIELDS:
+            if key in first['picks'][0]:
+                self.assertEqual(saved[key], first['picks'][0][key])
+        self.assertNotIn('history', saved)
+        self.assertNotIn('publicationTier', saved)
+        self.assertNotIn('freeReleaseRank', saved)
 
     def test_updates_same_pick_when_card_id_or_inferred_league_changes(self):
         first = save_opportunities([self.pick], self.path, self.now)["picks"][0]
