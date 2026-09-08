@@ -8,6 +8,8 @@ from zoneinfo import ZoneInfo
 from dashboard.template_loader import read_utf8, render_template
 from storage import atomic_write_json, atomic_write_text
 from opportunities import save_opportunities
+from tracking import update_tracking
+from telegram_alerts import attach_links
 from dashboard.generate_opportunities_viewer import generate_opportunities_viewer
 
 
@@ -646,6 +648,12 @@ def generate_dashboard(source_json_path=None, output_dir=None):
         raise SystemExit("Proceso detenido para evitar generar un index.html corrupto.")
 
     all_events = assign_free_releases(build_picks(raw_data))
+    runtime = Path(output_dir) / '.runtime'
+    update_tracking(all_events, runtime / 'tracking.json', now=cdmx_now)
+    try:
+        attach_links(all_events, runtime)
+    except ValueError:
+        print('[AVISO] Telegram requiere revisar su configuración privada.')
 
     # Una descarga válida sin picks pregame muestra el estado vacío actual.
     json_data = json.dumps(all_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")

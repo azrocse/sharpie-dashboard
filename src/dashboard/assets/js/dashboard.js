@@ -58,19 +58,19 @@ async function checkForNewPicks() {
         const changed = JSON.stringify(freshData) !== JSON.stringify(PICKS);
         if (!changed) return;
 
-        const oldByKey = new Map(PICKS.map(p => [getWatchlistId(p), p]));
-        const newKeys = new Set(freshData.map(getWatchlistId));
+        const oldByKey = new Map(PICKS.map(p => [getPickId(p), p]));
+        const newKeys = new Set(freshData.map(getPickId));
         const addedKeys = [...newKeys].filter(k => !oldByKey.has(k));
         const removedCount = [...oldByKey.keys()].filter(k => !newKeys.has(k)).length;
 
         // Picks que YA existían pero cambiaron de valor (Bets/Handle/Cuota/Stake/etc)
         const updatedKeys = freshData
             .filter(p => {
-                const key = getWatchlistId(p);
+                const key = getPickId(p);
                 const prev = oldByKey.get(key);
                 return prev && JSON.stringify(prev) !== JSON.stringify(p);
             })
-            .map(getWatchlistId);
+            .map(getPickId);
 
         // Comprobación de filtro activo: si el usuario dejó un filtro puesto
         // (ej. Hora/Rango: próxima 1h, Cuota>-150, Edge>1.5, EV>2.0), se
@@ -149,7 +149,6 @@ const state = {
     trend: "",
     featuredOnly: false,
     freeReleaseOnly: false,
-    watchlistOnly: false,
     showFullMarket: false,
     sort: "time",
     autoThemeEnabled: true,
@@ -184,14 +183,14 @@ function isAnyFilterActive() {
     ];
     if (numericKeys.some(k => s[k] !== null && s[k] !== undefined)) return true;
     if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
-    if (s.featuredOnly || s.freeReleaseOnly || s.watchlistOnly) return true;
+    if (s.featuredOnly || s.freeReleaseOnly) return true;
     return false;
 }
 
 // ============ FILTROS GUARDADOS (localStorage) ============
 const FILTER_KEYS = [
     "search", "date", "league", "trend", "timeRange", "recommendation",
-    "featuredOnly", "freeReleaseOnly", "watchlistOnly",
+    "featuredOnly", "freeReleaseOnly",
     "modeloMin", "modeloMax", "cuotaMin", "cuotaMax", "edgeMin", "edgeMax",
     "betsMin", "betsMax", "handleMin", "handleMax",
     "evMin", "evMax", "stakeMin", "stakeMax", "divergenciaMin", "divergenciaMax",
@@ -244,11 +243,9 @@ function syncFilterInputsFromState() {
 
     const featuredBtn = document.getElementById("featuredOnly");
     const freeReleaseBtn = document.getElementById("freeReleaseOnly");
-    const watchlistBtn = document.getElementById("watchlistOnly");
     const fullMarketBtn = document.getElementById("fullMarketToggle");
     if (featuredBtn) featuredBtn.setAttribute("aria-pressed", String(state.featuredOnly));
     if (freeReleaseBtn) freeReleaseBtn.setAttribute("aria-pressed", String(state.freeReleaseOnly));
-    if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", String(state.watchlistOnly));
     if (fullMarketBtn) {
         fullMarketBtn.setAttribute("aria-pressed", String(state.showFullMarket));
         fullMarketBtn.textContent = state.showFullMarket ? "🎯 Mostrar solo apuestas" : "🔎 Mostrar mercado completo";
@@ -257,7 +254,7 @@ function syncFilterInputsFromState() {
 
 function applyFilterPreset(preset) {
     FILTER_KEYS.forEach(k => {
-        const isToggle = ["featuredOnly", "freeReleaseOnly", "watchlistOnly"].includes(k);
+        const isToggle = ["featuredOnly", "freeReleaseOnly"].includes(k);
         const defaultVal = isToggle ? false : (typeof state[k] === "string" ? "" : null);
         state[k] = (preset.filters[k] !== undefined) ? preset.filters[k] : defaultVal;
     });
@@ -604,7 +601,7 @@ function selectTopPick(picks) {
 }
 
 function isTopPick(p) {
-    return TOP_PICK_ID !== null && getWatchlistId(p) === TOP_PICK_ID;
+    return TOP_PICK_ID !== null && getPickId(p) === TOP_PICK_ID;
 }
 
 // Devuelve únicamente las mediciones donde Bets, Handle o Cuota realmente cambiaron
@@ -840,7 +837,7 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
     // El Top Pick es global: los filtros de pantalla no deben sustituir al
     // mejor pick operativo disponible en este momento.
     const best = selectTopPick(allPendingPicks);
-    TOP_PICK_ID = best ? getWatchlistId(best) : null;
+    TOP_PICK_ID = best ? getPickId(best) : null;
     statState.mejor = best ? [best] : [];
     
     const elMejor = document.getElementById("statMejor");
@@ -1073,7 +1070,6 @@ function applyFiltersAndSort(list) {
         if (state.divergenciaMin !== null && !isNaN(state.divergenciaMin) && divVal < state.divergenciaMin) return false;
         if (state.divergenciaMax !== null && !isNaN(state.divergenciaMax) && divVal > state.divergenciaMax) return false;
 
-        if (state.watchlistOnly && !isInWatchlist(p)) return false;
 
         if (state.featuredOnly && !isMediaFeaturedPick(p)) return false;
         if (state.freeReleaseOnly && !p.freeRelease) return false;
@@ -1179,162 +1175,31 @@ function showToastX() {
     }, 3000);
 }
 
-// ============ MY WATCHLIST (Parte 1: reemplaza el Recordatorio de 60 min) ============
-// Al "Seguir" un pick se guarda un snapshot (bets/handle/divergencia/cuota)
-// en localStorage. Cada vez que el dashboard se regenera y se recarga, se
-// compara el dato actual contra ese snapshot para mostrar si la línea
-// mejoró o empeoró desde que se empezó a seguir.
-const WATCHLIST_STORAGE_KEY = "sharpie_watchlist_v1";
-
-function getWatchlistId(p) {
-    return `${(p.league || '').toLowerCase()}|${(p.game || '').toLowerCase()}|${(p.market || '').toLowerCase()}|${(p.pick || '').toLowerCase()}`.trim();
+// Seguimiento calculado por el backend, independiente de la suscripción Telegram.
+function getPickId(p) {
+    return p.trackingId || [p.date,p.league,p.game,p.market,p.pick].join('|').toLowerCase();
 }
 
-function loadWatchlist() {
-    try {
-        return JSON.parse(localStorage.getItem(WATCHLIST_STORAGE_KEY)) || {};
-    } catch (e) {
-        return {};
-    }
-}
-
-function saveWatchlist(list) {
-    try {
-        localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(list));
-    } catch (e) {
-        console.error("Error al guardar watchlist:", e);
-    }
-}
-
-function isInWatchlist(p) {
-    const list = loadWatchlist();
-    return !!list[getWatchlistId(p)];
-}
-
-function toggleWatchlist(p) {
-    const list = loadWatchlist();
-    const id = getWatchlistId(p);
-
-    if (list[id]) {
-        delete list[id];
-        saveWatchlist(list);
-        showAttractiveNotification({
-            title: "👁 Dejaste de seguir",
-            body: `${p.game || 'Evento'} — ${p.pick || ''}`,
-            variant: "info"
-        });
-    } else {
-        const entry = {
-            followedAt: new Date().toISOString(),
-            league: p.league || '',
-            game: p.game || '',
-            pick: p.pick || '',
-            market: p.market || '',
-            snapshot: {
-                odds: p.odds || p.cuota || null,
-                edge: p.modelEdge != null ? Number(p.modelEdge) : null,
-                ev: p.ev != null ? Number(p.ev) : null
-            }
-        };
-        list[id] = entry;
-        saveWatchlist(list);
-        showAttractiveNotification({
-            title: "👁 Ahora sigues este pick",
-            body: `${p.game || 'Evento'} — ${p.pick || ''}`,
-            variant: "success"
-        });
-    }
-    render();
-}
-
-// Flecha de comparación actual vs snapshot -- usada en el panel de watchlist
-function watchlistDeltaArrow(current, snapshot) {
-    if (current == null || snapshot == null) return '';
-    const diff = current - snapshot;
-    if (Math.abs(diff) < 0.05) return ' <span class="wl-delta wl-flat">＝</span>';
-    return diff > 0 ? ` <span class="wl-delta wl-up">▲ +${diff.toFixed(1)}</span>` : ` <span class="wl-delta wl-down">▼ ${diff.toFixed(1)}</span>`;
-}
-
-// Veredicto de SEGUIMIENTO (distinto de la Señal de la card -- esto compara
-// el movimiento desde que se empezó a seguir, no el estado actual del
-// mercado). Solo 3 métricas: Cuota, Stake y EV.
-//
-// Umbrales de DESCARTAR:
-//  - Cuota se abarata >=35 pts americanos (ej. -110 -> -145) -- el valor
-//    original ya no está.
-//  - EV cae a 0 o negativo -- ya no hay ventaja matemática.
-//  - EV cae >=50% respecto al de apertura -- la ventaja se redujo a la mitad.
-//  - Edge Modelo cae a 0 o negativo habiendo empezado en positivo.
-function pctChange(current, snapshot) {
-    if (current == null || snapshot == null || snapshot === 0) return null;
-    return ((current - snapshot) / Math.abs(snapshot)) * 100;
-}
-
-function watchlistVerdict(p, snap) {
-    const oddsNowRaw = parseInt(String(p.odds || p.cuota || '').replace('+', ''), 10);
-    const oddsSnapRaw = parseInt(String(snap.odds || '').replace('+', ''), 10);
-    const hasOdds = !isNaN(oddsNowRaw) && !isNaN(oddsSnapRaw);
-    const oddsDelta = hasOdds ? (oddsNowRaw - oddsSnapRaw) : null; // positivo = "sube" (favorable)
-
-    const evNow = p.ev != null ? Number(p.ev) : null;
-    const evSnap = snap.ev != null ? Number(snap.ev) : null;
-    const edgeNow = p.modelEdge != null ? Number(p.modelEdge) : null;
-    const edgeSnap = snap.edge != null ? Number(snap.edge) : null;
-
-    if (evSnap == null || edgeSnap == null) {
-        return { verdict: 'MONITOREAR', text: 'Datos insuficientes para comparar contra el punto de apertura del seguimiento.' };
-    }
-
-    const evPctMove = pctChange(evNow, evSnap);
-
-    // DESCARTAR -- basta con que se cumpla UNA condición severa
-    if (hasOdds && oddsDelta <= -35) {
-        return { verdict: 'DESCARTAR', text: `Cuota se abarató con fuerza (${snap.odds} → ${p.odds || p.cuota}) -- el valor original ya no está.` };
-    }
-    if (evNow == null || evNow <= 0) {
-        return { verdict: 'DESCARTAR', text: 'El EV cayó a cero o negativo desde que se sigue -- ya no hay ventaja matemática.' };
-    }
-    if (evPctMove !== null && evPctMove <= -50) {
-        return { verdict: 'DESCARTAR', text: `EV cayó ${evPctMove.toFixed(0)}% desde que se sigue (${evSnap}% → ${evNow}%).` };
-    }
-    if (edgeSnap > 0 && (edgeNow == null || edgeNow <= 0)) {
-        return { verdict: 'DESCARTAR', text: 'El Edge Modelo cayó a cero o negativo -- perdió la ventaja que tenía al momento de seguirlo.' };
-    }
-
-    // APOSTAR -- las 3 métricas se mantienen o mejoran
-    const cond1 = hasOdds && oddsDelta >= 0;
-    const cond2 = evNow >= evSnap;
-    const cond3 = edgeNow != null && edgeNow >= edgeSnap;
-
-    if (cond1 && cond2 && cond3) {
-        return { verdict: 'APOSTAR', text: `Cuota, EV y Edge Modelo se mantienen o mejoran desde que se sigue -- línea confirmando a favor.` };
-    }
-
-    // MONITOREAR -- movimiento leve en contra, sin cruzar el umbral de descarte
-    return { verdict: 'MONITOREAR', text: 'Movimiento leve en contra desde que se sigue -- todavía dentro de rango normal, sin señal de descarte.' };
-}
-
-function watchlistPanelHtml(p) {
-    const list = loadWatchlist();
-    const entry = list[getWatchlistId(p)];
-    if (!entry) return '';
-
-    const snap = entry.snapshot || {};
-    const followedDate = entry.followedAt ? new Date(entry.followedAt) : null;
-    const followedText = followedDate && !isNaN(followedDate) ? followedDate.toLocaleString('es-MX', {timeZone:'America/Mexico_City',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}) : '—';
-    const v = watchlistVerdict(p, snap);
-    const verdictCls = v.verdict === 'APOSTAR' ? 'good' : (v.verdict === 'DESCARTAR' ? 'bad' : 'warn');
-    const verdictIcon = v.verdict === 'APOSTAR' ? '✅' : (v.verdict === 'DESCARTAR' ? '🗑️' : '👀');
-
-    return `<div class="watchlist-panel">
-        <div class="watchlist-panel-title"><strong>En seguimiento</strong><span>${escapeHTML(followedText)} · CDMX</span></div>
-        <table class="watchlist-comparison"><thead><tr><th scope="col">Métrica</th><th scope="col">Al seguir</th><th scope="col">Actual</th></tr></thead><tbody>
-            <tr><th scope="row">Cuota</th><td>${escapeHTML(String(snap.odds ?? '—'))}</td><td>${escapeHTML(p.odds || p.cuota || '—')}</td></tr>
-            <tr><th scope="row">Edge modelo</th><td>${snap.edge != null ? escapeHTML(snap.edge)+'%' : '—'}</td><td>${p.modelEdge != null ? escapeHTML(p.modelEdge)+'%' : '—'}${watchlistDeltaArrow(p.modelEdge, snap.edge)}</td></tr>
-            <tr><th scope="row">EV</th><td>${snap.ev != null ? escapeHTML(snap.ev)+'%' : '—'}</td><td>${p.ev != null ? escapeHTML(p.ev)+'%' : '—'}${watchlistDeltaArrow(p.ev, snap.ev)}</td></tr>
-        </tbody></table>
-        <div class="watchlist-verdict"><span class="watchlist-verdict-label ${verdictCls}">${verdictIcon} ${v.verdict}</span><p>${escapeHTML(v.text)}</p></div>
+function trackingPanelHtml(p) {
+    const t=p.tracking;
+    if (!t) return '';
+    const stale=!t.lastObservation || Date.now()-new Date(t.lastObservation).getTime()>15*60000;
+    const state=stale ? 'STALE' : t.state;
+    const labels={READY:'Cumple criterios de entrada',CONFIRMING:'Confirmando señal',WAITING:'Esperando ventana',NO_VALUE:'Sin entrada confirmada',STALE:'Lectura desactualizada',INCOMPLETE:'Datos incompletos',UNAVAILABLE:'Sin lectura actual',CLOSED:'Seguimiento cerrado'};
+    const cls=state==='READY'?'good':state==='NO_VALUE'?'bad':'warn';
+    const date=value=>value ? new Date(value).toLocaleString('es-MX',{timeZone:'America/Mexico_City',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}):'—';
+    const initial=t.initial||{}, model=t.firstEvaluation||{};
+    const value=(v,suffix='')=>v==null?'—':escapeHTML(String(v))+suffix;
+    const rows=[['Cuota',initial.odds,p.odds,''],['Modelo',model.modelProb,p.modelProb,'%'],['Edge',model.modelEdge,p.modelEdge,'%'],['EV',model.ev,p.ev,'%'],['Bets',initial.betsPct,p.betsPct,'%'],['Handle',initial.handlePct,p.handlePct,'%']];
+    return `<div class="tracking-panel"><div class="tracking-panel-title"><strong>Seguimiento automático</strong><span>Desde ${escapeHTML(date(t.firstObservedAt))} · CDMX</span></div>
+      <div class="tracking-verdict"><span class="tracking-verdict-label ${cls}">${escapeHTML(labels[state]||state)}</span><p>${escapeHTML(stale?'No se confirma entrada con una lectura antigua.':(t.reasons||[]).join(' '))}</p></div>
+      <details class="tracking-comparison-details"><summary>Comparar desde el inicio <span aria-hidden="true">+</span></summary><table class="tracking-comparison"><thead><tr><th>Métrica</th><th>Referencia</th><th>Actual</th></tr></thead><tbody>${rows.map(([label,before,now,suffix])=>`<tr><th scope="row">${label}</th><td>${value(before,suffix)}</td><td>${value(now,suffix)}</td></tr>`).join('')}</tbody></table><p class="tracking-note">Cuota y flujo: primera observación disponible. Modelo, Edge y EV: primera evaluación guardada (${escapeHTML(date(t.firstEvaluatedAt))}).</p></details>
     </div>`;
+}
+
+function telegramButtonHtml(p) {
+    const url=typeof p.telegramUrl==='string' && /^https:\/\/t\.me\/[A-Za-z0-9_]+\?start=pick_[a-f0-9]{24}$/.test(p.telegramUrl) ? p.telegramUrl : null;
+    return url ? `<a class="btn-telegram" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" title="Confirma Iniciar en Telegram para activar los avisos">Avisarme por Telegram ↗</a>` : '<button class="btn-telegram" disabled title="El bot todavía no está configurado">Telegram pendiente</button>';
 }
 
 function showAttractiveNotification({ title, body, variant = "info" }) {
@@ -1467,8 +1332,6 @@ function updateFilterCounts(pendingPicks) {
         });
     }
 
-    const watchlistBtn = document.getElementById("watchlistOnly");
-    if (watchlistBtn) watchlistBtn.textContent = `👁 My Watchlist (${pendingPicks.filter(p => isInWatchlist(p)).length})`;
     const freeReleaseBtn = document.getElementById("freeReleaseOnly");
     if (freeReleaseBtn) freeReleaseBtn.textContent = `📣 Free para redes (${pendingPicks.filter(p => p.freeRelease).length})`;
 }
@@ -1484,7 +1347,7 @@ function render() {
 
     updateFilterCounts(visibleUniverse);
 
-    ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getWatchlistId));
+    ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getPickId));
 
     updateMetrics(activeList, pendingPicks);
     updateChartsData(activeList);
@@ -1536,8 +1399,8 @@ function render() {
         const isFreeRelease = Boolean(p.freeRelease);
         const isTop = isTopPick(p);
         const isMediaFeatured = isMediaFeaturedPick(p);
-        const isNew = RECENTLY_ADDED_IDS.has(getWatchlistId(p));
-        const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getWatchlistId(p));
+        const isNew = RECENTLY_ADDED_IDS.has(getPickId(p));
+        const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getPickId(p));
 
         let cardClasses = "pcard";
         if (isLongshot) cardClasses += " longshot-card";
@@ -1558,7 +1421,6 @@ function render() {
         const handlePct = p.handlePct != null ? p.handlePct : 50;
 
         const displayStake = Number(p.stake) || 0;
-        const isFollowed = isInWatchlist(p);
 
         const dateDisplay = escapeHTML(p.date || "--/--/----");
         const timeDisplay = escapeHTML(p.time || "--:--");
@@ -1624,16 +1486,13 @@ function render() {
                 </div>
 
                 <div class="pcard-footer">
-                    ${isFollowed ? watchlistPanelHtml(p) : ''}
+                    ${trackingPanelHtml(p)}
                     <div class="pcard-action-row">
                         <button class="btn-copy-x pcard-action-row-item" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
                             <span>✨</span>
                             <span>Copiar para X</span>
                         </button>
-                        <button class="btn-reminder ${isFollowed ? 'active' : ''}" onclick='toggleWatchlist(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
-                            <span>${isFollowed ? '👁' : '👁‍🗨'}</span>
-                            <span>${isFollowed ? 'Siguiendo' : 'Seguir'}</span>
-                        </button>
+                        ${telegramButtonHtml(p)}
                     </div>
                 </div>
             </div>
@@ -1697,15 +1556,6 @@ function setupListeners() {
         state.showFullMarket = !state.showFullMarket;
         fullMarketBtn.setAttribute("aria-pressed", String(state.showFullMarket));
         fullMarketBtn.textContent = state.showFullMarket ? "🎯 Mostrar solo apuestas" : "🔎 Mostrar mercado completo";
-        render();
-    });
-
-    // My Watchlist -- filtra solo por picks seguidos (localStorage), independiente
-    // de las demás categorías.
-    const watchlistBtn = document.getElementById("watchlistOnly");
-    if (watchlistBtn) watchlistBtn.addEventListener("click", () => {
-        state.watchlistOnly = !state.watchlistOnly;
-        watchlistBtn.setAttribute("aria-pressed", String(state.watchlistOnly));
         render();
     });
 
@@ -1786,7 +1636,6 @@ function setupListeners() {
             state.trend = "";
             state.featuredOnly = false;
             state.freeReleaseOnly = false;
-            state.watchlistOnly = false;
             state.showFullMarket = false;
             state.sort = "time";
             
@@ -1815,7 +1664,6 @@ function setupListeners() {
 
             if (featuredBtn) featuredBtn.setAttribute("aria-pressed", "false");
             if (freeReleaseBtn) freeReleaseBtn.setAttribute("aria-pressed", "false");
-            if (watchlistBtn) watchlistBtn.setAttribute("aria-pressed", "false");
             if (fullMarketBtn) {
                 fullMarketBtn.setAttribute("aria-pressed", "false");
                 fullMarketBtn.textContent = "🔎 Mostrar mercado completo";

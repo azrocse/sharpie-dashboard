@@ -1410,37 +1410,6 @@
 
         .btn-copy-x.pcard-action-row-item { margin-top: 0; flex: 1; }
 
-        .btn-reminder {
-            background: var(--panel2);
-            color: var(--text);
-            border: 1px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-            flex: 1;
-            white-space: nowrap;
-        }
-
-        .btn-reminder:hover {
-            transform: translateY(-2px);
-            border-color: var(--amber);
-        }
-
-        .btn-reminder:active { transform: translateY(0); }
-
-        .btn-reminder.active {
-            background: var(--amber-soft);
-            border-color: var(--amber);
-            color: var(--amber);
-        }
-
         /* RECORDATORIOS: notificaciones visuales en navegador */
         .reminder-notif-container {
             position: fixed;

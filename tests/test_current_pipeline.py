@@ -45,14 +45,14 @@ class CurrentPipelineTests(unittest.TestCase):
         with patch.object(DraftKingsScraper, "fetch_page", return_value=html or sample_html()), patch.object(parse, "datetime") as clock:
             clock.now.return_value = observed
             clock.fromtimestamp.side_effect = datetime.fromtimestamp
-            return main.main()
+            return main.main(runtime_dir=self.root / '.runtime')
 
     def test_full_flow_creates_only_current_state_and_preserves_observations(self):
         self.run_feed()
         self.assertEqual(json.loads((self.root / "picks.json").read_text()), [])
         self.run_feed(minute=1)
         files = {path.relative_to(self.root).as_posix() for path in self.root.rglob("*") if path.is_file()}
-        self.assertEqual(files, {"data/parsed/sports.json", "data/analyzed/sharpie.json", "data/opportunities.json", "opportunities.html", "index.html", "picks.json"})
+        self.assertEqual(files, {"data/parsed/sports.json", "data/analyzed/sharpie.json", "data/opportunities.json", "opportunities.html", "index.html", "picks.json", ".runtime/tracking.json"})
         picks = json.loads((self.root / "picks.json").read_text(encoding="utf-8"))
         self.assertEqual(len(picks), 2)
         self.assertTrue(all(pick["league"] == "SPORTS" for pick in picks))
@@ -84,10 +84,10 @@ class CurrentPipelineTests(unittest.TestCase):
     def test_failed_download_or_parse_keeps_last_successful_files(self):
         self.run_feed()
         self.run_feed(minute=1)
-        before = {path: path.read_bytes() for path in self.root.rglob("*") if path.is_file()}
+        before = {path: path.read_bytes() for path in self.root.rglob("*") if path.is_file() and '.runtime' not in path.parts}
         with patch.object(DraftKingsScraper, "fetch_page", return_value=""):
             with self.assertRaises(RuntimeError):
-                main.main()
+                main.main(runtime_dir=self.root / '.runtime')
         with self.assertRaises(ValueError):
             self.run_feed(minute=2, html=sample_html().replace("75% 40%", "5% 40%"))
         self.assertTrue(all(path.read_bytes() == content for path, content in before.items()))
@@ -104,7 +104,7 @@ class CurrentPipelineTests(unittest.TestCase):
         before = (self.root / "data/parsed/sports.json").read_bytes()
         with patch.object(DraftKingsScraper, "_download", side_effect=[sample_html(), requests.ConnectionError("offline")]):
             with self.assertRaises(requests.ConnectionError):
-                main.main()
+                main.main(runtime_dir=self.root / '.runtime')
         self.assertEqual((self.root / "data/parsed/sports.json").read_bytes(), before)
 
     def test_invalid_current_json_does_not_overwrite_analysis(self):

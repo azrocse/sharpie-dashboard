@@ -97,6 +97,54 @@ acotadas, exclusión de eventos iniciados y reglas vigentes de riesgo y stake.
 
 ## Actualización automática
 
+Todas las cards incluyen seguimiento automático desde la primera observación
+disponible. La cuota/Bets/Handle iniciales se conservan; Modelo/Edge/EV parten
+de la primera evaluación realmente guardada, sin inventar valores anteriores.
+La referencia persiste en `.runtime/tracking.json` aunque se cierre el navegador.
+La antigua watchlist de localStorage ya no controla el seguimiento.
+
+Los criterios iniciales están en `src/tracking.py` (`DEFAULT_POLICY`): EV mínimo
+1%, Edge mínimo 1 punto, stake mínimo 1u, confianza mínima 55, categoría VALUE o
+PREMIUM y acción bet; señal de flujo admitida, porcentajes válidos y divergencia
+consistente. Se requieren dos procesamientos con observaciones distintas que
+cumplan los criterios, datos de hasta 15 minutos y entre 10 minutos y 24 horas
+hasta el inicio. Son reglas operativas iniciales, no una calibración de resultados
+ni garantía del mejor momento de entrada. Cuota, modelo, EV y Edge se evalúan
+como condiciones relacionadas; no se suman como evidencias independientes.
+
+### Avisos por Telegram
+
+Configura un bot de [BotFather](https://t.me/BotFather) localmente:
+
+```powershell
+python -B src/setup_telegram.py
+```
+
+El asistente pide el token con entrada oculta, valida el bot y permite elegir
+suscripciones públicas o una lista de IDs de chats privados autorizados.
+Guarda el resultado en `.runtime/telegram.json`. **No publiques esa carpeta**:
+contiene token, chats, suscripciones y referencias persistentes; está excluida
+de Git. Respáldala de forma privada para conservar el seguimiento entre equipos.
+El HTML solo recibe el enlace público del bot y el identificador del pick.
+
+En la card, «Avisarme por Telegram» abre el bot. El usuario debe confirmar
+**Iniciar** en Telegram; abrir el enlace por sí solo no activa la suscripción.
+Se confirma la suscripción en el siguiente procesamiento (aprox. cinco minutos).
+`/stop ID_DEL_PICK` cancela un pick; `/stop` cancela todos los del chat.
+Sin configuración, se muestra «Telegram pendiente» y no se envían mensajes.
+
+El mismo proceso de `auto_publish.ps1` consulta comandos y avisa al cumplir los
+criterios, perderlos o cerrar el prepartido. Una mejora exige al menos +2 puntos
+de EV y +1 de Edge desde el último aviso, y 30 minutos de espera. No repite la
+misma condición en cada ciclo. Lecturas vencidas, ausencias o errores del feed
+no generan avisos positivos. Los fallos de Telegram se reintentan sin impedir
+publicar el dashboard; los bloqueos del bot cancelan las suscripciones del chat.
+La entrega puede demorarse por el ciclo de ejecución. Un fallo de red después
+de que Telegram acepte un mensaje puede causar un duplicado al reintentar.
+El equipo y la tarea programada deben seguir activos; GitHub Pages no ejecuta
+el bot. Implementación basada en los [enlaces de inicio](https://core.telegram.org/bots/features#deep-linking)
+y la [Bot API oficial](https://core.telegram.org/bots/api).
+
 `auto_publish.ps1` ejecuta el flujo y publica únicamente sus salidas actuales.
 Comprueba el código de salida de Python y de cada operación de Git, e impide
 ejecuciones simultáneas del script.
