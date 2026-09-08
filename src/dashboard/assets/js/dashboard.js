@@ -1184,22 +1184,23 @@ function trackingPanelHtml(p) {
     const t=p.tracking;
     if (!t) return '';
     const stale=!t.lastObservation || Date.now()-new Date(t.lastObservation).getTime()>15*60000;
-    const state=stale ? 'STALE' : t.state;
-    const labels={READY:'Cumple criterios de entrada',CONFIRMING:'Confirmando señal',WAITING:'Esperando ventana',NO_VALUE:'Sin entrada confirmada',STALE:'Lectura desactualizada',INCOMPLETE:'Datos incompletos',UNAVAILABLE:'Sin lectura actual',CLOSED:'Seguimiento cerrado'};
+    const state=t.state==='CLOSED' ? 'CLOSED' : stale ? 'STALE' : t.state;
+    const labels={READY:'Con valor',NO_VALUE:'Sin valor',STALE:'Actualizando datos',INCOMPLETE:'Actualizando datos',UNAVAILABLE:'Actualizando datos',CLOSED:'Finalizado'};
     const cls=state==='READY'?'good':state==='NO_VALUE'?'bad':'warn';
     const date=value=>value ? new Date(value).toLocaleString('es-MX',{timeZone:'America/Mexico_City',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}):'—';
     const initial=t.initial||{}, model=t.firstEvaluation||{};
     const value=(v,suffix='')=>v==null?'—':escapeHTML(String(v))+suffix;
     const rows=[['Cuota',initial.odds,p.odds,''],['Modelo',model.modelProb,p.modelProb,'%'],['Edge',model.modelEdge,p.modelEdge,'%'],['EV',model.ev,p.ev,'%'],['Bets',initial.betsPct,p.betsPct,'%'],['Handle',initial.handlePct,p.handlePct,'%']];
     return `<div class="tracking-panel"><div class="tracking-panel-title"><strong>Seguimiento automático</strong><span>Desde ${escapeHTML(date(t.firstObservedAt))} · CDMX</span></div>
-      <div class="tracking-verdict"><span class="tracking-verdict-label ${cls}">${escapeHTML(labels[state]||state)}</span><p>${escapeHTML(stale?'No se confirma entrada con una lectura antigua.':(t.reasons||[]).join(' '))}</p></div>
+      <div class="tracking-verdict"><span class="tracking-verdict-label ${cls}">${escapeHTML(labels[state]||'Actualizando datos')}</span></div>
       <details class="tracking-comparison-details"><summary>Comparar desde el inicio <span aria-hidden="true">+</span></summary><table class="tracking-comparison"><thead><tr><th>Métrica</th><th>Referencia</th><th>Actual</th></tr></thead><tbody>${rows.map(([label,before,now,suffix])=>`<tr><th scope="row">${label}</th><td>${value(before,suffix)}</td><td>${value(now,suffix)}</td></tr>`).join('')}</tbody></table><p class="tracking-note">Cuota y flujo: primera observación disponible. Modelo, Edge y EV: primera evaluación guardada (${escapeHTML(date(t.firstEvaluatedAt))}).</p></details>
     </div>`;
 }
 
-function telegramButtonHtml(p) {
-    const url=typeof p.telegramUrl==='string' && /^https:\/\/t\.me\/[A-Za-z0-9_]+\?start=pick_[a-f0-9]{24}$/.test(p.telegramUrl) ? p.telegramUrl : null;
-    return url ? `<a class="btn-telegram" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" title="Confirma Iniciar en Telegram para activar los avisos">Avisarme por Telegram ↗</a>` : '<button class="btn-telegram" disabled title="El bot todavía no está configurado">Telegram pendiente</button>';
+function renderTelegramSubscription() {
+    const candidate=window.SHARPIE_TELEGRAM_URL;
+    const url=typeof candidate==='string' && /^https:\/\/t\.me\/[A-Za-z0-9_]+\?start=alerts$/.test(candidate) ? candidate : null;
+    document.getElementById('telegramSubscription').innerHTML=url ? `<a class="btn-telegram" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">Recibir picks por Telegram ↗</a><small>Actívalos una vez. Pausa desde Telegram.</small>` : '';
 }
 
 function showAttractiveNotification({ title, body, variant = "info" }) {
@@ -1426,7 +1427,7 @@ function render() {
         const timeDisplay = escapeHTML(p.time || "--:--");
 
         return `
-            <div class="${cardClasses}">
+            <div class="${cardClasses}" id="pick-${escapeHTML(p.trackingId || '')}">
                 <div>
                     <div class="card-hero-header" style="--signal-color:${config.text}; --signal-bg:${config.bg};">
                         <div class="signal-main">
@@ -1492,7 +1493,6 @@ function render() {
                             <span>✨</span>
                             <span>Copiar para X</span>
                         </button>
-                        ${telegramButtonHtml(p)}
                     </div>
                 </div>
             </div>
@@ -1677,13 +1677,28 @@ function setupListeners() {
 document.addEventListener("DOMContentLoaded", async () => {
     startRealtimeClock();
     setupThemeToggle();
+    renderTelegramSubscription();
     initCharts();
     await loadData();
+    const linkedId=new URLSearchParams(location.search).get('pick');
+    const linkedPick=PICKS.find(p=>p.trackingId===linkedId);
+    if (linkedPick && isEventPending(linkedPick)) {
+        state.search=linkedPick.game;
+        state.showFullMarket=true;
+        document.getElementById('search').value=state.search;
+    }
     populateSelectOptions();
     setupListeners();
+    syncFilterInputsFromState();
     renderSavedFilterChips();
     setupStatPopups();
     render();
+
+    if (linkedPick && isEventPending(linkedPick)) {
+        document.getElementById(`pick-${linkedId}`)?.scrollIntoView({block:'center'});
+    } else if (linkedId) {
+        showAttractiveNotification({title:'Pick no disponible',body:'Este pick ya no está en el dashboard actual. Puedes consultar las oportunidades guardadas.',variant:'info'});
+    }
 
     // Actualización de timers cada 30s
     setInterval(() => {

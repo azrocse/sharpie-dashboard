@@ -8,12 +8,7 @@ from pathlib import Path
 from opportunities import CDMX, _event_time, _identity
 from storage import atomic_write_json
 
-DEFAULT_POLICY = {
-    'minEv': 1.0, 'minEdge': 1.0, 'minStake': 1.0, 'minConfidence': 55.0,
-    'minMinutes': 10, 'maxMinutes': 1440, 'maxAgeMinutes': 15,
-    'confirmations': 2, 'improvementEv': 2.0, 'improvementEdge': 1.0,
-}
-FLOW_SIGNALS = {'SMART_MONEY', 'CONSENSUS', 'STEAM_MOVE', 'REVERSE_LINE_MOVEMENT', 'SHARP_VS_PUBLIC'}
+MAX_AGE_MINUTES = 15
 METRICS = ('odds', 'modelProb', 'modelEdge', 'ev', 'stake', 'betsPct', 'handlePct',
            'divergence', 'marketSignal', 'confidenceScore')
 
@@ -51,7 +46,7 @@ def read_state(path):
     return payload
 
 
-def assess(pick, now, policy):
+def assess(pick, now):
     kickoff = _event_time(pick)
     observations = [timestamp(h.get('timestamp') or h.get('time')) for h in pick.get('history', [])]
     observations = sorted(set(t for t in observations if t and t <= now))
@@ -59,36 +54,20 @@ def assess(pick, now, policy):
     minutes = (kickoff-now).total_seconds()/60 if kickoff else None
     if minutes is not None and minutes <= 0:
         return 'CLOSED', ['El encuentro ya comenzó.'], observed
-    if observed is None or (now-observed).total_seconds()/60 > policy['maxAgeMinutes']:
-        return 'STALE', ['No hay una lectura reciente; no se confirma entrada.'], observed
-    numeric = {key: number(pick.get(key)) for key in METRICS if key not in {'marketSignal', 'odds'}}
-    if minutes is None or decimal_odds(pick.get('odds')) is None or any(numeric[k] is None for k in numeric):
-        return 'INCOMPLETE', ['Faltan datos válidos de cuota, modelo o flujo.'], observed
-    if not (0 < numeric['betsPct'] <= 100 and 0 < numeric['handlePct'] <= 100 and 0 < numeric['modelProb'] <= 100):
-        return 'INCOMPLETE', ['Lectura de porcentajes inválida.'], observed
-    reasons = []
+    if observed is None or (now-observed).total_seconds()/60 > MAX_AGE_MINUTES:
+        return 'STALE', ['Actualizando datos.'], observed
+    if minutes is None or decimal_odds(pick.get('odds')) is None:
+        return 'INCOMPLETE', ['Actualizando datos.'], observed
+    # El analizador del dashboard es la única autoridad de valor.
+    # Aquí solo se protege contra lecturas antiguas o encuentros iniciados.
     if pick.get('actionKey') != 'bet' or pick.get('pickCategory') not in {'VALUE', 'PREMIUM'}:
-        reasons.append('La evaluación actual no recomienda entrada.')
-    for key, threshold, label in [('ev','minEv','EV'), ('modelEdge','minEdge','Edge'), ('stake','minStake','Stake'), ('confidenceScore','minConfidence','Confianza')]:
-        if numeric[key] < policy[threshold]:
-            reasons.append(f'{label} por debajo del mínimo configurado ({policy[threshold]}).')
-    if not set(pick.get('marketSignals') or [pick.get('marketSignal')]).intersection(FLOW_SIGNALS):
-        reasons.append('El flujo no presenta una señal admitida.')
-    if abs((numeric['handlePct']-numeric['betsPct'])-numeric['divergence']) > .2:
-        reasons.append('La divergencia no coincide con Bets y Handle.')
-    if reasons:
-        return 'NO_VALUE', reasons, observed
-    if not policy['minMinutes'] <= minutes <= policy['maxMinutes']:
-        return 'WAITING', ['Fuera de la ventana de entrada configurada.'], observed
-    if len(observations) < 2:
-        return 'CONFIRMING', ['Se requieren al menos dos observaciones.'], observed
-    return 'CANDIDATE', ['Valor, cuota, riesgo, flujo y horario cumplen los criterios configurados.'], observed
+        return 'NO_VALUE', ['Sin valor.'], observed
+    return 'READY', ['Con valor.'], observed
 
 
-def update_tracking(picks, path, now=None, policy=None, feed_ok=True):
+def update_tracking(picks, path, now=None, feed_ok=True):
     now = now or datetime.now(CDMX)
     now = now.replace(tzinfo=CDMX) if now.tzinfo is None else now.astimezone(CDMX)
-    policy = {**DEFAULT_POLICY, **(policy or {})}
     payload = read_state(path)
     records = payload['records']
     seen = set()
@@ -110,25 +89,19 @@ def update_tracking(picks, path, now=None, policy=None, feed_ok=True):
                 'market': pick.get('market'), 'league': pick.get('league'), 'iso': pick.get('iso'),
                 'firstObservedAt': first_time.isoformat(), 'initial': baseline,
                 'firstEvaluatedAt': now.isoformat(), 'firstEvaluation': deepcopy(current),
-                'confirmations': 0, 'lastObservation': None, 'state': None,
+                'lastObservation': None, 'state': None,
             }
-        state, reasons, observed = assess(pick, now, policy)
+        state, reasons, observed = assess(pick, now)
         observed_text = observed.isoformat() if observed else None
         previous_observed = timestamp(old.get('lastProcessedObservation') or old.get('lastObservation'))
         new_observation = observed is not None and (previous_observed is None or observed > previous_observed)
         if observed and previous_observed and observed < previous_observed:
             state, reasons = 'STALE', ['La lectura recibida es anterior a la última procesada.']
-        if state == 'CANDIDATE':
-            if new_observation:
-                old['confirmations'] = old.get('confirmations',0)+1
-            state = 'READY' if old['confirmations'] >= policy['confirmations'] else 'CONFIRMING'
-            if state == 'CONFIRMING':
-                reasons = ['Esperando confirmación en otra lectura nueva.']
-        else:
-            old['confirmations'] = 0
+        old.pop('confirmations', None)
         if new_observation:
             old['previous'] = old.get('current')
         old.update(current=current, state=state, reasons=reasons, lastObservation=observed_text,
+                   freeRelease=bool(pick.get('freeRelease')), pickCategory=pick.get('pickCategory'),
                    lastProcessedObservation=max(observed, previous_observed).isoformat() if observed and previous_observed else observed_text,
                    evaluatedAt=now.isoformat(), lastSeenAt=now.isoformat(), iso=pick.get('iso'))
         first_odds = decimal_odds(old['initial'].get('odds'))
@@ -145,7 +118,8 @@ def update_tracking(picks, path, now=None, policy=None, feed_ok=True):
         record.update(state='CLOSED' if kickoff and kickoff<=now else 'UNAVAILABLE',
                       reasons=['El encuentro ya comenzó.'] if kickoff and kickoff<=now else
                               ['El pick no está disponible en la lectura actual.' if feed_ok else 'Falló la actualización de datos.'],
-                      confirmations=0, evaluatedAt=now.isoformat())
+                      evaluatedAt=now.isoformat())
+        record.pop('confirmations', None)
     payload['updatedAt'] = now.isoformat()
     atomic_write_json(path, payload, compact=True)
     return payload

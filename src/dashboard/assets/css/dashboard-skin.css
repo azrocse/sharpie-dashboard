@@ -6,7 +6,13 @@ body { padding:24px 36px; max-width:1480px; background:var(--bg); }
 .timestamp-box { background:transparent; border:0; padding:0; }
 .opportunities-link { border-color:var(--border); border-radius:10px; padding:12px; }
 .theme-toggle { box-shadow:none; border-color:var(--border); }
-.dashboard-intro { padding:30px 2px; }
+.dashboard-intro { padding:30px 2px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+.telegram-subscription { display:grid; gap:8px; }
+.telegram-subscription .btn-telegram { padding:12px 18px; font-size:12px; }
+.telegram-subscription small { color:var(--muted); font-size:10px; text-align:center; }
+.telegram-subscription .btn-telegram:hover { border-color:var(--teal); }
+.telegram-subscription .btn-telegram:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
+.pcard .pcard-action-row { grid-template-columns:1fr; }
 .dashboard-intro h2 { font-size:clamp(25px,2.5vw,36px); letter-spacing:-1.2px; line-height:1.25; }
 .dashboard-intro p { font-size:13px; line-height:1.6; color:var(--muted); margin-top:10px; }
 .stats-grid { grid-template-columns:1fr 1fr 1.5fr 1.5fr; gap:14px; margin-bottom:20px; }

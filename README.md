@@ -103,47 +103,51 @@ de la primera evaluación realmente guardada, sin inventar valores anteriores.
 La referencia persiste en `.runtime/tracking.json` aunque se cierre el navegador.
 La antigua watchlist de localStorage ya no controla el seguimiento.
 
-Los criterios iniciales están en `src/tracking.py` (`DEFAULT_POLICY`): EV mínimo
-1%, Edge mínimo 1 punto, stake mínimo 1u, confianza mínima 55, categoría VALUE o
-PREMIUM y acción bet; señal de flujo admitida, porcentajes válidos y divergencia
-consistente. Se requieren dos procesamientos con observaciones distintas que
-cumplan los criterios, datos de hasta 15 minutos y entre 10 minutos y 24 horas
-hasta el inicio. Son reglas operativas iniciales, no una calibración de resultados
-ni garantía del mejor momento de entrada. Cuota, modelo, EV y Edge se evalúan
-como condiciones relacionadas; no se suman como evidencias independientes.
+El seguimiento utiliza la misma clasificación del dashboard: acción `bet` y
+categoría VALUE o PREMIUM. No agrega mínimos de confianza, EV, Edge, stake,
+confirmaciones ni ventanas de entrada. Solo evita avisar con datos de más de
+15 minutos o de encuentros ya iniciados. El analizador conserva su evaluación
+de cuota, modelo, riesgo y flujo.
 
 ### Avisos por Telegram
 
-Configura un bot de [BotFather](https://t.me/BotFather) localmente:
+Configura el bot localmente si todavía no está configurado:
 
 ```powershell
 python -B src/setup_telegram.py
 ```
 
-El asistente pide el token con entrada oculta, valida el bot y permite elegir
-suscripciones públicas o una lista de IDs de chats privados autorizados.
-Guarda el resultado en `.runtime/telegram.json`. **No publiques esa carpeta**:
-contiene token, chats, suscripciones y referencias persistentes; está excluida
-de Git. Respáldala de forma privada para conservar el seguimiento entre equipos.
-El HTML solo recibe el enlace público del bot y el identificador del pick.
+La configuración, token, destinatarios y seguimiento permanecen en `.runtime/`,
+excluida de Git. Respáldala de forma privada. El HTML solo recibe el enlace público.
 
-En la card, «Avisarme por Telegram» abre el bot. El usuario debe confirmar
-**Iniciar** en Telegram; abrir el enlace por sí solo no activa la suscripción.
-Se confirma la suscripción en el siguiente procesamiento (aprox. cinco minutos).
-`/stop ID_DEL_PICK` cancela un pick; `/stop` cancela todos los del chat.
-Sin configuración, se muestra «Telegram pendiente» y no se envían mensajes.
+«Recibir picks por Telegram» abre el bot. Pulsa **Iniciar** una vez para recibir
+la confirmación «Avisos activados» y todos los picks cuando tengan valor.
+Puedes usar **Pausar avisos**, `/stop`, **Activar avisos** o `/resume` en Telegram.
+Abrir el enlace sin enviar Iniciar no permite identificar tu chat.
+Las suscripciones antiguas por pick requieren activar la nueva modalidad general.
 
-El mismo proceso de `auto_publish.ps1` consulta comandos y avisa al cumplir los
-criterios, perderlos o cerrar el prepartido. Una mejora exige al menos +2 puntos
-de EV y +1 de Edge desde el último aviso, y 30 minutos de espera. No repite la
-misma condición en cada ciclo. Lecturas vencidas, ausencias o errores del feed
-no generan avisos positivos. Los fallos de Telegram se reintentan sin impedir
-publicar el dashboard; los bloqueos del bot cancelan las suscripciones del chat.
-La entrega puede demorarse por el ciclo de ejecución. Un fallo de red después
-de que Telegram acepte un mensaje puede causar un duplicado al reintentar.
-El equipo y la tarea programada deben seguir activos; GitHub Pages no ejecuta
-el bot. Implementación basada en los [enlaces de inicio](https://core.telegram.org/bots/features#deep-linking)
-y la [Bot API oficial](https://core.telegram.org/bots/api).
+Los mensajes muestran encuentro, pick, mercado, cuota, stake y hora CDMX, con
+botones para ver el pick y pausar. Cada pick se envía una sola vez por chat;
+pausar y reactivar conserva el registro de envíos. No hay avisos de mejoras,
+pérdida de valor o cierre. Un error de red después de que Telegram acepte un
+mensaje puede causar un duplicado al reintentar.
+
+`telegram_worker.ps1` mantiene un proceso independiente que atiende los comandos
+con long polling, sin esperar el scraper. Usa un bloqueo exclusivo para evitar
+dos receptores simultáneos. El estado operativo, sin secretos, se consulta en
+`.runtime/telegram-worker-status.json`. El scraper sigue actualizando los picks
+cada cinco minutos; el worker envía los avisos al leer la nueva evaluación.
+
+Para instalar o reparar la tarea independiente, desde PowerShell como administrador:
+
+```powershell
+.\install_telegram_task.ps1
+```
+
+El equipo debe permanecer encendido y conectado. GitHub Pages solo muestra el
+sitio; no ejecuta el bot. Implementación basada en los
+[enlaces de inicio](https://core.telegram.org/bots/features#deep-linking) y la
+[Bot API oficial](https://core.telegram.org/bots/api).
 
 `auto_publish.ps1` ejecuta el flujo y publica únicamente sus salidas actuales.
 Comprueba el código de salida de Python y de cada operación de Git, e impide

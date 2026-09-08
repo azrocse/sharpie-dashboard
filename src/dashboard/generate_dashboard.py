@@ -9,7 +9,7 @@ from dashboard.template_loader import read_utf8, render_template
 from storage import atomic_write_json, atomic_write_text
 from opportunities import save_opportunities
 from tracking import update_tracking
-from telegram_alerts import attach_links
+from telegram_alerts import subscription_url
 from dashboard.generate_opportunities_viewer import generate_opportunities_viewer
 
 
@@ -650,8 +650,9 @@ def generate_dashboard(source_json_path=None, output_dir=None):
     all_events = assign_free_releases(build_picks(raw_data))
     runtime = Path(output_dir) / '.runtime'
     update_tracking(all_events, runtime / 'tracking.json', now=cdmx_now)
+    telegram_url = None
     try:
-        attach_links(all_events, runtime)
+        telegram_url = subscription_url(runtime)
     except ValueError:
         print('[AVISO] Telegram requiere revisar su configuración privada.')
 
@@ -668,6 +669,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
             "DASHBOARD_JS": read_utf8(ASSETS_DIR / "js" / "dashboard.js"),
             "GENERATED_AT": now_str,
             "PICKS_JSON": json_data,
+            "TELEGRAM_URL": json.dumps(telegram_url),
         },
     )
 

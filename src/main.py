@@ -5,18 +5,7 @@ from pipeline.parse import parse_all
 from pipeline.analyze import analyze_all
 from dashboard.generate_dashboard import generate_dashboard
 from pathlib import Path
-from tracking import read_state, update_tracking
-from telegram_alerts import run_alerts, TelegramError
-
-
-def notify(runtime):
-    try:
-        result = run_alerts(runtime, read_state(runtime / 'tracking.json'))
-        if result['configured']:
-            print(f"[OK] Telegram: {result['sent']} avisos de cambios enviados.")
-    except (TelegramError, ValueError, OSError):
-        # Never expose URLs containing bot tokens in tracebacks or logs.
-        print('[AVISO] No se completó Telegram; se reintentará en el próximo ciclo.')
+from tracking import update_tracking
 
 
 def main(runtime_dir=None):
@@ -29,9 +18,7 @@ def main(runtime_dir=None):
     except Exception:
         if (runtime / 'tracking.json').exists():
             update_tracking([], runtime / 'tracking.json', feed_ok=False)
-            notify(runtime)
         raise
-    notify(Path(output).parent / '.runtime')
     return output
 
 

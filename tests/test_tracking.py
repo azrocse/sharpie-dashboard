@@ -31,23 +31,25 @@ class TrackingTests(unittest.TestCase):
         self.assertEqual(first['trackingId'],second['trackingId'])
         self.assertEqual(second['initial']['odds'],'+100')
 
-    def test_replaying_same_observation_does_not_confirm_entry(self):
-        self.assertEqual(next(iter(self.update().values()))['state'],'CONFIRMING')
-        self.assertEqual(next(iter(self.update(1).values()))['state'],'CONFIRMING')
-        self.pick['history'].append({'timestamp':(self.now+timedelta(minutes=5)).isoformat()})
-        self.assertEqual(next(iter(self.update(5).values()))['state'],'READY')
+    def test_value_is_available_without_extra_confirmation(self):
+        self.assertEqual(next(iter(self.update().values()))['state'],'READY')
+        self.assertEqual(next(iter(self.update(1).values()))['state'],'READY')
 
     def test_ev_alone_cannot_trigger_entry(self):
-        for field,value in [('confidenceScore',20),('modelEdge',0),('betsPct',0),('stake',0),('marketSignal','NO_ACTION')]:
+        for field,value in [('actionKey','watch'),('pickCategory','LONGSHOT')]:
             record=next(iter(self.update(pick={**self.pick,field:value,'ev':90}).values()))
             self.assertNotIn(record['state'],{'READY','CANDIDATE'})
+
+    def test_no_second_confidence_or_time_gate(self):
+        self.pick.update(confidenceScore=20, iso='2026-09-07T12:02:00')
+        self.assertEqual(next(iter(self.update().values()))['state'],'READY')
 
     def test_out_of_order_reading_cannot_confirm_entry(self):
         self.update()
         self.pick['history']=self.pick['history'][:1]
         record=next(iter(self.update(1).values()))
         self.assertEqual(record['state'],'STALE')
-        self.assertEqual(record['confirmations'],0)
+        self.assertNotIn('confirmations',record)
 
     def test_stale_missing_and_closed_have_no_entry(self):
         self.update()
@@ -62,7 +64,7 @@ class TrackingTests(unittest.TestCase):
         changed={**self.pick,'iso':'2026-09-08T15:00:00'}
         records=self.update(pick=changed)
         self.assertEqual(len(records),2)
-        self.assertEqual(records[changed['trackingId']]['state'],'WAITING')
+        self.assertEqual(records[changed['trackingId']]['state'],'READY')
 
     def test_price_comparison_handles_positive_negative_boundary(self):
         self.assertLess(decimal_odds('-110'),decimal_odds('+100'))
