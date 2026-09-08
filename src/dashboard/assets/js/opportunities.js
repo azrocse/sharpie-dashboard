@@ -1,0 +1,160 @@
+'use strict';
+let archive = window.OPPORTUNITIES;
+let page = 0;
+const pageSize = 100;
+const byId = id => document.getElementById(id);
+const bounds = {model:'modelProb', edge:'modelEdge', ev:'ev', stake:'stake', odds:'odds', bets:'betsPct', handle:'handlePct', divergence:'divergence'};
+const filterIds = ['search','date','from','to','league','signal','category','sort', ...Object.keys(bounds).flatMap(key => [key+'Min',key+'Max'])];
+const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const normalize = value => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const numeric = value => value == null || value === '' || !Number.isFinite(Number(value)) ? null : Number(value);
+const number = value => numeric(value) === null ? '—' : Number(value).toLocaleString('es-MX',{maximumFractionDigits:2});
+const dateValue = value => {
+    if (!value) return null;
+    const text = String(value);
+    const date = new Date(/(?:Z|[+-]\d{2}:?\d{2})$/.test(text) ? text : text+'-06:00');
+    return isNaN(date) ? null : date;
+};
+const dateText = value => dateValue(value)?.toLocaleString('es-MX',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}) || '—';
+const signalColors = {SMART_MONEY:'#2563eb',CONSENSUS:'#2dd4bf',STEAM_MOVE:'#14b8a6',REVERSE_LINE_MOVEMENT:'#8b5cf6',PUBLIC_HEAVY:'#f43f5e',SHARP_VS_PUBLIC:'#f59e0b',BALANCED_ACTION:'#94a3b8',LOW_LIQUIDITY:'#38bdf8',NO_ACTION:'#64748b'};
+let modelChart = null;
+let signalsChart = null;
+
+function populateOptions() {
+    for (const [id,key,label] of [['league','league','🏆 Todas las ligas'],['date','date','📆 Todas las fechas'],['signal','marketSignal','📊 Todas las señales']]) {
+        const selected = byId(id).value;
+        const values = [...new Set(archive.picks.map(p => p[key]).filter(Boolean))].sort();
+        byId(id).innerHTML = `<option value="">${label} (${values.length})</option>` + values.map(value => `<option value="${escape(value)}">${escape(value.replaceAll('_',' '))}</option>`).join('');
+        byId(id).value = values.includes(selected) ? selected : '';
+    }
+}
+
+function matchingRows() {
+    const filters = Object.fromEntries(filterIds.map(id => [id,byId(id).value]));
+    const query = normalize(filters.search.trim());
+    return archive.picks.filter(p => {
+        if (query && !normalize([p.game,p.pick,p.market,p.league,p.opportunityId].join(' ')).includes(query)) return false;
+        const day = p.date || String(p.iso || '').slice(0,10);
+        if (filters.date && day !== filters.date || filters.from && day < filters.from || filters.to && day > filters.to) return false;
+        if (filters.league && p.league !== filters.league || filters.category && p.pickCategory !== filters.category || filters.signal && p.marketSignal !== filters.signal) return false;
+        for (const [prefix,key] of Object.entries(bounds)) {
+            const min = numeric(filters[prefix+'Min']), max = numeric(filters[prefix+'Max']), value = numeric(p[key]);
+            if ((min !== null || max !== null) && value === null) return false;
+            if (min !== null && value < min || max !== null && value > max) return false;
+        }
+        return true;
+    }).sort((a,b) => {
+        const time = p => dateValue(p.iso)?.getTime() || 0;
+        if (filters.sort === 'date-asc') return time(a)-time(b);
+        if (filters.sort === 'captured') return (dateValue(b.firstCapturedAt)?.getTime()||0)-(dateValue(a.firstCapturedAt)?.getTime()||0);
+        if (filters.sort === 'ev' || filters.sort === 'stake') return Number(b[filters.sort]||0)-Number(a[filters.sort]||0);
+        return time(b)-time(a);
+    });
+}
+
+function initCharts() {
+    if (typeof Chart === 'undefined') { byId('chartNotice').hidden=false; return; }
+    const style = getComputedStyle(document.documentElement);
+    const color = style.getPropertyValue('--muted').trim(), grid = style.getPropertyValue('--border').trim();
+    modelChart?.destroy(); signalsChart?.destroy();
+    modelChart = new Chart(byId('modelChart'), {type:'scatter',data:{datasets:[{label:'Oportunidades',data:[],backgroundColor:'#2dd4bf',pointRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context => `${context.raw.pick}: Modelo ${number(context.raw.x)}% · EV ${number(context.raw.y)}%`}}},scales:{x:{title:{display:true,text:'Modelo Prob. (%)',color},ticks:{color},grid:{color:grid}},y:{title:{display:true,text:'EV (%)',color},ticks:{color},grid:{color:grid}}}}});
+    signalsChart = new Chart(byId('signalsChart'), {type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:[],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'bottom',labels:{color,boxWidth:10,font:{size:10}}}}}});
+}
+
+function updateCharts(rows) {
+    if (modelChart) {
+        modelChart.data.datasets[0].data = rows.filter(p => numeric(p.modelProb)!==null && numeric(p.ev)!==null).map(p => ({x:Number(p.modelProb),y:Number(p.ev),pick:p.pick}));
+        modelChart.update();
+    }
+    if (signalsChart) {
+        const counts = {};
+        rows.forEach(p => { const signal=p.marketSignal || 'NO_ACTION'; counts[signal]=(counts[signal]||0)+1; });
+        const keys=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+        signalsChart.data.labels=keys.map(key=>key.replaceAll('_',' '));
+        signalsChart.data.datasets[0].data=keys.map(key=>counts[key]);
+        signalsChart.data.datasets[0].backgroundColor=keys.map(key=>signalColors[key]||'#64748b');
+        signalsChart.update();
+    }
+}
+
+function render() {
+    const rows=matchingRows();
+    byId('exportXls').disabled=rows.length===0;
+    page=Math.min(page,Math.max(0,Math.ceil(rows.length/pageSize)-1));
+    const offset=page*pageSize;
+    const average = key => { const values=rows.map(p=>numeric(p[key])).filter(n=>n!==null); return values.length ? number(values.reduce((a,b)=>a+b,0)/values.length)+'%' : '—'; };
+    byId('total').textContent=archive.picks.length;
+    byId('matches').textContent=rows.length;
+    byId('summaryCount').textContent=rows.length;
+    byId('summaryTotal').textContent=archive.picks.length;
+    byId('avgEv').textContent=average('ev');
+    byId('avgEdge').textContent=average('modelEdge');
+    byId('stake').textContent=number(rows.reduce((sum,p)=>sum+(Number(p.stake)||0),0))+' u';
+    byId('since').textContent='Desde '+dateText(archive.startedAt);
+    byId('updated').textContent=dateText(archive.updatedAt);
+    updateCharts(rows);
+    byId('rows').innerHTML=rows.slice(offset,offset+pageSize).map(p=>`<tr>
+      <td>${escape(p.game)}<span class="selection">${escape(p.pick)}</span>${p.freeRelease ? '<span class="saved-tag">FREE PICK</span>' : ''}</td>
+      <td>${dateText(p.iso)}</td><td>${escape(p.league)}</td><td>${escape(p.market)}</td><td><span class="saved-tag ${p.pickCategory==='PREMIUM'?'premium':''}">${escape(p.pickCategory)}</span></td>
+      <td class="number">${escape(p.odds ?? '—')}</td>${['modelProb','modelEdge','ev','stake','betsPct','handlePct','divergence'].map(key=>`<td class="number">${number(p[key])}</td>`).join('')}
+      <td>${escape((p.marketSignal||'—').replaceAll('_',' '))}</td><td>${dateText(p.firstCapturedAt)}</td><td>${dateText(p.lastUpdatedAt)}</td><td><button type="button" class="btn-chip" data-detail="${escape(p.opportunityId)}">Ver detalle</button></td>
+    </tr>`).join('');
+    byId('empty').hidden=rows.length!==0;
+    byId('empty').textContent=archive.picks.length ? 'No hay oportunidades que coincidan con estos filtros.' : 'Aún no hay oportunidades guardadas.';
+    byId('range').textContent=rows.length ? `${offset+1}–${Math.min(offset+pageSize,rows.length)} de ${rows.length} oportunidades` : '0 oportunidades';
+    byId('prev').disabled=page===0;
+    byId('next').disabled=offset+pageSize>=rows.length;
+}
+
+async function refresh() {
+    if (location.protocol==='file:') { location.reload(); return; }
+    byId('refresh').disabled=true;
+    try {
+        const response=await fetch('data/opportunities.json',{cache:'no-store'});
+        if (!response.ok) throw new Error('HTTP '+response.status);
+        const payload=await response.json();
+        if (payload.schemaVersion!==1 || !Array.isArray(payload.picks)) throw new Error('Formato inválido');
+        archive=payload; populateOptions(); render();
+    } catch (error) { byId('updated').textContent='No se pudo actualizar; se conservan los datos cargados.'; }
+    finally { byId('refresh').disabled=false; }
+}
+
+function exportXls() {
+    const rows = matchingRows();
+    if (!rows.length) return;
+    const headers = ['Evento','Selección','Inicio (CDMX)','Liga','Mercado','Categoría','Cuota','Modelo %','Edge %','EV %','Stake (u)','Bets %','Handle %','Divergencia','Señal','Primera captura (CDMX)','Última actualización (CDMX)','ID oportunidad'];
+    const workbook = XLSX.utils.book_new();
+    // XLS admite 65.536 filas por hoja, incluida la cabecera.
+    for (let offset=0; offset<rows.length; offset+=65535) {
+        const values = rows.slice(offset,offset+65535).map(p => [
+            String(p.game||''),String(p.pick||''),dateText(p.iso),String(p.league||''),String(p.market||''),String(p.pickCategory||''),
+            ...['odds','modelProb','modelEdge','ev','stake','betsPct','handlePct','divergence'].map(key=>numeric(p[key])),
+            String(p.marketSignal||'').replaceAll('_',' '),dateText(p.firstCapturedAt),dateText(p.lastUpdatedAt),String(p.opportunityId||'')
+        ]);
+        const sheet = XLSX.utils.aoa_to_sheet([headers,...values]);
+        sheet['!cols'] = headers.map((_,index)=>({wch:index<2 ? 36 : index===17 ? 28 : index===2 || index>=14 ? 25 : 15}));
+        XLSX.utils.book_append_sheet(workbook,sheet,offset===0 ? 'Oportunidades' : 'Oportunidades '+(offset/65535+1));
+    }
+    XLSX.writeFile(workbook,'oportunidades-'+new Date().toISOString().slice(0,10)+'.xls',{bookType:'biff8'});
+}
+
+const exportButton = document.createElement('button');
+exportButton.id='exportXls';
+exportButton.type='button';
+exportButton.className='btn-chip';
+exportButton.textContent='↓ Exportar XLS';
+exportButton.title='Exportar todas las oportunidades filtradas, incluidas todas las páginas';
+byId('refresh').after(exportButton);
+exportButton.addEventListener('click',exportXls);
+byId('filters').addEventListener('submit',event=>event.preventDefault());
+filterIds.forEach(id=>byId(id).addEventListener('input',()=>{page=0;render();}));
+byId('advancedToggle').addEventListener('click',()=>{byId('advanced').hidden=!byId('advanced').hidden;byId('advancedToggle').setAttribute('aria-expanded',String(!byId('advanced').hidden));});
+byId('clear').addEventListener('click',()=>{byId('filters').reset();page=0;render();});
+byId('prev').addEventListener('click',()=>{page--;render();});
+byId('next').addEventListener('click',()=>{page++;render();});
+byId('refresh').addEventListener('click',refresh);
+byId('themeToggle').addEventListener('click',()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';initCharts();render();});
+byId('rows').addEventListener('click',event=>{const button=event.target.closest('button[data-detail]');if(!button)return;byId('detailJson').textContent=JSON.stringify(archive.picks.find(p=>p.opportunityId===button.dataset.detail),null,2);byId('detail').showModal();});
+byId('closeDetail').addEventListener('click',()=>byId('detail').close());
+populateOptions();initCharts();render();
+if (location.protocol==='http:' || location.protocol==='https:') setInterval(refresh,90000);

@@ -1,0 +1,142 @@
+import json
+import tempfile
+import unittest
+import requests
+from contextlib import ExitStack
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from unittest.mock import patch
+
+import main
+from config.league_config import enabled_leagues
+from dashboard.generate_dashboard import build_market_observations, generate_dashboard
+from pipeline import analyze, parse
+from scraper.draftkings import DraftKingsScraper
+
+
+def sample_html():
+    kickoff = datetime.now(timezone.utc) + timedelta(days=2)
+    return f'''<div class="tb-se">
+      <div class="tb-se-title"><h5>Dodgers @ Padres</h5><span>{kickoff:%m/%d}, 07:00PM</span></div>
+      <div class="tb-market-wrap"><div>
+        <div class="tb-se-head"><div>Moneyline</div></div>
+        <div class="tb-sm">
+          <div class="tb-sodd"><span class="tb-slipline">Dodgers</span> +130 75% 40%</div>
+          <div class="tb-sodd"><span class="tb-slipline">Padres</span> -150 25% 60%</div>
+        </div>
+      </div></div>
+    </div>'''
+
+
+class CurrentPipelineTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+        self.stack = ExitStack()
+        self.addCleanup(self.temp.cleanup)
+        self.addCleanup(self.stack.close)
+        self.stack.enter_context(patch.object(parse, "BASE_DIR", str(self.root)))
+        self.stack.enter_context(patch.object(analyze, "INPUT_DIR", str(self.root / "data/parsed")))
+        self.stack.enter_context(patch.object(analyze, "SHARPIE_PATH", str(self.root / "data/analyzed/sharpie.json")))
+        self.stack.enter_context(patch("main.generate_dashboard", side_effect=lambda **kw: generate_dashboard(output_dir=self.root, **kw)))
+
+    def run_feed(self, minute=0, html=None):
+        observed = datetime.now(timezone.utc) + timedelta(minutes=minute)
+        with patch.object(DraftKingsScraper, "fetch_page", return_value=html or sample_html()), patch.object(parse, "datetime") as clock:
+            clock.now.return_value = observed
+            clock.fromtimestamp.side_effect = datetime.fromtimestamp
+            return main.main()
+
+    def test_full_flow_creates_only_current_state_and_preserves_observations(self):
+        self.run_feed()
+        self.assertEqual(json.loads((self.root / "picks.json").read_text()), [])
+        self.run_feed(minute=1)
+        files = {path.relative_to(self.root).as_posix() for path in self.root.rglob("*") if path.is_file()}
+        self.assertEqual(files, {"data/parsed/sports.json", "data/analyzed/sharpie.json", "data/opportunities.json", "opportunities.html", "index.html", "picks.json"})
+        picks = json.loads((self.root / "picks.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(picks), 2)
+        self.assertTrue(all(pick["league"] == "SPORTS" for pick in picks))
+        self.assertTrue(all(len(pick["history"]) == 2 for pick in picks))
+        self.assertTrue(all("clv" not in pick and "result" not in pick for pick in picks))
+        html = (self.root / "index.html").read_text(encoding="utf-8")
+        self.assertIn("Dodgers", html)
+        self.assertNotIn("__PICKS_JSON__", html)
+        self.assertNotIn("results.html", html)
+        saved = json.loads((self.root / "data/opportunities.json").read_text(encoding="utf-8"))["picks"]
+        recommended = [p for p in picks if p["actionKey"] == "bet" and p["pickCategory"] in {"VALUE", "PREMIUM"}]
+        self.assertEqual(len(saved), len(recommended))
+        self.assertGreater(len(saved), 0)
+        self.assertIn('title="Pick de acceso gratuito">FREE PICK</span>', html)
+        self.assertNotIn('>FREE RELEASE', html)
+
+    def test_failed_download_or_parse_keeps_last_successful_files(self):
+        self.run_feed()
+        self.run_feed(minute=1)
+        before = {path: path.read_bytes() for path in self.root.rglob("*") if path.is_file()}
+        with patch.object(DraftKingsScraper, "fetch_page", return_value=""):
+            with self.assertRaises(RuntimeError):
+                main.main()
+        with self.assertRaises(ValueError):
+            self.run_feed(minute=2, html=sample_html().replace("75% 40%", "5% 40%"))
+        self.assertTrue(all(path.read_bytes() == content for path, content in before.items()))
+
+    def test_independent_analysis_ignores_obsolete_json(self):
+        self.run_feed()
+        obsolete = self.root / "data/parsed/mlb.json"
+        obsolete.write_text("invalid obsolete data", encoding="utf-8")
+        analyze.analyze_all()
+        self.assertEqual(analyze.get_current_files(), [str(self.root / "data/parsed/sports.json")])
+
+    def test_failure_on_later_page_does_not_publish_partial_download(self):
+        self.run_feed()
+        before = (self.root / "data/parsed/sports.json").read_bytes()
+        with patch.object(DraftKingsScraper, "_download", side_effect=[sample_html(), requests.ConnectionError("offline")]):
+            with self.assertRaises(requests.ConnectionError):
+                main.main()
+        self.assertEqual((self.root / "data/parsed/sports.json").read_bytes(), before)
+
+    def test_invalid_current_json_does_not_overwrite_analysis(self):
+        self.run_feed()
+        output = self.root / "data/analyzed/sharpie.json"
+        before = output.read_bytes()
+        (self.root / "data/parsed/sports.json").write_text("{", encoding="utf-8")
+        with self.assertRaises(json.JSONDecodeError):
+            analyze.analyze_all()
+        self.assertEqual(output.read_bytes(), before)
+
+    def test_market_observations_are_bounded(self):
+        points = [{"time": f"2026-09-01T{index // 60:02d}:{index % 60:02d}:00+00:00", "bets": 40, "handle": 75, "odds": "+130"} for index in range(250)]
+        normalized = parse._normalize_history(points)
+        self.assertEqual(len(normalized), 200)
+        self.assertEqual(normalized[-1], points[-1])
+
+    def test_observations_exclude_live_data_and_duplicate_timestamps(self):
+        before = {"time": "2026-09-07T17:00:00+00:00", "betsPct": 40, "handlePct": 75, "odds": "+130"}
+        live = {**before, "time": "2026-09-07T18:00:00+00:00"}
+        points = build_market_observations([before, before, live], "2026-09-07T12:00:00-06:00")
+        self.assertEqual(len(points), 1)
+        self.assertEqual(points[0]["timestamp"], "2026-09-07T11:00:00-06:00")
+
+    def test_empty_current_dashboard_replaces_outdated_picks(self):
+        self.run_feed()
+        self.run_feed(minute=1)
+        source = self.root / "data/analyzed/sharpie.json"
+        data = json.loads(source.read_text(encoding="utf-8"))
+        for league in data:
+            for market in league["markets"]:
+                market["startIso"] = "2000-01-01T12:00:00-06:00"
+        source.write_text(json.dumps(data), encoding="utf-8")
+        generate_dashboard(source, self.root)
+        self.assertEqual(json.loads((self.root / "picks.json").read_text()), [])
+
+    def test_config_rejects_colliding_filenames(self):
+        config = self.root / "leagues.json"
+        config.write_text(json.dumps({name: {"enabled": True, "slug": "Sports"} for name in ("NCAA Football", "NCAA_Football")}), encoding="utf-8")
+        with self.assertRaises(ValueError):
+            enabled_leagues(config)
+
+    def test_team_names_do_not_create_unconfigured_leagues(self):
+        self.run_feed()
+        data = json.loads((self.root / "data/analyzed/sharpie.json").read_text(encoding="utf-8"))
+        self.assertTrue(all(market["league"] == "SPORTS" for group in data for market in group["markets"]))
+        self.assertTrue(all("espnLeague" not in market for group in data for market in group["markets"]))

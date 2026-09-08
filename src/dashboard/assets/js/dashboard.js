@@ -28,10 +28,6 @@ async function loadData() {
         PICKS = window.SHARPIE_PICKS;
         return;
     } 
-    if (typeof window.picksData !== "undefined" && Array.isArray(window.picksData)) {
-        PICKS = window.picksData;
-        return;
-    }
     
     try {
         const response = await fetch('picks.json?v=' + Date.now());
@@ -43,7 +39,7 @@ async function loadData() {
     }
 }
 
-// Auto-refresh: revisa picks.json cada 60s y actualiza el dashboard solo si
+// Auto-refresh: revisa picks.json cada 90s y actualiza el dashboard solo si
 // hay datos nuevos -- sin recargar la página (no pierde filtros ni scroll).
 // Si el archivo se abre como file:// local (sin servidor), el fetch falla y
 // simplemente no hace nada -- el resto del dashboard sigue funcionando igual.
@@ -137,10 +133,6 @@ async function checkForNewPicks() {
             }
         }
 
-        // El badge "NUEVO" se muestra 3 min y luego se limpia solo
-        if (addedKeys.length > 0) {
-            setTimeout(() => { RECENTLY_ADDED_IDS.clear(); render(); }, 180000);
-        }
     } catch (e) {
         // picks.json no accesible (ej. archivo local sin servidor) -- se omite en silencio
     }
@@ -427,35 +419,6 @@ function stakeBadgeClass(stake) {
     return "bad";
 }
 
-function confidenceBadgeClass(score) {
-    const s = Number(score);
-    if (isNaN(s)) return "neutral";
-    if (s >= 60) return "good";
-    if (s >= 40) return "warn";
-    return "bad";
-}
-
-function modelProbColorClass(prob) {
-    const p = Number(prob || 0);
-    if (p >= 65) return "var(--teal)";
-    if (p >= 50) return "var(--amber)";
-    return "var(--text)";
-}
-
-function oddsColorClass(odds) {
-    const dec = parseOddsToDecimal(odds);
-    if (dec >= 2.0) return "var(--teal)";
-    if (dec > 0) return "var(--amber)";
-    return "var(--text)";
-}
-
-function edgeColorClass(edge) {
-    const e = Number(edge || 0);
-    if (e >= 5) return "var(--teal)";
-    if (e > 0) return "var(--amber)";
-    return "var(--red)";
-}
-
 function modelBadgeClass(prob) {
     const p = Number(prob);
     if (isNaN(p)) return "neutral";
@@ -519,8 +482,6 @@ function unifiedDecisionPanelHtml(p) {
 
     return `<div class="decision-panel"><div class="decision-panel-title">📐 Panel de Decisión (Avanzado)</div><div class="badge-tag-grid-3x3">${advGrid.join('')}</div></div>`;
 }
-
-function trendTag(key) { return `${TREND_ICON[key] || "⚙️"} ${TREND_LABEL[key] || "Normal"}`; }
 
 function updateThemeByTime() {
     if (!state.autoThemeEnabled) return; 
@@ -779,10 +740,6 @@ function buildEvolutionHtml(p) {
     `;
 }
 
-// Panel de Decisión unificado (ver unifiedDecisionPanelHtml más abajo) --
-// esta versión anterior por secciones ya no se usa, se deja fuera para no
-// tener dos fuentes de verdad del mismo panel.
-
 // Presentación de la señal calculada por el backend.
 function marketSignalVisualConfig(marketSignal) {
     switch (marketSignal) {
@@ -960,12 +917,6 @@ function setupStatPopups() {
         document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
         document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
     });
-}
-
-function getAmericanOddsValue(oddsRaw) {
-    if (oddsRaw == null || oddsRaw === '') return null;
-    const val = parseFloat(String(oddsRaw).trim());
-    return isNaN(val) ? null : val;
 }
 
 function parseOddsToDecimal(odds) {
@@ -1633,7 +1584,7 @@ function render() {
                             ${isLongshot ? `<span class="longshot-pick-badge">LONGSHOT · MÁX. 0.5u</span>` : ''}
                             ${isValue ? `<span class="value-pick-badge">VALUE</span>` : ''}
                             ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
-                            ${isFreeRelease ? `<span class="free-pick-badge" title="Seleccionado para publicación gratuita #${p.freeReleaseRank || ''}">FREE RELEASE${p.freeReleaseRank ? ` #${p.freeReleaseRank}` : ''}</span>` : ''}
+                            ${isFreeRelease ? `<span class="free-pick-badge" title="Pick de acceso gratuito">FREE PICK</span>` : ''}
                         </div>
                     </div>
 

@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-import os
-import re
-from datetime import datetime
 from urllib.parse import urlencode
 
 import requests
@@ -12,16 +9,7 @@ from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-try:
-    from config.settings import MAX_PAGES
-except ImportError:
-    try:
-        from settings import MAX_PAGES
-    except ImportError:
-        MAX_PAGES = 5
-
-
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+from config.settings import MAX_PAGES
 
 
 class DraftKingsScraper:
@@ -99,18 +87,22 @@ class DraftKingsScraper:
 
     def fetch_page(self, league_slug, date_range, page):
         primary_url = self.build_url(league_slug, date_range, page)
+        primary_error = None
         try:
             html = self._download(primary_url)
             if self.extract_events(html):
                 return html
             print(f"  [!] La URL principal no retornó eventos en página {page}.")
         except requests.RequestException as exc:
+            primary_error = exc
             print(f"  [!] Error en URL principal ({exc}).")
 
         fallback_url = self.build_fallback_url(
             league_slug, page, date_range=date_range
         )
         if not fallback_url:
+            if primary_error is not None:
+                raise primary_error
             print("  [!] Fallback omitido: no existe un ID numérico seguro para la liga.")
             return ""
 
@@ -122,6 +114,7 @@ class DraftKingsScraper:
             print(f"  [!] El fallback no retornó eventos en página {page}.")
         except requests.RequestException as exc:
             print(f"  [X] También falló la URL de respaldo: {exc}")
+            raise
         return ""
 
     def extract_event_keys(self, html):
@@ -142,27 +135,6 @@ class DraftKingsScraper:
     def extract_events(self, html):
         return [key.split("||", 1)[0] for key in self.extract_event_keys(html)]
 
-    def sanitize_name(self, text):
-        normalized = re.sub(r"\s+", "_", str(text or "").strip().lower())
-        return re.sub(r"[^a-z0-9_-]", "", normalized) or "unknown"
-
-    def save_raw(self, html, league, page):
-        folder = os.path.join(BASE_DIR, "data", "raw")
-        os.makedirs(folder, exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        filename = (
-            f"draftkings_{self.sanitize_name(league)}_"
-            f"page{page}_{timestamp}.html"
-        )
-        path = os.path.join(folder, filename)
-        temporary = f"{path}.tmp"
-        with open(temporary, "w", encoding="utf-8") as output:
-            output.write(html)
-            output.flush()
-            os.fsync(output.fileno())
-        os.replace(temporary, path)
-        return path
-
     def scrape_league(self, league_name, league_slug, date_range="today"):
         print()
         print("=" * 60)
@@ -170,7 +142,7 @@ class DraftKingsScraper:
         print("Rango:", date_range)
         print("=" * 60)
 
-        files = []
+        pages = []
         page_fingerprints = set()
 
         for page in range(1, MAX_PAGES + 1):
@@ -188,6 +160,6 @@ class DraftKingsScraper:
                 break
             page_fingerprints.add(fingerprint)
 
-            files.append(self.save_raw(html, league_name, page))
+            pages.append(html)
 
-        return files
+        return pages

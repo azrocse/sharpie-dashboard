@@ -1,17 +1,6 @@
-import importlib.util
-import sys
-import types
 import unittest
-from pathlib import Path
 
-
-MODULE_PATH = Path(__file__).parents[1] / "src" / "pipeline" / "analyze.py"
-settlement_stub = types.ModuleType("settle_history_espn")
-settlement_stub.infer_primary_route = lambda _market: None
-sys.modules.setdefault("settle_history_espn", settlement_stub)
-spec = importlib.util.spec_from_file_location("sharpie_analyze", MODULE_PATH)
-analyze = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(analyze)
+from pipeline import analyze
 
 
 class RiskCalibrationTests(unittest.TestCase):

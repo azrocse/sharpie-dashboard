@@ -1,71 +1,66 @@
-# 0. Ventana visible para ver el proceso en consola
-# (Se ha desactivado el modo oculto para que puedas monitorear todo en vivo)
+ï»¿param([switch]$SkipPublish)
 
-$repo = "C:\Users\Administrator\Desktop\sharpie-dashboard"
-$log  = "$repo\refresh_log.txt"
+$ErrorActionPreference = 'Stop'
+$repo = $PSScriptRoot
+$log = Join-Path $repo 'refresh_log.txt'
+$env:PYTHONIOENCODING = 'utf-8'
+$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+Set-Location -LiteralPath $repo
 
-# 1. Configuración de entorno y codificación segura
-$env:PYTHONIOENCODING = "utf-8"
-$OutputEncoding = [System.Text.Encoding]::UTF8
-chcp 65001 > $null
+function Write-RunLog([string]$Message) {
+    $line = '[{0}] {1}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Message
+    Write-Host $line
+    [System.IO.File]::AppendAllText($log, $line + [Environment]::NewLine, [System.Text.UTF8Encoding]::new($false))
+}
 
-Set-Location $repo
-
-# Función que escribe en el archivo y ADEMÁS muestra el texto en la consola
-function Write-Utf8Log ($text, $color = "White") {
-    if ($null -eq $text -or $text -eq "") { 
-        $text = [string]::Empty 
-    } else {
-        # Muestra el texto en la consola de PowerShell con el color elegido
-        Write-Host $text -ForegroundColor $color
+function Invoke-Checked([string]$Program, [string[]]$Arguments) {
+    & $Program @Arguments 2>&1 | ForEach-Object { Write-RunLog ([string]$_) }
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Program fallo con codigo $LASTEXITCODE"
     }
-    [System.IO.File]::AppendAllLines($log, [string[]]$text, [System.Text.Encoding]::UTF8)
 }
 
-# Función auxiliar para separar visualmente los procesos en consola y log
-function Write-TrackStep ($stepNumber, $stepName) {
-    $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-    Write-Utf8Log "------------------------------------------------------------" "Cyan"
-    Write-Utf8Log "[$timestamp] [STEP $stepNumber/4] EJECUTANDO: $stepName" "Cyan"
-    Write-Utf8Log "------------------------------------------------------------" "Cyan"
-}
+$runLock = $null
+try {
+    try {
+        $runLock = [System.IO.File]::Open((Join-Path $repo '.pipeline.lock'), 'OpenOrCreate', 'ReadWrite', 'None')
+    } catch [System.IO.IOException] {
+        Write-RunLog 'Ya hay una actualizacion en curso; ejecucion omitida.'
+        exit 0
+    }
 
-# --- INICIO DEL PROCESO ---
-Write-Utf8Log "============================================================" "Magenta"
-Write-Utf8Log "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] INICIANDO SCRIPT DE AUTO-PUBLICACIÓN" "Magenta"
-Write-Utf8Log "============================================================" "Magenta"
+    if (-not $SkipPublish) {
+        $changes = @(& git status --porcelain --untracked-files=all)
+        if ($LASTEXITCODE -ne 0) { throw 'No se pudo consultar Git' }
+        $sourceChanges = @($changes | Where-Object {
+            $_.Substring(3) -notmatch '^(index\.html|opportunities\.html|picks\.json|data/parsed/[^/]+\.json|data/analyzed/sharpie\.json|data/opportunities\.json)$'
+        })
+        if ($sourceChanges.Count -gt 0) {
+            Write-RunLog 'Cambios locales pendientes de revision; se actualizan los registros localmente sin publicar.'
+            $SkipPublish = $true
+        }
+    }
 
-# STEP 1: EJECUCIÓN DEL SCRIPT DE PYTHON
-Write-TrackStep "1" "Script de Python (src\main.py)"
-$pythonOutput = & python -B src\main.py 2>&1
-Write-Utf8Log $pythonOutput "Gray"
+    Write-RunLog 'Iniciando descarga, parseo, analisis y dashboard.'
+    Invoke-Checked -Program 'python' -Arguments @('-B', 'src/main.py')
+    if ($SkipPublish) {
+        Write-RunLog 'Dashboard actualizado localmente.'
+        exit 0
+    }
 
-if ($LASTEXITCODE -eq 0) {
-    Write-Utf8Log "[SUCCESS] Python finalizó correctamente con código de salida 0." "Green"
-
-    # STEP 2: GIT ADD
-    Write-TrackStep "2" "Rastreo de cambios en Git (git add -A)"
-    $gitAddOutput = & git add -A 2>&1
-    Write-Utf8Log $gitAddOutput "Gray"
-    Write-Utf8Log "[INFO] Archivos preparados en el área de stage." "Yellow"
-    
-    # STEP 3: GIT COMMIT
-    Write-TrackStep "3" "Creación de Commit descriptivo (git commit)"
-    $commitMsg = "Auto-update: Datos, scripts y assets ($(Get-Date -Format 'yyyy-MM-dd HH:mm'))"
-    $gitCommitOutput = & git commit -m $commitMsg 2>&1
-    Write-Utf8Log $gitCommitOutput "Gray"
-    
-    # STEP 4: GIT PUSH
-    Write-TrackStep "4" "Sincronización con GitHub (git push)"
-    $gitPushOutput = & git push origin main --quiet 2>&1
-    Write-Utf8Log $gitPushOutput "Gray"
-    
-    Write-Utf8Log "============================================================" "Green"
-    Write-Utf8Log "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] PROCESO FINALIZADO: Todo se actualizó y publicó con éxito." "Green"
-    Write-Utf8Log "============================================================`n" "Green"
-} else {
-    Write-Utf8Log "============================================================" "Red"
-    Write-Utf8Log "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] ERROR CRÍTICO: main.py falló (Código de salida $LASTEXITCODE)." "Red"
-    Write-Utf8Log "[INFO] Proceso de Git abortado para proteger la consistencia del repositorio." "Yellow"
-    Write-Utf8Log "============================================================`n" "Red"
+    Invoke-Checked -Program 'git' -Arguments @('add', '--', 'index.html', 'opportunities.html', 'picks.json', 'data/parsed', 'data/analyzed', 'data/opportunities.json')
+    & git diff --cached --quiet
+    $diffStatus = $LASTEXITCODE
+    if ($diffStatus -gt 1) { throw 'No se pudieron comprobar los cambios preparados' }
+    if ($diffStatus -eq 1) {
+        $message = 'Auto-update: Dashboard actual ({0})' -f (Get-Date -Format 'yyyy-MM-dd HH:mm')
+        Invoke-Checked -Program 'git' -Arguments @('commit', '-m', $message)
+    }
+    Invoke-Checked -Program 'git' -Arguments @('push', 'origin', 'main', '--quiet')
+    Write-RunLog 'Dashboard actualizado y publicado correctamente.'
+} catch {
+    Write-RunLog ('ERROR: ' + $_.Exception.Message)
+    exit 1
+} finally {
+    if ($null -ne $runLock) { $runLock.Dispose() }
 }

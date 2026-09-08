@@ -1,2 +1,1 @@
-"""Etapas de descarga, parseo, análisis y liquidación de Sharpie."""
-
+"""Etapas de descarga, parseo y análisis del dashboard actual."""

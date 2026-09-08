@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sharpie · Sábana histórica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>__DASHBOARD_CSS__
+__VIEWER_CSS__</style>
+  <script>__THEME_INIT_JS__</script>
+</head>
+<body>
+  <header class="header">
+    <div class="brand-container">
+      <div class="brand-logo-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <div class="brand-info"><h1>Sharp<span>IE</span> <span class="brand-tag-badge">SÁBANA HISTÓRICA</span></h1><div class="tagline">⚡ Todas tus oportunidades guardadas</div></div>
+    </div>
+    <div class="header-meta">
+      <a class="opportunities-link" href="index.html">← Dashboard</a>
+      <div class="timestamp-box"><div class="updated-display"><span class="time-label">📅 Actualización (CDMX)</span><div id="updated" class="updated-val mono" role="status">—</div></div></div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">🌓</button>
+    </div>
+  </header>
+  <main>
+    <section class="stats-grid" aria-label="Métricas de oportunidades filtradas">
+      <div class="stat-card"><div class="stat-header"><span class="stat-icon">🎯</span><div class="stat-body"><div class="label">OPORTUNIDADES</div><div class="stat-value" id="matches">0</div><div class="stat-sub">de <span id="total">0</span> guardadas</div></div></div></div>
+      <div class="stat-card"><div class="stat-header"><span class="stat-icon">📈</span><div class="stat-body"><div class="label">EV PROMEDIO</div><div class="stat-value" id="avgEv">—</div><div class="stat-sub">De la selección actual</div></div></div></div>
+      <div class="stat-card"><div class="stat-header"><span class="stat-icon">⚖️</span><div class="stat-body"><div class="label">EDGE PROMEDIO</div><div class="stat-value" id="avgEdge">—</div><div class="stat-sub">De la selección actual</div></div></div></div>
+      <div class="stat-card"><div class="stat-header"><span class="stat-icon">💎</span><div class="stat-body"><div class="label">STAKE TOTAL</div><div class="stat-value" id="stake">0 u</div><div class="stat-sub">Unidades guardadas en la selección</div></div></div></div>
+    </section>
+    <section class="analytics-section" aria-label="Gráficos de las oportunidades filtradas">
+      <div class="chart-card"><div class="chart-header"><span>📈 Probabilidad Modelo vs EV</span><span class="mono chart-subtitle">X: Prob. Modelo · Y: EV</span></div><div class="chart-container"><canvas id="modelChart" aria-label="Probabilidad del modelo frente al EV"></canvas></div></div>
+      <div class="chart-card"><div class="chart-header"><span>🎯 Tendencias de Mercado</span><span class="mono chart-subtitle">Señales de flujo</span></div><div class="chart-container"><canvas id="signalsChart" aria-label="Distribución de señales de mercado"></canvas></div></div>
+    </section>
+    <p id="chartNotice" hidden>Los gráficos no pudieron cargarse. Las métricas, filtros y oportunidades siguen disponibles.</p>
+    <form id="filters" class="toolbar" aria-label="Filtros del historial">
+      <div class="search-box"><input id="search" type="search" aria-label="Buscar oportunidades" placeholder="Buscar por equipo, liga, mercado o selección…"></div>
+      <div class="filter-section-label">🔍 Filtros cualitativos</div>
+      <div class="filter-row">
+        <select id="sort" aria-label="Ordenar"><option value="date-desc">⏱️ Eventos: más recientes</option><option value="date-asc">⏱️ Eventos: más antiguos</option><option value="captured">📥 Últimas capturas</option><option value="ev">📈 Mayor EV</option><option value="stake">💎 Mayor stake</option></select>
+        <select id="date" aria-label="Fecha del evento"><option value="">📆 Todas las fechas</option></select>
+        <select id="league" aria-label="Liga"><option value="">🏆 Todas las ligas</option></select>
+        <select id="signal" aria-label="Señal"><option value="">📊 Todas las señales</option></select>
+        <select id="category" aria-label="Categoría"><option value="">🎯 Todas las categorías</option><option value="VALUE">VALUE</option><option value="PREMIUM">PREMIUM</option></select>
+        <button id="advancedToggle" class="btn-chip" type="button" aria-expanded="false" aria-controls="advanced">⚙️ Filtros avanzados</button>
+        <button id="clear" class="btn-chip" type="button">🧹 Limpiar filtros</button>
+        <button id="refresh" class="btn-chip" type="button">↻ Actualizar</button>
+      </div>
+      <section id="advanced" class="historical-advanced" aria-label="Filtros cuantitativos" hidden>
+        <div class="filter-section-label">📐 Filtros cuantitativos</div>
+        <div class="range-grid">
+          <fieldset><legend>📆 Fecha del evento</legend><div><label>Desde<input id="from" type="date"></label><label>Hasta<input id="to" type="date"></label></div></fieldset>
+          <fieldset><legend>Modelo %</legend><div><label>Mín.<input id="modelMin" type="number" step="0.1" min="0" max="100"></label><label>Máx.<input id="modelMax" type="number" step="0.1" min="0" max="100"></label></div></fieldset>
+          <fieldset><legend>Edge %</legend><div><label>Mín.<input id="edgeMin" type="number" step="0.1"></label><label>Máx.<input id="edgeMax" type="number" step="0.1"></label></div></fieldset>
+          <fieldset><legend>EV %</legend><div><label>Mín.<input id="evMin" type="number" step="0.1"></label><label>Máx.<input id="evMax" type="number" step="0.1"></label></div></fieldset>
+          <fieldset><legend>Stake (u)</legend><div><label>Mín.<input id="stakeMin" type="number" step="0.5" min="0"></label><label>Máx.<input id="stakeMax" type="number" step="0.5" min="0"></label></div></fieldset>
+          <fieldset><legend>Cuota americana</legend><div><label>Mín.<input id="oddsMin" type="number" step="1" placeholder="-150"></label><label>Máx.<input id="oddsMax" type="number" step="1" placeholder="+150"></label></div></fieldset>
+          <fieldset><legend>Bets %</legend><div><label>Mín.<input id="betsMin" type="number" step="1" min="0" max="100"></label><label>Máx.<input id="betsMax" type="number" step="1" min="0" max="100"></label></div></fieldset>
+          <fieldset><legend>Handle %</legend><div><label>Mín.<input id="handleMin" type="number" step="1" min="0" max="100"></label><label>Máx.<input id="handleMax" type="number" step="1" min="0" max="100"></label></div></fieldset>
+          <fieldset><legend>Divergencia</legend><div><label>Mín.<input id="divergenceMin" type="number" step="1"></label><label>Máx.<input id="divergenceMax" type="number" step="1"></label></div></fieldset>
+        </div>
+      </section>
+    </form>
+    <div class="records-summary"><span>Mostrando <strong id="summaryCount">0</strong> oportunidades de <span id="summaryTotal">0</span> guardadas</span><span id="since"></span></div>
+    <div class="history-table-wrap" tabindex="0" role="region" aria-label="Sábana histórica, desplazable horizontalmente">
+      <table><thead><tr><th scope="col">Evento / selección</th><th scope="col">Inicio (CDMX)</th><th scope="col">Liga</th><th scope="col">Mercado</th><th scope="col">Categoría</th><th scope="col">Cuota</th><th scope="col">Modelo %</th><th scope="col">Edge %</th><th scope="col">EV %</th><th scope="col">Stake (u)</th><th scope="col">Bets %</th><th scope="col">Handle %</th><th scope="col">Divergencia</th><th scope="col">Señal</th><th scope="col">Primera captura</th><th scope="col">Última actualización</th><th scope="col">Registro</th></tr></thead><tbody id="rows"></tbody></table>
+    </div>
+    <p id="empty" class="historical-empty" hidden>No hay oportunidades que coincidan con estos filtros.</p>
+    <nav class="historical-pagination" aria-label="Páginas del historial"><span id="range" aria-live="polite"></span><div><button id="prev" class="btn-chip" type="button">← Anterior</button><button id="next" class="btn-chip" type="button">Siguiente →</button></div></nav>
+  </main>
+  <dialog id="detail"><div class="dialog-head"><h2>Detalle de la oportunidad</h2><button id="closeDetail" class="btn-chip" type="button">Cerrar ×</button></div><p>Valores guardados al registrar esta oportunidad.</p><pre id="detailJson"></pre></dialog>
+  <script>window.OPPORTUNITIES=__OPPORTUNITIES_JSON__;</script>
+  <script>__EXCEL_JS__</script>
+  <script>__VIEWER_JS__</script>
+</body>
+</html>

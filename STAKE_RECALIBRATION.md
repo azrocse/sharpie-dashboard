@@ -32,5 +32,5 @@
 Ejecutar desde la raíz del proyecto:
 
 ```powershell
-python -m unittest discover -s tests -v
+python -B -m unittest discover -s tests -t . -v
 ```

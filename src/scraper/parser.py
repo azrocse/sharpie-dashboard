@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import re
 import unicodedata
 from datetime import datetime, timedelta, timezone
@@ -48,10 +47,6 @@ class DraftKingsParser:
         text = unicodedata.normalize("NFKC", str(value or ""))
         text = text.replace("\u2212", "-").replace("\u2013", "-")
         return " ".join(text.split())
-
-    def count_events(self, html):
-        soup = BeautifulSoup(html or "", "html.parser")
-        return len(soup.select(".tb-se"))
 
     def split_game(self, text):
         game = self._text(text)
@@ -165,16 +160,13 @@ class DraftKingsParser:
         bets_total = sum(entry["bets"] for entry in entries)
         return abs(handle_total - 100) <= tolerance and abs(bets_total - 100) <= tolerance
 
-    def parse_file(self, file, league_name):
-        with open(file, "r", encoding="utf-8") as source:
-            html = source.read()
+    def parse_html(self, html, league_name, observed_at=None):
+        """Procesa una página descargada sin crear un archivo RAW."""
 
         soup = BeautifulSoup(html, "html.parser")
         games = []
         seen_events = set()
-        scraped_at = datetime.fromtimestamp(
-            os.path.getmtime(file), tz=timezone.utc
-        ).isoformat(timespec="seconds")
+        scraped_at = observed_at or datetime.now(timezone.utc).isoformat(timespec="seconds")
 
         for event in soup.select(".tb-se"):
             title = event.select_one(".tb-se-title h5")

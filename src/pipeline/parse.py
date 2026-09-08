@@ -5,59 +5,16 @@ from __future__ import annotations
 import json
 import logging
 import os
-import re
-import unicodedata
 from datetime import datetime, timezone
 
 from scraper.parser import DraftKingsParser
+from config.league_config import league_slug
+from storage import atomic_write_json
 
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-MAX_SNAPSHOTS_PER_LEAGUE = 200
 MAX_HISTORY_POINTS_PER_MARKET = 200
 logger = logging.getLogger(__name__)
-
-
-def _slugify(value):
-    text = unicodedata.normalize("NFKD", str(value or ""))
-    text = "".join(char for char in text if not unicodedata.combining(char))
-    text = re.sub(r"[^a-z0-9]+", "_", text.casefold()).strip("_")
-    return text or "unknown"
-
-
-def _atomic_write_json(path, payload):
-    temporary = f"{path}.tmp"
-    with open(temporary, "w", encoding="utf-8") as output:
-        json.dump(payload, output, indent=4, ensure_ascii=False)
-        output.flush()
-        os.fsync(output.fileno())
-    os.replace(temporary, path)
-
-
-def save_snapshot(data, league_slug, snapshots_root):
-    league_folder = os.path.join(snapshots_root, league_slug)
-    os.makedirs(league_folder, exist_ok=True)
-    # El dashboard interpreta exactamente YYYYMMDD_HHMMSS para construir CLV.
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    snapshot_path = os.path.join(league_folder, f"{timestamp}.json")
-    _atomic_write_json(snapshot_path, data)
-    if MAX_SNAPSHOTS_PER_LEAGUE is not None:
-        _prune_old_snapshots(league_folder, MAX_SNAPSHOTS_PER_LEAGUE)
-    return snapshot_path
-
-
-def _prune_old_snapshots(league_folder, keep):
-    if not isinstance(keep, int) or keep < 1:
-        raise ValueError("MAX_SNAPSHOTS_PER_LEAGUE debe ser un entero mayor que cero o None")
-    files = sorted(
-        name for name in os.listdir(league_folder)
-        if name.endswith(".json") and os.path.isfile(os.path.join(league_folder, name))
-    )
-    for old_file in files[:-keep]:
-        try:
-            os.remove(os.path.join(league_folder, old_file))
-        except OSError as exc:
-            logger.warning("No se pudo eliminar snapshot antiguo %s: %s", old_file, exc)
 
 
 def _game_key(game):
@@ -134,22 +91,6 @@ def _load_previous(path):
     return index
 
 
-def _load_recent_history(parsed_path, snapshot_folder, limit=20):
-    sources = [parsed_path]
-    if os.path.isdir(snapshot_folder):
-        snapshots = sorted(
-            os.path.join(snapshot_folder, name)
-            for name in os.listdir(snapshot_folder)
-            if name.endswith(".json")
-        )
-        sources.extend(reversed(snapshots[-limit:]))
-    merged = {}
-    for source_path in sources:
-        for key, market in _load_previous(source_path).items():
-            merged.setdefault(key, market)
-    return merged
-
-
 def _merge_market_history(game, market, previous_index):
     game_key = _game_key(game)
     previous = (
@@ -194,60 +135,36 @@ def _consolidate_games(raw_games):
 
 
 def parse_all(downloaded):
+    """Actualiza solo los eventos presentes; conserva hasta 200 observaciones por mercado."""
+    if not downloaded:
+        raise ValueError("No hay descargas para parsear")
     parser = DraftKingsParser()
     output_folder = os.path.join(BASE_DIR, "data", "parsed")
-    snapshots_root = os.path.join(BASE_DIR, "data", "snapshots")
-    os.makedirs(output_folder, exist_ok=True)
-    os.makedirs(snapshots_root, exist_ok=True)
-
-    parsed_files = []
-    for league in downloaded or []:
-        if not isinstance(league, dict):
-            continue
-        league_name = str(league.get("league") or "").strip()
-        files = [path for path in (league.get("files") or []) if isinstance(path, str) and os.path.isfile(path)]
-        if not league_name or not files:
-            logger.warning("Liga omitida por nombre o archivos inválidos: %r", league_name)
-            continue
-
+    pending = []
+    for league in downloaded:
+        league_name = league["league"]
+        observed_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
         raw_games = []
-        for file_path in files:
-            try:
-                raw_data = parser.parse_file(file_path, league_name=league_name)
-            except Exception as exc:
-                logger.exception("No se pudo parsear %s: %s", file_path, exc)
-                continue
-            if isinstance(raw_data, dict):
-                raw_games.extend(raw_data.get("games") or [])
-            elif isinstance(raw_data, list):
-                raw_games.extend(raw_data)
-
+        for page in league["pages"]:
+            data = parser.parse_html(page, league_name=league_name, observed_at=observed_at)
+            raw_games.extend(data.get("games", []))
         games = _consolidate_games(raw_games)
         if not games:
-            logger.error("%s produjo cero mercados válidos; no se sobrescribe su JSON", league_name)
-            continue
-
-        league_slug = _slugify(league_name)
-        filename = os.path.join(output_folder, f"{league_slug}.json")
-        previous_index = _load_recent_history(
-            filename, os.path.join(snapshots_root, league_slug)
-        )
+            raise ValueError(f"{league_name} produjo cero mercados válidos")
+        filename = os.path.join(output_folder, f"{league_slug(league_name)}.json")
+        previous_index = _load_previous(filename)
         for game in games:
             game["markets"] = [
                 _merge_market_history(game, market, previous_index)
-                for market in game.get("markets", [])
+                for market in game["markets"]
             ]
-
-        data = {
+        pending.append((filename, {
             "league": league_name,
-            "slug": str(league.get("slug") or ""),
-            "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "slug": league["slug"],
+            "generatedAt": observed_at,
             "games": games,
-        }
-        _atomic_write_json(filename, data)
-        parsed_files.append(filename)
-        save_snapshot(data, league_slug, snapshots_root)
-        market_count = sum(len(game.get("markets", [])) for game in games)
-        print(f"✓ JSON creado: {os.path.basename(filename)} ({len(games)} juegos, {market_count} mercados)")
-
-    return parsed_files
+        }))
+    for filename, payload in pending:
+        atomic_write_json(filename, payload, compact=True)
+        print(f"[OK] Estado actual: {os.path.basename(filename)} ({len(payload['games'])} juegos)")
+    return [filename for filename, _ in pending]

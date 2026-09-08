@@ -8,15 +8,12 @@ import os
 import re
 from datetime import datetime, timezone
 
-try:
-    from pipeline.settle_history_espn import infer_primary_route
-except ImportError:
-    from settle_history_espn import infer_primary_route
+from config.league_config import enabled_leagues, league_slug
+from storage import atomic_write_json
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 INPUT_DIR = os.path.join(BASE_DIR, "data", "parsed")
 OUTPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
 SHARPIE_PATH = os.path.join(OUTPUT_DIR, "sharpie.json")
 
 PROVISIONAL_DIVERGENCE_WEIGHT = 0.15
@@ -48,22 +45,6 @@ MARKET_SIGNAL_LABELS = {
     "BALANCED_ACTION": "⚖️ BALANCED ACTION",
     "LOW_LIQUIDITY": "💧 LOW LIQUIDITY",
     "NO_ACTION": "⚪ NO ACTION",
-}
-ROUTE_LABELS = {
-    ("baseball", "mlb"): "MLB", ("baseball", "kbo"): "KBO",
-    ("baseball", "jpn.1"): "NPB", ("baseball", "college-baseball"): "NCAA BASEBALL",
-    ("football", "nfl"): "NFL", ("football", "college-football"): "NCAA FOOTBALL",
-    ("football", "ufl"): "UFL", ("basketball", "nba"): "NBA",
-    ("basketball", "wnba"): "WNBA",
-    ("basketball", "mens-college-basketball"): "NCAA BASKETBALL",
-    ("basketball", "womens-college-basketball"): "NCAA WOMENS BASKETBALL",
-    ("hockey", "nhl"): "NHL", ("hockey", "mens-college-hockey"): "NCAA ICE HOCKEY",
-    ("mma", "ufc"): "UFC", ("soccer", "fifa.world"): "WORLD CUP",
-    ("soccer", "uefa.champions"): "CHAMPIONS LEAGUE",
-    ("soccer", "uefa.europa"): "EUROPA LEAGUE", ("soccer", "eng.1"): "PREMIER LEAGUE",
-    ("soccer", "esp.1"): "LA LIGA", ("soccer", "ita.1"): "SERIE A",
-    ("soccer", "fra.1"): "LIGUE 1", ("soccer", "ger.1"): "BUNDESLIGA",
-    ("soccer", "mex.1"): "LIGA MX", ("soccer", "usa.1"): "MLS",
 }
 
 def safe_pct(value):
@@ -321,13 +302,12 @@ def explicit_liquidity_status(market):
     value = str(market.get("liquidity") or market.get("liquidityStatus") or "").upper()
     return "LOW" if value in {"LOW", "LOW_LIQUIDITY", "BAJA"} else None
 
-def get_latest_files():
-    if not os.path.exists(INPUT_DIR): return []
-    return sorted(
-        os.path.join(INPUT_DIR, name)
-        for name in os.listdir(INPUT_DIR)
-        if name.lower().endswith(".json") and name.lower() != "sharpie.json"
-    )
+def get_current_files():
+    """El análisis independiente usa únicamente las ligas habilitadas."""
+    return [
+        os.path.join(INPUT_DIR, f"{league_slug(league['league'])}.json")
+        for league in enabled_leagues()
+    ]
 
 def _group_market_indices(markets):
     groups = {}
@@ -394,18 +374,9 @@ def process_market(league_name, game, market, grouped_markets):
         action_key in {"bet", "speculative"},
     )
     game_time = game.get("time_raw") or game.get("startIso") or game.get("time") or market.get("time_raw") or datetime.now().strftime("%H:%M")
-    route_probe = {
-        "league": league_name, "sport": game.get("sport") or market.get("sport"),
-        "game": game.get("game"), "away": game.get("away"), "home": game.get("home"),
-        "market": market_type, "pick": market.get("pick"),
-    }
-    espn_route = infer_primary_route(route_probe)
-    resolved_league = ROUTE_LABELS.get(espn_route, league_name)
     return {
-        "league": resolved_league, "sourceLeague": league_name,
-        "sport": espn_route[0] if espn_route else (game.get("sport") or market.get("sport") or ""),
-        "espnSport": espn_route[0] if espn_route else None,
-        "espnLeague": espn_route[1] if espn_route else None,
+        "league": league_name, "sourceLeague": league_name,
+        "sport": game.get("sport") or market.get("sport") or "",
         "game": game.get("game"), "away": game.get("away", ""), "home": game.get("home", ""),
         "date": game.get("date"), "startIso": game.get("startIso"),
         "sourceTimeRaw": game.get("sourceTimeRaw"), "timezone": game.get("timezone"),
@@ -424,14 +395,15 @@ def process_market(league_name, game, market, grouped_markets):
     }
 
 def analyze_all(parsed_files=None):
-    parsed_files = get_latest_files() if parsed_files is None else parsed_files
+    parsed_files = get_current_files() if parsed_files is None else parsed_files
+    if not parsed_files:
+        raise ValueError("No hay datos actuales para analizar")
     results = []
     for filepath in parsed_files:
-        try:
-            with open(filepath, encoding="utf-8") as source: data = json.load(source)
-        except (OSError, json.JSONDecodeError):
-            continue
-        if not isinstance(data, dict): continue
+        with open(filepath, encoding="utf-8") as source:
+            data = json.load(source)
+        if not isinstance(data, dict) or not isinstance(data.get("games"), list):
+            raise ValueError(f"Estado actual inválido: {filepath}")
         league_name = data.get("league", "UNKNOWN")
         league_result = {"league": league_name, "date": datetime.now().strftime("%Y-%m-%d"), "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"), "markets": []}
         for game in data.get("games", []):
@@ -442,12 +414,9 @@ def analyze_all(parsed_files=None):
                 processed = process_market(league_name, game, market, group)
                 if processed is not None: league_result["markets"].append(processed)
         if league_result["markets"]: results.append(league_result)
-    temporary = f"{SHARPIE_PATH}.tmp"
-    with open(temporary, "w", encoding="utf-8") as output:
-        json.dump(results, output, indent=4, ensure_ascii=False)
-        output.flush()
-        os.fsync(output.fileno())
-    os.replace(temporary, SHARPIE_PATH)
+    if not results:
+        raise ValueError("El análisis no produjo mercados válidos; se conserva la salida anterior")
+    atomic_write_json(SHARPIE_PATH, results, compact=True)
     return SHARPIE_PATH
 
 if __name__ == "__main__": analyze_all()
