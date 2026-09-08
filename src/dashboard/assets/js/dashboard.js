@@ -1623,7 +1623,7 @@ function render() {
 
                 </div>
 
-                <div style="margin-top: 14px;">
+                <div class="pcard-footer">
                     ${isFollowed ? watchlistPanelHtml(p) : ''}
                     <div class="pcard-action-row">
                         <button class="btn-copy-x pcard-action-row-item" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
