@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import main
 from config.league_config import enabled_leagues
-from dashboard.generate_dashboard import build_market_observations, generate_dashboard
+from dashboard.generate_dashboard import build_market_observations, build_picks, generate_dashboard
 from pipeline import analyze, parse
 from scraper.draftkings import DraftKingsScraper
 
@@ -57,6 +57,14 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertEqual(len(picks), 2)
         self.assertTrue(all(pick["league"] == "SPORTS" for pick in picks))
         self.assertTrue(all(len(pick["history"]) == 2 for pick in picks))
+        built = build_picks(json.loads((self.root / "data/analyzed/sharpie.json").read_text(encoding="utf-8")))
+        self.assertEqual(len(built), len(picks))
+        for record in built:
+            self.assertNotIn("priorityKey", record)
+            self.assertNotIn("flowAdjustment", record)
+            self.assertNotIn("pattern", record)
+            self.assertIn("reason", record)
+            self.assertIn("history", record)
         self.assertTrue(all("clv" not in pick and "result" not in pick for pick in picks))
         html = (self.root / "index.html").read_text(encoding="utf-8")
         self.assertIn("Dodgers", html)
@@ -66,6 +74,10 @@ class CurrentPipelineTests(unittest.TestCase):
         recommended = [p for p in picks if p["actionKey"] == "bet" and p["pickCategory"] in {"VALUE", "PREMIUM"}]
         self.assertEqual(len(saved), len(recommended))
         self.assertGreater(len(saved), 0)
+        for pick in recommended:
+            record = next(row for row in saved if row["id"] == pick["id"])
+            for key, value in pick.items():
+                self.assertEqual(record[key], value)
         self.assertIn('title="Pick de acceso gratuito">FREE PICK</span>', html)
         self.assertNotIn('>FREE RELEASE', html)
 

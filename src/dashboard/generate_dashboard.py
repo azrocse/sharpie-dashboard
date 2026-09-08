@@ -134,18 +134,6 @@ def classify_action(text):
     return "pass"
 
 
-def classify_priority(text):
-    t = (text or "").upper()
-
-    if "AHORA" in t:
-        return "now"
-
-    if "PRONTO" in t:
-        return "soon"
-
-    return "watch"
-
-
 def classify_status(market, iso_str):
     explicit = market.get("status")
 
@@ -416,7 +404,7 @@ def build_picks(raw_data):
 
     event_fields = {
         "game", "away", "home", "league", "sourceLeague", "sport",
-        "espnSport", "espnLeague", "eventId", "espnEventId", "time",
+        "time",
         "time_raw", "startIso", "date",
     }
 
@@ -534,7 +522,6 @@ def build_picks(raw_data):
         if any(value is None for value in required_metrics):
             continue
 
-        implied_prob = round(float(implied_prob), 2)
         model_prob = round(float(model_prob), 2)
         model_edge = round(float(model_edge), 2)
         ev = round(float(ev), 2)
@@ -567,35 +554,17 @@ def build_picks(raw_data):
             "market": market_name or "Línea estándar",
             "pick": pick or "Sin selección",
             "odds": odds_str,
-            "action": action_text,
             "actionKey": market.get("actionKey", classify_action(action_text)),
-            "pattern": MARKET_SIGNAL_LABELS[market_signal],
-            "trend": MARKET_SIGNAL_LABELS[market_signal],
             "trendKey": market_signal,
             "marketSignal": market_signal,
             "marketSignals": market.get("marketSignals", [market_signal]),
             "pickCategory": pick_category,
-            "priority": market.get("priority", "👀 OBSERVAR"),
-            "priorityKey": classify_priority(market.get("priority", "")),
             "stake": stake,
             "confidenceScore": market.get("confidenceScore"),
-            "confidence": market.get("confidence"),
-            "confidenceStakeCap": market.get("confidenceStakeCap"),
-            "oddsStakeCap": market.get("oddsStakeCap"),
-            "riskClass": market.get("riskClass"),
-            "riskLevel": market.get("riskLevel"),
-            "modelProb": round(model_prob, 2) if model_prob is not None else None,
-            "fairProb": market.get("fairProb"),
-            "flowAdjustment": market.get("flowAdjustment"),
-            "modelSource": market.get("modelSource"),
-            "lineMove": market.get("lineMove"),
-            "lineMoveMinutes": market.get("lineMoveMinutes"),
-            "liquidityStatus": market.get("liquidityStatus"),
-            "impliedProb": round(implied_prob, 2) if implied_prob is not None else None,
-            "modelEdge": round(model_edge, 2),
+            "modelProb": model_prob,
+            "modelEdge": model_edge,
             
             "ev": ev,
-            "coherence": coherence,
             "whale": "SMART_MONEY" in set(market.get("marketSignals") or [market_signal]),
             "handlePct": round(handle, 2),
             "betsPct": round(bets, 2),
@@ -678,17 +647,8 @@ def generate_dashboard(source_json_path=None, output_dir=None):
 
     all_events = assign_free_releases(build_picks(raw_data))
 
-    # Campos de cálculo y etiquetas antiguas sin consumidores en el frontend.
-    unused_fields = {
-        "action", "pattern", "trend", "priority", "priorityKey", "confidence",
-        "confidenceStakeCap", "oddsStakeCap", "riskClass", "riskLevel",
-        "fairProb", "flowAdjustment", "modelSource", "lineMove", "lineMoveMinutes",
-        "liquidityStatus", "impliedProb", "coherence",
-    }
-    public_events = [{key: value for key, value in pick.items() if key not in unused_fields} for pick in all_events]
-
     # Una descarga válida sin picks pregame muestra el estado vacío actual.
-    json_data = json.dumps(public_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    json_data = json.dumps(all_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     html_content = render_template(
         template_path,
         {
@@ -712,7 +672,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
     # (sin volver a descargar todo el HTML) para detectar picks nuevos y
     # refrescarse solo, sin que el usuario tenga que presionar F5.
     picks_json_path = os.path.join(output_dir, "picks.json")
-    atomic_write_json(picks_json_path, public_events, compact=True)
+    atomic_write_json(picks_json_path, all_events, compact=True)
 
     print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file

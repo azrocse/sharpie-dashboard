@@ -36,9 +36,10 @@ no se deducen ligas a partir de nombres de equipos, selecciones o mercados.
 La sábana muestra eventos de hoy hacia atrás, por fecha del encuentro en CDMX.
 Los eventos futuros permanecen guardados pero no participan en la consulta,
 opciones de filtros, contadores, gráficos ni exportación XLS hasta su fecha.
-El archivo histórico conserva solo 22 campos: identificación del evento, selección,
-métricas de consulta, señal, FREE PICK e identificadores y fechas de captura.
-No duplica la serie `history` ni etiquetas y valores internos del modelo.
+El registro conserva el objeto completo producido por el dashboard, sin una
+lista adicional que recorte sus campos. La depuración se realiza en `build_picks`:
+no construye etiquetas duplicadas ni campos sin consumidores. Se conservan los
+cálculos intermedios necesarios para validar o explicar las selecciones.
 
 Abre `opportunities.html` en el navegador o usa **Oportunidades guardadas** en el
 dashboard. Comparte sus estilos, tema claro/oscuro y gráficos de Modelo vs EV y
