@@ -653,6 +653,8 @@ def generate_dashboard(source_json_path=None, output_dir=None):
         template_path,
         {
             "DASHBOARD_CSS": read_utf8(ASSETS_DIR / "css" / "dashboard.css"),
+            "IDENTITY_CSS": read_utf8(ASSETS_DIR / "css" / "identity.css"),
+            "DASHBOARD_SKIN": read_utf8(ASSETS_DIR / "css" / "dashboard-skin.css"),
             "THEME_INIT_JS": read_utf8(ASSETS_DIR / "js" / "theme-init.js"),
             "DASHBOARD_BODY": read_utf8(TEMPLATES_DIR / "dashboard_body.html"),
             "DASHBOARD_JS": read_utf8(ASSETS_DIR / "js" / "dashboard.js"),

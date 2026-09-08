@@ -19,6 +19,7 @@ def generate_opportunities_viewer(source_path=None, output_dir=None):
         raise ValueError(f"Registro de oportunidades inválido: {source_path}")
     html = render_template(CURRENT_DIR / "templates" / "opportunities.html", {
         "DASHBOARD_CSS": read_utf8(CURRENT_DIR / "assets/css/dashboard.css"),
+        "IDENTITY_CSS": read_utf8(CURRENT_DIR / "assets/css/identity.css"),
         "THEME_INIT_JS": read_utf8(CURRENT_DIR / "assets/js/theme-init.js"),
         "VIEWER_CSS": read_utf8(CURRENT_DIR / "assets/css/opportunities.css"),
         "VIEWER_JS": read_utf8(CURRENT_DIR / "assets/js/opportunities.js"),

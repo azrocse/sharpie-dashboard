@@ -345,9 +345,9 @@ let marketChartInstance = null;
 
 function initCharts() {
     if (typeof Chart === "undefined") return;
-    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    const textColor = isDark ? "#94a3b8" : "#64748b";
-    const gridColor = isDark ? "#243572" : "#e2e8f0";
+    const themeStyle = getComputedStyle(document.documentElement);
+    const textColor = themeStyle.getPropertyValue('--muted').trim();
+    const gridColor = themeStyle.getPropertyValue('--border').trim();
 
     const ctxScatter = document.getElementById("edgeScatterChart");
     if (ctxScatter) {
@@ -1618,8 +1618,8 @@ function render() {
                         </div>
                     </div>
 
-                    ${buildEvolutionHtml(p)}
                     ${unifiedDecisionPanelHtml(p)}
+                    <details class="pick-evolution"><summary>Ver evolución del mercado <span aria-hidden="true">+</span></summary>${buildEvolutionHtml(p)}</details>
 
                 </div>
 
