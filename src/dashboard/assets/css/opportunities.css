@@ -1,4 +1,54 @@
-/* El estilo base se comparte con el dashboard principal. */
+/* Archivo retrofuturista sobre la identidad compartida de SharpIE. */
+:root[data-theme="light"] { --bg:#edf2ef; --panel:#fbfdfa; --panel2:#e6eee9; --border:#cbd9d2; --text:#142e2b; --muted:#526b64; --teal:#087c6c; --shadow:0 8px 28px #183b2c08; }
+:root[data-theme="dark"] { --bg:#081416; --panel:#0e2023; --panel2:#152c30; --border:#284448; --text:#e3f0e9; --muted:#9ab5af; --teal:#73efd0; --gold:#edc88b; --shadow:0 10px 30px #0002; }
+body { padding:28px 40px; max-width:1600px; background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px); background-size:64px 64px; background-blend-mode:soft-light; }
+.header { border-radius:12px; box-shadow:none; padding:16px 20px; margin-bottom:0; }
+.brand-logo-icon { background:var(--teal); color:var(--bg); box-shadow:none; border-radius:10px; }
+.brand-tag-badge { border-radius:3px; letter-spacing:1.2px; font-size:8px; }
+.timestamp-box { background:transparent; border:0; }
+.opportunities-link { border-color:var(--border); }
+.archive-intro { display:flex; align-items:center; justify-content:space-between; gap:30px; padding:46px 4px 38px; }
+.eyebrow,.archive-coordinate { font:10px 'JetBrains Mono',monospace; letter-spacing:1.7px; color:var(--muted); }
+.signal-dot { display:inline-block; width:6px; height:6px; background:var(--teal); margin-right:7px; box-shadow:0 0 12px var(--teal); }
+.archive-intro h2 { margin:18px 0 14px; font-size:clamp(30px,3.5vw,52px); letter-spacing:-2px; line-height:1.12; font-weight:700; }
+.archive-intro h2 span { color:var(--teal); }
+.intro-copy { color:var(--muted); font-size:13px; line-height:1.7; max-width:500px; }
+.archive-actions { display:flex; flex-direction:column; align-items:flex-end; gap:20px; flex-shrink:0; }
+#exportXls { background:var(--teal); color:var(--bg); border:1px solid var(--teal); border-radius:6px; padding:15px 28px; font-size:13px; box-shadow:4px 4px 0 var(--border); min-height:48px; }
+#exportXls:hover:not(:disabled) { transform:translateY(-2px); box-shadow:4px 6px 0 var(--border); }
+.archive-jump { color:var(--muted); font-size:12px; text-decoration:none; }
+.archive-jump:hover { color:var(--teal); }
+.stats-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:22px; }
+.stat-card { border:0; border-right:1px solid var(--border); border-radius:0; padding:22px; box-shadow:none; position:relative; }
+.stat-card:last-child { border-right:0; }
+.stat-card::before { content:''; position:absolute; width:18px; height:2px; top:0; left:22px; background:var(--teal); }
+.stat-header { gap:0; }.stat-icon { display:none; }
+.stat-card .label { font:10px 'JetBrains Mono',monospace; letter-spacing:1px; color:var(--muted); }
+.stat-value { font-size:30px; font-weight:500; letter-spacing:-1px; margin:12px 0 8px; }
+.stat-sub { font-size:10px; line-height:1.5; }
+.analytics-section { gap:20px; grid-template-columns:1.65fr 1fr; }
+.chart-card { border-radius:10px; padding:22px; box-shadow:none; }
+.chart-header { font-size:12px; margin-bottom:24px; }
+.chart-container { height:230px; }
+.toolbar { border-radius:10px; padding:22px; box-shadow:none; border-top:2px solid var(--teal); scroll-margin-top:20px; }
+.search-box input { border-radius:6px; min-height:48px; padding:12px 16px; background:var(--bg); font-size:13px; }
+.filter-section-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; }
+.filter-row select,.btn-chip { border-radius:5px; min-height:40px; font-size:11px; }
+.filter-row select { background-color:var(--panel2); }
+.records-summary { background:transparent; border:0; padding:8px 0; margin:20px 0 14px; font-size:12px; }
+.table-controls { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 0 12px; border-top:1px solid var(--border); }
+.table-controls .eyebrow { line-height:1.7; }
+.table-hint { font-size:11px; color:var(--muted); margin:0 0 14px; }
+.history-table-wrap { scrollbar-color:var(--teal) var(--panel2); }
+.history-table-wrap th { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; }
+.history-table-wrap td { padding:18px 14px; }
+.history-table-wrap td:nth-child(9) { color:var(--teal); font-weight:700; }
+.history-table-wrap.compact td { padding:8px 14px; }
+.history-table-wrap.compact .selection { margin:3px 0; }
+.saved-tag { letter-spacing:.6px; border-radius:3px; }
+@media(max-width:1000px) { body { padding:20px; }.archive-intro { padding:32px 0; }.stat-card { padding:18px; }.stat-value { font-size:25px; }.analytics-section { grid-template-columns:1fr; } }
+@media(max-width:600px) { body { padding:14px; }.header-meta { display:grid; grid-template-columns:1fr auto; align-items:center; }.header-meta .timestamp-box { grid-column:1; padding:0; }.header-meta .theme-toggle { grid-column:2; grid-row:1 / 3; width:42px; align-self:center; }.header-meta .opportunities-link { justify-self:start; }.archive-intro { flex-direction:column; align-items:stretch; gap:24px; }.archive-intro h2 { letter-spacing:-1px; }.archive-actions { align-items:flex-start; gap:16px; }.archive-coordinate { display:none; }.archive-actions #exportSlot,#exportXls { width:100%; }.stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.stat-card:nth-child(2) { border-right:0; }.stat-card:nth-child(-n+2) { border-bottom:1px solid var(--border); }.stat-value { font-size:24px; }.chart-card,.toolbar { padding:16px; }.chart-container { height:200px; }.filter-row { width:100%; }.filter-row select,.filter-row .btn-chip { flex:1 1 100%; width:100%; }.table-controls { align-items:flex-start; }.table-controls .btn-chip { flex-shrink:0; } }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none !important; scroll-behavior:auto !important; } }
 .chart-subtitle { font-size:11px; color:var(--muted); }
 [hidden] { display:none !important; }
 .historical-advanced { width:100%; padding-top:18px; border-top:1px solid var(--border); margin-top:18px; }

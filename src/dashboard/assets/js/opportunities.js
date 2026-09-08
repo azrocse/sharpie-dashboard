@@ -57,8 +57,8 @@ function initCharts() {
     const style = getComputedStyle(document.documentElement);
     const color = style.getPropertyValue('--muted').trim(), grid = style.getPropertyValue('--border').trim();
     modelChart?.destroy(); signalsChart?.destroy();
-    modelChart = new Chart(byId('modelChart'), {type:'scatter',data:{datasets:[{label:'Oportunidades',data:[],backgroundColor:'#2dd4bf',pointRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context => `${context.raw.pick}: Modelo ${number(context.raw.x)}% · EV ${number(context.raw.y)}%`}}},scales:{x:{title:{display:true,text:'Modelo Prob. (%)',color},ticks:{color},grid:{color:grid}},y:{title:{display:true,text:'EV (%)',color},ticks:{color},grid:{color:grid}}}}});
-    signalsChart = new Chart(byId('signalsChart'), {type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:[],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'bottom',labels:{color,boxWidth:10,font:{size:10}}}}}});
+    modelChart = new Chart(byId('modelChart'), {type:'scatter',data:{datasets:[{label:'Oportunidades',data:[],backgroundColor:'#2dd4bf',pointRadius:6}]},options:{animation:false,responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context => `${context.raw.pick}: Modelo ${number(context.raw.x)}% · EV ${number(context.raw.y)}%`}}},scales:{x:{title:{display:true,text:'Modelo Prob. (%)',color},ticks:{color},grid:{color:grid}},y:{title:{display:true,text:'EV (%)',color},ticks:{color},grid:{color:grid}}}}});
+    signalsChart = new Chart(byId('signalsChart'), {type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:[],borderWidth:0}]},options:{animation:false,responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'bottom',labels:{color,boxWidth:10,font:{size:10}}}}}});
 }
 
 function updateCharts(rows) {
@@ -79,6 +79,8 @@ function updateCharts(rows) {
 
 function render() {
     const rows=matchingRows();
+    const activeCount=filterIds.filter(id=>id!=='sort' && byId(id).value!=='').length;
+    byId('activeFilters').textContent=activeCount ? `${activeCount} filtros activos` : 'Sin filtros activos';
     byId('exportXls').disabled=rows.length===0;
     page=Math.min(page,Math.max(0,Math.ceil(rows.length/pageSize)-1));
     const offset=page*pageSize;
@@ -144,8 +146,13 @@ exportButton.type='button';
 exportButton.className='btn-chip';
 exportButton.textContent='↓ Exportar XLS';
 exportButton.title='Exportar todas las oportunidades filtradas, incluidas todas las páginas';
-byId('refresh').after(exportButton);
+byId('exportSlot').append(exportButton);
 exportButton.addEventListener('click',exportXls);
+byId('densityToggle').addEventListener('click',()=>{
+    const compact=document.querySelector('.history-table-wrap').classList.toggle('compact');
+    byId('densityToggle').setAttribute('aria-pressed',String(compact));
+    byId('densityToggle').textContent=compact ? 'Vista cómoda' : 'Vista compacta';
+});
 byId('filters').addEventListener('submit',event=>event.preventDefault());
 filterIds.forEach(id=>byId(id).addEventListener('input',()=>{page=0;render();}));
 byId('advancedToggle').addEventListener('click',()=>{byId('advanced').hidden=!byId('advanced').hidden;byId('advancedToggle').setAttribute('aria-expanded',String(!byId('advanced').hidden));});
