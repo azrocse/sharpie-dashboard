@@ -62,13 +62,16 @@ body { padding:24px 36px; max-width:1480px; background:var(--bg); }
 .badge-tag,.badge-tag-grid-3x3 .badge-tag { display:flex; flex-direction:column; align-items:flex-start; gap:8px; padding:0 10px; background:transparent; border:0; border-left:1px solid var(--border); border-radius:0; font-size:10px; color:var(--muted); white-space:normal; line-height:1.5; }
 .badge-tag b { font:600 17px 'JetBrains Mono',monospace; color:var(--text); }
 .badge-tag.good b { color:var(--teal); }.badge-tag.warn b { color:var(--amber); }.badge-tag.bad b { color:var(--red); }
-.pick-evolution { margin-top:16px; border-top:1px solid var(--border); }
-.pick-evolution summary { cursor:pointer; list-style:none; padding:14px 0; display:flex; align-items:center; justify-content:space-between; color:var(--muted); font-size:11px; }
-.pick-evolution summary::-webkit-details-marker { display:none; }.pick-evolution summary span { font-size:18px; }.pick-evolution[open] summary span { transform:rotate(45deg); }
+.pick-evolution { margin-top:16px; border-top:1px solid var(--border); padding-top:10px; }
 .history-evolution-box { border:1px solid var(--border); border-radius:10px; background:var(--panel2); padding:12px; }
 .history-evolution-table { width:100%; table-layout:fixed; }.history-evolution-table th,.history-evolution-table td { overflow-wrap:anywhere; white-space:normal; }
-.btn-copy-x,.btn-telegram { border-radius:9px; min-height:42px; box-shadow:none; font-size:11px; }
-.btn-copy-x { background:var(--text); color:var(--bg); border:0; }.btn-copy-x:hover { background:var(--accent); color:var(--bg); transform:none; }
+.btn-telegram { border-radius:9px; min-height:42px; box-shadow:none; font-size:11px; }
+.card-top-actions { display:flex; align-items:center; justify-content:flex-end; gap:6px; min-width:0; }
+.btn-copy-x { width:26px; height:26px; min-width:26px; min-height:26px; padding:0; display:inline-grid; place-items:center; border-radius:7px; background:transparent; color:var(--muted); border:1px solid var(--border); box-shadow:none; font-size:12px; line-height:1; flex:0 0 26px; }
+.btn-copy-x:hover { background:var(--panel2); color:var(--text); border-color:var(--muted); transform:none; }
+.history-evolution-title { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.history-expand-btn { width:25px; height:25px; min-width:25px; padding:0; display:grid; place-items:center; border:1px solid var(--border); border-radius:7px; background:transparent; color:var(--text); font-size:17px; line-height:1; cursor:pointer; }
+.history-expand-btn:hover { background:var(--panel); border-color:var(--muted); }
 .btn-telegram { border:1px solid var(--border); background:var(--panel2); color:var(--muted); }
 input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
 @media(max-width:1100px) { body { padding:20px; }.stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.header { flex-wrap:wrap; }.header-meta { flex-wrap:wrap; }.card-hero-header { grid-template-columns:1fr auto; }.card-hero-tags { grid-column:1 / -1; justify-content:flex-start; } }
@@ -82,9 +85,10 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,su
 .tracking-comparison { width:100%; table-layout:fixed; border-collapse:collapse; }
 .tracking-comparison th,.tracking-comparison td { padding:7px 0; text-align:right; border-bottom:1px solid var(--border); overflow-wrap:anywhere; }
 .tracking-comparison thead th { color:var(--muted); font-size:9px; font-weight:500; padding-top:0; }
-.tracking-comparison th:first-child { text-align:left; width:30%; }
+.tracking-comparison th:first-child { text-align:left; width:38%; }
 .tracking-comparison tbody th { font-size:10px; font-weight:500; color:var(--muted); }
 .tracking-comparison td { font:600 11px 'JetBrains Mono',monospace; color:var(--text); }.tracking-comparison td:nth-child(2) { font-weight:400; color:var(--muted); }
+.tracking-comparison .tracking-arrow { width:18px; color:var(--muted); text-align:center; font-size:10px; }
 .tracking-verdict { margin-top:10px; }.tracking-verdict-label { display:inline-block; padding:4px 6px; border-radius:4px; font-size:9px; font-weight:700; }
 .tracking-verdict-label.good { background:var(--teal-soft); color:var(--teal); }.tracking-verdict-label.warn { background:var(--amber-soft); color:var(--amber); }.tracking-verdict-label.bad { background:var(--red-soft); color:var(--red); }
 .tracking-verdict p { font-size:10px; color:var(--muted); line-height:1.6; margin-top:7px; }
@@ -98,11 +102,11 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,su
 .pcard .decision-panel { padding:10px; margin-top:8px; }.pcard .decision-panel-title { margin-bottom:8px; font-size:9px; }
 .pcard .badge-tag-grid,.pcard .badge-tag-grid-3x3 { gap:8px 4px; }
 .pcard .badge-tag { gap:4px; padding-inline:6px; font-size:9px; }.pcard .badge-tag b { font-size:15px; }
-.pcard .pick-evolution { margin-top:9px; }.pcard .pick-evolution summary { padding:9px 0; min-height:36px; }
-.pcard-footer { margin-top:6px; }.pcard .btn-copy-x,.pcard .btn-telegram { padding:8px; min-height:36px; }
+.pcard .pick-evolution { margin-top:9px; }
+.pcard-footer { margin-top:6px; }.pcard .btn-telegram { padding:8px; min-height:36px; }
 .pcard .pcard-action-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 @media(min-width:1200px) { #cardsView { grid-template-columns:repeat(3,minmax(0,1fr)); } }
-@media(max-width:500px) { .pcard { padding:12px; }.pcard .btn-copy-x,.pcard .btn-telegram { min-height:42px; } }
+@media(max-width:500px) { .pcard { padding:12px; }.pcard .btn-telegram { min-height:42px; }.btn-copy-x { width:28px; height:28px; min-width:28px; min-height:28px; } }
 
 .btn-telegram { display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none; padding:8px; min-height:36px; background:var(--panel2); color:var(--teal); border:1px solid var(--border); border-radius:9px; font:600 10px "Plus Jakarta Sans",sans-serif; }
 .btn-telegram:disabled { opacity:.6; cursor:default; }.tracking-verdict { margin-top:6px; }

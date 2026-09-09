@@ -685,11 +685,11 @@ function toggleHistoryExpand(uid, total) {
     if (expanded) {
         tbody.innerHTML = HISTORY_ROWS_CACHE[uid].collapsed;
         tbody.dataset.expanded = '0';
-        if (btn) btn.textContent = `Ver historial completo (${total})`;
+        if (btn) { btn.textContent = '+'; btn.title = `Ver todos (${total})`; btn.setAttribute('aria-label', `Ver todos los movimientos (${total})`); }
     } else {
         tbody.innerHTML = HISTORY_ROWS_CACHE[uid].full;
         tbody.dataset.expanded = '1';
-        if (btn) btn.textContent = 'Ver últimos 5';
+        if (btn) { btn.textContent = '−'; btn.title = 'Ver últimos 5'; btn.setAttribute('aria-label', 'Mostrar solo los últimos cinco movimientos'); }
     }
 }
 
@@ -717,7 +717,7 @@ function buildEvolutionHtml(p) {
 
     return `
         <div class="history-evolution-box">
-            <div class="history-evolution-title">📊 Evolución Histórica (Bets / Handle${hasOdds ? ' / Cuota' : ''})</div>
+            <div class="history-evolution-title"><span>📊 Últimos movimientos</span>${hasMore ? `<button type="button" class="history-expand-btn" id="${uid}_btn" title="Ver todos (${filteredHistory.length})" aria-label="Ver todos los movimientos (${filteredHistory.length})" onclick="toggleHistoryExpand('${uid}', ${filteredHistory.length})">+</button>` : ''}</div>
             <table class="history-evolution-table">
                 <thead>
                     <tr>
@@ -732,7 +732,6 @@ function buildEvolutionHtml(p) {
                     ${collapsedRows}
                 </tbody>
             </table>
-            ${hasMore ? `<button type="button" class="history-expand-btn" id="${uid}_btn" onclick="toggleHistoryExpand('${uid}', ${filteredHistory.length})">Ver historial completo (${filteredHistory.length})</button>` : ''}
         </div>
     `;
 }
@@ -1191,9 +1190,9 @@ function trackingPanelHtml(p) {
     const initial=t.initial||{};
     const value=(v,suffix='')=>v==null?'—':escapeHTML(String(v))+suffix;
     const initialDiv=(initial.handlePct!=null&&initial.betsPct!=null)?Number(initial.handlePct)-Number(initial.betsPct):null;
-    const rows=[['Cuota',initial.odds,p.odds,''],['Bets',initial.betsPct,p.betsPct,'%'],['Handle',initial.handlePct,p.handlePct,'%'],['Divergencia',initialDiv,p.divergence,'%']];
+    const rows=[['💵 Cuota',initial.odds,p.odds,''],['🎟️ Bets',initial.betsPct,p.betsPct,'%'],['💰 Handle',initial.handlePct,p.handlePct,'%'],['🐋 Divergencia',initialDiv,p.divergence,'%']];
     return `<div class="tracking-panel"><div class="tracking-panel-title"><strong>${escapeHTML(labels[state]||'🔄')} Seguimiento</strong><span>${escapeHTML(date(t.firstObservedAt))} · CDMX</span></div>
-      <table class="tracking-comparison"><thead><tr><th>Métrica</th><th>Apertura</th><th>Actual</th></tr></thead><tbody>${rows.map(([label,before,now,suffix])=>`<tr><th scope="row">${label}</th><td>${value(before,suffix)}</td><td>${value(now,suffix)}</td></tr>`).join('')}</tbody></table>
+      <table class="tracking-comparison"><thead><tr><th>Métrica</th><th>Apertura</th><th aria-hidden="true"></th><th>Actual</th></tr></thead><tbody>${rows.map(([label,before,now,suffix])=>`<tr><th scope="row">${label}</th><td>${value(before,suffix)}</td><td class="tracking-arrow">→</td><td>${value(now,suffix)}</td></tr>`).join('')}</tbody></table>
     </div>`;
 }
 
@@ -1438,7 +1437,7 @@ function render() {
                                 <strong class="signal-name">${primarySignalName}</strong>
                             </div>
                         </div>
-                        <span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span>
+                        <div class="card-top-actions"><span class="countdown-timer ${timer.urgent ? 'urgent' : ''}" data-iso="${p.iso || ''}">${timer.text}</span><button class="btn-copy-x" title="Copiar para X" aria-label="Copiar para X" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>𝕏</button></div>
                         <div class="card-hero-tags">
                             ${isNew ? `<span class="status-icon" title="Pick nuevo">🆕</span>` : ''}
                             ${isUpdated ? `<span class="status-icon" title="Pick actualizado">🔄</span>` : ''}
@@ -1448,7 +1447,6 @@ function render() {
                             ${isLongshot ? `<span class="longshot-pick-badge">LONGSHOT · MÁX. 0.5u</span>` : ''}
                             ${isValue ? `<span class="value-pick-badge">FREE</span>` : ''}
                             ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
-                            <button class="btn-copy-x" title="Copiar para X" aria-label="Copiar para X" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>𝕏</button>
                         </div>
                     </div>
 
@@ -1483,7 +1481,7 @@ function render() {
                     </div>
 
                     ${unifiedDecisionPanelHtml(p)}
-                    <details class="pick-evolution"><summary>Ver evolución del mercado <span aria-hidden="true">+</span></summary>${buildEvolutionHtml(p)}</details>
+                    <section class="pick-evolution" aria-label="Evolución del mercado">${buildEvolutionHtml(p)}</section>
 
                 </div>
 
