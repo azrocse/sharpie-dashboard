@@ -43,6 +43,11 @@ def read_state(path):
     payload = json.loads(path.read_text(encoding='utf-8'))
     if payload.get('schemaVersion') != 1 or not isinstance(payload.get('records'), dict):
         raise ValueError('Estado de seguimiento inválido; no se sobrescribe.')
+    # Migra estados anteriores sin arrastrar la métrica descartada al HTML/JSON.
+    for record in payload['records'].values():
+        for section in ('current', 'previous', 'firstEvaluation'):
+            if isinstance(record.get(section), dict):
+                record[section].pop('confidenceScore', None)
     return payload
 
 
