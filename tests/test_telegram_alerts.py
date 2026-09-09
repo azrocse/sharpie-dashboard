@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 class FakeBot:
     def __init__(self, updates=()):
-        self.updates=list(updates); self.sent=[]; self.fail=0; self.answered=[]
+        self.updates=list(updates); self.sent=[]; self.edited=[]; self.deleted=[]; self.fail=0; self.answered=[]
 
     def call(self, method, payload):
         if method == 'answerCallbackQuery':
@@ -20,6 +20,14 @@ class FakeBot:
     def send(self, chat, text, keyboard=None):
         if self.fail: raise TelegramError(self.fail)
         self.sent.append((chat, text, keyboard))
+        return {'message_id': len(self.sent)}
+
+    def edit(self, chat, message_id, text, keyboard=None):
+        self.edited.append((chat, message_id, text, keyboard)); return True
+
+    def delete(self, chat, message_id):
+        self.deleted.append((chat, message_id))
+        return True
 
 
 class TelegramTests(unittest.TestCase):
@@ -29,7 +37,7 @@ class TelegramTests(unittest.TestCase):
         self.now=datetime(2026,9,7,12,tzinfo=CDMX)
         self.key='a'*24
         self.record={'trackingId':self.key,'game':'A vs B','pick':'A','market':'Moneyline',
-                     'iso':'2026-09-07T15:00:00','state':'READY','freeRelease':True,
+                     'iso':'2026-09-07T15:00:00','state':'READY','freeRelease':True,'pickCategory':'FREE',
                      'current':{'odds':'+110','ev':10,'modelEdge':5,'stake':1.5},'lastObservation':self.now.isoformat()}
         self.data={'records':{self.key:self.record}}
         self.config={'token':'secret','username':'sample_bot','allowedChatIds':['1'],'publicSubscriptions':False}
@@ -54,12 +62,13 @@ class TelegramTests(unittest.TestCase):
         self.run_cycle()
         self.assertEqual(len(self.bot.sent),2)
         self.assertIn('Avisos activados',self.bot.sent[0][1])
-        self.assertIn('FREE PICK',self.bot.sent[1][1])
+        self.assertIn('#FreePick',self.bot.sent[1][1])
         self.run_cycle()
         self.record['state']='NO_VALUE'; self.run_cycle()
         self.record['state']='READY'; self.run_cycle()
         self.run_cycle(self.now+timedelta(hours=3))
         self.assertEqual(len(self.bot.sent),2)
+        self.assertEqual(len(self.bot.edited),2)
 
     def test_confirmation_does_not_require_tracking_data(self):
         self.data={'records':{}}
@@ -79,10 +88,10 @@ class TelegramTests(unittest.TestCase):
         self.run_cycle()
         self.command('pause',callback=True); self.run_cycle()
         self.assertFalse(self.state()['subscribers']['1']['active'])
-        self.assertEqual(len(self.bot.sent),3)
+        self.assertEqual(len(self.bot.sent),4)
         self.command('resume',callback=True); self.run_cycle()
         self.assertEqual(len(self.bot.sent),5)
-        self.assertIn('B</b>',self.bot.sent[-1][1])
+        self.assertIn('Avisos activados',self.bot.sent[-1][1])
         self.run_cycle(); self.assertEqual(len(self.bot.sent),5)
         self.assertEqual(len(self.bot.answered),2)
 
@@ -132,7 +141,7 @@ class TelegramTests(unittest.TestCase):
         self.record.update(game='<A> & B',pick='<A>')
         msg=message_for(self.record)
         self.assertIn('&lt;A&gt; &amp; B',msg)
-        self.assertIn('1.5 u',msg)
+        self.assertIn('1.5u',msg)
         self.assertLess(len(msg),350)
         with patch.object(Bot,'call') as call:
             Bot('secret').send('1',msg,[[{'text':'Pausar','callback_data':'pause'}]])

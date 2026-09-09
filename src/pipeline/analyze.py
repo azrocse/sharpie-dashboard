@@ -4,8 +4,10 @@ Cascada única: cuota -> base sin vig -> divergencia Handle-Bets ->
 probabilidad modelo -> Edge -> EV -> medio Kelly -> stake.
 """
 import json
+import math
 import os
 import re
+import statistics
 from datetime import datetime, timezone
 
 from config.league_config import enabled_leagues, league_slug
@@ -16,20 +18,22 @@ INPUT_DIR = os.path.join(BASE_DIR, "data", "parsed")
 OUTPUT_DIR = os.path.join(BASE_DIR, "data", "analyzed")
 SHARPIE_PATH = os.path.join(OUTPUT_DIR, "sharpie.json")
 
-PROVISIONAL_DIVERGENCE_WEIGHT = 0.15
-MAX_DIVERGENCE_ADJUSTMENT = 8.0
-KELLY_FRACTION = 0.50
+PROVISIONAL_DIVERGENCE_WEIGHT = 0.12
+MAX_DIVERGENCE_ADJUSTMENT = 6.0
+KELLY_FRACTION = 0.125
 MAX_KELLY_FRACTION_PCT = 10.0
 STAKE_MIN_UNITS = 1.0
 STAKE_MAX_UNITS = 5.0
-OPERATIONAL_STAKE_MAX_UNITS = 3.0
+OPERATIONAL_STAKE_MAX_UNITS = 5.0
 LONGSHOT_ODDS_MIN = 151
 LONGSHOT_STAKE_CAP = 0.5
 EXTREME_LONGSHOT_ODDS_MIN = 251
 VALUE_EDGE_MIN = 2.0
 VALUE_EV_MIN = 3.0
 PREMIUM_EDGE_MIN = 4.0
-PREMIUM_EV_MIN = 6.0
+PREMIUM_EV_MIN = 6.5
+WHALE_EDGE_MIN = 5.5
+WHALE_EV_MIN = 9.0
 LONGSHOT_EDGE_MIN = 2.0
 LONGSHOT_EV_MIN = 5.0
 EXTREME_LONGSHOT_EDGE_MIN = 3.0
@@ -46,6 +50,18 @@ MARKET_SIGNAL_LABELS = {
     "LOW_LIQUIDITY": "💧 LOW LIQUIDITY",
     "NO_ACTION": "⚪ NO ACTION",
 }
+
+def normalize_market_type(value):
+    """Homologa las variantes del feed en los tres rubros visibles."""
+    text = str(value or "").strip()
+    folded = text.casefold()
+    if folded in {"moneyline", "money line", "ml"}:
+        return "Moneyline"
+    if folded in {"spread", "run line", "puck line", "handicap", "hándicap"}:
+        return "Spread"
+    if folded == "total" or folded.startswith("ou ") or folded in {"over/under", "totals"}:
+        return "Total"
+    return None
 
 def safe_pct(value):
     try: value = float(value)
@@ -172,83 +188,47 @@ def confidence_band(score):
     if score >= 40.0: return "BAJA", 1.0
     return "ESPECULATIVA", 0.5
 
-def calculate_stake(model_prob, decimal_odds, ev, confidence_score, odds_stake_cap, actionable):
-    """Medio Kelly limitado por confianza, riesgo de cuota y techo operativo."""
+def calculate_stake(model_prob, decimal_odds, ev, confidence_score=None, odds_stake_cap=5.0, actionable=True, category=None):
+    """Kelly a un octavo; 1u es 1% de banca, redondeado hacia abajo a 0.5u."""
     if (not actionable or model_prob is None or decimal_odds is None
             or decimal_odds <= 1.0 or ev is None or ev <= 0):
         return 0.0
     b, p = decimal_odds - 1.0, model_prob / 100.0
     kelly_full = (b * p - (1.0 - p)) / b
     if kelly_full <= 0: return 0.0
-    fractional_pct = kelly_full * KELLY_FRACTION * 100.0
-    raw_units = STAKE_MIN_UNITS + min(fractional_pct, MAX_KELLY_FRACTION_PCT) / MAX_KELLY_FRACTION_PCT * (STAKE_MAX_UNITS - STAKE_MIN_UNITS)
-    _band, confidence_cap = confidence_band(confidence_score)
-    final_units = min(raw_units, confidence_cap, odds_stake_cap, OPERATIONAL_STAKE_MAX_UNITS)
-    return round(max(LONGSHOT_STAKE_CAP, final_units) * 2.0) / 2.0
+    raw_units = kelly_full * KELLY_FRACTION * 100.0
+    category_cap = {"FREE": 2.0, "PREMIUM": 3.5, "WHALE": 5.0}.get(category, 5.0)
+    final_units = min(raw_units, category_cap, odds_stake_cap, OPERATIONAL_STAKE_MAX_UNITS)
+    return max(1.0, math.floor(final_units * 2.0) / 2.0)
 
 def evaluate_market_signals(divergence, bets, handle, ev, model_edge, line_move, move_minutes, liquidity):
-    """Devuelve todas las señales compatibles, ordenadas por fuerza informativa."""
-    if liquidity == "LOW": return ["LOW_LIQUIDITY"]
+    """Solo expone las dos señales útiles; no dependen de edge ni EV."""
     signals = []
-    if bets <= 40.0 and divergence >= 15.0 and line_move >= 1.0:
-        signals.append("REVERSE_LINE_MOVEMENT")
-    if divergence >= 10.0 and line_move >= 1.5 and move_minutes is not None and move_minutes <= 60.0:
-        signals.append("STEAM_MOVE")
-    if divergence >= 15.0 and ev >= 3.0 and model_edge >= 2.0:
+    if divergence >= 15.0:
         signals.append("SMART_MONEY")
-    if bets <= 40.0 and handle >= 60.0 and divergence >= 20.0:
-        signals.append("SHARP_VS_PUBLIC")
-    if bets >= 65.0 and divergence <= -15.0:
-        signals.append("PUBLIC_HEAVY")
     if bets >= 65.0 and handle >= 65.0 and abs(divergence) <= 10.0:
         signals.append("CONSENSUS")
-    if 40.0 <= bets <= 60.0 and 40.0 <= handle <= 60.0 and abs(divergence) <= 10.0:
-        signals.append("BALANCED_ACTION")
     return signals or ["NO_ACTION"]
 
-def classify_pick_category(ev, model_edge, market_signals, divergence, model_prob, raw_odds, confidence_score):
-    """Jerarquía editorial única, evaluada de mayor a menor exigencia.
-
-    LONGSHOT: pick con valor pero cuota americana >= +151; nunca es oportunidad principal.
-    PREMIUM: EV > 6% respaldado por señal profesional y confianza sólida.
-    VALUE: EV moderado de 1% a 6% con señal válida de valor o consenso.
-
-    PUBLIC_HEAVY, BALANCED_ACTION, LOW_LIQUIDITY y NO_ACTION son señales de
-    contexto/precaución; por sí solas no convierten un pick en recomendación.
-    """
-    signals = set(market_signals or [])
-    professional_signals = {
-        "SMART_MONEY", "REVERSE_LINE_MOVEMENT", "STEAM_MOVE", "SHARP_VS_PUBLIC"
-    }
-    free_signals = professional_signals | {"CONSENSUS"}
-
+def classify_pick_category(ev, model_edge, market_signals, divergence, model_prob, raw_odds, confidence_score=None, handle=None):
+    """Clasificación financiera exclusiva; las señales son contexto independiente."""
     if model_prob is None or model_edge is None or ev is None:
         return None
-    risk_class = classify_odds_risk(raw_odds)[0]
-    if risk_class == "EXTREME_LONGSHOT":
-        if (model_edge >= EXTREME_LONGSHOT_EDGE_MIN and ev >= EXTREME_LONGSHOT_EV_MIN
-                and signals.intersection(professional_signals)):
-            return "LONGSHOT"
+    american = american_odds_value(raw_odds)
+    if american is None or american < -200 or american > 200:
         return None
-    if risk_class == "LONGSHOT":
-        if (model_edge >= LONGSHOT_EDGE_MIN and ev >= LONGSHOT_EV_MIN
-                and signals.intersection(professional_signals)):
-            return "LONGSHOT"
-        return None
-    qualifies_premium = (ev >= PREMIUM_EV_MIN and model_edge >= PREMIUM_EDGE_MIN
-                          and signals.intersection(professional_signals) and confidence_score >= 60.0)
-    qualifies_value = (ev >= VALUE_EV_MIN and model_edge >= VALUE_EDGE_MIN
-                        and signals.intersection(free_signals) and confidence_score >= 40.0)
-    if qualifies_premium:
+    if model_edge >= WHALE_EDGE_MIN and ev >= WHALE_EV_MIN and divergence >= 35 and (handle is None or handle >= 65):
+        return "WHALE"
+    if ev >= PREMIUM_EV_MIN and model_edge >= PREMIUM_EDGE_MIN:
         return "PREMIUM"
-    if qualifies_value:
-        return "VALUE"
+    if ev >= VALUE_EV_MIN and model_edge >= VALUE_EDGE_MIN:
+        return "FREE"
     return None
 
 def action_from_category(category):
+    if category == "WHALE": return "🐋 WHALE", "bet", "🔥 AHORA"
     if category == "PREMIUM": return "🟢 PREMIUM", "bet", "🔥 AHORA"
-    if category == "VALUE": return "🟢 VALUE PICK", "bet", "⚡ PRONTO"
-    if category == "LONGSHOT": return "🟠 LONGSHOT", "speculative", "🎲 OPCIONAL"
+    if category == "FREE": return "🔓 FREE PICK", "bet", "⚡ PRONTO"
     return "🟡 SEGUIMIENTO", "pass", "👀 OBSERVAR"
 
 def normalize_history(market):
@@ -312,17 +292,68 @@ def get_current_files():
 def _group_market_indices(markets):
     groups = {}
     for index, market in enumerate(markets):
-        market_name = str(market.get("market", "")).strip().casefold()
+        market_name = (normalize_market_type(market.get("market")) or "").casefold()
         explicit_group = market.get("marketGroup")
-        key = (market_name, str(explicit_group)) if explicit_group is not None else (market_name, None)
+        line = market.get("line")
+        try: line_key = abs(float(str(line).replace("−", "-")))
+        except (TypeError, ValueError): line_key = None
+        exact_line = line_key if market_name in {"spread", "total"} else None
+        key = (market_name, str(explicit_group), exact_line) if explicit_group is not None else (market_name, None, exact_line)
         groups.setdefault(key, []).append(index)
     resolved = {}
-    for (_market_name, explicit_group), indices in groups.items():
+    for (_market_name, explicit_group, _line), indices in groups.items():
         chunks = [indices] if explicit_group is not None or len(indices) == 3 else [indices[i:i + 2] for i in range(0, len(indices), 2)]
         for chunk in chunks:
             for index in chunk:
                 resolved[index] = chunk
     return resolved
+
+def _history_map(market):
+    result = {}
+    for point in normalize_history(market):
+        try:
+            stamp = datetime.fromisoformat(str(point.get("time")).replace("Z", "+00:00")).replace(second=0, microsecond=0)
+        except (TypeError, ValueError):
+            continue
+        result[stamp] = point
+    return result
+
+def historical_fair_model(market, grouped_markets, decimal_odds, divergence):
+    """60% fair actual, 30% mediana 60m, 10% apertura, con flujo limitado."""
+    # En este feed los tres mercados admitidos se evalúan contra una sola
+    # contraparte exacta. Moneyline es binario; nunca se fabrica un empate.
+    if normalize_market_type(market.get("market")) and len(grouped_markets) != 2:
+        return None, None, None, "mercado_incompleto"
+    current_odds = [american_to_decimal(_current_odds(item)) for item in grouped_markets]
+    valid_current = [odd for odd in current_odds if odd is not None and odd > 1]
+    overround = sum(100 / odd for odd in valid_current)
+    if len(valid_current) < 2 or not 100 <= overround <= 115:
+        return None, None, None, "mercado_incompleto"
+    current_fair = devig_probability(decimal_odds, current_odds)
+    if current_fair is None:
+        return None, None, None, "sin_contraparte"
+    maps = [_history_map(item) for item in grouped_markets]
+    target_index = grouped_markets.index(market)
+    common = sorted(set.intersection(*(set(values) for values in maps))) if maps else []
+    fair_points = []
+    for stamp in common:
+        decimals = [american_to_decimal(values[stamp].get("odds")) for values in maps]
+        if any(value is None for value in decimals):
+            continue
+        point_overround = sum(100 / value for value in decimals)
+        if not 100 <= point_overround <= 115:
+            continue
+        fair = devig_probability(decimals[target_index], decimals)
+        if fair is not None:
+            fair_points.append((stamp, fair))
+    if fair_points:
+        latest = fair_points[-1][0]
+        recent = [fair for stamp, fair in fair_points if (latest-stamp).total_seconds() <= 3600]
+        base = .60 * current_fair + .30 * statistics.median(recent) + .10 * fair_points[0][1]
+    else:
+        base = current_fair
+    adjustment = max(-MAX_DIVERGENCE_ADJUSTMENT, min(MAX_DIVERGENCE_ADJUSTMENT, divergence * PROVISIONAL_DIVERGENCE_WEIGHT))
+    return round(max(1, min(99, base + adjustment)), 2), current_fair, round(adjustment, 2), "sharpie_v2"
 
 def _current_odds(market):
     odds = clean_odds(market.get("odds"))
@@ -337,7 +368,8 @@ def process_market(league_name, game, market, grouped_markets):
     if market.get("marketValid") is False: return None
     handle, bets, raw_odds = safe_pct(market.get("handle")), safe_pct(market.get("bets")), _current_odds(market)
     if handle is None or bets is None or raw_odds is None: return None
-    market_type = market.get("market", "")
+    market_type = normalize_market_type(market.get("market"))
+    if market_type is None: return None
     if not is_price(raw_odds, market_type): return None
     decimal_odds = american_to_decimal(raw_odds)
     implied_prob = implied_probability(decimal_odds)
@@ -346,7 +378,7 @@ def process_market(league_name, game, market, grouped_markets):
     for item in grouped_markets:
         odds = _current_odds(item)
         if odds is not None and is_price(odds, item.get("market", "")): all_decimal_odds.append(american_to_decimal(odds))
-    model_prob, fair_prob, flow_adjustment, model_source = calculate_model_probability(decimal_odds, all_decimal_odds, divergence)
+    model_prob, fair_prob, flow_adjustment, model_source = historical_fair_model(market, grouped_markets, decimal_odds, divergence)
     model_edge = calculate_model_edge(model_prob, implied_prob)
     ev = calculate_ev(model_prob, decimal_odds)
     history = normalize_history(market)
@@ -361,17 +393,13 @@ def process_market(league_name, game, market, grouped_markets):
     )
     market_signal = market_signals[0]
     risk_class, risk_level, odds_stake_cap = classify_odds_risk(raw_odds)
-    confidence_score = calculate_confidence_score(
-        model_prob, model_edge, ev, divergence, market_signals, raw_odds, liquidity
-    )
-    confidence, confidence_stake_cap = confidence_band(confidence_score)
     pick_category = classify_pick_category(
-        ev, model_edge, market_signals, divergence, model_prob, raw_odds, confidence_score
+        ev, model_edge, market_signals, divergence, model_prob, raw_odds, handle=handle
     )
     action, action_key, priority = action_from_category(pick_category)
     stake = calculate_stake(
-        model_prob, decimal_odds, ev, confidence_score, odds_stake_cap,
-        action_key in {"bet", "speculative"},
+        model_prob, decimal_odds, ev, odds_stake_cap=5.0,
+        actionable=action_key == "bet", category=pick_category,
     )
     game_time = game.get("time_raw") or game.get("startIso") or game.get("time") or market.get("time_raw") or datetime.now().strftime("%H:%M")
     return {
@@ -386,13 +414,30 @@ def process_market(league_name, game, market, grouped_markets):
         "flowAdjustment": flow_adjustment, "modelProb": model_prob, "modelSource": model_source,
         "modelEdge": model_edge, "ev": ev, "stake": stake, "marketSignal": market_signal,
         "marketSignals": market_signals,
-        "confidenceScore": confidence_score, "confidence": confidence,
-        "confidenceStakeCap": confidence_stake_cap, "oddsStakeCap": odds_stake_cap,
+        "oddsStakeCap": 5.0,
         "riskClass": risk_class, "riskLevel": risk_level,
         "lineMove": line_move, "lineMoveMinutes": line_move_minutes, "liquidityStatus": liquidity,
         "trendKey": market_signal, "pattern": MARKET_SIGNAL_LABELS[market_signal], "pickCategory": pick_category,
-        "whale": "SMART_MONEY" in market_signals, "history": history, "action": action, "actionKey": action_key, "priority": priority,
+        "whale": pick_category == "WHALE", "history": history, "action": action, "actionKey": action_key, "priority": priority,
     }
+
+def apply_exposure_limits(results):
+    """Máximo 5u por evento y 10u por fecha CDMX, priorizando calidad y valor."""
+    picks = [pick for group in results for pick in group["markets"] if pick.get("actionKey") == "bet"]
+    rank = {"WHALE": 3, "PREMIUM": 2, "FREE": 1}
+    picks.sort(key=lambda p: (-rank.get(p.get("pickCategory"), 0), -float(p.get("ev") or 0), -float(p.get("modelEdge") or 0), p.get("startIso") or ""))
+    event_used, day_used = {}, {}
+    for pick in picks:
+        event_key = (pick.get("date"), pick.get("game"))
+        day_key = pick.get("date")
+        available = min(5.0-event_used.get(event_key, 0), 10.0-day_used.get(day_key, 0))
+        stake = min(float(pick.get("stake") or 0), math.floor(max(0, available)*2)/2)
+        if stake < 1:
+            pick.update(stake=0.0, pickCategory=None, action="🟡 INFORMATIVO", actionKey="pass", priority="👀 OBSERVAR", exposureLimited=True)
+            continue
+        pick["stake"] = stake
+        event_used[event_key] = event_used.get(event_key, 0) + stake
+        day_used[day_key] = day_used.get(day_key, 0) + stake
 
 def analyze_all(parsed_files=None):
     parsed_files = get_current_files() if parsed_files is None else parsed_files
@@ -416,6 +461,7 @@ def analyze_all(parsed_files=None):
         if league_result["markets"]: results.append(league_result)
     if not results:
         raise ValueError("El análisis no produjo mercados válidos; se conserva la salida anterior")
+    apply_exposure_limits(results)
     atomic_write_json(SHARPIE_PATH, results, compact=True)
     return SHARPIE_PATH
 

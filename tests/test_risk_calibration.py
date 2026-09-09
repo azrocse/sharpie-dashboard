@@ -1,62 +1,27 @@
 import unittest
-
 from pipeline import analyze
 
-
 class RiskCalibrationTests(unittest.TestCase):
-    def test_positive_151_is_longshot_with_half_unit_cap(self):
-        self.assertEqual(analyze.classify_odds_risk("+151"), ("LONGSHOT", "ALTA", 0.5))
+    def test_financial_categories_are_exclusive(self):
+        self.assertEqual(analyze.classify_pick_category(4, 2.5, [], 0, 48, "+120"), "FREE")
+        self.assertEqual(analyze.classify_pick_category(8, 5, [], 0, 55, "-110"), "PREMIUM")
+        self.assertEqual(analyze.classify_pick_category(12, 7, [], 40, 60, "+100", handle=80), "WHALE")
 
-    def test_positive_251_is_extreme_longshot(self):
-        self.assertEqual(analyze.classify_odds_risk("+251"), ("EXTREME_LONGSHOT", "ALTA", 0.5))
+    def test_whale_requires_extended_flow(self):
+        self.assertEqual(analyze.classify_pick_category(12, 7, [], 20, 60, "+100", handle=80), "PREMIUM")
+        self.assertEqual(analyze.classify_pick_category(12, 7, [], 40, 60, "+100", handle=60), "PREMIUM")
 
-    def test_longshot_stake_never_exceeds_half_unit(self):
-        stake = analyze.calculate_stake(65.0, 3.5, 100.0, 95.0, 0.5, True)
-        self.assertEqual(stake, 0.5)
+    def test_odds_outside_range_are_informative(self):
+        self.assertIsNone(analyze.classify_pick_category(30, 15, [], 50, 70, "+201", handle=90))
+        self.assertIsNone(analyze.classify_pick_category(30, 15, [], 50, 70, "-201", handle=90))
 
-    def test_non_actionable_pick_has_zero_stake(self):
-        stake = analyze.calculate_stake(54.9, 2.0, 8.0, 80.0, 3.0, False)
-        self.assertEqual(stake, 0.0)
+    def test_kelly_eighth_and_caps(self):
+        self.assertEqual(analyze.calculate_stake(58.72, 2.25, 32.12, actionable=True, category="PREMIUM"), 3.0)
+        self.assertLessEqual(analyze.calculate_stake(75, 2, 50, actionable=True, category="FREE"), 2.0)
+        self.assertEqual(analyze.calculate_stake(55, 2, 10, actionable=False, category="FREE"), 0.0)
 
-    def test_qualifying_high_price_becomes_longshot_not_premium(self):
-        category = analyze.classify_pick_category(
-            20.0, 5.0, ["SMART_MONEY"], 30.0, 60.0, "+180", 70.0
-        )
-        self.assertEqual(category, "LONGSHOT")
+    def test_signals_are_independent_of_financial_metrics(self):
+        self.assertIn("SMART_MONEY", analyze.evaluate_market_signals(20, 40, 60, -20, -10, 0, 5, None))
+        self.assertIn("CONSENSUS", analyze.evaluate_market_signals(5, 70, 75, -20, -10, 0, 5, None))
 
-    def test_longshot_remains_visible_with_speculative_confidence(self):
-        category = analyze.classify_pick_category(
-            12.0, 3.0, ["SMART_MONEY"], 20.0, 55.0, "+180", 30.0
-        )
-        self.assertEqual(category, "LONGSHOT")
-
-    def test_underdog_below_55_can_be_value_when_edge_is_positive(self):
-        confidence = analyze.calculate_confidence_score(
-            46.83, 3.35, 7.71, 35.0, ["SMART_MONEY"], "+130", None
-        )
-        category = analyze.classify_pick_category(
-            7.71, 3.35, ["SMART_MONEY"], 35.0, 46.83, "+130", confidence
-        )
-        self.assertEqual(category, "VALUE")
-
-    def test_tommy_paul_example_is_extreme_longshot(self):
-        category = analyze.classify_pick_category(
-            13.85, 3.26, ["SMART_MONEY"], 30.0, 26.73, "+326", 25.9
-        )
-        self.assertEqual(category, "LONGSHOT")
-
-    def test_etcheverry_example_is_longshot(self):
-        category = analyze.classify_pick_category(
-            9.63, 2.90, ["SMART_MONEY"], 30.0, 33.02, "+232", 33.1
-        )
-        self.assertEqual(category, "LONGSHOT")
-
-    def test_whale_is_signal_not_category(self):
-        category = analyze.classify_pick_category(
-            20.0, 6.0, ["SMART_MONEY"], 31.0, 62.0, "+120", 70.0
-        )
-        self.assertEqual(category, "PREMIUM")
-
-
-if __name__ == "__main__":
-    unittest.main()
+if __name__ == "__main__": unittest.main()

@@ -529,7 +529,7 @@ function calculateSmartMoney(p) {
     return p.signedDivergence != null ? Number(p.signedDivergence) : 0;
 }
 
-const RECOMMENDED_CATEGORIES = new Set(["VALUE", "PREMIUM"]);
+const RECOMMENDED_CATEGORIES = new Set(["FREE", "PREMIUM", "WHALE"]);
 
 function isRecommendedPick(p) {
     return Boolean(p && p.actionKey === "bet" && RECOMMENDED_CATEGORIES.has(p.pickCategory));
@@ -583,7 +583,7 @@ function isMediaFeaturedPick(p) {
 
 function topPickRank(p) {
     if (!isRecommendedPick(p)) return -Infinity;
-    const categoryWeight = { PREMIUM: 3000, VALUE: 1500 }[p.pickCategory] || 0;
+    const categoryWeight = { WHALE: 4500, PREMIUM: 3000, FREE: 1500 }[p.pickCategory] || 0;
     const signals = new Set(Array.isArray(p.marketSignals) ? p.marketSignals : [p.marketSignal]);
     const signalWeight =
         (signals.has("REVERSE_LINE_MOVEMENT") ? 600 : 0) +
@@ -593,7 +593,7 @@ function topPickRank(p) {
         (signals.has("CONSENSUS") ? 100 : 0);
     const minutes = p.iso ? (new Date(p.iso) - new Date()) / 60000 : Infinity;
     const urgencyWeight = minutes >= 0 && minutes <= 120 ? 50 : 0;
-    return categoryWeight + signalWeight + Number(p.confidenceScore || 0) * 20 + Math.min(Number(p.ev || 0), 10) * 5 + calculateEdge(p) * 5 + Number(p.stake || 0) * 20 + urgencyWeight;
+    return categoryWeight + signalWeight + Math.min(Number(p.ev || 0), 10) * 5 + calculateEdge(p) * 5 + Number(p.stake || 0) * 20 + urgencyWeight;
 }
 
 function selectTopPick(picks) {
@@ -1109,16 +1109,16 @@ function fallbackCopyText(text) {
 }
 
 function getHeaderTag(category, freeRelease = false) {
-    if (freeRelease) return "🔓 FREE PICK";
+    if (freeRelease || category === 'FREE') return "🔓 #FreePick";
     switch (category) {
         case 'WHALE':
-            return "🐳 WHALE ALERT PICK";
+            return "🐳 #WhalePick";
         case 'LONGSHOT':
             return "🎲 LONGSHOT · ALTA VARIANZA";
         case 'PREMIUM':
-            return "💎 PREMIUM PICK";
-        case 'VALUE':
-            return "📈 VALUE PICK";
+            return "💎 #PremiumPick";
+        case 'FREE':
+            return "🔓 FREE PICK";
         default:
             return "👀 PICK EN OBSERVACIÓN";
     }
@@ -1132,7 +1132,8 @@ function copyPickForX(p) {
     const dateStr = p.date || new Date().toISOString().split('T')[0];
     const timeStr = p.time || "--:--";
     const league = p.league || p.sport || "SPORTS";
-    const game = p.game || "Evento";
+    const hashtag = value => `#${String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'')}`;
+    const game = p.away && p.home ? `${hashtag(p.away)} vs ${hashtag(p.home)}` : (p.game || "Evento");
     
     const pickName = p.pick || "Selección";
     const market = p.market ? ` (${p.market})` : "";
@@ -1185,15 +1186,14 @@ function trackingPanelHtml(p) {
     if (!t) return '';
     const stale=!t.lastObservation || Date.now()-new Date(t.lastObservation).getTime()>15*60000;
     const state=t.state==='CLOSED' ? 'CLOSED' : stale ? 'STALE' : t.state;
-    const labels={READY:'Con valor',NO_VALUE:'Sin valor',STALE:'Actualizando datos',INCOMPLETE:'Actualizando datos',UNAVAILABLE:'Actualizando datos',CLOSED:'Finalizado'};
-    const cls=state==='READY'?'good':state==='NO_VALUE'?'bad':'warn';
+    const labels={READY:'✅',NO_VALUE:'⏸️',STALE:'🔄',INCOMPLETE:'🔄',UNAVAILABLE:'⏸️',CLOSED:'🏁'};
     const date=value=>value ? new Date(value).toLocaleString('es-MX',{timeZone:'America/Mexico_City',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}):'—';
-    const initial=t.initial||{}, model=t.firstEvaluation||{};
+    const initial=t.initial||{};
     const value=(v,suffix='')=>v==null?'—':escapeHTML(String(v))+suffix;
-    const rows=[['Cuota',initial.odds,p.odds,''],['Modelo',model.modelProb,p.modelProb,'%'],['Edge',model.modelEdge,p.modelEdge,'%'],['EV',model.ev,p.ev,'%'],['Bets',initial.betsPct,p.betsPct,'%'],['Handle',initial.handlePct,p.handlePct,'%']];
-    return `<div class="tracking-panel"><div class="tracking-panel-title"><strong>Seguimiento automático</strong><span>Desde ${escapeHTML(date(t.firstObservedAt))} · CDMX</span></div>
-      <div class="tracking-verdict"><span class="tracking-verdict-label ${cls}">${escapeHTML(labels[state]||'Actualizando datos')}</span></div>
-      <details class="tracking-comparison-details"><summary>Comparar desde el inicio <span aria-hidden="true">+</span></summary><table class="tracking-comparison"><thead><tr><th>Métrica</th><th>Referencia</th><th>Actual</th></tr></thead><tbody>${rows.map(([label,before,now,suffix])=>`<tr><th scope="row">${label}</th><td>${value(before,suffix)}</td><td>${value(now,suffix)}</td></tr>`).join('')}</tbody></table><p class="tracking-note">Cuota y flujo: primera observación disponible. Modelo, Edge y EV: primera evaluación guardada (${escapeHTML(date(t.firstEvaluatedAt))}).</p></details>
+    const initialDiv=(initial.handlePct!=null&&initial.betsPct!=null)?Number(initial.handlePct)-Number(initial.betsPct):null;
+    const rows=[['Cuota',initial.odds,p.odds,''],['Bets',initial.betsPct,p.betsPct,'%'],['Handle',initial.handlePct,p.handlePct,'%'],['Divergencia',initialDiv,p.divergence,'%']];
+    return `<div class="tracking-panel"><div class="tracking-panel-title"><strong>${escapeHTML(labels[state]||'🔄')} Seguimiento</strong><span>${escapeHTML(date(t.firstObservedAt))} · CDMX</span></div>
+      <table class="tracking-comparison"><thead><tr><th>Métrica</th><th>Apertura</th><th>Actual</th></tr></thead><tbody>${rows.map(([label,before,now,suffix])=>`<tr><th scope="row">${label}</th><td>${value(before,suffix)}</td><td>${value(now,suffix)}</td></tr>`).join('')}</tbody></table>
     </div>`;
 }
 
@@ -1344,7 +1344,8 @@ function render() {
     const pendingPicks = PICKS.filter(p => isEventPending(p));
     const recommendedPicks = pendingPicks.filter(isRecommendedPick);
     const visibleUniverse = state.showFullMarket ? pendingPicks : recommendedPicks;
-    const activeList = applyFiltersAndSort(visibleUniverse);
+    const filteredList = applyFiltersAndSort(visibleUniverse);
+    const activeList = window.SHARPIE_LINKED_PICK_ID ? filteredList.filter(p => getPickId(p) === window.SHARPIE_LINKED_PICK_ID) : filteredList;
 
     updateFilterCounts(visibleUniverse);
 
@@ -1393,9 +1394,9 @@ function render() {
     cardsView.style.display = "grid";
 
     cardsView.innerHTML = activeList.map(p => {
-        const isWhale = p.whale === true || (Array.isArray(p.marketSignals) && p.marketSignals.includes("SMART_MONEY"));
+        const isWhale = p.pickCategory === "WHALE";
         const isLongshot = p.pickCategory === "LONGSHOT";
-        const isValue = p.pickCategory === "VALUE";
+        const isValue = p.pickCategory === "FREE";
         const isPremiumPick = p.pickCategory === "PREMIUM";
         const isFreeRelease = Boolean(p.freeRelease);
         const isTop = isTopPick(p);
@@ -1445,9 +1446,9 @@ function render() {
                             ${isMediaFeatured ? `<span class="status-icon" title="Equipo mediático destacado">⭐</span>` : ''}
                             ${isWhale ? `<span class="whale-header-badge">WHALE SIGNAL</span>` : ''}
                             ${isLongshot ? `<span class="longshot-pick-badge">LONGSHOT · MÁX. 0.5u</span>` : ''}
-                            ${isValue ? `<span class="value-pick-badge">VALUE</span>` : ''}
+                            ${isValue ? `<span class="value-pick-badge">FREE</span>` : ''}
                             ${isPremiumPick ? `<span class="premium-pick-badge">PREMIUM</span>` : ''}
-                            ${isFreeRelease ? `<span class="free-pick-badge" title="Pick de acceso gratuito">FREE PICK</span>` : ''}
+                            <button class="btn-copy-x" title="Copiar para X" aria-label="Copiar para X" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>𝕏</button>
                         </div>
                     </div>
 
@@ -1488,12 +1489,6 @@ function render() {
 
                 <div class="pcard-footer">
                     ${trackingPanelHtml(p)}
-                    <div class="pcard-action-row">
-                        <button class="btn-copy-x pcard-action-row-item" onclick='copyPickForX(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
-                            <span>✨</span>
-                            <span>Copiar para X</span>
-                        </button>
-                    </div>
                 </div>
             </div>
         `;
@@ -1683,9 +1678,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const linkedId=new URLSearchParams(location.search).get('pick');
     const linkedPick=PICKS.find(p=>p.trackingId===linkedId);
     if (linkedPick && isEventPending(linkedPick)) {
-        state.search=linkedPick.game;
+        window.SHARPIE_LINKED_PICK_ID=linkedId;
+        state.search='';
         state.showFullMarket=true;
-        document.getElementById('search').value=state.search;
+        document.getElementById('search').value='';
     }
     populateSelectOptions();
     setupListeners();

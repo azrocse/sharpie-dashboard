@@ -55,7 +55,7 @@ python -B -m dashboard.generate_opportunities_viewer
 ```
 
 No se generan archivos RAW, snapshots ni resultados.
-El registro de oportunidades guarda únicamente `VALUE` y `PREMIUM` con
+El registro de oportunidades guarda únicamente `FREE`, `PREMIUM` y `WHALE` con
 `actionKey=bet`, usando los valores finales del dashboard. No importa el historial
 antiguo. Cada oportunidad conserva un ID estable y fechas de primera captura y
 última actualización. Antes del inicio se actualiza su última versión elegible;

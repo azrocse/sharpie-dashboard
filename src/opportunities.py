@@ -35,7 +35,7 @@ def _identity(pick, kickoff):
 def save_opportunities(picks, path, now=None):
     """Actualiza una fila por oportunidad hasta el inicio; luego la congela.
 
-    Usa el mismo criterio de oportunidades del dashboard: VALUE/PREMIUM y
+    Usa el mismo criterio de oportunidades del dashboard: FREE/PREMIUM/WHALE y
     actionKey=bet. Una oportunidad que deja de calificar conserva su última
     versión elegible. No importa archivos anteriores ni registra seguimiento.
     """
@@ -57,15 +57,15 @@ def save_opportunities(picks, path, now=None):
         if key in records:
             raise ValueError(f"Oportunidad duplicada en {path}: {key}")
         records[key] = record
+        record.setdefault("ruleVersion", "legacy-v1")
 
     for record in records.values():
         kickoff = _event_time(record)
         if not record.get("frozenAt") and kickoff is not None and kickoff <= now:
             record["frozenAt"] = kickoff.isoformat(timespec="seconds")
+            record["opportunityState"] = "CLOSED"
 
     for pick in picks:
-        if pick.get("actionKey") != "bet" or pick.get("pickCategory") not in {"VALUE", "PREMIUM"}:
-            continue
         kickoff = _event_time(pick)
         if kickoff is None or kickoff <= now or pick.get("status") not in {None, "", "UPCOMING", "PENDING", "SCHEDULED"}:
             continue
@@ -73,12 +73,24 @@ def save_opportunities(picks, path, now=None):
         previous = records.get(key)
         if previous and previous.get("frozenAt"):
             continue
+        actionable = pick.get("actionKey") == "bet" and pick.get("pickCategory") in {"FREE", "PREMIUM", "WHALE"}
+        if not actionable and previous is None:
+            continue
+        previous_category = previous.get("pickCategory") if previous else None
+        transitions = deepcopy(previous.get("transitions", [])) if previous else []
+        state = "ACTIVE" if actionable else "NO_LONGER_VALUE"
+        previous_state = previous.get("opportunityState") if previous else None
+        if previous is None or previous_category != pick.get("pickCategory") or previous_state != state:
+            transitions.append({"at": timestamp, "state": state, "category": pick.get("pickCategory")})
         records[key] = {
             **deepcopy(pick),
             "opportunityId": key,
             "firstCapturedAt": previous["firstCapturedAt"] if previous else timestamp,
             "lastUpdatedAt": timestamp,
             "frozenAt": None,
+            "ruleVersion": "sharpie-v2",
+            "opportunityState": state,
+            "transitions": transitions,
         }
 
     payload["picks"] = sorted(records.values(), key=lambda item: (item.get("date") or "", item.get("iso") or "", item["opportunityId"]))

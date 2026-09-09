@@ -14,7 +14,7 @@ class TrackingTests(unittest.TestCase):
         self.pick={'game':'A vs B','pick':'A','market':'Moneyline','league':'SPORTS','sourceLeague':'SPORTS',
                    'iso':'2026-09-07T15:00:00','odds':'+110','modelProb':55,'modelEdge':7.38,'ev':15.5,
                    'stake':1.5,'betsPct':35,'handlePct':70,'divergence':35,'confidenceScore':65,
-                   'marketSignal':'SMART_MONEY','actionKey':'bet','pickCategory':'VALUE',
+                   'marketSignal':'SMART_MONEY','actionKey':'bet','pickCategory':'FREE',
                    'history':[{'timestamp':(self.now-timedelta(minutes=5)).isoformat(),'odds':'+100','betsPct':30,'handlePct':60},
                               {'timestamp':self.now.isoformat(),'odds':'+110','betsPct':35,'handlePct':70}]}
 

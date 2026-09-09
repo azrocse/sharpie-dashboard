@@ -71,15 +71,15 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertNotIn("__PICKS_JSON__", html)
         self.assertNotIn("results.html", html)
         saved = json.loads((self.root / "data/opportunities.json").read_text(encoding="utf-8"))["picks"]
-        recommended = [p for p in picks if p["actionKey"] == "bet" and p["pickCategory"] in {"VALUE", "PREMIUM"}]
+        recommended = [p for p in picks if p["actionKey"] == "bet" and p["pickCategory"] in {"FREE", "PREMIUM", "WHALE"}]
         self.assertEqual(len(saved), len(recommended))
         self.assertGreater(len(saved), 0)
         for pick in recommended:
             record = next(row for row in saved if row["id"] == pick["id"])
             for key, value in pick.items():
                 self.assertEqual(record[key], value)
-        self.assertIn('title="Pick de acceso gratuito">FREE PICK</span>', html)
         self.assertNotIn('>FREE RELEASE', html)
+        self.assertNotIn('confidenceScore', html)
 
     def test_failed_download_or_parse_keeps_last_successful_files(self):
         self.run_feed()

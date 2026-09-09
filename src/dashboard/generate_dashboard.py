@@ -562,7 +562,6 @@ def build_picks(raw_data):
             "marketSignals": market.get("marketSignals", [market_signal]),
             "pickCategory": pick_category,
             "stake": stake,
-            "confidenceScore": market.get("confidenceScore"),
             "modelProb": model_prob,
             "modelEdge": model_edge,
             
@@ -596,28 +595,9 @@ FREE_RELEASE_SIGNALS = {
 
 
 def assign_free_releases(items):
-    """Publica todos los VALUE que cumplen los parámetros de Free Release.
-
-    No existe cupo mínimo ni máximo. PREMIUM conserva acceso Premium y
-    LONGSHOT queda fuera de la publicación automática por su alta varianza.
-    y nunca se liberan automáticamente para completar una cuota editorial.
-    """
+    """Compatibilidad visual: FREE es ya una categoría, no otra selección."""
     for item in items:
-        item["freeRelease"] = False
-
-    eligible = []
-    for item in items:
-        signals = set(item.get("marketSignals") or [item.get("marketSignal")])
-        if item.get("pickCategory") != "VALUE": continue
-        if item.get("actionKey") != "bet": continue
-        if float(item.get("ev") or 0) < 1.0: continue
-        if float(item.get("modelEdge") or 0) <= 0: continue
-        if float(item.get("stake") or 0) < 1.0: continue
-        if not signals.intersection(FREE_RELEASE_SIGNALS): continue
-        eligible.append(item)
-
-    for item in eligible:
-        item["freeRelease"] = True
+        item["freeRelease"] = item.get("pickCategory") == "FREE"
 
     return items
 

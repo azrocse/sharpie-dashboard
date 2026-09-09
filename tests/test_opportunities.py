@@ -17,7 +17,7 @@ class OpportunityTests(unittest.TestCase):
             "id": 1, "date": "2026-09-07", "iso": "2026-09-07T12:00:00",
             "sourceLeague": "SPORTS", "league": "MLB", "game": "Dodgers @ Padres",
             "market": "Moneyline", "pick": "Dodgers", "odds": "+130",
-            "actionKey": "bet", "pickCategory": "VALUE", "status": "UPCOMING",
+            "actionKey": "bet", "pickCategory": "FREE", "status": "UPCOMING",
             "ev": 7.71, "modelEdge": 3.35, "modelProb": 46.83, "stake": 1.5,
             "freeRelease": True, "history": [{"betsPct": 40, "handlePct": 75}],
         }
@@ -56,10 +56,12 @@ class OpportunityTests(unittest.TestCase):
         data = save_opportunities([{**self.pick, "odds": "+999", "iso": "2026-09-07T14:00:00"}], self.path, self.now + timedelta(hours=3))
         self.assertEqual(data["picks"][0]["odds"], "+130")
 
-    def test_does_not_overwrite_an_opportunity_with_followup(self):
+    def test_preserves_opportunity_and_records_loss_of_value(self):
         save_opportunities([self.pick], self.path, self.now)
         data = save_opportunities([{**self.pick, "actionKey": "pass", "stake": 0}], self.path, self.now + timedelta(minutes=5))
-        self.assertEqual(data["picks"][0]["stake"], 1.5)
+        self.assertEqual(data["picks"][0]["stake"], 0)
+        self.assertEqual(data["picks"][0]["opportunityState"], "NO_LONGER_VALUE")
+        self.assertGreaterEqual(len(data["picks"][0]["transitions"]), 2)
 
     def test_does_not_capture_events_already_started(self):
         self.assertEqual(save_opportunities([self.pick], self.path, self.now + timedelta(hours=2))["count"], 0)

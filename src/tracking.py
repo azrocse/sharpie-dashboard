@@ -10,7 +10,7 @@ from storage import atomic_write_json
 
 MAX_AGE_MINUTES = 15
 METRICS = ('odds', 'modelProb', 'modelEdge', 'ev', 'stake', 'betsPct', 'handlePct',
-           'divergence', 'marketSignal', 'confidenceScore')
+           'divergence', 'marketSignal')
 
 
 def number(value):
@@ -60,9 +60,9 @@ def assess(pick, now):
         return 'INCOMPLETE', ['Actualizando datos.'], observed
     # El analizador del dashboard es la única autoridad de valor.
     # Aquí solo se protege contra lecturas antiguas o encuentros iniciados.
-    if pick.get('actionKey') != 'bet' or pick.get('pickCategory') not in {'VALUE', 'PREMIUM'}:
-        return 'NO_VALUE', ['Sin valor.'], observed
-    return 'READY', ['Con valor.'], observed
+    if pick.get('actionKey') != 'bet' or pick.get('pickCategory') not in {'FREE', 'PREMIUM', 'WHALE'}:
+        return 'NO_VALUE', [], observed
+    return 'READY', [], observed
 
 
 def update_tracking(picks, path, now=None, feed_ok=True):
@@ -85,7 +85,7 @@ def update_tracking(picks, path, now=None, feed_ok=True):
             first_time, first = points[0] if points else (now, {})
             baseline = {field: first.get(field) for field in ('odds','betsPct','handlePct')}
             old = records[key] = {
-                'trackingId': key, 'game': pick.get('game'), 'pick': pick.get('pick'),
+                'trackingId': key, 'game': pick.get('game'), 'away': pick.get('away'), 'home': pick.get('home'), 'pick': pick.get('pick'),
                 'market': pick.get('market'), 'league': pick.get('league'), 'iso': pick.get('iso'),
                 'firstObservedAt': first_time.isoformat(), 'initial': baseline,
                 'firstEvaluatedAt': now.isoformat(), 'firstEvaluation': deepcopy(current),
@@ -97,6 +97,11 @@ def update_tracking(picks, path, now=None, feed_ok=True):
         new_observation = observed is not None and (previous_observed is None or observed > previous_observed)
         if observed and previous_observed and observed < previous_observed:
             state, reasons = 'STALE', ['La lectura recibida es anterior a la última procesada.']
+        if new_observation:
+            misses = 0 if state == 'READY' else int(old.get('consecutiveMisses') or 0) + 1
+            old['consecutiveMisses'] = misses
+            if state != 'READY' and old.get('state') == 'READY' and misses < 2:
+                state, reasons = 'READY', []
         old.pop('confirmations', None)
         if new_observation:
             old['previous'] = old.get('current')

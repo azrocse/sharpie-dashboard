@@ -60,6 +60,16 @@ class Bot:
             payload['reply_markup'] = {'inline_keyboard': keyboard}
         return self.call('sendMessage', payload)
 
+    def edit(self, chat, message_id, text, keyboard=None):
+        payload = {'chat_id': chat, 'message_id': message_id, 'text': text, 'parse_mode': 'HTML',
+                   'link_preview_options': {'is_disabled': True}}
+        if keyboard:
+            payload['reply_markup'] = {'inline_keyboard': keyboard}
+        return self.call('editMessageText', payload)
+
+    def delete(self, chat, message_id):
+        return self.call('deleteMessage', {'chat_id': chat, 'message_id': message_id})
+
 
 def controls(active):
     return [[{'text': 'Pausar avisos' if active else 'Activar avisos',
@@ -68,16 +78,20 @@ def controls(active):
 
 def message_for(record):
     current = record.get('current') or {}
-    label = 'FREE PICK' if record.get('freeRelease') else 'PICK CON VALOR'
+    category = record.get('pickCategory') or 'FREE'
+    icon, tag = {'FREE': ('🔓', '#FreePick'), 'PREMIUM': ('💎', '#PremiumPick'), 'WHALE': ('🐋', '#WhalePick')}.get(category, ('🎯', '#Pick'))
     clean = lambda value: escape(str(value or '—')[:200])
+    hashtag = lambda value: '#' + re.sub(r'[^A-Za-z0-9]', '', __import__('unicodedata').normalize('NFKD', str(value or '')).encode('ascii', 'ignore').decode())
     kickoff = timestamp(record.get('iso'))
-    when = kickoff.strftime('%d/%m · %H:%M CDMX') if kickoff else 'Por confirmar'
+    when = kickoff.strftime('%Y-%m-%d | ⏰ %H:%M') if kickoff else 'Por confirmar'
     stake = number(current.get('stake'))
-    stake_text = f'{stake:g} u' if stake is not None else '—'
-    return (f"🎯 <b>{label}</b>\n\n<b>{clean(record.get('game'))}</b>\n"
-            f"✅ <b>{clean(record.get('pick'))}</b> · {clean(record.get('market'))}\n\n"
-            f"Cuota <b>{clean(current.get('odds'))}</b> · Stake <b>{stake_text}</b>\n"
-            f"🕒 {when}")
+    stake_text = f'{stake:.1f}u' if stake is not None else '—'
+    teams = f"{hashtag(record.get('away'))} vs {hashtag(record.get('home'))}" if record.get('away') and record.get('home') else clean(record.get('game'))
+    prefix = {'NO_VALUE': '🔴 <b>YA NO APOSTAR</b>\n', 'RECOVERED': '🟢 <b>VALOR RECUPERADO</b>\n', 'UPGRADED': '⬆️ <b>PICK MEJORADO</b>\n', 'DOWNGRADED': '⬇️ <b>PICK AJUSTADO</b>\n'}.get(record.get('telegramStatus'), '')
+    return (f"{prefix}{icon} <b>{tag}</b>\n"
+            f"📅 {when}\n🏆 {clean(record.get('league') or 'SPORTS')}\n🏟️ {teams}\n"
+            f"🎯 Pick: {clean(record.get('pick'))} ({clean(record.get('market'))})\n"
+            f"💵 Cuota: {clean(current.get('odds'))}\n💰 Stake: {stake_text}")
 
 
 def load_subscribers(path):
@@ -101,6 +115,7 @@ def eligible(record, now):
     observed = timestamp(record.get('lastObservation'))
     kickoff = timestamp(record.get('iso'))
     return (record.get('state') == 'READY' and kickoff is not None and kickoff > now
+            and (kickoff-now).total_seconds() <= 24*60*60
             and observed is not None and 0 <= (now-observed).total_seconds() <= MAX_AGE_MINUTES*60)
 
 
@@ -158,26 +173,54 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
     now = now or datetime.now(CDMX)
     tracking = tracking if tracking is not None else read_state(Path(runtime) / 'tracking.json')
     records = sorted(tracking['records'].values(), key=lambda r: r.get('iso') or '')
+    record_map = {record['trackingId']: record for record in records}
     sent = 0
     for chat_id, sub in subscribers.items():
         if not sub.get('active') or not (config.get('publicSubscriptions') or chat_id in allowed):
             continue
+        for key, delivery in list(sub.get('sent', {}).items()):
+            if not isinstance(delivery, dict) or not delivery.get('messageId'):
+                continue
+            record = record_map.get(key)
+            kickoff = timestamp(record.get('iso')) if record else None
+            try:
+                if not record or (kickoff and kickoff <= now):
+                    bot.delete(chat_id, delivery['messageId'])
+                    del sub['sent'][key]
+                    continue
+                desired = 'READY' if record.get('state') == 'READY' else 'NO_VALUE'
+                category = record.get('pickCategory')
+                state_changed = delivery.get('state') != desired
+                category_changed = desired == 'READY' and delivery.get('category') != category
+                if state_changed or category_changed:
+                    changed = dict(record)
+                    if state_changed:
+                        changed['telegramStatus'] = 'RECOVERED' if desired == 'READY' else 'NO_VALUE'
+                    else:
+                        rank = {'FREE': 1, 'PREMIUM': 2, 'WHALE': 3}
+                        changed['telegramStatus'] = ('UPGRADED' if rank.get(category, 0) > rank.get(delivery.get('category'), 0)
+                                                     else 'DOWNGRADED')
+                    bot.edit(chat_id, delivery['messageId'], message_for(changed),
+                             [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
+                    delivery.update(state=desired, category=category, updatedAt=now.isoformat())
+            except TelegramError as error:
+                if error.code not in {400, 403}:
+                    raise
         for record in records:
             key = record['trackingId']
             if key in sub['sent'] or not eligible(record, now):
                 continue
             try:
-                bot.send(chat_id, message_for(record),
-                         [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
+                response = bot.send(chat_id, message_for(record),
+                                    [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
             except TelegramError as error:
                 if error.code != 403:
                     raise
                 sub['active'] = False
                 break
-            sub['sent'][key] = now.isoformat()
+            sub['sent'][key] = {'sentAt': now.isoformat(), 'messageId': response.get('message_id') if isinstance(response, dict) else None,
+                                'state': 'READY', 'category': record.get('pickCategory')}
             sent += 1
-            # Un pick por chat en cada ciclo evita ráfagas y permite pausar la cola.
-            break
         atomic_write_json(path, state, compact=True)
         if sent >= 20:
             break

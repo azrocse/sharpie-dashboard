@@ -5,11 +5,16 @@ from __future__ import annotations
 from urllib.parse import urlencode
 
 import requests
+import truststore
 from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from config.settings import MAX_PAGES
+
+# El programador corre con Python 3.14 y debe confiar en el almacén de
+# certificados de Windows (incluidos certificados corporativos/intermedios).
+truststore.inject_into_ssl()
 
 
 class DraftKingsScraper:
