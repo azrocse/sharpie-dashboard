@@ -564,6 +564,7 @@ def build_picks(raw_data):
             "stake": stake,
             "modelProb": model_prob,
             "modelEdge": model_edge,
+            "modelHistoryPoints": int(market.get("modelHistoryPoints") or 0),
             
             "ev": ev,
             "whale": "SMART_MONEY" in set(market.get("marketSignals") or [market_signal]),
@@ -602,6 +603,48 @@ def assign_free_releases(items):
     return items
 
 
+def _raw_kelly_fraction(item):
+    """Kelly completo previo al fraccionamiento, redondeo y topes de stake."""
+    try:
+        american = float(str(item.get("odds")).replace("+", "").replace("−", "-"))
+        decimal = 1 + (american / 100 if american > 0 else 100 / abs(american))
+        probability = float(item.get("modelProb")) / 100
+        return max(0.0, (probability * decimal - 1) / (decimal - 1))
+    except (TypeError, ValueError, ZeroDivisionError):
+        return 0.0
+
+
+def assign_medals(items):
+    """Asigna 🥇🥈🥉 sin crear una puntuación sintética ni duplicar métricas."""
+    category_rank = {"FREE": 1, "PREMIUM": 2, "WHALE": 3}
+
+    def signal_rank(item):
+        signals = set(item.get("marketSignals") or [item.get("marketSignal")])
+        if "SMART_MONEY" in signals and float(item.get("signedDivergence") or 0) > 0:
+            return 2
+        return 1 if "CONSENSUS" in signals else 0
+
+    def kickoff_priority(item):
+        parsed = _parse_iso(item.get("iso"))
+        return -parsed.timestamp() if parsed is not None else float("-inf")
+
+    eligible = [item for item in items if item.get("actionKey") == "bet" and item.get("pickCategory") in category_rank]
+    ordered = sorted(eligible, key=lambda item: (
+        category_rank[item["pickCategory"]],
+        _raw_kelly_fraction(item),
+        float(item.get("modelEdge") or 0),
+        float(item.get("ev") or 0),
+        int(item.get("modelHistoryPoints") or 0),
+        signal_rank(item),
+        kickoff_priority(item),
+    ), reverse=True)
+    for item in items:
+        item.pop("medalRank", None)
+    for rank, item in enumerate(ordered[:3], 1):
+        item["medalRank"] = rank
+    return items
+
+
 # ============================================================
 # GENERACIÓN DEL DASHBOARD ACTUAL
 # ============================================================
@@ -627,7 +670,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
         print(f"[ERROR CRÍTICO] El archivo {source_json_path} está corrupto o truncado: {e}")
         raise SystemExit("Proceso detenido para evitar generar un index.html corrupto.")
 
-    all_events = assign_free_releases(build_picks(raw_data))
+    all_events = assign_medals(assign_free_releases(build_picks(raw_data)))
     runtime = Path(output_dir) / '.runtime'
     update_tracking(all_events, runtime / 'tracking.json', now=cdmx_now)
     telegram_url = None

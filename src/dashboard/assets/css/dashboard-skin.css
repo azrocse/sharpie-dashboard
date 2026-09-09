@@ -111,3 +111,6 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,su
 .btn-telegram { display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none; padding:8px; min-height:36px; background:var(--panel2); color:var(--teal); border:1px solid var(--border); border-radius:9px; font:600 10px "Plus Jakarta Sans",sans-serif; }
 .btn-telegram:disabled { opacity:.6; cursor:default; }.tracking-verdict { margin-top:6px; }
 .tracking-comparison-details { margin-top:10px; border-top:1px solid var(--border); }.tracking-comparison-details summary { display:flex; justify-content:space-between; cursor:pointer; padding:10px 0; font-size:10px; color:var(--muted); list-style:none; }.tracking-comparison-details summary::-webkit-details-marker { display:none; }.tracking-note { font-size:9px; color:var(--muted); line-height:1.6; margin-top:8px; }
+#statMejor { display:grid; gap:3px; white-space:normal; overflow:visible; }
+.podium-entry { display:block; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:10px; line-height:1.35; }
+.medal-rank-1,.medal-rank-2,.medal-rank-3 { font-size:15px; }

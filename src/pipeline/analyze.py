@@ -323,15 +323,15 @@ def historical_fair_model(market, grouped_markets, decimal_odds, divergence):
     # En este feed los tres mercados admitidos se evalúan contra una sola
     # contraparte exacta. Moneyline es binario; nunca se fabrica un empate.
     if normalize_market_type(market.get("market")) and len(grouped_markets) != 2:
-        return None, None, None, "mercado_incompleto"
+        return None, None, None, "mercado_incompleto", 0
     current_odds = [american_to_decimal(_current_odds(item)) for item in grouped_markets]
     valid_current = [odd for odd in current_odds if odd is not None and odd > 1]
     overround = sum(100 / odd for odd in valid_current)
     if len(valid_current) < 2 or not 100 <= overround <= 115:
-        return None, None, None, "mercado_incompleto"
+        return None, None, None, "mercado_incompleto", 0
     current_fair = devig_probability(decimal_odds, current_odds)
     if current_fair is None:
-        return None, None, None, "sin_contraparte"
+        return None, None, None, "sin_contraparte", 0
     maps = [_history_map(item) for item in grouped_markets]
     target_index = grouped_markets.index(market)
     common = sorted(set.intersection(*(set(values) for values in maps))) if maps else []
@@ -353,7 +353,8 @@ def historical_fair_model(market, grouped_markets, decimal_odds, divergence):
     else:
         base = current_fair
     adjustment = max(-MAX_DIVERGENCE_ADJUSTMENT, min(MAX_DIVERGENCE_ADJUSTMENT, divergence * PROVISIONAL_DIVERGENCE_WEIGHT))
-    return round(max(1, min(99, base + adjustment)), 2), current_fair, round(adjustment, 2), "sharpie_v2"
+    return (round(max(1, min(99, base + adjustment)), 2), current_fair,
+            round(adjustment, 2), "sharpie_v2", len(fair_points))
 
 def _current_odds(market):
     odds = clean_odds(market.get("odds"))
@@ -378,7 +379,7 @@ def process_market(league_name, game, market, grouped_markets):
     for item in grouped_markets:
         odds = _current_odds(item)
         if odds is not None and is_price(odds, item.get("market", "")): all_decimal_odds.append(american_to_decimal(odds))
-    model_prob, fair_prob, flow_adjustment, model_source = historical_fair_model(market, grouped_markets, decimal_odds, divergence)
+    model_prob, fair_prob, flow_adjustment, model_source, model_history_points = historical_fair_model(market, grouped_markets, decimal_odds, divergence)
     model_edge = calculate_model_edge(model_prob, implied_prob)
     ev = calculate_ev(model_prob, decimal_odds)
     history = normalize_history(market)
@@ -412,6 +413,7 @@ def process_market(league_name, game, market, grouped_markets):
         "decimalOdds": round(decimal_odds, 4), "impliedProb": implied_prob, "fairProb": fair_prob,
         "handlePct": handle, "betsPct": bets, "divergence": divergence, "signedDivergence": divergence,
         "flowAdjustment": flow_adjustment, "modelProb": model_prob, "modelSource": model_source,
+        "modelHistoryPoints": model_history_points,
         "modelEdge": model_edge, "ev": ev, "stake": stake, "marketSignal": market_signal,
         "marketSignals": market_signals,
         "oddsStakeCap": 5.0,

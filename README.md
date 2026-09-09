@@ -104,10 +104,15 @@ La referencia persiste en `.runtime/tracking.json` aunque se cierre el navegador
 La antigua watchlist de localStorage ya no controla el seguimiento.
 
 El seguimiento utiliza la misma clasificación del dashboard: acción `bet` y
-categoría VALUE o PREMIUM. No agrega mínimos de confianza, EV, Edge, stake,
+categoría FREE, PREMIUM o WHALE. No agrega mínimos de confianza, EV, Edge, stake,
 confirmaciones ni ventanas de entrada. Solo evita avisar con datos de más de
 15 minutos o de encuentros ya iniciados. El analizador conserva su evaluación
 de cuota, modelo, riesgo y flujo.
+
+El Top 3 se calcula en el backend y se identifica con 🥇, 🥈 y 🥉. Ordena las
+oportunidades vigentes por categoría, Kelly completo previo al redondeo, Edge,
+EV, cantidad de lecturas emparejadas válidas, señal y hora del encuentro. No
+utiliza una puntuación sintética y los filtros visuales no alteran el podio.
 
 ### Avisos por Telegram
 

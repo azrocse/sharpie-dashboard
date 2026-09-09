@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import main
 from config.league_config import enabled_leagues
-from dashboard.generate_dashboard import build_market_observations, build_picks, generate_dashboard
+from dashboard.generate_dashboard import assign_medals, build_market_observations, build_picks, generate_dashboard
 from pipeline import analyze, parse
 from scraper.draftkings import DraftKingsScraper
 
@@ -121,6 +121,17 @@ class CurrentPipelineTests(unittest.TestCase):
         normalized = parse._normalize_history(points)
         self.assertEqual(len(normalized), 200)
         self.assertEqual(normalized[-1], points[-1])
+
+    def test_medals_use_category_then_raw_kelly_without_synthetic_score(self):
+        picks = [
+            {'pick':'Free','actionKey':'bet','pickCategory':'FREE','odds':'+200','modelProb':40,'modelEdge':6,'ev':20,'modelHistoryPoints':9,'marketSignals':['SMART_MONEY'],'signedDivergence':40,'iso':'2026-09-10T12:00:00'},
+            {'pick':'Premium B','actionKey':'bet','pickCategory':'PREMIUM','odds':'+120','modelProb':50,'modelEdge':5,'ev':10,'modelHistoryPoints':8,'marketSignals':['CONSENSUS'],'signedDivergence':2,'iso':'2026-09-10T13:00:00'},
+            {'pick':'Premium A','actionKey':'bet','pickCategory':'PREMIUM','odds':'+120','modelProb':52,'modelEdge':5.5,'ev':14.4,'modelHistoryPoints':4,'marketSignals':['SMART_MONEY'],'signedDivergence':30,'iso':'2026-09-10T14:00:00'},
+            {'pick':'Whale','actionKey':'bet','pickCategory':'WHALE','odds':'-110','modelProb':58,'modelEdge':5.62,'ev':10.73,'modelHistoryPoints':3,'marketSignals':['SMART_MONEY'],'signedDivergence':40,'iso':'2026-09-10T15:00:00'},
+        ]
+        assign_medals(picks)
+        ranked = sorted((p['medalRank'], p['pick']) for p in picks if 'medalRank' in p)
+        self.assertEqual(ranked, [(1,'Whale'),(2,'Premium A'),(3,'Premium B')])
 
     def test_observations_exclude_live_data_and_duplicate_timestamps(self):
         before = {"time": "2026-09-07T17:00:00+00:00", "betsPct": 40, "handlePct": 75, "odds": "+130"}

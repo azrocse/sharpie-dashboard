@@ -538,11 +538,8 @@ function isRecommendedPick(p) {
 // ============================================================
 // La categoría viene resuelta por el backend y solo se presenta aquí.
 
-let TOP_PICK_ID = null;
-
-// El KPI y el filtro "Pick Destacado" son conceptos distintos:
-// - TOP_PICK_ID: mejor oportunidad operable del momento.
-// - MEDIA_TEAM_ALIASES: equipos/selecciones mediáticos que alimentan el filtro.
+// El medallero lo resuelve el backend. MEDIA_TEAM_ALIASES alimenta únicamente
+// el filtro editorial de equipos mediáticos.
 const MEDIA_TEAM_ALIASES = [
     // Fútbol europeo
     "real madrid", "barcelona", "atletico madrid", "manchester united", "man united",
@@ -581,28 +578,7 @@ function isMediaFeaturedPick(p) {
     return MEDIA_TEAM_ALIASES.some(alias => source.includes(normalizeMediaText(alias)));
 }
 
-function topPickRank(p) {
-    if (!isRecommendedPick(p)) return -Infinity;
-    const categoryWeight = { WHALE: 4500, PREMIUM: 3000, FREE: 1500 }[p.pickCategory] || 0;
-    const signals = new Set(Array.isArray(p.marketSignals) ? p.marketSignals : [p.marketSignal]);
-    const signalWeight =
-        (signals.has("REVERSE_LINE_MOVEMENT") ? 600 : 0) +
-        (signals.has("STEAM_MOVE") ? 500 : 0) +
-        (signals.has("SMART_MONEY") ? 400 : 0) +
-        (signals.has("SHARP_VS_PUBLIC") ? 250 : 0) +
-        (signals.has("CONSENSUS") ? 100 : 0);
-    const minutes = p.iso ? (new Date(p.iso) - new Date()) / 60000 : Infinity;
-    const urgencyWeight = minutes >= 0 && minutes <= 120 ? 50 : 0;
-    return categoryWeight + signalWeight + Math.min(Number(p.ev || 0), 10) * 5 + calculateEdge(p) * 5 + Number(p.stake || 0) * 20 + urgencyWeight;
-}
-
-function selectTopPick(picks) {
-    return [...picks].filter(isRecommendedPick).sort((a, b) => topPickRank(b) - topPickRank(a))[0] || null;
-}
-
-function isTopPick(p) {
-    return TOP_PICK_ID !== null && getPickId(p) === TOP_PICK_ID;
-}
+const MEDAL_ICONS = {1:'🥇',2:'🥈',3:'🥉'};
 
 // Devuelve únicamente las mediciones donde Bets, Handle o Cuota realmente cambiaron
 // respecto a la medición anterior. Fuente única usada tanto por la Evolución Histórica
@@ -833,15 +809,15 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
         }).join('') : `<span style="color:var(--muted)">Sin señales activas</span>`;
     }
 
-    // El Top Pick es global: los filtros de pantalla no deben sustituir al
-    // mejor pick operativo disponible en este momento.
-    const best = selectTopPick(allPendingPicks);
-    TOP_PICK_ID = best ? getPickId(best) : null;
-    statState.mejor = best ? [best] : [];
+    // El podio es global: los filtros de pantalla no alteran la clasificación
+    // oficial calculada por el backend.
+    const podium = allPendingPicks.filter(p => Number(p.medalRank) >= 1 && Number(p.medalRank) <= 3)
+        .sort((a,b) => Number(a.medalRank)-Number(b.medalRank));
+    statState.mejor = podium;
     
     const elMejor = document.getElementById("statMejor");
     if (elMejor) {
-        elMejor.innerText = best ? `${best.pick} · EV ${Number(best.ev || 0).toFixed(1)}% · ${Number(best.stake || 0).toFixed(1)}u` : "Sin pick operable";
+        elMejor.innerHTML = podium.length ? podium.map(p=>`<span class="podium-entry" title="${escapeHTML(p.pick)}">${MEDAL_ICONS[p.medalRank]} ${escapeHTML(p.pick)}</span>`).join('') : "Sin picks operables";
     }
 }
 
@@ -851,7 +827,7 @@ function renderStatRows(items) {
     }
     
     const sortedUpcoming = [...items]
-        .sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0))
+        .sort((a, b) => (Number(a.medalRank)||99)-(Number(b.medalRank)||99) || new Date(a.iso || 0) - new Date(b.iso || 0))
         .slice(0, 3);
 
     return sortedUpcoming.map(p => {
@@ -863,7 +839,7 @@ function renderStatRows(items) {
         return `
             <div class="stat-row">
                 <div class="stat-row-main">
-                    <div class="stat-row-game">🕒 ${timeStr} · ${escapeHTML(p.game) || 'Evento'}</div>
+                    <div class="stat-row-game">${MEDAL_ICONS[p.medalRank] || '🕒'} ${timeStr} · ${escapeHTML(p.game) || 'Evento'}</div>
                     <div class="stat-row-pick"><b>${escapeHTML(p.pick)}</b> (${escapeHTML(p.market) || 'Mercado'}) · ${escapeHTML(p.league) || ''}</div>
                 </div>
                 <div class="stat-row-nums">
@@ -895,7 +871,7 @@ function setupStatPopups() {
                 let popupTitle = "Detalle de Eventos";
                 
                 if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
-                else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top Pick Análisis"; }
+                else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top 3 del momento"; }
 
                 box.innerHTML = `
                     <div class="stat-popup-title">
@@ -1404,7 +1380,7 @@ function render() {
         const isValue = p.pickCategory === "FREE";
         const isPremiumPick = p.pickCategory === "PREMIUM";
         const isFreeRelease = Boolean(p.freeRelease);
-        const isTop = isTopPick(p);
+        const medal = MEDAL_ICONS[p.medalRank] || '';
         const isMediaFeatured = isMediaFeaturedPick(p);
         const isNew = RECENTLY_ADDED_IDS.has(getPickId(p));
         const isUpdated = !isNew && RECENTLY_UPDATED_IDS.has(getPickId(p));
@@ -1447,7 +1423,7 @@ function render() {
                         <div class="card-hero-tags">
                             ${isNew ? `<span class="status-icon" title="Pick nuevo">🆕</span>` : ''}
                             ${isUpdated ? `<span class="status-icon" title="Pick actualizado">🔄</span>` : ''}
-                            ${isTop ? `<span class="status-icon" title="Mejor pick del momento">🏆</span>` : ''}
+                            ${medal ? `<span class="status-icon medal-rank-${p.medalRank}" title="${p.medalRank === 1 ? 'Mejor pick del momento' : `Top ${p.medalRank} del momento`}">${medal}</span>` : ''}
                             ${isMediaFeatured ? `<span class="status-icon" title="Equipo mediático destacado">⭐</span>` : ''}
                             ${isWhale ? `<span class="whale-header-badge">WHALE SIGNAL</span>` : ''}
                             ${isLongshot ? `<span class="longshot-pick-badge">LONGSHOT · MÁX. 0.5u</span>` : ''}
