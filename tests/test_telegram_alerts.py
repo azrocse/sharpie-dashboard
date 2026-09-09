@@ -4,7 +4,7 @@ import tempfile
 import unittest
 import json
 from opportunities import CDMX
-from telegram_alerts import run_alerts, TelegramError, subscription_url, message_for, Bot
+from telegram_alerts import run_alerts, TelegramError, subscription_url, message_for, team_hashtag, Bot
 from unittest.mock import patch
 
 
@@ -148,3 +148,9 @@ class TelegramTests(unittest.TestCase):
             payload=call.call_args.args[1]
             self.assertEqual(payload['parse_mode'],'HTML')
             self.assertIn('inline_keyboard',payload['reply_markup'])
+
+    def test_team_hashtags_remove_feed_city_codes_only(self):
+        self.assertEqual(team_hashtag('HOU Astros'), '#Astros')
+        self.assertEqual(team_hashtag('LA Rams'), '#Rams')
+        self.assertEqual(team_hashtag('Real Madrid'), '#RealMadrid')
+        self.assertEqual(team_hashtag('FC Barcelona'), '#FCBarcelona')

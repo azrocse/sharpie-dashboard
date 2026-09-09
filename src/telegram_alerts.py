@@ -4,6 +4,7 @@ from html import escape
 import json
 from pathlib import Path
 import re
+import unicodedata
 import requests
 
 from storage import atomic_write_json
@@ -76,17 +77,27 @@ def controls(active):
               'callback_data': 'pause' if active else 'resume'}]]
 
 
+def team_hashtag(value):
+    """Quita la abreviatura geográfica del feed, conservando nombres de club."""
+    text = str(value or '').strip()
+    match = re.match(r'^([A-Z]{2,4})\s+(.+)$', text)
+    club_prefixes = {'AC', 'AFC', 'CA', 'CD', 'CF', 'FC', 'RC', 'SC'}
+    if match and match.group(1) not in club_prefixes:
+        text = match.group(2)
+    ascii_text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode()
+    return '#' + re.sub(r'[^A-Za-z0-9]', '', ascii_text)
+
+
 def message_for(record):
     current = record.get('current') or {}
     category = record.get('pickCategory') or 'FREE'
     icon, tag = {'FREE': ('🔓', '#FreePick'), 'PREMIUM': ('💎', '#PremiumPick'), 'WHALE': ('🐋', '#WhalePick')}.get(category, ('🎯', '#Pick'))
     clean = lambda value: escape(str(value or '—')[:200])
-    hashtag = lambda value: '#' + re.sub(r'[^A-Za-z0-9]', '', __import__('unicodedata').normalize('NFKD', str(value or '')).encode('ascii', 'ignore').decode())
     kickoff = timestamp(record.get('iso'))
     when = kickoff.strftime('%Y-%m-%d | ⏰ %H:%M') if kickoff else 'Por confirmar'
     stake = number(current.get('stake'))
     stake_text = f'{stake:.1f}u' if stake is not None else '—'
-    teams = f"{hashtag(record.get('away'))} vs {hashtag(record.get('home'))}" if record.get('away') and record.get('home') else clean(record.get('game'))
+    teams = f"{team_hashtag(record.get('away'))} vs {team_hashtag(record.get('home'))}" if record.get('away') and record.get('home') else clean(record.get('game'))
     prefix = {'NO_VALUE': '🔴 <b>YA NO APOSTAR</b>\n', 'RECOVERED': '🟢 <b>VALOR RECUPERADO</b>\n', 'UPGRADED': '⬆️ <b>PICK MEJORADO</b>\n', 'DOWNGRADED': '⬇️ <b>PICK AJUSTADO</b>\n'}.get(record.get('telegramStatus'), '')
     return (f"{prefix}{icon} <b>{tag}</b>\n"
             f"📅 {when}\n🏆 {clean(record.get('league') or 'SPORTS')}\n🏟️ {teams}\n"

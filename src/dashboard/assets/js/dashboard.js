@@ -1131,8 +1131,14 @@ function copyPickForX(p) {
     const dateStr = p.date || new Date().toISOString().split('T')[0];
     const timeStr = p.time || "--:--";
     const league = p.league || p.sport || "SPORTS";
-    const hashtag = value => `#${String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'')}`;
-    const game = p.away && p.home ? `${hashtag(p.away)} vs ${hashtag(p.home)}` : (p.game || "Evento");
+    const teamHashtag = value => {
+        let name=String(value || '').trim();
+        const match=name.match(/^([A-Z]{2,4})\s+(.+)$/);
+        const clubPrefixes=new Set(['AC','AFC','CA','CD','CF','FC','RC','SC']);
+        if (match && !clubPrefixes.has(match[1])) name=match[2];
+        return `#${name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'')}`;
+    };
+    const game = p.away && p.home ? `${teamHashtag(p.away)} vs ${teamHashtag(p.home)}` : (p.game || "Evento");
     
     const pickName = p.pick || "Selección";
     const market = p.market ? ` (${p.market})` : "";
