@@ -26,6 +26,10 @@ class OpportunitiesViewerTests(unittest.TestCase):
             self.assertNotIn('id="status"', html)
             self.assertNotIn('id="access"', html)
             self.assertIn('id="evMin"', html)
+            self.assertIn("VALUE:'FREE'", html)
+            self.assertIn('Últimos 5 movimientos', html)
+            self.assertIn('Cambios del pick', html)
+            self.assertIn('Ya no apostar', html)
 
     def test_empty_archive_has_a_viewer(self):
         with tempfile.TemporaryDirectory() as directory:

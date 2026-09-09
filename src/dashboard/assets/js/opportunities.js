@@ -18,6 +18,10 @@ const dateValue = value => {
 const dateText = value => dateValue(value)?.toLocaleString('es-MX',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}) || '—';
 const cdmxDay = date => new Intl.DateTimeFormat('en-CA',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
 const eventDay = p => { const date=dateValue(p.iso); return date ? cdmxDay(date) : ''; };
+const category = p => ({VALUE:'FREE',FREE_RELEASE:'FREE'}[p.pickCategory] || p.pickCategory || 'FREE');
+const opportunityState = p => p.opportunityState || (p.frozenAt ? 'CLOSED' : 'ACTIVE');
+const categoryMeta = value => ({FREE:['🔓','FREE'],PREMIUM:['💎','PREMIUM'],WHALE:['🐋','WHALE']}[value] || ['🎯',value]);
+const stateMeta = value => ({ACTIVE:['🟢','Vigente'],NO_LONGER_VALUE:['🔴','Ya no apostar'],CLOSED:['🏁','Cerrada']}[value] || ['⚪','Guardada']);
 function historicalRows() {
     const today=cdmxDay(new Date());
     return archive.picks.filter(p=>{ const day=eventDay(p); return day && day<=today; });
@@ -43,7 +47,7 @@ function matchingRows() {
         if (query && !normalize([p.game,p.pick,p.market,p.league,p.opportunityId].join(' ')).includes(query)) return false;
         const day = eventDay(p);
         if (filters.date && day !== filters.date || filters.from && day < filters.from || filters.to && day > filters.to) return false;
-        if (filters.league && p.league !== filters.league || filters.category && p.pickCategory !== filters.category || filters.signal && p.marketSignal !== filters.signal) return false;
+        if (filters.league && p.league !== filters.league || filters.category && category(p) !== filters.category || filters.signal && p.marketSignal !== filters.signal) return false;
         for (const [prefix,key] of Object.entries(bounds)) {
             const min = numeric(filters[prefix+'Min']), max = numeric(filters[prefix+'Max']), value = numeric(p[key]);
             if ((min !== null || max !== null) && value === null) return false;
@@ -84,6 +88,18 @@ function updateCharts(rows) {
     }
 }
 
+function movementRows(p) {
+    const history=Array.isArray(p.history) ? p.history.slice(-5).reverse() : [];
+    if (!history.length) return '<div class="archive-panel"><p class="archive-empty-detail">Sin movimientos guardados.</p></div>';
+    return `<div class="archive-panel"><div class="archive-detail-title">📊 Últimos 5 movimientos</div>${history.map(h=>`<div class="movement-row"><time>${escape(dateText(h.timestamp||h.time))}</time><span>💵 ${escape(h.odds??'—')}</span><span>🎟️ ${escape(h.betsPct??'—')}%</span><span>💰 ${escape(h.handlePct??'—')}%</span></div>`).join('')}</div>`;
+}
+
+function transitionRows(p) {
+    const transitions=Array.isArray(p.transitions) ? p.transitions : [];
+    if (!transitions.length) return '';
+    return `<div class="archive-panel"><div class="archive-detail-title">⚡ Cambios del pick</div>${transitions.map(item=>{const [icon,label]=stateMeta(item.state);return `<div class="transition-row"><time>${escape(dateText(item.at))}</time><span>${icon} ${escape(label)}</span><b>${escape(category({pickCategory:item.category}))}</b></div>`;}).join('')}</div>`;
+}
+
 function render() {
     const rows=matchingRows();
     const activeCount=filterIds.filter(id=>id!=='sort' && byId(id).value!=='').length;
@@ -102,12 +118,12 @@ function render() {
     byId('since').textContent='Desde '+dateText(archive.startedAt);
     byId('updated').textContent=dateText(archive.updatedAt);
     updateCharts(rows);
-    byId('rows').innerHTML=rows.slice(offset,offset+pageSize).map(p=>`<article class="event-card">
-      <div class="event-topline"><span class="event-league">${escape(p.league)}</span><time>${dateText(p.iso)} · CDMX</time><span class="saved-tag ${p.pickCategory==='PREMIUM'?'premium':''}">${escape(p.pickCategory)}</span></div>
-      <div class="event-overview"><div class="event-identity"><h3>${escape(p.game)}</h3><p class="event-selection">${escape(p.pick)} ${p.freeRelease ? '<span class="free-label">FREE PICK</span>' : ''}</p><p class="event-market">${escape(p.market)} <span>·</span> ${escape((p.marketSignal||'—').replaceAll('_',' '))}</p></div>
+    byId('rows').innerHTML=rows.slice(offset,offset+pageSize).map(p=>{const cat=category(p),[catIcon,catLabel]=categoryMeta(cat),state=opportunityState(p),[stateIcon,stateLabel]=stateMeta(state);return `<article class="event-card state-${escape(state.toLowerCase())}">
+      <div class="event-topline"><span class="event-league">${escape(p.league)}</span><time>${dateText(p.iso)} · CDMX</time><span class="state-tag">${stateIcon} ${escape(stateLabel)}</span><span class="saved-tag ${cat.toLowerCase()}">${catIcon} ${escape(catLabel)}</span></div>
+      <div class="event-overview"><div class="event-identity"><h3>${escape(p.game)}</h3><p class="event-selection">${escape(p.pick)}</p><p class="event-market">${escape(p.market)} <span>·</span> ${escape((p.marketSignal||'—').replaceAll('_',' '))}</p></div>
       <dl class="event-metrics">${[['Cuota',p.odds],['Modelo',numeric(p.modelProb)===null?null:number(p.modelProb)+'%'],['EV',numeric(p.ev)===null?null:number(p.ev)+'%'],['Stake',numeric(p.stake)===null?null:number(p.stake)+' u']].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value??'—')}</dd></div>`).join('')}</dl></div>
-      <details class="event-details"><summary><span>Ver métricas y registro</span><span class="expand-icon" aria-hidden="true">+</span></summary><div class="event-expanded"><dl class="secondary-metrics">${[['Edge',number(p.modelEdge)+'%'],['Bets',number(p.betsPct)+'%'],['Handle',number(p.handlePct)+'%'],['Divergencia',number(p.divergence)],['Primera captura',dateText(p.firstCapturedAt)],['Última actualización',dateText(p.lastUpdatedAt)]].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl><button type="button" class="btn-chip" data-detail="${escape(p.opportunityId)}">Consultar JSON original</button></div></details>
-    </article>`).join('');
+      <details class="event-details"><summary><span>Ver seguimiento</span><span class="expand-icon" aria-hidden="true">+</span></summary><div class="event-expanded"><dl class="secondary-metrics">${[['⚖️ Edge',number(p.modelEdge)+'%'],['🎟️ Bets',number(p.betsPct)+'%'],['💰 Handle',number(p.handlePct)+'%'],['🐋 Divergencia',number(p.divergence)+'%'],['Primera captura',dateText(p.firstCapturedAt)],['Última actualización',dateText(p.lastUpdatedAt)]].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl><div class="archive-detail-grid">${movementRows(p)}${transitionRows(p)}</div><button type="button" class="btn-chip detail-json-button" data-detail="${escape(p.opportunityId)}">Consultar JSON original</button></div></details>
+    </article>`;}).join('');
     byId('empty').hidden=rows.length!==0;
     byId('empty').textContent=historicalRows().length ? 'No hay oportunidades que coincidan con estos filtros.' : 'Aún no hay oportunidades con fecha de hoy o anterior.';
     byId('range').textContent=rows.length ? `${offset+1}–${Math.min(offset+pageSize,rows.length)} de ${rows.length} oportunidades` : '0 oportunidades';
@@ -136,7 +152,7 @@ function exportXls() {
     // XLS admite 65.536 filas por hoja, incluida la cabecera.
     for (let offset=0; offset<rows.length; offset+=65535) {
         const values = rows.slice(offset,offset+65535).map(p => [
-            String(p.game||''),String(p.pick||''),dateText(p.iso),String(p.league||''),String(p.market||''),String(p.pickCategory||''),
+            String(p.game||''),String(p.pick||''),dateText(p.iso),String(p.league||''),String(p.market||''),category(p),
             ...['odds','modelProb','modelEdge','ev','stake','betsPct','handlePct','divergence'].map(key=>numeric(p[key])),
             String(p.marketSignal||'').replaceAll('_',' '),dateText(p.firstCapturedAt),dateText(p.lastUpdatedAt),String(p.opportunityId||'')
         ]);
