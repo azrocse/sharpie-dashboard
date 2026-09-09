@@ -16,18 +16,22 @@ body { padding:24px 36px; max-width:1480px; background:var(--bg); }
 .dashboard-intro h2 { font-size:clamp(25px,2.5vw,36px); letter-spacing:-1.2px; line-height:1.25; }
 .dashboard-intro p { font-size:13px; line-height:1.6; color:var(--muted); margin-top:10px; }
 .stats-grid { grid-template-columns:1fr 1fr 1.5fr 1.5fr; gap:14px; margin-bottom:20px; }
-.stat-card { border:1px solid var(--border); border-left-color:var(--border) !important; border-radius:14px; padding:20px; box-shadow:none; }
-.stat-icon { display:none; }.stat-header { gap:0; }
-.stat-card .label { font-size:10px; color:var(--muted); font-weight:650; letter-spacing:.6px; }
-.stat-value { font-size:29px; font-weight:650; letter-spacing:-1px; margin:12px 0 7px; }
+.stat-card { --kpi:#14b8a6; position:relative; isolation:isolate; border:1px solid var(--border); border-left-color:var(--border) !important; border-radius:14px; padding:17px; box-shadow:0 8px 28px rgba(15,23,42,.05); background:linear-gradient(145deg,var(--panel) 55%,color-mix(in srgb,var(--kpi) 8%,var(--panel))); }
+.stat-card::before { content:""; position:absolute; z-index:-1; inset:0 auto auto 0; width:100%; height:3px; border-radius:14px 14px 0 0; background:linear-gradient(90deg,var(--kpi),transparent 78%); }
+#cardAnalizados { --kpi:#14b8a6; } #cardProximos { --kpi:#f59e0b; } #cardMercado { --kpi:#3b82f6; } #cardMejor { --kpi:#8b5cf6; }
+.stat-icon { display:grid; place-items:center; flex:0 0 34px; width:34px; height:34px; border-radius:10px; color:var(--kpi); background:color-mix(in srgb,var(--kpi) 13%,transparent); font-size:16px; }.stat-header { gap:11px; align-items:flex-start; }
+.stat-card .label { font-size:9px; color:var(--muted); font-weight:750; letter-spacing:.7px; }
+.stat-value { color:var(--kpi); font-size:30px; font-weight:750; letter-spacing:-1px; margin:8px 0 5px; text-shadow:0 5px 20px color-mix(in srgb,var(--kpi) 20%,transparent); }
 .stat-value.textline { white-space:normal; font-size:14px; letter-spacing:-.2px; line-height:1.6; }
 .stat-sub { white-space:normal; font-size:10px; line-height:1.6; color:var(--muted); }
-.market-distribution { gap:7px; margin:14px 0 10px; line-height:1.7; }
-.market-distribution span { font-size:10px; font-weight:600; }
+.market-distribution { display:flex; gap:6px; margin:10px 0 7px; line-height:1.4; }
+.market-distribution span { padding:5px 7px; border:1px solid color-mix(in srgb,currentColor 25%,var(--border)); border-radius:6px; background:var(--panel2); font-size:9px; font-weight:700; }
 .stat-popup { border-radius:14px; background:var(--panel); }
 .analytics-section { grid-template-columns:1.7fr 1fr; gap:18px; margin-bottom:22px; }
-.chart-card { border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow:none; }
-.chart-header { font-size:12px; margin-bottom:18px; }.chart-container { height:190px; }
+.chart-card { position:relative; overflow:hidden; border:1px solid var(--border); border-radius:16px; padding:20px; box-shadow:0 12px 35px rgba(15,23,42,.06); background:linear-gradient(145deg,var(--panel),color-mix(in srgb,var(--teal) 4%,var(--panel))); }
+.chart-card::after { content:""; position:absolute; width:150px; height:150px; right:-75px; top:-90px; border-radius:50%; background:radial-gradient(circle,color-mix(in srgb,var(--blue) 16%,transparent),transparent 70%); pointer-events:none; }
+.chart-card:nth-child(2) { background:linear-gradient(145deg,var(--panel),color-mix(in srgb,#8b5cf6 5%,var(--panel))); }
+.chart-header { position:relative; z-index:1; font-size:12px; margin-bottom:14px; }.chart-header>span:first-child { font-weight:750; }.chart-header>span:last-child { font-size:9px !important; letter-spacing:.5px; }.chart-container { height:220px; }
 .toolbar { border-radius:14px; padding:18px; box-shadow:none; }
 .search-box { padding:0; background:transparent; border:0; }
 .search-box input { border:1px solid var(--border); background:var(--bg); border-radius:10px; min-height:46px; padding:12px 15px; font-size:13px; }
@@ -111,12 +115,12 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,su
 .btn-telegram { display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none; padding:8px; min-height:36px; background:var(--panel2); color:var(--teal); border:1px solid var(--border); border-radius:9px; font:600 10px "Plus Jakarta Sans",sans-serif; }
 .btn-telegram:disabled { opacity:.6; cursor:default; }.tracking-verdict { margin-top:6px; }
 .tracking-comparison-details { margin-top:10px; border-top:1px solid var(--border); }.tracking-comparison-details summary { display:flex; justify-content:space-between; cursor:pointer; padding:10px 0; font-size:10px; color:var(--muted); list-style:none; }.tracking-comparison-details summary::-webkit-details-marker { display:none; }.tracking-note { font-size:9px; color:var(--muted); line-height:1.6; margin-top:8px; }
-.podium-card { padding:12px 14px; }
+.podium-card { padding:11px 13px; }
 .podium-card .stat-header,.podium-card .stat-body { width:100%; }
-.podium-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:7px; border-bottom:1px dashed var(--border); }
+.podium-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:7px; border-bottom:1px dashed color-mix(in srgb,var(--kpi) 25%,var(--border)); }
 .podium-heading>span { color:var(--muted); font:600 9px 'JetBrains Mono',monospace; }
 .podium-list { display:grid; gap:5px; margin-top:6px; color:var(--muted); font-size:10px; }
-.podium-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px; padding:6px 7px; background:var(--panel2); border-radius:6px; min-width:0; }
+.podium-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px; padding:6px 7px; background:color-mix(in srgb,var(--kpi) 6%,var(--panel2)); border:1px solid color-mix(in srgb,var(--kpi) 12%,var(--border)); border-radius:7px; min-width:0; }
 .podium-main { min-width:0; }
 .podium-game,.podium-pick { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .podium-game { color:var(--text); font-size:10px; font-weight:700; line-height:1.35; }

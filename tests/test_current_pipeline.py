@@ -80,6 +80,9 @@ class CurrentPipelineTests(unittest.TestCase):
                 self.assertEqual(record[key], value)
         self.assertNotIn('>FREE RELEASE', html)
         self.assertNotIn('confidenceScore', html)
+        self.assertIn('TOP 3 DEL MOMENTO', html)
+        self.assertIn('podiumDateTime', html)
+        self.assertIn('Mapa de valor', html)
 
     def test_failed_download_or_parse_keeps_last_successful_files(self):
         self.run_feed()

@@ -339,6 +339,21 @@ const MARKET_SIGNAL_COLORS = {
 
 let edgeChartInstance = null;
 let marketChartInstance = null;
+const chartCenterText = {
+    id: 'sharpieCenterText',
+    afterDraw(chart) {
+        if (chart.config.type !== 'doughnut') return;
+        const {ctx, chartArea} = chart;
+        const total = chart.data.datasets[0].data.reduce((sum,value)=>sum+Number(value||0),0);
+        if (!chartArea) return;
+        const x=(chartArea.left+chartArea.right)/2, y=(chartArea.top+chartArea.bottom)/2;
+        ctx.save(); ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
+        ctx.font='700 24px JetBrains Mono'; ctx.fillText(String(total),x,y-5);
+        ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();
+        ctx.font='600 9px Plus Jakarta Sans'; ctx.fillText('OPORTUNIDADES',x,y+16); ctx.restore();
+    }
+};
 
 function initCharts() {
     if (typeof Chart === "undefined") return;
@@ -351,15 +366,19 @@ function initCharts() {
         if (edgeChartInstance) edgeChartInstance.destroy();
         edgeChartInstance = new Chart(ctxScatter, {
             type: 'scatter',
-            data: { datasets: [{ label: 'Picks Activos', data: [], backgroundColor: '#2dd4bf', pointRadius: 6 }] },
+            data: { datasets: [] },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: { duration: 450 },
                 scales: {
-                    x: { title: { display: true, text: 'Modelo Prob. (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
-                    y: { title: { display: true, text: 'EV (%)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } }
+                    x: { title: { display: true, text: 'Probabilidad del modelo (%)', color: textColor, font:{weight:'600'} }, ticks: { color: textColor }, grid: { color: gridColor, lineWidth:.6, drawBorder:false } },
+                    y: { title: { display: true, text: 'Valor esperado · EV (%)', color: textColor, font:{weight:'600'} }, ticks: { color: textColor }, grid: { color: gridColor, lineWidth:.6, drawBorder:false } }
                 },
-                plugins: { legend: { display: false } }
+                plugins: {
+                    legend: { display:true, position:'bottom', labels:{usePointStyle:true,pointStyle:'circle',boxWidth:7,color:textColor,font:{size:9}} },
+                    tooltip:{displayColors:true,callbacks:{label:ctx=>`${ctx.raw.pick} · EV ${Number(ctx.raw.y).toFixed(2)}% · Edge ${Number(ctx.raw.edge).toFixed(2)}% · ${ctx.raw.odds}`}}
+                }
             }
         });
     }
@@ -371,14 +390,16 @@ function initCharts() {
             type: 'doughnut',
             data: {
                 labels: [],
-                datasets: [{ data: [], backgroundColor: [], borderWidth: 0 }]
+                datasets: [{ data: [], backgroundColor: [], borderColor: themeStyle.getPropertyValue('--panel').trim(), borderWidth: 4, hoverOffset: 8, borderRadius: 5 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10 } } } },
-                cutout: '70%'
-            }
+                animation:{duration:500},
+                plugins: { legend: { position: 'bottom', labels: { usePointStyle:true, pointStyle:'circle', boxWidth:8, padding:14, color: textColor, font: { size: 9, weight:'600' } } }, tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} picks`}} },
+                cutout: '72%'
+            },
+            plugins:[chartCenterText]
         });
     }
 }
@@ -386,7 +407,13 @@ function initCharts() {
 // Sincronización exacta de gráfica con conteos de mercado
 function updateChartsData(activeList) {
     if (edgeChartInstance) {
-        edgeChartInstance.data.datasets[0].data = activeList.map(p => ({ x: p.modelProb || 0, y: Number(p.ev) || 0 }));
+        const categories=[['FREE','#14b8a6'],['PREMIUM','#8b5cf6'],['WHALE','#f59e0b']];
+        edgeChartInstance.data.datasets = categories.map(([category,color])=>({
+            label:category,
+            data:activeList.filter(p=>p.pickCategory===category).map(p=>({x:Number(p.modelProb)||0,y:Number(p.ev)||0,edge:Number(p.modelEdge)||0,odds:p.odds,pick:p.pick,stake:Number(p.stake)||0})),
+            backgroundColor:color, borderColor:color, pointBorderColor:'#ffffff', pointBorderWidth:1.5,
+            pointRadius:ctx=>5+Math.min(Number(ctx.raw?.stake||0),5), pointHoverRadius:9
+        })).filter(dataset=>dataset.data.length);
         edgeChartInstance.update();
     }
 
@@ -579,6 +606,11 @@ function isMediaFeaturedPick(p) {
 }
 
 const MEDAL_ICONS = {1:'🥇',2:'🥈',3:'🥉'};
+function podiumDateTime(p) {
+    const parts=String(p.date||'').split('-');
+    const date=parts.length===3 ? `${parts[2]}/${parts[1]}/${parts[0].slice(-2)}` : (p.date||'--/--/--');
+    return `${date} · ${p.time||'--:--'}`;
+}
 
 // Devuelve únicamente las mediciones donde Bets, Handle o Cuota realmente cambiaron
 // respecto a la medición anterior. Fuente única usada tanto por la Evolución Histórica
@@ -820,7 +852,7 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
             const ev=Number(p.ev||0), evText=`${ev>=0?'+':''}${ev.toFixed(2)}%`;
             const stake=Number(p.stake||0).toFixed(1);
             return `<div class="podium-row" title="${escapeHTML(p.game)} · ${escapeHTML(p.pick)}">
-                <div class="podium-main"><div class="podium-game">${MEDAL_ICONS[p.medalRank]} ${escapeHTML(p.time||'--:--')} · ${escapeHTML(p.game)}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
+                <div class="podium-main"><div class="podium-game">${MEDAL_ICONS[p.medalRank]} ${escapeHTML(podiumDateTime(p))} · ${escapeHTML(p.game)}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
                 <div class="podium-numbers"><span>EV ${evText}</span><b>${escapeHTML(p.odds||'—')}</b></div>
             </div>`;
         }).join('') : "Sin picks operables";
