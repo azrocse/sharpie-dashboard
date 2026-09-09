@@ -111,6 +111,17 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,su
 .btn-telegram { display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none; padding:8px; min-height:36px; background:var(--panel2); color:var(--teal); border:1px solid var(--border); border-radius:9px; font:600 10px "Plus Jakarta Sans",sans-serif; }
 .btn-telegram:disabled { opacity:.6; cursor:default; }.tracking-verdict { margin-top:6px; }
 .tracking-comparison-details { margin-top:10px; border-top:1px solid var(--border); }.tracking-comparison-details summary { display:flex; justify-content:space-between; cursor:pointer; padding:10px 0; font-size:10px; color:var(--muted); list-style:none; }.tracking-comparison-details summary::-webkit-details-marker { display:none; }.tracking-note { font-size:9px; color:var(--muted); line-height:1.6; margin-top:8px; }
-#statMejor { display:grid; gap:3px; white-space:normal; overflow:visible; }
-.podium-entry { display:block; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:10px; line-height:1.35; }
+.podium-card { padding:12px 14px; }
+.podium-card .stat-header,.podium-card .stat-body { width:100%; }
+.podium-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:7px; border-bottom:1px dashed var(--border); }
+.podium-heading>span { color:var(--muted); font:600 9px 'JetBrains Mono',monospace; }
+.podium-list { display:grid; gap:5px; margin-top:6px; color:var(--muted); font-size:10px; }
+.podium-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px; padding:6px 7px; background:var(--panel2); border-radius:6px; min-width:0; }
+.podium-main { min-width:0; }
+.podium-game,.podium-pick { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.podium-game { color:var(--text); font-size:10px; font-weight:700; line-height:1.35; }
+.podium-pick { color:var(--muted); font-size:8px; font-weight:550; margin-top:1px; }
+.podium-numbers { display:flex; align-items:center; gap:8px; white-space:nowrap; font:650 9px 'JetBrains Mono',monospace; }
+.podium-numbers span { color:var(--teal); }.podium-numbers b { color:var(--amber); font-weight:650; }
 .medal-rank-1,.medal-rank-2,.medal-rank-3 { font-size:15px; }
+@media(max-width:500px) { .podium-row { gap:6px; }.podium-numbers { display:grid; gap:1px; text-align:right; }.podium-pick { max-width:180px; } }

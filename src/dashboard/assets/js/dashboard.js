@@ -772,8 +772,7 @@ setInterval(tickAllCountdowns, 1000);
 
 const statState = {
     proximos: [],
-    mercado: Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, []])),
-    mejor: []
+    mercado: Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, []]))
 };
 
 function classifyMarketBucket(p) {
@@ -813,11 +812,18 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
     // oficial calculada por el backend.
     const podium = allPendingPicks.filter(p => Number(p.medalRank) >= 1 && Number(p.medalRank) <= 3)
         .sort((a,b) => Number(a.medalRank)-Number(b.medalRank));
-    statState.mejor = podium;
-    
     const elMejor = document.getElementById("statMejor");
+    const elMejorTotal = document.getElementById("statMejorTotal");
+    if (elMejorTotal) elMejorTotal.textContent = podium.length;
     if (elMejor) {
-        elMejor.innerHTML = podium.length ? podium.map(p=>`<span class="podium-entry" title="${escapeHTML(p.pick)}">${MEDAL_ICONS[p.medalRank]} ${escapeHTML(p.pick)}</span>`).join('') : "Sin picks operables";
+        elMejor.innerHTML = podium.length ? podium.map(p=>{
+            const ev=Number(p.ev||0), evText=`${ev>=0?'+':''}${ev.toFixed(2)}%`;
+            const stake=Number(p.stake||0).toFixed(1);
+            return `<div class="podium-row" title="${escapeHTML(p.game)} · ${escapeHTML(p.pick)}">
+                <div class="podium-main"><div class="podium-game">${MEDAL_ICONS[p.medalRank]} ${escapeHTML(p.time||'--:--')} · ${escapeHTML(p.game)}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
+                <div class="podium-numbers"><span>EV ${evText}</span><b>${escapeHTML(p.odds||'—')}</b></div>
+            </div>`;
+        }).join('') : "Sin picks operables";
     }
 }
 
@@ -871,7 +877,6 @@ function setupStatPopups() {
                 let popupTitle = "Detalle de Eventos";
                 
                 if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
-                else if (targetId === "detailMejor") { items = statState.mejor; popupTitle = "Top 3 del momento"; }
 
                 box.innerHTML = `
                     <div class="stat-popup-title">
