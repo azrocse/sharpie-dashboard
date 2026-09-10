@@ -237,8 +237,12 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                     continue
                 desired = 'READY' if eligible(record, now) else 'NO_VALUE'
                 category = record.get('pickCategory')
+                personal_stake = number((record.get('current') or {}).get('personalStake'))
+                if personal_stake is None:
+                    personal_stake = number((record.get('current') or {}).get('stake'))
                 state_changed = delivery.get('state') != desired
                 category_changed = desired == 'READY' and delivery.get('category') != category
+                stake_changed = desired == 'READY' and number(delivery.get('personalStake')) != personal_stake
 
                 if desired == 'NO_VALUE':
                     if delivery.get('messageId'):
@@ -255,19 +259,22 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                     response = bot.send(chat_id, message_for(changed),
                                         [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
                     delivery.update(messageId=response.get('message_id') if isinstance(response, dict) else None,
-                                    state='READY', category=category, recoveredAt=now.isoformat(),
+                                    state='READY', category=category, personalStake=personal_stake,
+                                    recoveredAt=now.isoformat(),
                                     updatedAt=now.isoformat())
                     sent += 1
                     continue
 
-                if category_changed and delivery.get('messageId'):
+                if (category_changed or stake_changed) and delivery.get('messageId'):
                     changed = dict(record)
-                    rank = {'FREE': 1, 'PREMIUM': 2, 'WHALE': 3}
-                    changed['telegramStatus'] = ('UPGRADED' if rank.get(category, 0) > rank.get(delivery.get('category'), 0)
-                                                 else 'DOWNGRADED')
+                    if category_changed:
+                        rank = {'FREE': 1, 'PREMIUM': 2, 'WHALE': 3}
+                        changed['telegramStatus'] = ('UPGRADED' if rank.get(category, 0) > rank.get(delivery.get('category'), 0)
+                                                     else 'DOWNGRADED')
                     bot.edit(chat_id, delivery['messageId'], message_for(changed),
                              [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
-                    delivery.update(state=desired, category=category, updatedAt=now.isoformat())
+                    delivery.update(state=desired, category=category, personalStake=personal_stake,
+                                    updatedAt=now.isoformat())
             except TelegramError as error:
                 if error.code not in {400, 403}:
                     raise
@@ -284,7 +291,8 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                 sub['active'] = False
                 break
             sub['sent'][key] = {'sentAt': now.isoformat(), 'messageId': response.get('message_id') if isinstance(response, dict) else None,
-                                'state': 'READY', 'category': record.get('pickCategory')}
+                                'state': 'READY', 'category': record.get('pickCategory'),
+                                'personalStake': number((record.get('current') or {}).get('personalStake'))}
             sent += 1
         atomic_write_json(path, state, compact=True)
         if sent >= 20:

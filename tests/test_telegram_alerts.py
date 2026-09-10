@@ -92,6 +92,14 @@ class TelegramTests(unittest.TestCase):
         self.record['state']='READY'; self.run_cycle()
         self.assertEqual(len(self.bot.sent),2)
 
+    def test_existing_message_updates_when_personal_stake_changes(self):
+        self.run_cycle()
+        self.record['current']['personalStake']=3.5
+        self.run_cycle()
+        self.assertEqual(len(self.bot.edited),1)
+        self.assertIn('🔥 Stake personal: 3.5u',self.bot.edited[0][2])
+        self.assertEqual(self.state()['subscribers']['1']['sent'][self.key]['personalStake'],3.5)
+
     def test_pause_resume_and_queue_dedup(self):
         second={**self.record,'trackingId':'b'*24,'pick':'B'}
         self.data['records'][second['trackingId']]=second
