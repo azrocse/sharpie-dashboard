@@ -836,7 +836,7 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
         const activeKeys = MARKET_SIGNAL_KEYS.filter(key => buckets[key].length > 0);
         elMercado.innerHTML = activeKeys.length ? activeKeys.map(key => {
             const cfg = marketSignalVisualConfig(key);
-            return `<span title="${TREND_LABEL[key]}" style="color:${cfg.text}">${TREND_ICON[key]} ${buckets[key].length}</span>`;
+            return `<span title="${TREND_LABEL[key]}" style="color:${cfg.text}">${TREND_ICON[key]} <b>${TREND_LABEL[key]}</b> ${buckets[key].length}</span>`;
         }).join('') : `<span style="color:var(--muted)">Sin señales activas</span>`;
     }
 
