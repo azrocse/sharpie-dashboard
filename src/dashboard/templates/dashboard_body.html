@@ -41,17 +41,13 @@
         </div>
     </div>
 
-    <div class="stat-card expandable" id="cardProximos" data-target="detailProximos" style="border-left-color: var(--amber);">
+    <div class="stat-card card-featured podium-card soon-card" id="cardProximos" style="border-left-color: var(--amber);">
         <div class="stat-header">
-            <span class="stat-icon">⏳</span>
             <div class="stat-body">
-                <div class="label">PRÓX. 30 MIN</div>
-                <div class="stat-value" id="statProximos">0</div>
-                <div class="stat-sub">Oportunidades que comienzan dentro de 30 minutos</div>
+                <div class="podium-heading"><div class="label">PRÓX. 30 MIN</div></div>
+                <div id="statProximos" class="podium-list">Sin picks próximos</div>
             </div>
-            <span class="stat-chevron">▾</span>
         </div>
-        <div class="stat-popup" id="detailProximos"></div>
     </div>
 
     <div class="stat-card card-featured" id="cardMercado" style="border-left-color: var(--teal);">
@@ -68,7 +64,7 @@
     <div class="stat-card card-featured podium-card" id="cardMejor" style="border-left-color: var(--gold);">
         <div class="stat-header">
             <div class="stat-body">
-                <div class="podium-heading"><div class="label">TOP 3 DEL MOMENTO</div><span>TOTAL: <b id="statMejorTotal">0</b></span></div>
+                <div class="podium-heading"><div class="label">TOP 3 DEL MOMENTO</div></div>
                 <div id="statMejor" class="podium-list">Sin picks operables</div>
             </div>
         </div>

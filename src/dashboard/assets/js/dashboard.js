@@ -802,11 +802,6 @@ function tickAllCountdowns() {
 
 setInterval(tickAllCountdowns, 1000);
 
-const statState = {
-    proximos: [],
-    mercado: Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, []]))
-};
-
 function classifyMarketBucket(p) {
     return p.marketSignal || "NO_ACTION";
 }
@@ -824,13 +819,20 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
         return d >= 0 && d <= 30;
     }).sort((a, b) => new Date(a.iso || 0) - new Date(b.iso || 0));
     const elProximos = document.getElementById("statProximos");
-    if(elProximos) elProximos.innerText = soonPicks.length;
-    statState.proximos = soonPicks;
+    if (elProximos) {
+        elProximos.innerHTML = soonPicks.length ? soonPicks.map(p => {
+            const ev=Number(p.ev||0), evText=`${ev>=0?'+':''}${ev.toFixed(2)}%`;
+            const stake=Number(p.stake||0).toFixed(1);
+            return `<div class="podium-row soon-row" title="${escapeHTML(p.game)} · ${escapeHTML(p.pick)}">
+                <div class="podium-main"><div class="podium-game">⏳ ${escapeHTML(podiumDateTime(p))} · ${escapeHTML(p.game)}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
+                <div class="podium-numbers"><span>EV ${evText}</span><b>${escapeHTML(p.odds||'—')}</b></div>
+            </div>`;
+        }).join('') : "Sin picks próximos";
+    }
 
     const buckets = Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, []]));
     activePicks.forEach(p => buckets[classifyMarketBucket(p)].push(p));
-    statState.mercado = buckets;
-    
+
     const elMercado = document.getElementById("statMercado");
     if (elMercado) {
         const activeKeys = MARKET_SIGNAL_KEYS.filter(key => buckets[key].length > 0);
@@ -845,8 +847,6 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
     const podium = allPendingPicks.filter(p => Number(p.medalRank) >= 1 && Number(p.medalRank) <= 3)
         .sort((a,b) => Number(a.medalRank)-Number(b.medalRank));
     const elMejor = document.getElementById("statMejor");
-    const elMejorTotal = document.getElementById("statMejorTotal");
-    if (elMejorTotal) elMejorTotal.textContent = podium.length;
     if (elMejor) {
         elMejor.innerHTML = podium.length ? podium.map(p=>{
             const ev=Number(p.ev||0), evText=`${ev>=0?'+':''}${ev.toFixed(2)}%`;
@@ -857,75 +857,6 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
             </div>`;
         }).join('') : "Sin picks operables";
     }
-}
-
-function renderStatRows(items) {
-    if (!items || !items.length) {
-        return `<div class="stat-empty">Sin picks en esta categoría.</div>`;
-    }
-    
-    const sortedUpcoming = [...items]
-        .sort((a, b) => (Number(a.medalRank)||99)-(Number(b.medalRank)||99) || new Date(a.iso || 0) - new Date(b.iso || 0))
-        .slice(0, 3);
-
-    return sortedUpcoming.map(p => {
-        const e = calculateEdge(p);
-        const formattedEdge = e > 0 ? `+${e}%` : `${e}%`;
-        const edgeColor = e >= 0 ? 'var(--teal)' : 'var(--red)';
-        const cuota = escapeHTML(p.odds || p.cuota || "—");
-        const timeStr = escapeHTML(p.time || "--:--");
-        return `
-            <div class="stat-row">
-                <div class="stat-row-main">
-                    <div class="stat-row-game">${MEDAL_ICONS[p.medalRank] || '🕒'} ${timeStr} · ${escapeHTML(p.game) || 'Evento'}</div>
-                    <div class="stat-row-pick"><b>${escapeHTML(p.pick)}</b> (${escapeHTML(p.market) || 'Mercado'}) · ${escapeHTML(p.league) || ''}</div>
-                </div>
-                <div class="stat-row-nums">
-                    <span style="color:${edgeColor}">${formattedEdge}</span>
-                    <span style="color:var(--amber)">${cuota}</span>
-                </div>
-            </div>
-        `;
-    }).join("");
-}
-
-function setupStatPopups() {
-    document.querySelectorAll(".stat-card.expandable").forEach(card => {
-        card.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const targetId = card.dataset.target;
-            const box = document.getElementById(targetId);
-            if(!box) return;
-            
-            const isCurrentlyOpen = card.classList.contains("open");
-            
-            document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
-            document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
-
-            if (!isCurrentlyOpen) {
-                card.classList.add("open");
-
-                let items = [];
-                let popupTitle = "Detalle de Eventos";
-                
-                if (targetId === "detailProximos") { items = statState.proximos; popupTitle = "Próximos 30 Min"; }
-
-                box.innerHTML = `
-                    <div class="stat-popup-title">
-                        <span>${popupTitle}</span>
-                        <span>Total: ${items.length}</span>
-                    </div>
-                    ${renderStatRows(items)}
-                `;
-                box.style.display = "block";
-            }
-        });
-    });
-
-    document.addEventListener("click", () => {
-        document.querySelectorAll(".stat-card.expandable").forEach(c => c.classList.remove("open"));
-        document.querySelectorAll(".stat-popup").forEach(p => p.style.display = "none");
-    });
 }
 
 function parseOddsToDecimal(odds) {
@@ -1204,14 +1135,16 @@ function trackingPanelHtml(p) {
     if (!t) return '';
     const stale=!t.lastObservation || Date.now()-new Date(t.lastObservation).getTime()>15*60000;
     const state=t.state==='CLOSED' ? 'CLOSED' : stale ? 'STALE' : t.state;
-    const labels={READY:'✅',NO_VALUE:'⏸️',STALE:'🔄',INCOMPLETE:'🔄',UNAVAILABLE:'⏸️',CLOSED:'🏁'};
+    const labels={READY:'👁️',NO_VALUE:'👁️',STALE:'🔄',INCOMPLETE:'🔄',UNAVAILABLE:'⏸️',CLOSED:'🏁'};
     const date=value=>value ? new Date(value).toLocaleString('es-MX',{timeZone:'America/Mexico_City',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}):'—';
     const initial=t.initial||{};
     const value=(v,suffix='')=>v==null?'—':escapeHTML(String(v))+suffix;
     const initialDiv=(initial.handlePct!=null&&initial.betsPct!=null)?Number(initial.handlePct)-Number(initial.betsPct):null;
-    const rows=[['💵 Cuota',initial.odds,p.odds,''],['🎟️ Bets',initial.betsPct,p.betsPct,'%'],['💰 Handle',initial.handlePct,p.handlePct,'%'],['🐋 Divergencia',initialDiv,p.divergence,'%']];
+    const oddsNumber=v=>{ const n=Number(v); return Number.isFinite(n) && Math.abs(n)>=100 ? (n>0 ? 1+n/100 : 1+100/Math.abs(n)) : null; };
+    const direction=(before,now,isOdds=false)=>{ const a=isOdds?oddsNumber(before):Number(before), b=isOdds?oddsNumber(now):Number(now); if(!Number.isFinite(a)||!Number.isFinite(b)||Math.abs(b-a)<0.001)return ['→','flat']; return b>a?['↗','up']:['↘','down']; };
+    const rows=[['💵 Cuota',initial.odds,p.odds,'',true],['🎟️ Bets',initial.betsPct,p.betsPct,'%',false],['💰 Handle',initial.handlePct,p.handlePct,'%',false],['🐋 Divergencia',initialDiv,p.divergence,'%',false]];
     return `<div class="tracking-panel"><div class="tracking-panel-title"><strong>${escapeHTML(labels[state]||'🔄')} Seguimiento</strong><span>${escapeHTML(date(t.firstObservedAt))} · CDMX</span></div>
-      <table class="tracking-comparison"><thead><tr><th>Métrica</th><th>Apertura</th><th aria-hidden="true"></th><th>Actual</th></tr></thead><tbody>${rows.map(([label,before,now,suffix])=>`<tr><th scope="row">${label}</th><td>${value(before,suffix)}</td><td class="tracking-arrow">→</td><td>${value(now,suffix)}</td></tr>`).join('')}</tbody></table>
+      <table class="tracking-comparison"><thead><tr><th>Métrica</th><th>Apertura</th><th aria-hidden="true"></th><th>Actual</th></tr></thead><tbody>${rows.map(([label,before,now,suffix,isOdds])=>{const [arrow,trend]=direction(before,now,isOdds);return `<tr><th scope="row">${label}</th><td>${value(before,suffix)}</td><td class="tracking-arrow ${trend}">${arrow}</td><td class="tracking-current ${trend}">${value(now,suffix)}</td></tr>`}).join('')}</tbody></table>
     </div>`;
 }
 
@@ -1704,7 +1637,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupListeners();
     syncFilterInputsFromState();
     renderSavedFilterChips();
-    setupStatPopups();
     render();
 
     if (linkedPick && isEventPending(linkedPick)) {
