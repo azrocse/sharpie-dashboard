@@ -575,6 +575,39 @@ function isRecommendedPick(p) {
     return Boolean(p && p.actionKey === "bet" && RECOMMENDED_CATEGORIES.has(p.pickCategory));
 }
 
+function cdmxDateAtOffset(days = 0) {
+    const target = new Date(Date.now() + (days * 24 * 60 * 60 * 1000));
+    const parts = Object.fromEntries(
+        new Intl.DateTimeFormat("en-US", {
+            timeZone: "America/Mexico_City",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        }).formatToParts(target).map(part => [part.type, part.value])
+    );
+    return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+function pickMatchesDateRange(pick, range) {
+    if (!pick?.date || !range) return true;
+    const today = cdmxDateAtOffset(0);
+    if (range === "today") return pick.date === today;
+    if (range === "tomorrow") return pick.date === cdmxDateAtOffset(1);
+    if (range === "next7") return pick.date >= today && pick.date <= cdmxDateAtOffset(6);
+    if (range === "next30") return pick.date >= today && pick.date <= cdmxDateAtOffset(29);
+    return true;
+}
+
+function selectInitialDateRange() {
+    if (state.date || state.dateRange !== "today") return;
+    const recommended = PICKS.filter(pick => isEventPending(pick) && isRecommendedPick(pick));
+    if (!recommended.length || recommended.some(pick => pickMatchesDateRange(pick, "today"))) return;
+
+    const nearestRange = ["tomorrow", "next7", "next30"]
+        .find(range => recommended.some(pick => pickMatchesDateRange(pick, range)));
+    if (nearestRange) state.dateRange = nearestRange;
+}
+
 // ============================================================
 // La categoría viene resuelta por el backend y solo se presenta aquí.
 
@@ -974,22 +1007,7 @@ function applyFiltersAndSort(list) {
         if (state.date && p.date !== state.date) return false;
         if (state.trend && p.trendKey !== state.trend) return false;
 
-        if (!state.date && state.dateRange) {
-            const nowLocal = new Date();
-            const toDateStr = d => {
-                const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).map(part=>[part.type,part.value]));
-                return `${parts.year}-${parts.month}-${parts.day}`;
-            };
-            const todayStr = toDateStr(nowLocal);
-            const end = new Date(nowLocal);
-            if (state.dateRange === "tomorrow") end.setDate(end.getDate()+1);
-            if (state.dateRange === "next7") end.setDate(end.getDate()+6);
-            if (state.dateRange === "next30") end.setDate(end.getDate()+29);
-            const endStr = toDateStr(end);
-            if (state.dateRange === "today" && p.date !== todayStr) return false;
-            if (state.dateRange === "tomorrow" && p.date !== endStr) return false;
-            if (["next7","next30"].includes(state.dateRange) && (p.date < todayStr || p.date > endStr)) return false;
-        }
+        if (!state.date && state.dateRange && !pickMatchesDateRange(p, state.dateRange)) return false;
 
         if (state.timeRange && p.iso) {
             const timer = getCountdownText(p.iso);
@@ -1661,6 +1679,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderTelegramSubscription();
     initCharts();
     await loadData();
+    selectInitialDateRange();
     const linkedId=new URLSearchParams(location.search).get('pick');
     const linkedPick=PICKS.find(p=>p.trackingId===linkedId);
     if (linkedPick && isEventPending(linkedPick)) {
