@@ -53,8 +53,11 @@ class DraftKingsScraper:
             "tb_eg": league_slug,
             "tb_edate": date_range,
             "tb_emt": 0,
-            "itm_content": league_slug,
         }
+        # La vista global de DK usa el ID 84240 y no acepta itm_content.
+        # Las ligas nominales requieren ambos filtros para conservar la liga exacta.
+        if not str(league_slug or "").strip().isdigit():
+            params["itm_content"] = league_slug
         if page > 1:
             params["tb_page"] = page
         return f"{self.base_url}?{urlencode(params)}"

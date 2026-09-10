@@ -105,7 +105,10 @@ def message_for(record):
     model_prob_text = f'{model_prob:.2f}%' if model_prob is not None else '—'
     teams = f"{team_hashtag(record.get('away'))} vs {team_hashtag(record.get('home'))}" if record.get('away') and record.get('home') else clean(record.get('game'))
     prefix = {'RECOVERED': '🟢 <b>VALOR RECUPERADO</b>\n', 'UPGRADED': '⬆️ <b>PICK MEJORADO</b>\n', 'DOWNGRADED': '⬇️ <b>PICK AJUSTADO</b>\n'}.get(record.get('telegramStatus'), '')
-    return (f"{prefix}{icon} <b>{tag}</b>\n"
+    medal = {1: '🥇 <b>TOP 1 DEL MOMENTO</b>\n',
+             2: '🥈 <b>TOP 2 DEL MOMENTO</b>\n',
+             3: '🥉 <b>TOP 3 DEL MOMENTO</b>\n'}.get(int(number(record.get('medalRank')) or 0), '')
+    return (f"{prefix}{medal}{icon} <b>{tag}</b>\n"
             f"📅 {when}\n🏆 {clean(record.get('league') or 'SPORTS')}\n🏟️ {teams}\n"
             f"🎯 Pick: {clean(record.get('pick'))} ({clean(record.get('market'))})\n"
             f"💵 Cuota: {clean(current.get('odds'))}\n📈 EV: {ev_text}\n"
@@ -243,6 +246,8 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                 state_changed = delivery.get('state') != desired
                 category_changed = desired == 'READY' and delivery.get('category') != category
                 stake_changed = desired == 'READY' and number(delivery.get('personalStake')) != personal_stake
+                medal_rank = int(number(record.get('medalRank')) or 0) or None
+                medal_changed = desired == 'READY' and delivery.get('medalRank') != medal_rank
 
                 if desired == 'NO_VALUE':
                     if delivery.get('messageId'):
@@ -260,12 +265,13 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                                         [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
                     delivery.update(messageId=response.get('message_id') if isinstance(response, dict) else None,
                                     state='READY', category=category, personalStake=personal_stake,
+                                    medalRank=medal_rank,
                                     recoveredAt=now.isoformat(),
                                     updatedAt=now.isoformat())
                     sent += 1
                     continue
 
-                if (category_changed or stake_changed) and delivery.get('messageId'):
+                if (category_changed or stake_changed or medal_changed) and delivery.get('messageId'):
                     changed = dict(record)
                     if category_changed:
                         rank = {'FREE': 1, 'PREMIUM': 2, 'WHALE': 3}
@@ -274,6 +280,7 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                     bot.edit(chat_id, delivery['messageId'], message_for(changed),
                              [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
                     delivery.update(state=desired, category=category, personalStake=personal_stake,
+                                    medalRank=medal_rank,
                                     updatedAt=now.isoformat())
             except TelegramError as error:
                 if error.code not in {400, 403}:
@@ -292,7 +299,8 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                 break
             sub['sent'][key] = {'sentAt': now.isoformat(), 'messageId': response.get('message_id') if isinstance(response, dict) else None,
                                 'state': 'READY', 'category': record.get('pickCategory'),
-                                'personalStake': number((record.get('current') or {}).get('personalStake'))}
+                                'personalStake': number((record.get('current') or {}).get('personalStake')),
+                                'medalRank': int(number(record.get('medalRank')) or 0) or None}
             sent += 1
         atomic_write_json(path, state, compact=True)
         if sent >= 20:

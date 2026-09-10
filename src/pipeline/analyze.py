@@ -351,7 +351,10 @@ def historical_fair_model(market, grouped_markets, decimal_odds, divergence):
     current_odds = [american_to_decimal(_current_odds(item)) for item in grouped_markets]
     valid_current = [odd for odd in current_odds if odd is not None and odd > 1]
     overround = sum(100 / odd for odd in valid_current)
-    if len(valid_current) < 2 or not 100 <= overround <= 115:
+    # DK puede publicar únicamente las dos contrapartes que ofrece para un
+    # Moneyline. Aunque la suma implícita sea menor a 100, ambas se deviguean
+    # como el mercado binario recibido; no se fabrica una tercera selección.
+    if len(valid_current) < 2 or not 0 < overround <= 115:
         return None, None, None, "mercado_incompleto", 0
     current_fair = devig_probability(decimal_odds, current_odds)
     if current_fair is None:
@@ -365,7 +368,7 @@ def historical_fair_model(market, grouped_markets, decimal_odds, divergence):
         if any(value is None for value in decimals):
             continue
         point_overround = sum(100 / value for value in decimals)
-        if not 100 <= point_overround <= 115:
+        if not 0 < point_overround <= 115:
             continue
         fair = devig_probability(decimals[target_index], decimals)
         if fair is not None:

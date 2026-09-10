@@ -13,7 +13,9 @@ python -B src/main.py
 ```
 
 `src/config/leagues.json` define las ligas habilitadas de DraftKings. Se consulta
-`SPORTS` como cobertura general y cada liga exacta disponible con rango de 30 días.
+`SPORTS` mediante el catálogo global `84240` y cada liga exacta disponible con
+rango de 30 días. El filtro global omite `itm_content`, como exige DK; las ligas
+nominales lo conservan.
 Cuando ambas fuentes contienen el mismo mercado prevalece la liga exacta; no se
 deducen ligas a partir de nombres de equipos, selecciones o mercados. Una liga sin
 eventos o con un fallo aislado no detiene las demás descargas.
@@ -67,6 +69,9 @@ borrarse como si fuera una salida regenerable.
 El JSON actual conserva hasta 200 observaciones por mercado presente en el feed
 para calcular movimiento de cuota y mostrar su evolución. Los mercados que
 desaparecen del feed dejan de conservarse en la siguiente descarga válida.
+Cada Moneyline se procesa con las dos contrapartes que DK entrega. El devig
+normaliza exclusivamente esas dos selecciones, incluso si su suma implícita es
+menor de 100%; Sharpie no crea una opción de empate ausente del feed.
 
 Se requieren dos observaciones pregame para mostrar un mercado en el dashboard.
 Una instalación sin datos previos puede mostrar el estado vacío durante el primer
@@ -132,8 +137,9 @@ público.
 El bot solo acepta los chats privados incluidos en `allowedChatIds`. En un chat
 autorizado puedes usar **Pausar avisos**, `/stop`, **Activar avisos** o `/resume`.
 
-Los mensajes muestran encuentro, pick, mercado, cuota, EV, probabilidad del
-modelo, stake personal y hora CDMX, con botones para ver el pick y pausar. Si un
+Los mensajes muestran el lugar en el Top 3 cuando aplica, encuentro, pick,
+mercado, cuota, EV, probabilidad del modelo, stake personal y hora CDMX, con
+botones para ver el pick y pausar. Si un
 pick pierde valor, se elimina de Telegram pero permanece en los registros; si
 recupera valor, se publica de nuevo. Al comenzar el encuentro también se elimina
 del chat.

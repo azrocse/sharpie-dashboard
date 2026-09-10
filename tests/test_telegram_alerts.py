@@ -38,6 +38,7 @@ class TelegramTests(unittest.TestCase):
         self.key='a'*24
         self.record={'trackingId':self.key,'game':'A vs B','pick':'A','market':'Moneyline',
                      'iso':'2026-09-07T15:00:00','state':'READY','freeRelease':True,'pickCategory':'FREE',
+                     'medalRank':1,
                      'current':{'odds':'+110','ev':10,'modelProb':58.72,'modelEdge':5,'stake':1.5,'personalStake':3.0},'lastObservation':self.now.isoformat()}
         self.data={'records':{self.key:self.record}}
         self.config={'token':'secret','username':'sample_bot','allowedChatIds':['1'],'publicSubscriptions':False}
@@ -63,6 +64,7 @@ class TelegramTests(unittest.TestCase):
         self.assertEqual(len(self.bot.sent),2)
         self.assertIn('Avisos activados',self.bot.sent[0][1])
         self.assertIn('#FreePick',self.bot.sent[1][1])
+        self.assertIn('🥇 <b>TOP 1 DEL MOMENTO</b>',self.bot.sent[1][1])
         self.run_cycle()
         self.record['state']='NO_VALUE'; self.run_cycle()
         delivery=self.state()['subscribers']['1']['sent'][self.key]
@@ -99,6 +101,14 @@ class TelegramTests(unittest.TestCase):
         self.assertEqual(len(self.bot.edited),1)
         self.assertIn('🔥 Stake personal: 3.5u',self.bot.edited[0][2])
         self.assertEqual(self.state()['subscribers']['1']['sent'][self.key]['personalStake'],3.5)
+
+    def test_existing_message_updates_when_medal_changes(self):
+        self.run_cycle()
+        self.record['medalRank']=2
+        self.run_cycle()
+        self.assertEqual(len(self.bot.edited),1)
+        self.assertIn('🥈 <b>TOP 2 DEL MOMENTO</b>',self.bot.edited[0][2])
+        self.assertEqual(self.state()['subscribers']['1']['sent'][self.key]['medalRank'],2)
 
     def test_pause_resume_and_queue_dedup(self):
         second={**self.record,'trackingId':'b'*24,'pick':'B'}

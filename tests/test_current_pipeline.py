@@ -104,6 +104,25 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertEqual(query["tb_emt"], ["0"])
         self.assertEqual(query["tb_page"], ["2"])
 
+    def test_sports_url_uses_global_draftkings_id_without_content_filter(self):
+        url = DraftKingsScraper().build_url("84240", "n30days", 1)
+        query = parse_qs(urlparse(url).query)
+        self.assertEqual(query["tb_eg"], ["84240"])
+        self.assertNotIn("itm_content", query)
+        self.assertEqual(query["tb_edate"], ["n30days"])
+
+    def test_binary_moneyline_devigs_the_two_dk_counterparts_even_when_underround(self):
+        first = {"market": "Moneyline", "pick": "Slavia Prague", "odds": "+175", "history": []}
+        second = {"market": "Moneyline", "pick": "Lens", "odds": "+150", "history": []}
+        model, fair, adjustment, source, points = analyze.historical_fair_model(
+            first, [first, second], 2.75, -20,
+        )
+        self.assertAlmostEqual(fair, 47.62, places=2)
+        self.assertAlmostEqual(model, 45.22, places=2)
+        self.assertEqual(adjustment, -2.4)
+        self.assertEqual(source, "sharpie_v2")
+        self.assertEqual(points, 0)
+
     def test_exact_league_replaces_sports_duplicate(self):
         generic = {"date":"2026-09-10","game":"A @ B","market":"Moneyline","pick":"A","league":"SPORTS"}
         exact = {**generic, "league":"NFL", "sourceLeague":"NFL"}

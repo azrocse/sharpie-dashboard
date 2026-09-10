@@ -141,6 +141,7 @@ def update_tracking(picks, path, now=None, feed_ok=True):
                    pick=pick.get('pick'), market=pick.get('market'), league=pick.get('league'),
                    current=current, state=state, reasons=reasons, lastObservation=observed_text,
                    freeRelease=bool(pick.get('freeRelease')), pickCategory=pick.get('pickCategory'),
+                   medalRank=pick.get('medalRank'),
                    lastProcessedObservation=max(observed, previous_observed).isoformat() if observed and previous_observed else observed_text,
                    evaluatedAt=now.isoformat(), lastSeenAt=now.isoformat(), iso=pick.get('iso'))
         first_odds = decimal_odds(old['initial'].get('odds'))

@@ -14,7 +14,7 @@ class TrackingTests(unittest.TestCase):
         self.pick={'game':'A vs B','pick':'A','market':'Moneyline','league':'SPORTS','sourceLeague':'SPORTS',
                    'iso':'2026-09-07T15:00:00','odds':'+110','modelProb':55,'modelEdge':7.38,'ev':15.5,
                    'stake':1.5,'personalStake':3.5,'betsPct':35,'handlePct':70,'divergence':35,'confidenceScore':65,
-                   'marketSignal':'SMART_MONEY','actionKey':'bet','pickCategory':'FREE',
+                   'marketSignal':'SMART_MONEY','actionKey':'bet','pickCategory':'FREE','medalRank':1,
                    'history':[{'timestamp':(self.now-timedelta(minutes=5)).isoformat(),'odds':'+100','betsPct':30,'handlePct':60},
                               {'timestamp':self.now.isoformat(),'odds':'+110','betsPct':35,'handlePct':70}]}
 
@@ -31,6 +31,7 @@ class TrackingTests(unittest.TestCase):
         self.assertEqual(first['trackingId'],second['trackingId'])
         self.assertEqual(second['initial']['odds'],'+100')
         self.assertEqual(second['current']['personalStake'],3.5)
+        self.assertEqual(second['medalRank'],1)
 
     def test_value_is_available_without_extra_confirmation(self):
         self.assertEqual(next(iter(self.update().values()))['state'],'READY')
