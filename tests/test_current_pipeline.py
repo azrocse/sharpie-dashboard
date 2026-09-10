@@ -62,6 +62,9 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertEqual(len(picks), 2)
         self.assertTrue(all(pick["league"] == "SPORTS" for pick in picks))
         self.assertTrue(all(len(pick["history"]) == 2 for pick in picks))
+        self.assertNotIn("personalStake", json.dumps(picks))
+        tracking = json.loads((self.root / ".runtime/tracking.json").read_text(encoding="utf-8"))
+        self.assertTrue(any("personalStake" in record.get("current", {}) for record in tracking["records"].values()))
         built = build_picks(json.loads((self.root / "data/analyzed/sharpie.json").read_text(encoding="utf-8")))
         self.assertEqual(len(built), len(picks))
         for record in built:

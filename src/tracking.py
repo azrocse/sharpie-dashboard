@@ -9,7 +9,7 @@ from opportunities import CDMX, _event_time, _identity
 from storage import atomic_write_json
 
 MAX_AGE_MINUTES = 15
-METRICS = ('odds', 'modelProb', 'modelEdge', 'ev', 'stake', 'betsPct', 'handlePct',
+METRICS = ('odds', 'modelProb', 'modelEdge', 'ev', 'stake', 'personalStake', 'betsPct', 'handlePct',
            'divergence', 'marketSignal')
 
 

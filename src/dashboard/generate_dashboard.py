@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import unicodedata
 from datetime import datetime
@@ -12,6 +13,7 @@ from tracking import update_tracking
 from telegram_alerts import subscription_url
 from dashboard.generate_opportunities_viewer import generate_opportunities_viewer
 from config.league_config import enabled_leagues
+from pipeline.analyze import american_to_decimal, calculate_personal_stake
 
 
 # ============================================================
@@ -646,6 +648,50 @@ def assign_medals(items):
     return items
 
 
+def assign_personal_stakes(items):
+    """Calcula el perfil privado y limita su cartera sin alterar los picks públicos."""
+    category_rank = {"FREE": 1, "PREMIUM": 2, "WHALE": 3}
+    for item in items:
+        decimal = american_to_decimal(item.get("odds"))
+        item["personalStake"] = calculate_personal_stake(
+            item.get("modelProb"), decimal, item.get("ev"), item.get("odds"),
+            actionable=item.get("actionKey") == "bet", category=item.get("pickCategory"),
+        )
+
+    candidates = sorted(
+        (item for item in items if item.get("personalStake", 0) > 0),
+        key=lambda item: (
+            -category_rank.get(item.get("pickCategory"), 0),
+            -float(item.get("ev") or 0),
+            -float(item.get("modelEdge") or 0),
+            item.get("iso") or "",
+        ),
+    )
+    event_used, day_used = {}, {}
+    for item in candidates:
+        event_key = (item.get("date"), item.get("game"))
+        day_key = item.get("date")
+        available = min(4.0 - event_used.get(event_key, 0.0), 10.0 - day_used.get(day_key, 0.0))
+        adjusted = min(float(item["personalStake"]), max(0.0, available))
+        adjusted = math.floor(adjusted * 2.0) / 2.0
+        if adjusted < 1.5:
+            item["personalStake"] = 0.0
+            continue
+        item["personalStake"] = adjusted
+        event_used[event_key] = event_used.get(event_key, 0.0) + adjusted
+        day_used[day_key] = day_used.get(day_key, 0.0) + adjusted
+    return items
+
+
+def without_private_fields(value):
+    """Evita publicar el stake personal en HTML, JSON u Opportunities."""
+    if isinstance(value, dict):
+        return {key: without_private_fields(item) for key, item in value.items() if key != "personalStake"}
+    if isinstance(value, list):
+        return [without_private_fields(item) for item in value]
+    return value
+
+
 # ============================================================
 # GENERACIÓN DEL DASHBOARD ACTUAL
 # ============================================================
@@ -671,9 +717,10 @@ def generate_dashboard(source_json_path=None, output_dir=None):
         print(f"[ERROR CRÍTICO] El archivo {source_json_path} está corrupto o truncado: {e}")
         raise SystemExit("Proceso detenido para evitar generar un index.html corrupto.")
 
-    all_events = assign_medals(assign_free_releases(build_picks(raw_data)))
+    all_events = assign_personal_stakes(assign_medals(assign_free_releases(build_picks(raw_data))))
     runtime = Path(output_dir) / '.runtime'
     update_tracking(all_events, runtime / 'tracking.json', now=cdmx_now)
+    public_events = without_private_fields(all_events)
     telegram_url = None
     try:
         telegram_url = subscription_url(runtime)
@@ -681,7 +728,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
         print('[AVISO] Telegram requiere revisar su configuración privada.')
 
     # Una descarga válida sin picks pregame muestra el estado vacío actual.
-    json_data = json.dumps(all_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    json_data = json.dumps(public_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     league_data = json.dumps(
         [league["league"] for league in enabled_leagues()],
         ensure_ascii=False,
@@ -706,7 +753,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
     output_file = os.path.join(output_dir, "index.html")
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    save_opportunities(all_events, Path(output_dir) / "data" / "opportunities.json", now=cdmx_now)
+    save_opportunities(public_events, Path(output_dir) / "data" / "opportunities.json", now=cdmx_now)
     generate_opportunities_viewer(output_dir=output_dir)
     atomic_write_text(output_file, html_content)
 
@@ -714,7 +761,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
     # (sin volver a descargar todo el HTML) para detectar picks nuevos y
     # refrescarse solo, sin que el usuario tenga que presionar F5.
     picks_json_path = os.path.join(output_dir, "picks.json")
-    atomic_write_json(picks_json_path, all_events, compact=True)
+    atomic_write_json(picks_json_path, public_events, compact=True)
 
     print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file

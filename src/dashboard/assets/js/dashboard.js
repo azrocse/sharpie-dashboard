@@ -498,7 +498,7 @@ function unifiedDecisionPanelHtml(p) {
         const simpleChips = [
             `<span class="badge-tag ${modelBadgeClass(p.modelProb)}">🤖 Modelo <b>${p.modelProb != null ? p.modelProb + '%' : '—'}</b></span>`,
             `<span class="badge-tag ${oddsBadgeClass(p.odds || p.cuota)}">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
-            `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`
+            `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake público <b>${stakeText}</b></span>`
         ];
         return `<div class="decision-panel"><div class="decision-panel-title">📐 Decisión</div><div class="badge-tag-grid">${simpleChips.join('')}</div></div>`;
     }
@@ -513,7 +513,7 @@ function unifiedDecisionPanelHtml(p) {
         `<span class="badge-tag ${evBadgeClass(p.ev)}">📊 EV <b>${p.ev != null ? p.ev + '%' : '—'}</b></span>`,
 
         `<span class="badge-tag ${oddsBadgeClass(p.odds || p.cuota)}">💵 Cuota <b>${escapeHTML(p.odds || p.cuota || '—')}</b></span>`,
-        `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake <b>${stakeText}</b></span>`,
+        `<span class="badge-tag ${stakeBadgeClass(displayStake)}">🎯 Stake público <b>${stakeText}</b></span>`,
         `<span class="badge-tag ${divergenceBadgeClass(smartMoneyVal)}">⚡ Divergencia <b>${smartMoneyVal > 0 ? '+' : ''}${smartMoneyVal}%</b></span>`
     ];
 
@@ -963,7 +963,7 @@ function renderActiveChips() {
         chips.push({ key: "ev", label: `📊 EV: ${state.evMin ?? '-∞'}% - ${state.evMax ?? '+∞'}%` });
     }
     if (state.stakeMin !== null || state.stakeMax !== null) {
-        chips.push({ key: "stake", label: `🎯 Stake: ${state.stakeMin ?? 1}u - ${state.stakeMax ?? 5}u` });
+        chips.push({ key: "stake", label: `🎯 Stake público: ${state.stakeMin ?? 1}u - ${state.stakeMax ?? 5}u` });
     }
     if (state.divergenciaMin !== null || state.divergenciaMax !== null) {
         chips.push({ key: "divergencia", label: `⚡ Divergencia: ${state.divergenciaMin ?? '-∞'}% - ${state.divergenciaMax ?? '+∞'}%` });

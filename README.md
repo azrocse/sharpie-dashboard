@@ -106,10 +106,10 @@ La referencia persiste en `.runtime/tracking.json` aunque se cierre el navegador
 La antigua watchlist de localStorage ya no controla el seguimiento.
 
 El seguimiento utiliza la misma clasificación del dashboard: acción `bet` y
-categoría FREE, PREMIUM o WHALE. No agrega mínimos de confianza, EV, Edge, stake,
-confirmaciones ni ventanas de entrada. Solo evita avisar con datos de más de
-15 minutos o de encuentros ya iniciados. El analizador conserva su evaluación
-de cuota, modelo, riesgo y flujo.
+categoría FREE, PREMIUM o WHALE. El dashboard, Opportunities y X usan el stake
+público de 1/8 Kelly. Telegram usa el stake personal de 3/8 Kelly y su cartera
+privada, con máximo de 4u por evento y 10u por fecha. Solo se avisa con datos de
+hasta 15 minutos, dentro de las 24 horas anteriores al encuentro.
 
 El Top 3 se calcula en el backend y se identifica con 🥇, 🥈 y 🥉. Ordena las
 oportunidades vigentes por categoría, Kelly completo previo al redondeo, Edge,
@@ -124,20 +124,18 @@ Configura el bot localmente si todavía no está configurado:
 python -B src/setup_telegram.py
 ```
 
-La configuración, token, destinatarios y seguimiento permanecen en `.runtime/`,
-excluida de Git. Respáldala de forma privada. El HTML solo recibe el enlace público.
+La configuración, token, destinatarios, stake personal y seguimiento permanecen
+en `.runtime/`, excluida de Git. Los archivos publicados solo contienen el stake
+público.
 
-«Recibir picks por Telegram» abre el bot. Pulsa **Iniciar** una vez para recibir
-la confirmación «Avisos activados» y todos los picks cuando tengan valor.
-Puedes usar **Pausar avisos**, `/stop`, **Activar avisos** o `/resume` en Telegram.
-Abrir el enlace sin enviar Iniciar no permite identificar tu chat.
-Las suscripciones antiguas por pick requieren activar la nueva modalidad general.
+El bot solo acepta los chats privados incluidos en `allowedChatIds`. En un chat
+autorizado puedes usar **Pausar avisos**, `/stop`, **Activar avisos** o `/resume`.
 
-Los mensajes muestran encuentro, pick, mercado, cuota, stake y hora CDMX, con
-botones para ver el pick y pausar. Cada pick se envía una sola vez por chat;
-pausar y reactivar conserva el registro de envíos. No hay avisos de mejoras,
-pérdida de valor o cierre. Un error de red después de que Telegram acepte un
-mensaje puede causar un duplicado al reintentar.
+Los mensajes muestran encuentro, pick, mercado, cuota, EV, probabilidad del
+modelo, stake personal y hora CDMX, con botones para ver el pick y pausar. Si un
+pick pierde valor, se elimina de Telegram pero permanece en los registros; si
+recupera valor, se publica de nuevo. Al comenzar el encuentro también se elimina
+del chat.
 
 `telegram_worker.ps1` mantiene un proceso independiente que atiende los comandos
 con long polling, sin esperar el scraper. Usa un bloqueo exclusivo para evitar

@@ -95,7 +95,9 @@ def message_for(record):
     clean = lambda value: escape(str(value or '—')[:200])
     kickoff = timestamp(record.get('iso'))
     when = kickoff.strftime('%Y-%m-%d | ⏰ %H:%M') if kickoff else 'Por confirmar'
-    stake = number(current.get('stake'))
+    stake = number(current.get('personalStake'))
+    if stake is None:
+        stake = number(current.get('stake'))
     stake_text = f'{stake:.1f}u' if stake is not None else '—'
     ev = number(current.get('ev'))
     ev_text = f'{ev:+.2f}%' if ev is not None else '—'
@@ -107,7 +109,7 @@ def message_for(record):
             f"📅 {when}\n🏆 {clean(record.get('league') or 'SPORTS')}\n🏟️ {teams}\n"
             f"🎯 Pick: {clean(record.get('pick'))} ({clean(record.get('market'))})\n"
             f"💵 Cuota: {clean(current.get('odds'))}\n📈 EV: {ev_text}\n"
-            f"🧠 Prob. Modelo: {model_prob_text}\n💰 Stake: {stake_text}")
+            f"🧠 Prob. Modelo: {model_prob_text}\n🔥 Stake personal: {stake_text}")
 
 
 def load_subscribers(path):
@@ -130,7 +132,11 @@ def load_subscribers(path):
 def eligible(record, now):
     observed = timestamp(record.get('lastObservation'))
     kickoff = timestamp(record.get('iso'))
-    return (record.get('state') == 'READY' and kickoff is not None and kickoff > now
+    personal_stake = number((record.get('current') or {}).get('personalStake'))
+    if personal_stake is None:  # Compatibilidad durante la primera migración del tracking.
+        personal_stake = number((record.get('current') or {}).get('stake'))
+    return (record.get('state') == 'READY' and personal_stake is not None and personal_stake > 0
+            and kickoff is not None and kickoff > now
             and (kickoff-now).total_seconds() <= 24*60*60
             and observed is not None and 0 <= (now-observed).total_seconds() <= MAX_AGE_MINUTES*60)
 
@@ -229,7 +235,7 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                         bot.delete(chat_id, delivery['messageId'])
                     del sub['sent'][key]
                     continue
-                desired = 'READY' if record.get('state') == 'READY' else 'NO_VALUE'
+                desired = 'READY' if eligible(record, now) else 'NO_VALUE'
                 category = record.get('pickCategory')
                 state_changed = delivery.get('state') != desired
                 category_changed = desired == 'READY' and delivery.get('category') != category

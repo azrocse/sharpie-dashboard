@@ -121,7 +121,7 @@ function render() {
     byId('rows').innerHTML=rows.slice(offset,offset+pageSize).map(p=>{const cat=category(p),[catIcon,catLabel]=categoryMeta(cat),state=opportunityState(p),[stateIcon,stateLabel]=stateMeta(state);return `<article class="event-card state-${escape(state.toLowerCase())}">
       <div class="event-topline"><span class="event-league">${escape(p.league)}</span><time>${dateText(p.iso)} · CDMX</time><span class="state-tag">${stateIcon} ${escape(stateLabel)}</span><span class="saved-tag ${cat.toLowerCase()}">${catIcon} ${escape(catLabel)}</span></div>
       <div class="event-overview"><div class="event-identity"><h3>${escape(p.game)}</h3><p class="event-selection">${escape(p.pick)}</p><p class="event-market">${escape(p.market)} <span>·</span> ${escape((p.marketSignal||'—').replaceAll('_',' '))}</p></div>
-      <dl class="event-metrics">${[['Cuota',p.odds],['Modelo',numeric(p.modelProb)===null?null:number(p.modelProb)+'%'],['EV',numeric(p.ev)===null?null:number(p.ev)+'%'],['Stake',numeric(p.stake)===null?null:number(p.stake)+' u']].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value??'—')}</dd></div>`).join('')}</dl></div>
+      <dl class="event-metrics">${[['Cuota',p.odds],['Modelo',numeric(p.modelProb)===null?null:number(p.modelProb)+'%'],['EV',numeric(p.ev)===null?null:number(p.ev)+'%'],['Stake público',numeric(p.stake)===null?null:number(p.stake)+' u']].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value??'—')}</dd></div>`).join('')}</dl></div>
       <details class="event-details"><summary><span>Ver seguimiento</span><span class="expand-icon" aria-hidden="true">+</span></summary><div class="event-expanded"><dl class="secondary-metrics">${[['⚖️ Edge',number(p.modelEdge)+'%'],['🎟️ Bets',number(p.betsPct)+'%'],['💰 Handle',number(p.handlePct)+'%'],['🐋 Divergencia',number(p.divergence)+'%'],['Primera captura',dateText(p.firstCapturedAt)],['Última actualización',dateText(p.lastUpdatedAt)]].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl><div class="archive-detail-grid">${movementRows(p)}${transitionRows(p)}</div><button type="button" class="btn-chip detail-json-button" data-detail="${escape(p.opportunityId)}">Consultar JSON original</button></div></details>
     </article>`;}).join('');
     byId('empty').hidden=rows.length!==0;
@@ -147,7 +147,7 @@ async function refresh() {
 function exportXls() {
     const rows = matchingRows();
     if (!rows.length) return;
-    const headers = ['Evento','Selección','Inicio (CDMX)','Liga','Mercado','Categoría','Cuota','Modelo %','Edge %','EV %','Stake (u)','Bets %','Handle %','Divergencia','Señal','Primera captura (CDMX)','Última actualización (CDMX)','ID oportunidad'];
+    const headers = ['Evento','Selección','Inicio (CDMX)','Liga','Mercado','Categoría','Cuota','Modelo %','Edge %','EV %','Stake público (u)','Bets %','Handle %','Divergencia','Señal','Primera captura (CDMX)','Última actualización (CDMX)','ID oportunidad'];
     const workbook = XLSX.utils.book_new();
     // XLS admite 65.536 filas por hoja, incluida la cabecera.
     for (let offset=0; offset<rows.length; offset+=65535) {

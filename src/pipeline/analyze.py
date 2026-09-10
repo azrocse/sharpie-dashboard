@@ -1,7 +1,7 @@
 """Motor matemático unificado de Sharpie.
 
 Cascada única: cuota -> base sin vig -> divergencia Handle-Bets ->
-probabilidad modelo -> Edge -> EV -> medio Kelly -> stake.
+probabilidad modelo -> Edge -> EV -> Kelly fraccional -> stake público.
 """
 import json
 import math
@@ -21,12 +21,14 @@ SHARPIE_PATH = os.path.join(OUTPUT_DIR, "sharpie.json")
 PROVISIONAL_DIVERGENCE_WEIGHT = 0.12
 MAX_DIVERGENCE_ADJUSTMENT = 6.0
 KELLY_FRACTION = 0.125
+PERSONAL_KELLY_FRACTION = 0.375
 MAX_KELLY_FRACTION_PCT = 10.0
 STAKE_MIN_UNITS = 1.0
 STAKE_MAX_UNITS = 5.0
 OPERATIONAL_STAKE_MAX_UNITS = 5.0
 LONGSHOT_ODDS_MIN = 151
-LONGSHOT_STAKE_CAP = 0.5
+LONGSHOT_STAKE_CAP = 1.0
+PERSONAL_LONGSHOT_STAKE_CAP = 2.0
 EXTREME_LONGSHOT_ODDS_MIN = 251
 VALUE_EDGE_MIN = 2.0
 VALUE_EV_MIN = 3.0
@@ -154,8 +156,14 @@ def classify_odds_risk(raw_odds):
     if american is not None and american >= LONGSHOT_ODDS_MIN:
         return "LONGSHOT", "ALTA", LONGSHOT_STAKE_CAP
     if american is not None and american >= 101:
-        return "VALUE_ODDS", "MEDIA", 1.5
+        return "VALUE_ODDS", "MEDIA", OPERATIONAL_STAKE_MAX_UNITS
     return "STANDARD", "CONTROLADA", OPERATIONAL_STAKE_MAX_UNITS
+
+def personal_odds_stake_cap(raw_odds):
+    american = american_odds_value(raw_odds)
+    if american is not None and american >= LONGSHOT_ODDS_MIN:
+        return PERSONAL_LONGSHOT_STAKE_CAP
+    return OPERATIONAL_STAKE_MAX_UNITS
 
 def calculate_confidence_score(model_prob, model_edge, ev, divergence, market_signals, raw_odds, liquidity):
     """Mide confianza sin convertir un EV alto en certeza.
@@ -188,18 +196,34 @@ def confidence_band(score):
     if score >= 40.0: return "BAJA", 1.0
     return "ESPECULATIVA", 0.5
 
-def calculate_stake(model_prob, decimal_odds, ev, confidence_score=None, odds_stake_cap=5.0, actionable=True, category=None):
-    """Kelly a un octavo; 1u es 1% de banca, redondeado hacia abajo a 0.5u."""
+def _fractional_kelly_stake(model_prob, decimal_odds, ev, fraction, category_caps,
+                            minimum, odds_stake_cap, actionable=True, category=None):
     if (not actionable or model_prob is None or decimal_odds is None
             or decimal_odds <= 1.0 or ev is None or ev <= 0):
         return 0.0
     b, p = decimal_odds - 1.0, model_prob / 100.0
     kelly_full = (b * p - (1.0 - p)) / b
     if kelly_full <= 0: return 0.0
-    raw_units = kelly_full * KELLY_FRACTION * 100.0
-    category_cap = {"FREE": 2.0, "PREMIUM": 3.5, "WHALE": 5.0}.get(category, 5.0)
+    raw_units = kelly_full * fraction * 100.0
+    category_cap = category_caps.get(category, OPERATIONAL_STAKE_MAX_UNITS)
     final_units = min(raw_units, category_cap, odds_stake_cap, OPERATIONAL_STAKE_MAX_UNITS)
-    return max(1.0, math.floor(final_units * 2.0) / 2.0)
+    return max(minimum, math.floor(final_units * 2.0) / 2.0)
+
+def calculate_stake(model_prob, decimal_odds, ev, confidence_score=None, odds_stake_cap=5.0, actionable=True, category=None):
+    """Stake público: 1/8 Kelly, mínimo 1u y saltos de 0.5u."""
+    return _fractional_kelly_stake(
+        model_prob, decimal_odds, ev, KELLY_FRACTION,
+        {"FREE": 2.0, "PREMIUM": 3.5, "WHALE": 5.0}, 1.0,
+        odds_stake_cap, actionable, category,
+    )
+
+def calculate_personal_stake(model_prob, decimal_odds, ev, raw_odds, actionable=True, category=None):
+    """Stake privado: 3/8 Kelly, mínimo 1.5u y topes FREE/PREMIUM/WHALE."""
+    return _fractional_kelly_stake(
+        model_prob, decimal_odds, ev, PERSONAL_KELLY_FRACTION,
+        {"FREE": 3.0, "PREMIUM": 4.0, "WHALE": 5.0}, 1.5,
+        personal_odds_stake_cap(raw_odds), actionable, category,
+    )
 
 def evaluate_market_signals(divergence, bets, handle, ev, model_edge, line_move, move_minutes, liquidity):
     """Solo expone las dos señales útiles; no dependen de edge ni EV."""
@@ -399,7 +423,7 @@ def process_market(league_name, game, market, grouped_markets):
     )
     action, action_key, priority = action_from_category(pick_category)
     stake = calculate_stake(
-        model_prob, decimal_odds, ev, odds_stake_cap=5.0,
+        model_prob, decimal_odds, ev, odds_stake_cap=odds_stake_cap,
         actionable=action_key == "bet", category=pick_category,
     )
     game_time = game.get("time_raw") or game.get("startIso") or game.get("time") or market.get("time_raw") or datetime.now().strftime("%H:%M")
@@ -416,7 +440,7 @@ def process_market(league_name, game, market, grouped_markets):
         "modelHistoryPoints": model_history_points,
         "modelEdge": model_edge, "ev": ev, "stake": stake, "marketSignal": market_signal,
         "marketSignals": market_signals,
-        "oddsStakeCap": 5.0,
+        "oddsStakeCap": odds_stake_cap,
         "riskClass": risk_class, "riskLevel": risk_level,
         "lineMove": line_move, "lineMoveMinutes": line_move_minutes, "liquidityStatus": liquidity,
         "trendKey": market_signal, "pattern": MARKET_SIGNAL_LABELS[market_signal], "pickCategory": pick_category,

@@ -33,7 +33,7 @@ __VIEWER_CSS__</style>
       <div class="stat-card"><div class="stat-header"><span class="stat-icon">🎯</span><div class="stat-body"><div class="label">OPORTUNIDADES</div><div class="stat-value" id="matches">0</div><div class="stat-sub">de <span id="total">0</span> guardadas</div></div></div></div>
       <div class="stat-card"><div class="stat-header"><span class="stat-icon">📈</span><div class="stat-body"><div class="label">EV PROMEDIO</div><div class="stat-value" id="avgEv">—</div><div class="stat-sub">De la selección actual</div></div></div></div>
       <div class="stat-card"><div class="stat-header"><span class="stat-icon">⚖️</span><div class="stat-body"><div class="label">EDGE PROMEDIO</div><div class="stat-value" id="avgEdge">—</div><div class="stat-sub">De la selección actual</div></div></div></div>
-      <div class="stat-card"><div class="stat-header"><span class="stat-icon">💎</span><div class="stat-body"><div class="label">STAKE TOTAL</div><div class="stat-value" id="stake">0 u</div><div class="stat-sub">Unidades guardadas en la selección</div></div></div></div>
+      <div class="stat-card"><div class="stat-header"><span class="stat-icon">💎</span><div class="stat-body"><div class="label">STAKE PÚBLICO TOTAL</div><div class="stat-value" id="stake">0 u</div><div class="stat-sub">Unidades públicas guardadas</div></div></div></div>
     </section>
     <section class="analytics-section" aria-label="Gráficos de las oportunidades filtradas">
       <div class="chart-card"><div class="chart-header"><span>📈 Probabilidad Modelo vs EV</span><span class="mono chart-subtitle">X: Prob. Modelo · Y: EV</span></div><div class="chart-container"><canvas id="modelChart" aria-label="Probabilidad del modelo frente al EV"></canvas></div></div>
@@ -44,7 +44,7 @@ __VIEWER_CSS__</style>
       <div class="search-box"><input id="search" type="search" aria-label="Buscar oportunidades" placeholder="Buscar por equipo, liga, mercado o selección…"></div>
       <div class="filter-section-label">🔍 Filtros cualitativos</div>
       <div class="filter-row">
-        <select id="sort" aria-label="Ordenar"><option value="date-desc">📅 Hoy hacia atrás</option><option value="date-asc">⏱️ Eventos: más antiguos</option><option value="captured">📥 Últimas capturas</option><option value="ev">📈 Mayor EV</option><option value="stake">💎 Mayor stake</option></select>
+        <select id="sort" aria-label="Ordenar"><option value="date-desc">📅 Hoy hacia atrás</option><option value="date-asc">⏱️ Eventos: más antiguos</option><option value="captured">📥 Últimas capturas</option><option value="ev">📈 Mayor EV</option><option value="stake">💎 Mayor stake público</option></select>
         <select id="date" aria-label="Fecha del evento"><option value="">📆 Todas las fechas</option></select>
         <select id="league" aria-label="Liga"><option value="">🏆 Todas las ligas</option></select>
         <select id="market" aria-label="Mercado"><option value="">🎯 Todos los mercados</option><option value="Moneyline">Moneyline</option><option value="Spread">Spread</option><option value="Total">Total</option></select>
@@ -61,7 +61,7 @@ __VIEWER_CSS__</style>
           <fieldset><legend>Modelo %</legend><div><label>Mín.<input id="modelMin" type="number" step="0.1" min="0" max="100"></label><label>Máx.<input id="modelMax" type="number" step="0.1" min="0" max="100"></label></div></fieldset>
           <fieldset><legend>Edge %</legend><div><label>Mín.<input id="edgeMin" type="number" step="0.1"></label><label>Máx.<input id="edgeMax" type="number" step="0.1"></label></div></fieldset>
           <fieldset><legend>EV %</legend><div><label>Mín.<input id="evMin" type="number" step="0.1"></label><label>Máx.<input id="evMax" type="number" step="0.1"></label></div></fieldset>
-          <fieldset><legend>Stake (u)</legend><div><label>Mín.<input id="stakeMin" type="number" step="0.5" min="0"></label><label>Máx.<input id="stakeMax" type="number" step="0.5" min="0"></label></div></fieldset>
+          <fieldset><legend>Stake público (u)</legend><div><label>Mín.<input id="stakeMin" type="number" step="0.5" min="0"></label><label>Máx.<input id="stakeMax" type="number" step="0.5" min="0"></label></div></fieldset>
           <fieldset><legend>Cuota americana</legend><div><label>Mín.<input id="oddsMin" type="number" step="1" placeholder="-150"></label><label>Máx.<input id="oddsMax" type="number" step="1" placeholder="+150"></label></div></fieldset>
           <fieldset><legend>Bets %</legend><div><label>Mín.<input id="betsMin" type="number" step="1" min="0" max="100"></label><label>Máx.<input id="betsMax" type="number" step="1" min="0" max="100"></label></div></fieldset>
           <fieldset><legend>Handle %</legend><div><label>Mín.<input id="handleMin" type="number" step="1" min="0" max="100"></label><label>Máx.<input id="handleMax" type="number" step="1" min="0" max="100"></label></div></fieldset>
