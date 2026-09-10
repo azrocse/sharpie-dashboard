@@ -102,7 +102,7 @@ def message_for(record):
     model_prob = number(current.get('modelProb'))
     model_prob_text = f'{model_prob:.2f}%' if model_prob is not None else '—'
     teams = f"{team_hashtag(record.get('away'))} vs {team_hashtag(record.get('home'))}" if record.get('away') and record.get('home') else clean(record.get('game'))
-    prefix = {'NO_VALUE': '🔴 <b>YA NO APOSTAR</b>\n', 'RECOVERED': '🟢 <b>VALOR RECUPERADO</b>\n', 'UPGRADED': '⬆️ <b>PICK MEJORADO</b>\n', 'DOWNGRADED': '⬇️ <b>PICK AJUSTADO</b>\n'}.get(record.get('telegramStatus'), '')
+    prefix = {'RECOVERED': '🟢 <b>VALOR RECUPERADO</b>\n', 'UPGRADED': '⬆️ <b>PICK MEJORADO</b>\n', 'DOWNGRADED': '⬇️ <b>PICK AJUSTADO</b>\n'}.get(record.get('telegramStatus'), '')
     return (f"{prefix}{icon} <b>{tag}</b>\n"
             f"📅 {when}\n🏆 {clean(record.get('league') or 'SPORTS')}\n🏟️ {teams}\n"
             f"🎯 Pick: {clean(record.get('pick'))} ({clean(record.get('market'))})\n"
@@ -219,27 +219,46 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
                         if error.code not in {400, 403}:
                             raise
         for key, delivery in list(sub.get('sent', {}).items()):
-            if not isinstance(delivery, dict) or not delivery.get('messageId'):
+            if not isinstance(delivery, dict):
                 continue
             record = record_map.get(key)
             kickoff = timestamp(record.get('iso')) if record else None
             try:
                 if not record or (kickoff and kickoff <= now):
-                    bot.delete(chat_id, delivery['messageId'])
+                    if delivery.get('messageId'):
+                        bot.delete(chat_id, delivery['messageId'])
                     del sub['sent'][key]
                     continue
                 desired = 'READY' if record.get('state') == 'READY' else 'NO_VALUE'
                 category = record.get('pickCategory')
                 state_changed = delivery.get('state') != desired
                 category_changed = desired == 'READY' and delivery.get('category') != category
-                if state_changed or category_changed:
+
+                if desired == 'NO_VALUE':
+                    if delivery.get('messageId'):
+                        bot.delete(chat_id, delivery['messageId'])
+                    delivery.update(messageId=None, state='NO_VALUE', category=category,
+                                    removedAt=now.isoformat(), updatedAt=now.isoformat())
+                    continue
+
+                if state_changed:
+                    if not eligible(record, now):
+                        continue
                     changed = dict(record)
-                    if state_changed:
-                        changed['telegramStatus'] = 'RECOVERED' if desired == 'READY' else 'NO_VALUE'
-                    else:
-                        rank = {'FREE': 1, 'PREMIUM': 2, 'WHALE': 3}
-                        changed['telegramStatus'] = ('UPGRADED' if rank.get(category, 0) > rank.get(delivery.get('category'), 0)
-                                                     else 'DOWNGRADED')
+                    changed['telegramStatus'] = 'RECOVERED'
+                    response = bot.send(chat_id, message_for(changed),
+                                        [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
+                    delivery.update(messageId=response.get('message_id') if isinstance(response, dict) else None,
+                                    state='READY', category=category, recoveredAt=now.isoformat(),
+                                    updatedAt=now.isoformat())
+                    sent += 1
+                    continue
+
+                if category_changed and delivery.get('messageId'):
+                    changed = dict(record)
+                    rank = {'FREE': 1, 'PREMIUM': 2, 'WHALE': 3}
+                    changed['telegramStatus'] = ('UPGRADED' if rank.get(category, 0) > rank.get(delivery.get('category'), 0)
+                                                 else 'DOWNGRADED')
                     bot.edit(chat_id, delivery['messageId'], message_for(changed),
                              [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
                     delivery.update(state=desired, category=category, updatedAt=now.isoformat())

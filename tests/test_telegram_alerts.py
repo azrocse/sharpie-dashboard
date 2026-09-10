@@ -58,17 +58,27 @@ class TelegramTests(unittest.TestCase):
     def state(self):
         return json.loads((self.root/'telegram-state.json').read_text())
 
-    def test_activation_then_value_once_without_other_status_messages(self):
+    def test_value_message_is_removed_and_republished_when_value_returns(self):
         self.run_cycle()
         self.assertEqual(len(self.bot.sent),2)
         self.assertIn('Avisos activados',self.bot.sent[0][1])
         self.assertIn('#FreePick',self.bot.sent[1][1])
         self.run_cycle()
         self.record['state']='NO_VALUE'; self.run_cycle()
+        delivery=self.state()['subscribers']['1']['sent'][self.key]
+        self.assertEqual(delivery['state'],'NO_VALUE')
+        self.assertIsNone(delivery['messageId'])
+        self.assertEqual(self.bot.deleted,[('1',2)])
         self.record['state']='READY'; self.run_cycle()
+        self.assertEqual(len(self.bot.sent),3)
+        self.assertIn('VALOR RECUPERADO',self.bot.sent[-1][1])
+        delivery=self.state()['subscribers']['1']['sent'][self.key]
+        self.assertEqual(delivery['state'],'READY')
+        self.assertEqual(delivery['messageId'],3)
         self.run_cycle(self.now+timedelta(hours=3))
-        self.assertEqual(len(self.bot.sent),2)
-        self.assertEqual(len(self.bot.edited),2)
+        self.assertEqual(self.bot.deleted,[('1',2),('1',3)])
+        self.assertNotIn(self.key,self.state()['subscribers']['1']['sent'])
+        self.assertEqual(self.bot.edited,[])
 
     def test_confirmation_does_not_require_tracking_data(self):
         self.data={'records':{}}
