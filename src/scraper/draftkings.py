@@ -50,7 +50,7 @@ class DraftKingsScraper:
 
     def build_url(self, league_slug, date_range, page):
         params = {
-            "tb_eg": "Sports",
+            "tb_eg": league_slug,
             "tb_edate": date_range,
             "tb_emt": 0,
             "itm_content": league_slug,

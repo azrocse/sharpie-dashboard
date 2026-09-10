@@ -6,11 +6,12 @@ from contextlib import ExitStack
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlparse
 
 import main
 from config.league_config import enabled_leagues
 from dashboard.generate_dashboard import assign_medals, build_market_observations, build_picks, generate_dashboard
-from pipeline import analyze, parse
+from pipeline import analyze, download, parse
 from scraper.draftkings import DraftKingsScraper
 
 
@@ -38,6 +39,10 @@ class CurrentPipelineTests(unittest.TestCase):
         self.stack.enter_context(patch.object(parse, "BASE_DIR", str(self.root)))
         self.stack.enter_context(patch.object(analyze, "INPUT_DIR", str(self.root / "data/parsed")))
         self.stack.enter_context(patch.object(analyze, "SHARPIE_PATH", str(self.root / "data/analyzed/sharpie.json")))
+        one_source = [{"league":"SPORTS", "slug":"Sports", "date_range":"n30days"}]
+        self.stack.enter_context(patch("pipeline.download.enabled_leagues", return_value=one_source))
+        self.stack.enter_context(patch.object(analyze, "enabled_leagues", return_value=one_source))
+        self.stack.enter_context(patch("dashboard.generate_dashboard.enabled_leagues", return_value=one_source))
         self.stack.enter_context(patch("main.generate_dashboard", side_effect=lambda **kw: generate_dashboard(output_dir=self.root, **kw)))
 
     def run_feed(self, minute=0, html=None):
@@ -83,6 +88,47 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertIn('TOP 3 DEL MOMENTO', html)
         self.assertIn('podiumDateTime', html)
         self.assertIn('Mapa de valor', html)
+        self.assertIn('data-date-range="today"', html)
+        self.assertIn('data-market="Moneyline"', html)
+        self.assertIn('window.SHARPIE_LEAGUES=["SPORTS"]', html)
+
+    def test_scraper_url_uses_exact_draftkings_filters(self):
+        url = DraftKingsScraper().build_url("NCAA Football", "n30days", 2)
+        query = parse_qs(urlparse(url).query)
+        self.assertEqual(query["tb_eg"], ["NCAA Football"])
+        self.assertEqual(query["itm_content"], ["NCAA Football"])
+        self.assertEqual(query["tb_edate"], ["n30days"])
+        self.assertEqual(query["tb_emt"], ["0"])
+        self.assertEqual(query["tb_page"], ["2"])
+
+    def test_exact_league_replaces_sports_duplicate(self):
+        generic = {"date":"2026-09-10","game":"A @ B","market":"Moneyline","pick":"A","league":"SPORTS"}
+        exact = {**generic, "league":"NFL", "sourceLeague":"NFL"}
+        cleaned = analyze.prefer_exact_leagues([
+            {"league":"SPORTS","markets":[generic]},
+            {"league":"NFL","markets":[exact]},
+        ])
+        self.assertEqual([(g["league"], len(g["markets"])) for g in cleaned], [("NFL", 1)])
+
+    def test_one_failed_league_does_not_discard_successful_downloads(self):
+        sources = [
+            {"league":"SPORTS","slug":"Sports","date_range":"n30days"},
+            {"league":"NFL","slug":"NFL","date_range":"n30days"},
+        ]
+        with patch.object(download, "enabled_leagues", return_value=sources), patch.object(
+            DraftKingsScraper, "scrape_league", side_effect=[[sample_html()], requests.ConnectionError("offline")]
+        ):
+            result = download.download_all()
+        self.assertEqual([item["league"] for item in result], ["SPORTS"])
+
+    def test_empty_seasonal_league_writes_empty_current_state(self):
+        parsed = parse.parse_all([
+            {"league":"SPORTS","slug":"Sports","date_range":"n30days","pages":[sample_html()]},
+            {"league":"NBA","slug":"NBA","date_range":"n30days","pages":[]},
+        ])
+        self.assertEqual(len(parsed), 2)
+        nba = json.loads((self.root / "data/parsed/nba.json").read_text(encoding="utf-8"))
+        self.assertEqual(nba["games"], [])
 
     def test_failed_download_or_parse_keeps_last_successful_files(self):
         self.run_feed()

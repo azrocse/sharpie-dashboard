@@ -66,6 +66,15 @@ class TrackingTests(unittest.TestCase):
         self.assertEqual(len(records),2)
         self.assertEqual(records[changed['trackingId']]['state'],'READY')
 
+    def test_exact_league_upgrade_keeps_one_tracking_record(self):
+        first = next(iter(self.update().values()))
+        changed = {**self.pick, 'league':'NFL', 'sourceLeague':'NFL'}
+        records = self.update(1, pick=changed)
+        self.assertEqual(len(records), 1)
+        record = next(iter(records.values()))
+        self.assertEqual(record['trackingId'], first['trackingId'])
+        self.assertEqual(record['league'], 'NFL')
+
     def test_price_comparison_handles_positive_negative_boundary(self):
         self.assertLess(decimal_odds('-110'),decimal_odds('+100'))
         self.assertIsNone(decimal_odds('0'))

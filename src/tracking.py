@@ -74,7 +74,34 @@ def update_tracking(picks, path, now=None, feed_ok=True):
     now = now or datetime.now(CDMX)
     now = now.replace(tzinfo=CDMX) if now.tzinfo is None else now.astimezone(CDMX)
     payload = read_state(path)
-    records = payload['records']
+    records = {}
+    for old_key, record in payload['records'].items():
+        kickoff = timestamp(record.get('iso'))
+        key = _identity(record, kickoff) if kickoff else record.get('trackingId')
+        aliases = set(record.get('legacyTrackingIds') or [])
+        if old_key and old_key != key:
+            aliases.add(old_key)
+        record['legacyTrackingIds'] = sorted(aliases)
+        record['trackingId'] = key
+        current = records.get(key)
+        if current is None:
+            records[key] = record
+            continue
+        exact = record if record.get('league') != 'SPORTS' else current
+        other = current if exact is record else record
+        if timestamp(other.get('firstObservedAt')) and (
+            not timestamp(exact.get('firstObservedAt'))
+            or timestamp(other.get('firstObservedAt')) < timestamp(exact.get('firstObservedAt'))
+        ):
+            exact['firstObservedAt'], exact['initial'] = other.get('firstObservedAt'), deepcopy(other.get('initial'))
+        if timestamp(other.get('firstEvaluatedAt')) and (
+            not timestamp(exact.get('firstEvaluatedAt'))
+            or timestamp(other.get('firstEvaluatedAt')) < timestamp(exact.get('firstEvaluatedAt'))
+        ):
+            exact['firstEvaluatedAt'], exact['firstEvaluation'] = other.get('firstEvaluatedAt'), deepcopy(other.get('firstEvaluation'))
+        exact['legacyTrackingIds'] = sorted(set(exact.get('legacyTrackingIds') or []) | set(other.get('legacyTrackingIds') or []))
+        records[key] = exact
+    payload['records'] = records
     seen = set()
     for pick in picks:
         kickoff = _event_time(pick)
@@ -110,7 +137,9 @@ def update_tracking(picks, path, now=None, feed_ok=True):
         old.pop('confirmations', None)
         if new_observation:
             old['previous'] = old.get('current')
-        old.update(current=current, state=state, reasons=reasons, lastObservation=observed_text,
+        old.update(game=pick.get('game'), away=pick.get('away'), home=pick.get('home'),
+                   pick=pick.get('pick'), market=pick.get('market'), league=pick.get('league'),
+                   current=current, state=state, reasons=reasons, lastObservation=observed_text,
                    freeRelease=bool(pick.get('freeRelease')), pickCategory=pick.get('pickCategory'),
                    lastProcessedObservation=max(observed, previous_observed).isoformat() if observed and previous_observed else observed_text,
                    evaluatedAt=now.isoformat(), lastSeenAt=now.isoformat(), iso=pick.get('iso'))
@@ -120,7 +149,7 @@ def update_tracking(picks, path, now=None, feed_ok=True):
         pick['trackingId'] = key
         pick['tracking'] = {field: deepcopy(old.get(field)) for field in (
             'firstObservedAt','initial','firstEvaluatedAt','firstEvaluation','previous',
-            'state','reasons','lastObservation','evaluatedAt','priceChangePct')}
+            'state','reasons','lastObservation','evaluatedAt','priceChangePct','legacyTrackingIds')}
     for key, record in records.items():
         if key in seen:
             continue

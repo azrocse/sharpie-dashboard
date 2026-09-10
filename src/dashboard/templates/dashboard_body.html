@@ -98,6 +98,21 @@
         <datalist id="searchSuggestions"></datalist>
         <div id="searchSuggest" class="search-suggest"></div>
     </div>
+    <div class="source-filter-grid" aria-label="Filtros principales de DraftKings">
+        <label class="source-filter-league"><span>DEPORTE / LIGA</span><select id="fLeague" aria-label="Deporte o liga"><option value="">Todos los deportes</option></select></label>
+        <fieldset class="source-filter-group"><legend>PERIODO</legend><div class="segmented-filter" id="dateRangeFilter">
+            <button type="button" data-date-range="today" aria-pressed="true">Hoy</button>
+            <button type="button" data-date-range="tomorrow" aria-pressed="false">Mañana</button>
+            <button type="button" data-date-range="next7" aria-pressed="false">7 días</button>
+            <button type="button" data-date-range="next30" aria-pressed="false">30 días</button>
+        </div></fieldset>
+        <fieldset class="source-filter-group"><legend>MERCADO</legend><div class="segmented-filter" id="marketFilter">
+            <button type="button" data-market="" aria-pressed="true">Todos</button>
+            <button type="button" data-market="Moneyline" aria-pressed="false">Moneyline</button>
+            <button type="button" data-market="Spread" aria-pressed="false">Spread</button>
+            <button type="button" data-market="Total" aria-pressed="false">Total</button>
+        </div></fieldset>
+    </div>
     <div class="filter-section-label">🔍 Filtros Cualitativos</div>
     <div class="filter-row">
         <select id="fSort">
@@ -111,11 +126,7 @@
             <option value="30m">⏳ Próximos 30 min</option>
             <option value="1h">⏳ Próxima 1 hora</option>
             <option value="2h">⏳ Próximas 2 horas</option>
-            <option value="today">📅 Eventos de Hoy</option>
-            <option value="tomorrow">📅 Eventos de Mañana</option>
-            <option value="this_week">📆 Eventos de Esta Semana</option>
         </select>
-        <select id="fLeague"><option value="">🏆 Todas las ligas</option></select>
         <select id="fTrend">
             <option value="">📊 Todas las señales</option>
             <option value="STEAM_MOVE">💨 STEAM MOVE</option>

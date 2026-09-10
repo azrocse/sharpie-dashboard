@@ -149,7 +149,7 @@ def parse_all(downloaded):
             data = parser.parse_html(page, league_name=league_name, observed_at=observed_at)
             raw_games.extend(data.get("games", []))
         games = _consolidate_games(raw_games)
-        if not games:
+        if league["pages"] and not games:
             raise ValueError(f"{league_name} produjo cero mercados válidos")
         filename = os.path.join(output_folder, f"{league_slug(league_name)}.json")
         previous_index = _load_previous(filename)

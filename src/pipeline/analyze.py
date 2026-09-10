@@ -441,6 +441,27 @@ def apply_exposure_limits(results):
         event_used[event_key] = event_used.get(event_key, 0) + stake
         day_used[day_key] = day_used.get(day_key, 0) + stake
 
+def prefer_exact_leagues(results):
+    """Elimina duplicados de SPORTS cuando DK ofrece la liga exacta."""
+    winners = {}
+    for group in results:
+        for pick in group.get("markets", []):
+            key = tuple(
+                " ".join(str(value or "").casefold().split())
+                for value in (pick.get("date"), pick.get("game"), pick.get("market"), pick.get("pick"))
+            )
+            priority = 0 if pick.get("league") == "SPORTS" else 1
+            current = winners.get(key)
+            if current is None or priority > current[0]:
+                winners[key] = (priority, pick)
+    winner_ids = {id(value[1]) for value in winners.values()}
+    cleaned = []
+    for group in results:
+        markets = [pick for pick in group.get("markets", []) if id(pick) in winner_ids]
+        if markets:
+            cleaned.append({**group, "markets": markets})
+    return cleaned
+
 def analyze_all(parsed_files=None):
     parsed_files = get_current_files() if parsed_files is None else parsed_files
     if not parsed_files:
@@ -463,6 +484,7 @@ def analyze_all(parsed_files=None):
         if league_result["markets"]: results.append(league_result)
     if not results:
         raise ValueError("El análisis no produjo mercados válidos; se conserva la salida anterior")
+    results = prefer_exact_leagues(results)
     apply_exposure_limits(results)
     atomic_write_json(SHARPIE_PATH, results, compact=True)
     return SHARPIE_PATH

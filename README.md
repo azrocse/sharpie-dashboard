@@ -12,9 +12,11 @@ python -m pip install -r src/requirements.txt
 python -B src/main.py
 ```
 
-`src/config/leagues.json` define las ligas habilitadas. Actualmente solo se
-descarga `SPORTS`. Cada mercado conserva la liga de su fuente configurada;
-no se deducen ligas a partir de nombres de equipos, selecciones o mercados.
+`src/config/leagues.json` define las ligas habilitadas de DraftKings. Se consulta
+`SPORTS` como cobertura general y cada liga exacta disponible con rango de 30 días.
+Cuando ambas fuentes contienen el mismo mercado prevalece la liga exacta; no se
+deducen ligas a partir de nombres de equipos, selecciones o mercados. Una liga sin
+eventos o con un fallo aislado no detiene las demás descargas.
 
 ## Archivos del flujo
 
@@ -26,7 +28,7 @@ no se deducen ligas a partir de nombres de equipos, selecciones o mercados.
 | `src/config/` | Configuración única de ligas y descargas. |
 | `src/storage.py` | Escritura atómica compartida. |
 | `src/dashboard/` | Generador, plantillas, CSS y JavaScript del dashboard. |
-| `data/parsed/sports.json` | Última descarga válida con observaciones recientes. |
+| `data/parsed/*.json` | Última descarga válida por liga con observaciones recientes. |
 | `data/analyzed/sharpie.json` | Análisis actual, reemplazado en cada ejecución válida. |
 | `index.html` | Dashboard generado con estilos, scripts y datos integrados. |
 | `picks.json` | Datos actuales para la actualización automática del navegador. |

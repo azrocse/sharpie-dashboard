@@ -146,6 +146,8 @@ const state = {
     search: "",
     date: "",
     league: "",
+    dateRange: "today",
+    market: "",
     trend: "",
     featuredOnly: false,
     freeReleaseOnly: false,
@@ -182,14 +184,15 @@ function isAnyFilterActive() {
         "evMin","evMax","stakeMin","stakeMax","divergenciaMin","divergenciaMax",
     ];
     if (numericKeys.some(k => s[k] !== null && s[k] !== undefined)) return true;
-    if (s.search || s.date || s.league || s.trend || s.timeRange || s.recommendation) return true;
+    if (s.search || s.date || s.league || s.market || s.trend || s.timeRange || s.recommendation) return true;
+    if (s.dateRange && s.dateRange !== "today") return true;
     if (s.featuredOnly || s.freeReleaseOnly) return true;
     return false;
 }
 
 // ============ FILTROS GUARDADOS (localStorage) ============
 const FILTER_KEYS = [
-    "search", "date", "league", "trend", "timeRange", "recommendation",
+    "search", "date", "league", "dateRange", "market", "trend", "timeRange", "recommendation",
     "featuredOnly", "freeReleaseOnly",
     "modeloMin", "modeloMax", "cuotaMin", "cuotaMax", "edgeMin", "edgeMax",
     "betsMin", "betsMax", "handleMin", "handleMax",
@@ -250,12 +253,22 @@ function syncFilterInputsFromState() {
         fullMarketBtn.setAttribute("aria-pressed", String(state.showFullMarket));
         fullMarketBtn.textContent = state.showFullMarket ? "🎯 Mostrar solo apuestas" : "🔎 Mostrar mercado completo";
     }
+    syncPrimaryFilterButtons();
+}
+
+function syncPrimaryFilterButtons() {
+    document.querySelectorAll("[data-date-range]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.dateRange === state.dateRange));
+    });
+    document.querySelectorAll("[data-market]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.market === state.market));
+    });
 }
 
 function applyFilterPreset(preset) {
     FILTER_KEYS.forEach(k => {
         const isToggle = ["featuredOnly", "freeReleaseOnly"].includes(k);
-        const defaultVal = isToggle ? false : (typeof state[k] === "string" ? "" : null);
+        const defaultVal = isToggle ? false : (k === "dateRange" ? "today" : (typeof state[k] === "string" ? "" : null));
         state[k] = (preset.filters[k] !== undefined) ? preset.filters[k] : defaultVal;
     });
     syncFilterInputsFromState();
@@ -883,6 +896,11 @@ function renderActiveChips() {
 
     const chips = [];
 
+    if (state.dateRange && state.dateRange !== "today") {
+        const labels = {tomorrow:"Mañana",next7:"Próximos 7 días",next30:"Próximos 30 días"};
+        chips.push({ key:"dateRange", label:`📅 ${labels[state.dateRange] || state.dateRange}` });
+    }
+    if (state.market) chips.push({ key:"market", label:`🎯 Mercado: ${state.market}` });
     if (state.timeRange) {
         const labels = {
             in_play: "En Juego",
@@ -932,6 +950,8 @@ function renderActiveChips() {
 }
 
 function clearSpecificAdvFilter(type) {
+    if (type === "dateRange") { state.dateRange = "today"; state.date = ""; syncPrimaryFilterButtons(); }
+    if (type === "market") { state.market = ""; syncPrimaryFilterButtons(); }
     if (type === "timeRange") { state.timeRange = ""; const el = document.getElementById("fTimeRange"); if (el) el.value = ""; }
     if (type === "modelo") { state.modeloMin = null; state.modeloMax = null; document.getElementById("fModeloMin").value = ""; document.getElementById("fModeloMax").value = ""; }
     if (type === "cuota") { state.cuotaMin = null; state.cuotaMax = null; document.getElementById("fCuotaMin").value = ""; document.getElementById("fCuotaMax").value = ""; }
@@ -950,30 +970,33 @@ function applyFiltersAndSort(list) {
 
     let result = list.filter(p => {
         if (state.league && p.league !== state.league) return false;
+        if (state.market && p.market !== state.market) return false;
         if (state.date && p.date !== state.date) return false;
         if (state.trend && p.trendKey !== state.trend) return false;
 
+        if (!state.date && state.dateRange) {
+            const nowLocal = new Date();
+            const toDateStr = d => {
+                const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).map(part=>[part.type,part.value]));
+                return `${parts.year}-${parts.month}-${parts.day}`;
+            };
+            const todayStr = toDateStr(nowLocal);
+            const end = new Date(nowLocal);
+            if (state.dateRange === "tomorrow") end.setDate(end.getDate()+1);
+            if (state.dateRange === "next7") end.setDate(end.getDate()+6);
+            if (state.dateRange === "next30") end.setDate(end.getDate()+29);
+            const endStr = toDateStr(end);
+            if (state.dateRange === "today" && p.date !== todayStr) return false;
+            if (state.dateRange === "tomorrow" && p.date !== endStr) return false;
+            if (["next7","next30"].includes(state.dateRange) && (p.date < todayStr || p.date > endStr)) return false;
+        }
+
         if (state.timeRange && p.iso) {
             const timer = getCountdownText(p.iso);
-            const nowLocal = new Date();
-            const toDateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            const todayStr = toDateStr(nowLocal);
-
-            const tomorrowDate = new Date(nowLocal);
-            tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-            const tomorrowStr = toDateStr(tomorrowDate);
-
-            const weekEndDate = new Date(nowLocal);
-            weekEndDate.setDate(weekEndDate.getDate() + 6);
-            const weekEndStr = toDateStr(weekEndDate);
-
             if (state.timeRange === "in_play" && !timer.expired) return false;
             if (state.timeRange === "30m" && (timer.diffMin < 0 || timer.diffMin > 30)) return false;
             if (state.timeRange === "1h" && (timer.diffMin < 0 || timer.diffMin > 60)) return false;
             if (state.timeRange === "2h" && (timer.diffMin < 0 || timer.diffMin > 120)) return false;
-            if (state.timeRange === "today" && p.date !== todayStr) return false;
-            if (state.timeRange === "tomorrow" && p.date !== tomorrowStr) return false;
-            if (state.timeRange === "this_week" && (p.date < todayStr || p.date > weekEndStr)) return false;
         }
 
         if (state.modeloMin !== null && !isNaN(state.modeloMin) && (p.modelProb || 0) < state.modeloMin) return false;
@@ -1216,9 +1239,11 @@ function populateSelectOptions() {
 
     const fLeague = document.getElementById("fLeague");
     if (fLeague) {
-        const sortedLeagues = Array.from(leagues).sort();
-        fLeague.innerHTML = `<option value="">🏆 Todas las ligas (${sortedLeagues.length})</option>` +
-            sortedLeagues.map(l => `<option value="${escapeHTML(l)}">${escapeHTML(l)}</option>`).join("");
+        const configured = Array.isArray(window.SHARPIE_LEAGUES) ? window.SHARPIE_LEAGUES : [];
+        const sortedLeagues = [...new Set([...configured, ...leagues])];
+        const counts = Object.fromEntries(sortedLeagues.map(name => [name, PICKS.filter(p => p.league === name).length]));
+        fLeague.innerHTML = `<option value="">🏆 Todos los deportes</option>` +
+            sortedLeagues.map(l => `<option value="${escapeHTML(l)}">${escapeHTML(l)} · ${counts[l] || 0}</option>`).join("");
         fLeague.value = state.league;
     }
 }
@@ -1233,14 +1258,7 @@ function syncAdvCardActiveStates() {
 function updateFilterCounts(pendingPicks) {
     const fTimeRange = document.getElementById("fTimeRange");
     if (fTimeRange) {
-        const counts = { in_play: 0, "30m": 0, "1h": 0, "2h": 0, today: 0, tomorrow: 0, this_week: 0 };
-        const nowLocal = new Date();
-        const toDateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        const todayStr = toDateStr(nowLocal);
-        const tomorrowDate = new Date(nowLocal); tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-        const tomorrowStr = toDateStr(tomorrowDate);
-        const weekEndDate = new Date(nowLocal); weekEndDate.setDate(weekEndDate.getDate() + 6);
-        const weekEndStr = toDateStr(weekEndDate);
+        const counts = { in_play: 0, "30m": 0, "1h": 0, "2h": 0 };
 
         pendingPicks.forEach(p => {
             if (!p.iso) return;
@@ -1249,15 +1267,11 @@ function updateFilterCounts(pendingPicks) {
             if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 30) counts["30m"]++;
             if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 60) counts["1h"]++;
             if (!timer.expired && timer.diffMin >= 0 && timer.diffMin <= 120) counts["2h"]++;
-            if (p.date === todayStr) counts.today++;
-            if (p.date === tomorrowStr) counts.tomorrow++;
-            if (p.date >= todayStr && p.date <= weekEndStr) counts.this_week++;
         });
 
         const labels = {
             in_play: "🔴 En juego", "30m": "⏳ Próximos 30 min", "1h": "⏳ Próxima 1 hora",
-            "2h": "⏳ Próximas 2 horas", today: "📅 Eventos de Hoy", tomorrow: "📅 Eventos de Mañana",
-            this_week: "📆 Eventos de Esta Semana"
+            "2h": "⏳ Próximas 2 horas"
         };
         Array.from(fTimeRange.options).forEach(opt => {
             if (!opt.value) { opt.textContent = "⏱️ Hora / Rango"; return; }
@@ -1472,10 +1486,29 @@ function setupListeners() {
     if (fSortEl) fSortEl.addEventListener("change", (e) => { state.sort = e.target.value; render(); });
 
     const fDateEl = document.getElementById("fDate");
-    if (fDateEl) fDateEl.addEventListener("change", (e) => { state.date = e.target.value; render(); });
+    if (fDateEl) fDateEl.addEventListener("change", (e) => {
+        state.date = e.target.value;
+        if (state.date) state.dateRange = "";
+        else if (!state.dateRange) state.dateRange = "today";
+        syncPrimaryFilterButtons();
+        render();
+    });
 
     const fLeagueEl = document.getElementById("fLeague");
     if (fLeagueEl) fLeagueEl.addEventListener("change", (e) => { state.league = e.target.value; render(); });
+
+    document.querySelectorAll("[data-date-range]").forEach(button => button.addEventListener("click", () => {
+        state.dateRange = button.dataset.dateRange;
+        state.date = "";
+        if (fDateEl) fDateEl.value = "";
+        syncPrimaryFilterButtons();
+        render();
+    }));
+    document.querySelectorAll("[data-market]").forEach(button => button.addEventListener("click", () => {
+        state.market = button.dataset.market;
+        syncPrimaryFilterButtons();
+        render();
+    }));
 
     const fTrendEl = document.getElementById("fTrend");
     if (fTrendEl) fTrendEl.addEventListener("change", (e) => { state.trend = e.target.value; render(); });
@@ -1578,6 +1611,8 @@ function setupListeners() {
             state.search = "";
             state.date = "";
             state.league = "";
+            state.dateRange = "today";
+            state.market = "";
             state.trend = "";
             state.featuredOnly = false;
             state.freeReleaseOnly = false;
@@ -1613,6 +1648,7 @@ function setupListeners() {
                 fullMarketBtn.setAttribute("aria-pressed", "false");
                 fullMarketBtn.textContent = "🔎 Mostrar mercado completo";
             }
+            syncPrimaryFilterButtons();
 
             render();
         });
@@ -1630,6 +1666,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (linkedPick && isEventPending(linkedPick)) {
         window.SHARPIE_LINKED_PICK_ID=linkedId;
         state.search='';
+        state.dateRange='';
         state.showFullMarket=true;
         document.getElementById('search').value='';
     }

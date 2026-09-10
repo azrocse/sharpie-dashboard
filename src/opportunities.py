@@ -23,10 +23,9 @@ def _event_time(pick):
 
 
 def _identity(pick, kickoff):
-    # El ID temporal de la card y la liga inferida pueden cambiar entre ciclos.
+    # La fuente puede mejorar de SPORTS a una liga exacta sin crear otro pick.
     parts = [
-        kickoff.date().isoformat(), pick.get("sourceLeague") or pick.get("league"),
-        pick.get("game"), pick.get("market"), pick.get("pick"),
+        kickoff.date().isoformat(), pick.get("game"), pick.get("market"), pick.get("pick"),
     ]
     parts = [" ".join(unicodedata.normalize("NFKC", str(part or "")).replace("\u2212", "-").casefold().split()) for part in parts]
     return hashlib.sha256(json.dumps(parts, ensure_ascii=False).encode("utf-8")).hexdigest()[:24]
@@ -53,11 +52,26 @@ def save_opportunities(picks, path, now=None):
     for record in payload["picks"]:
         if not isinstance(record, dict) or not record.get("opportunityId"):
             raise ValueError(f"Registro de oportunidad inválido: {path}")
-        key = record["opportunityId"]
-        if key in records:
-            raise ValueError(f"Oportunidad duplicada en {path}: {key}")
-        records[key] = record
-        record.setdefault("ruleVersion", "legacy-v1")
+        kickoff = _event_time(record)
+        key = _identity(record, kickoff) if kickoff is not None else record["opportunityId"]
+        record["opportunityId"] = key
+        current = records.get(key)
+        record_rank = (record.get("league") != "SPORTS", str(record.get("lastUpdatedAt") or ""))
+        current_rank = (current.get("league") != "SPORTS", str(current.get("lastUpdatedAt") or "")) if current else None
+        if current is None:
+            winner = record
+        else:
+            winner, other = (record, current) if record_rank > current_rank else (current, record)
+            captured = [str(item.get("firstCapturedAt")) for item in (winner, other) if item.get("firstCapturedAt")]
+            if captured:
+                winner["firstCapturedAt"] = min(captured)
+            transitions = winner.get("transitions", []) + other.get("transitions", [])
+            winner["transitions"] = sorted(
+                {(str(item.get("at") or ""), item.get("state"), item.get("category")): item for item in transitions}.values(),
+                key=lambda item: str(item.get("at") or ""),
+            )
+        winner.setdefault("ruleVersion", "legacy-v1")
+        records[key] = winner
 
     for record in records.values():
         kickoff = _event_time(record)

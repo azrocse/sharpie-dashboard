@@ -11,6 +11,7 @@ from opportunities import save_opportunities
 from tracking import update_tracking
 from telegram_alerts import subscription_url
 from dashboard.generate_opportunities_viewer import generate_opportunities_viewer
+from config.league_config import enabled_leagues
 
 
 # ============================================================
@@ -681,6 +682,11 @@ def generate_dashboard(source_json_path=None, output_dir=None):
 
     # Una descarga válida sin picks pregame muestra el estado vacío actual.
     json_data = json.dumps(all_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    league_data = json.dumps(
+        [league["league"] for league in enabled_leagues()],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).replace("</", "<\\/")
     html_content = render_template(
         template_path,
         {
@@ -692,6 +698,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
             "DASHBOARD_JS": read_utf8(ASSETS_DIR / "js" / "dashboard.js"),
             "GENERATED_AT": now_str,
             "PICKS_JSON": json_data,
+            "LEAGUES_JSON": league_data,
             "TELEGRAM_URL": json.dumps(telegram_url),
         },
     )

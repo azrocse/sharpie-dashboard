@@ -4,7 +4,7 @@ let page = 0;
 const pageSize = 20;
 const byId = id => document.getElementById(id);
 const bounds = {model:'modelProb', edge:'modelEdge', ev:'ev', stake:'stake', odds:'odds', bets:'betsPct', handle:'handlePct', divergence:'divergence'};
-const filterIds = ['search','date','from','to','league','signal','category','sort', ...Object.keys(bounds).flatMap(key => [key+'Min',key+'Max'])];
+const filterIds = ['search','date','from','to','league','market','signal','category','sort', ...Object.keys(bounds).flatMap(key => [key+'Min',key+'Max'])];
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normalize = value => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const numeric = value => value == null || value === '' || !Number.isFinite(Number(value)) ? null : Number(value);
@@ -47,7 +47,7 @@ function matchingRows() {
         if (query && !normalize([p.game,p.pick,p.market,p.league,p.opportunityId].join(' ')).includes(query)) return false;
         const day = eventDay(p);
         if (filters.date && day !== filters.date || filters.from && day < filters.from || filters.to && day > filters.to) return false;
-        if (filters.league && p.league !== filters.league || filters.category && category(p) !== filters.category || filters.signal && p.marketSignal !== filters.signal) return false;
+        if (filters.league && p.league !== filters.league || filters.market && p.market !== filters.market || filters.category && category(p) !== filters.category || filters.signal && p.marketSignal !== filters.signal) return false;
         for (const [prefix,key] of Object.entries(bounds)) {
             const min = numeric(filters[prefix+'Min']), max = numeric(filters[prefix+'Max']), value = numeric(p[key]);
             if ((min !== null || max !== null) && value === null) return false;

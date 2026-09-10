@@ -189,6 +189,30 @@ def run_alerts(runtime, tracking=None, now=None, bot=None, config=None, poll_tim
     for chat_id, sub in subscribers.items():
         if not sub.get('active') or not (config.get('publicSubscriptions') or chat_id in allowed):
             continue
+        for record in records:
+            key = record['trackingId']
+            for alias in record.get('legacyTrackingIds') or []:
+                legacy = sub.get('sent', {}).pop(alias, None)
+                if legacy is None:
+                    continue
+                current = sub['sent'].get(key)
+                if current is None:
+                    sub['sent'][key] = legacy
+                    if isinstance(legacy, dict) and legacy.get('messageId'):
+                        try:
+                            bot.edit(chat_id, legacy['messageId'], message_for(record),
+                                     [[{'text': 'Ver pick ↗', 'url': f'{DASHBOARD_URL}?pick={key}'}], *controls(True)])
+                        except TelegramError as error:
+                            if error.code not in {400, 403}:
+                                raise
+                elif isinstance(legacy, dict) and legacy.get('messageId') and (
+                    not isinstance(current, dict) or legacy.get('messageId') != current.get('messageId')
+                ):
+                    try:
+                        bot.delete(chat_id, legacy['messageId'])
+                    except TelegramError as error:
+                        if error.code not in {400, 403}:
+                            raise
         for key, delivery in list(sub.get('sent', {}).items()):
             if not isinstance(delivery, dict) or not delivery.get('messageId'):
                 continue
