@@ -31,6 +31,11 @@ body { padding:24px 36px; max-width:1480px; background:var(--bg); }
 .market-distribution span { padding:7px 9px; border:1px solid color-mix(in srgb,currentColor 25%,var(--border)); border-radius:7px; background:var(--panel2); font-size:11px; font-weight:650; }.market-distribution span b { font-weight:800; }
 .soon-card { padding:11px 13px; }
 .soon-card .stat-header,.soon-card .stat-body { width:100%; }
+.soon-card .podium-list { min-height:119px; }
+.soon-empty { position:relative; overflow:hidden; min-height:119px; display:flex; align-items:center; justify-content:center; gap:14px; padding:16px; border:1px solid color-mix(in srgb,var(--amber) 18%,var(--border)); border-radius:10px; background:linear-gradient(135deg,color-mix(in srgb,var(--amber) 8%,var(--panel2)),color-mix(in srgb,var(--amber) 2%,var(--panel))); }
+.soon-empty::after { content:""; position:absolute; width:90px; height:90px; right:-35px; bottom:-48px; border:1px solid color-mix(in srgb,var(--amber) 18%,transparent); border-radius:50%; box-shadow:0 0 0 14px color-mix(in srgb,var(--amber) 4%,transparent); pointer-events:none; }
+.soon-empty-icon { position:relative; z-index:1; display:grid; place-items:center; flex:0 0 48px; width:48px; height:48px; border-radius:14px; background:color-mix(in srgb,var(--amber) 15%,var(--panel)); border:1px solid color-mix(in srgb,var(--amber) 25%,var(--border)); box-shadow:0 9px 24px color-mix(in srgb,var(--amber) 15%,transparent); font-size:22px; }
+.soon-empty>div { position:relative; z-index:1; display:grid; gap:4px; }.soon-empty strong { color:var(--text); font-size:12px; font-weight:800; }.soon-empty div span { color:color-mix(in srgb,var(--text) 58%,var(--muted)); font-size:9px; line-height:1.45; }
 .analytics-section { grid-template-columns:1.7fr 1fr; gap:18px; margin-bottom:22px; }
 .chart-card { position:relative; overflow:hidden; border:1px solid var(--border); border-radius:16px; padding:20px; box-shadow:0 12px 35px rgba(15,23,42,.06); background:linear-gradient(145deg,var(--panel),color-mix(in srgb,var(--teal) 4%,var(--panel))); }
 .chart-card::after { content:""; position:absolute; width:150px; height:150px; right:-75px; top:-90px; border-radius:50%; background:radial-gradient(circle,color-mix(in srgb,var(--blue) 16%,transparent),transparent 70%); pointer-events:none; }
@@ -135,4 +140,4 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,su
 .podium-numbers { display:flex; align-items:center; gap:8px; white-space:nowrap; font:650 9px 'JetBrains Mono',monospace; }
 .podium-numbers span { color:var(--teal); }.podium-numbers b { color:var(--amber); font-weight:650; }
 .medal-rank-1,.medal-rank-2,.medal-rank-3 { font-size:15px; }
-@media(max-width:500px) { .podium-row { gap:6px; }.podium-numbers { display:grid; gap:1px; text-align:right; }.podium-pick { max-width:180px; } }
+@media(max-width:500px) { .podium-row { gap:6px; }.podium-numbers { display:grid; gap:1px; text-align:right; }.podium-pick { max-width:180px; }.soon-empty { min-height:102px; padding:12px; }.soon-card .podium-list { min-height:102px; }.soon-empty-icon { width:42px; height:42px; flex-basis:42px; font-size:19px; } }

@@ -827,7 +827,7 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
                 <div class="podium-main"><div class="podium-game">⏳ ${escapeHTML(podiumDateTime(p))} · ${escapeHTML(p.game)}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
                 <div class="podium-numbers"><span>EV ${evText}</span><b>${escapeHTML(p.odds||'—')}</b></div>
             </div>`;
-        }).join('') : "Sin picks próximos";
+        }).join('') : `<div class="soon-empty"><span class="soon-empty-icon">⏳</span><div><strong>Sin picks próximos</strong><span>Ninguna oportunidad inicia en 30 minutos</span></div></div>`;
     }
 
     const buckets = Object.fromEntries(MARKET_SIGNAL_KEYS.map(key => [key, []]));
