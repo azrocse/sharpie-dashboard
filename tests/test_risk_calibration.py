@@ -3,13 +3,16 @@ from pipeline import analyze
 
 class RiskCalibrationTests(unittest.TestCase):
     def test_financial_categories_are_exclusive(self):
-        self.assertEqual(analyze.classify_pick_category(4, 2.5, [], 0, 48, "+120"), "FREE")
-        self.assertEqual(analyze.classify_pick_category(8, 5, [], 0, 55, "-110"), "PREMIUM")
-        self.assertEqual(analyze.classify_pick_category(12, 7, [], 40, 60, "+100", handle=80), "WHALE")
+        self.assertEqual(analyze.classify_pick_category(4, 2.5, ["SMART_MONEY"], 15, 48, "+120"), "FREE")
+        self.assertEqual(analyze.classify_pick_category(8, 5, ["CONSENSUS"], 0, 55, "-110"), "PREMIUM")
+        self.assertEqual(analyze.classify_pick_category(12, 7, ["SMART_MONEY"], 40, 60, "+100", handle=80), "WHALE")
 
     def test_whale_requires_extended_flow(self):
-        self.assertEqual(analyze.classify_pick_category(12, 7, [], 20, 60, "+100", handle=80), "PREMIUM")
-        self.assertEqual(analyze.classify_pick_category(12, 7, [], 40, 60, "+100", handle=60), "PREMIUM")
+        self.assertEqual(analyze.classify_pick_category(12, 7, ["SMART_MONEY"], 20, 60, "+100", handle=80), "PREMIUM")
+        self.assertEqual(analyze.classify_pick_category(12, 7, ["SMART_MONEY"], 40, 60, "+100", handle=60), "PREMIUM")
+
+    def test_no_action_cannot_be_a_recommended_pick(self):
+        self.assertIsNone(analyze.classify_pick_category(25, 12, ["NO_ACTION"], -20, 60, "+175"))
 
     def test_odds_outside_range_are_informative(self):
         self.assertIsNone(analyze.classify_pick_category(30, 15, [], 50, 70, "+201", handle=90))

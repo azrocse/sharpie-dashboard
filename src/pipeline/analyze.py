@@ -235,13 +235,18 @@ def evaluate_market_signals(divergence, bets, handle, ev, model_edge, line_move,
     return signals or ["NO_ACTION"]
 
 def classify_pick_category(ev, model_edge, market_signals, divergence, model_prob, raw_odds, confidence_score=None, handle=None):
-    """Clasificación financiera exclusiva; las señales son contexto independiente."""
+    """Clasifica solo valor financiero respaldado por una señal útil de DK."""
     if model_prob is None or model_edge is None or ev is None:
+        return None
+    signals = set(market_signals or [])
+    if not signals.intersection({"SMART_MONEY", "CONSENSUS"}):
         return None
     american = american_odds_value(raw_odds)
     if american is None or american < -200 or american > 200:
         return None
-    if model_edge >= WHALE_EDGE_MIN and ev >= WHALE_EV_MIN and divergence >= 35 and (handle is None or handle >= 65):
+    if ("SMART_MONEY" in signals and model_edge >= WHALE_EDGE_MIN
+            and ev >= WHALE_EV_MIN and divergence >= 35
+            and (handle is None or handle >= 65)):
         return "WHALE"
     if ev >= PREMIUM_EV_MIN and model_edge >= PREMIUM_EDGE_MIN:
         return "PREMIUM"

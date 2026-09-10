@@ -869,8 +869,8 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
         elProximos.innerHTML = soonPicks.length ? soonPicks.map(p => {
             const ev=Number(p.ev||0), evText=`${ev>=0?'+':''}${ev.toFixed(2)}%`;
             const stake=Number(p.stake||0).toFixed(1);
-            return `<div class="podium-row soon-row" title="${escapeHTML(p.game)} · ${escapeHTML(p.pick)}">
-                <div class="podium-main"><div class="podium-game">⏳ ${escapeHTML(podiumDateTime(p))} · ${escapeHTML(p.game)}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
+            return `<div class="podium-row soon-row" title="${escapeHTML(displayGame(p))} · ${escapeHTML(p.pick)}">
+                <div class="podium-main"><div class="podium-game">⏳ ${escapeHTML(podiumDateTime(p))} · ${escapeHTML(displayGame(p))}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
                 <div class="podium-numbers"><span>EV ${evText}</span><b>${escapeHTML(p.odds||'—')}</b></div>
             </div>`;
         }).join('') : `<div class="soon-empty"><span class="soon-empty-icon">⏳</span><div><strong>Sin picks próximos</strong><span>Ninguna oportunidad inicia en 30 minutos</span></div></div>`;
@@ -897,8 +897,8 @@ function updateMetrics(activePicks, allPendingPicks = activePicks) {
         elMejor.innerHTML = podium.length ? podium.map(p=>{
             const ev=Number(p.ev||0), evText=`${ev>=0?'+':''}${ev.toFixed(2)}%`;
             const stake=Number(p.stake||0).toFixed(1);
-            return `<div class="podium-row" title="${escapeHTML(p.game)} · ${escapeHTML(p.pick)}">
-                <div class="podium-main"><div class="podium-game">${MEDAL_ICONS[p.medalRank]} ${escapeHTML(podiumDateTime(p))} · ${escapeHTML(p.game)}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
+            return `<div class="podium-row" title="${escapeHTML(displayGame(p))} · ${escapeHTML(p.pick)}">
+                <div class="podium-main"><div class="podium-game">${MEDAL_ICONS[p.medalRank]} ${escapeHTML(podiumDateTime(p))} · ${escapeHTML(displayGame(p))}</div><div class="podium-pick">${escapeHTML(p.pick)} (${escapeHTML(p.market)}) · ${escapeHTML(p.pickCategory)} · ${stake}u</div></div>
                 <div class="podium-numbers"><span>EV ${evText}</span><b>${escapeHTML(p.odds||'—')}</b></div>
             </div>`;
         }).join('') : "Sin picks operables";
@@ -1090,6 +1090,10 @@ function fallbackCopyText(text) {
         console.error('Error al copiar al portapapeles:', err);
     }
     document.body.removeChild(textArea);
+}
+
+function displayGame(p) {
+    return p && p.away && p.home ? `${p.away} vs ${p.home}` : ((p && p.game) || "Evento");
 }
 
 function getHeaderTag(category, freeRelease = false) {
@@ -1438,7 +1442,7 @@ function render() {
                         <span style="font-size: 11px; font-weight: 800; color: var(--teal); text-transform: uppercase;">
                             ${escapeHTML(p.league) || 'LIGA DESCONOCIDA'}
                         </span>
-                        <h3 class="game-title">${escapeHTML(p.game) || 'Evento no especificado'}</h3>
+                        <h3 class="game-title">${escapeHTML(displayGame(p)) || 'Evento no especificado'}</h3>
                     </div>
 
                     <div class="meta-row">

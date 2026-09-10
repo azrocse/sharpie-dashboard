@@ -111,7 +111,9 @@ La referencia persiste en `.runtime/tracking.json` aunque se cierre el navegador
 La antigua watchlist de localStorage ya no controla el seguimiento.
 
 El seguimiento utiliza la misma clasificación del dashboard: acción `bet` y
-categoría FREE, PREMIUM o WHALE. El dashboard, Opportunities y X usan el stake
+categoría FREE, PREMIUM o WHALE. Una categoría solo es publicable cuando DK
+también produce `SMART_MONEY` o `CONSENSUS`; `NO_ACTION` permanece informativo
+en la vista de mercado completo. El dashboard, Opportunities y X usan el stake
 público de 1/8 Kelly. Telegram usa el stake personal de 1/2 Kelly, entre 3u y
 5u, y su cartera privada. Admite hasta 4 picks y 20u de lunes a viernes, o 6
 picks y 30u en sábado y domingo, con máximo de 8u por evento. Solo se avisa con

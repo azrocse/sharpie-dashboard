@@ -13,6 +13,7 @@ from config.league_config import enabled_leagues
 from dashboard.generate_dashboard import assign_medals, assign_personal_stakes, build_market_observations, build_picks, generate_dashboard
 from pipeline import analyze, download, parse
 from scraper.draftkings import DraftKingsScraper
+from scraper.parser import DraftKingsParser
 
 
 def sample_html():
@@ -94,6 +95,14 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertIn('data-date-range="today"', html)
         self.assertIn('data-market="Moneyline"', html)
         self.assertIn('window.SHARPIE_LEAGUES=["SPORTS"]', html)
+        self.assertIn('function displayGame(p)', html)
+
+    def test_team_order_is_visitor_then_home_for_at_and_vs(self):
+        parser = DraftKingsParser()
+        self.assertEqual(parser.split_game('NE Patriots @ SEA Seahawks'),
+                         {'away': 'NE Patriots', 'home': 'SEA Seahawks'})
+        self.assertEqual(parser.split_game('Slavia Prague vs Lens'),
+                         {'away': 'Lens', 'home': 'Slavia Prague'})
 
     def test_scraper_url_uses_exact_draftkings_filters(self):
         url = DraftKingsScraper().build_url("NCAA Football", "n30days", 2)

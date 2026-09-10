@@ -27,6 +27,7 @@ function historicalRows() {
     return archive.picks.filter(p=>{ const day=eventDay(p); return day && day<=today; });
 }
 const signalColors = {SMART_MONEY:'#2563eb',CONSENSUS:'#2dd4bf',STEAM_MOVE:'#14b8a6',REVERSE_LINE_MOVEMENT:'#8b5cf6',PUBLIC_HEAVY:'#f43f5e',SHARP_VS_PUBLIC:'#f59e0b',BALANCED_ACTION:'#94a3b8',LOW_LIQUIDITY:'#38bdf8',NO_ACTION:'#64748b'};
+const displayGame = p => p && p.away && p.home ? `${p.away} vs ${p.home}` : ((p && p.game) || 'Evento');
 let modelChart = null;
 let signalsChart = null;
 
@@ -120,7 +121,7 @@ function render() {
     updateCharts(rows);
     byId('rows').innerHTML=rows.slice(offset,offset+pageSize).map(p=>{const cat=category(p),[catIcon,catLabel]=categoryMeta(cat),state=opportunityState(p),[stateIcon,stateLabel]=stateMeta(state);return `<article class="event-card state-${escape(state.toLowerCase())}">
       <div class="event-topline"><span class="event-league">${escape(p.league)}</span><time>${dateText(p.iso)} · CDMX</time><span class="state-tag">${stateIcon} ${escape(stateLabel)}</span><span class="saved-tag ${cat.toLowerCase()}">${catIcon} ${escape(catLabel)}</span></div>
-      <div class="event-overview"><div class="event-identity"><h3>${escape(p.game)}</h3><p class="event-selection">${escape(p.pick)}</p><p class="event-market">${escape(p.market)} <span>·</span> ${escape((p.marketSignal||'—').replaceAll('_',' '))}</p></div>
+      <div class="event-overview"><div class="event-identity"><h3>${escape(displayGame(p))}</h3><p class="event-selection">${escape(p.pick)}</p><p class="event-market">${escape(p.market)} <span>·</span> ${escape((p.marketSignal||'—').replaceAll('_',' '))}</p></div>
       <dl class="event-metrics">${[['Cuota',p.odds],['Modelo',numeric(p.modelProb)===null?null:number(p.modelProb)+'%'],['EV',numeric(p.ev)===null?null:number(p.ev)+'%'],['Stake público',numeric(p.stake)===null?null:number(p.stake)+' u']].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value??'—')}</dd></div>`).join('')}</dl></div>
       <details class="event-details"><summary><span>Ver seguimiento</span><span class="expand-icon" aria-hidden="true">+</span></summary><div class="event-expanded"><dl class="secondary-metrics">${[['⚖️ Edge',number(p.modelEdge)+'%'],['🎟️ Bets',number(p.betsPct)+'%'],['💰 Handle',number(p.handlePct)+'%'],['🐋 Divergencia',number(p.divergence)+'%'],['Primera captura',dateText(p.firstCapturedAt)],['Última actualización',dateText(p.lastUpdatedAt)]].map(([label,value])=>`<div><dt>${label}</dt><dd>${escape(value)}</dd></div>`).join('')}</dl><div class="archive-detail-grid">${movementRows(p)}${transitionRows(p)}</div><button type="button" class="btn-chip detail-json-button" data-detail="${escape(p.opportunityId)}">Consultar JSON original</button></div></details>
     </article>`;}).join('');
