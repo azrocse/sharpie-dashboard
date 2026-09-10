@@ -97,12 +97,17 @@ def message_for(record):
     when = kickoff.strftime('%Y-%m-%d | ⏰ %H:%M') if kickoff else 'Por confirmar'
     stake = number(current.get('stake'))
     stake_text = f'{stake:.1f}u' if stake is not None else '—'
+    ev = number(current.get('ev'))
+    ev_text = f'{ev:+.2f}%' if ev is not None else '—'
+    model_prob = number(current.get('modelProb'))
+    model_prob_text = f'{model_prob:.2f}%' if model_prob is not None else '—'
     teams = f"{team_hashtag(record.get('away'))} vs {team_hashtag(record.get('home'))}" if record.get('away') and record.get('home') else clean(record.get('game'))
     prefix = {'NO_VALUE': '🔴 <b>YA NO APOSTAR</b>\n', 'RECOVERED': '🟢 <b>VALOR RECUPERADO</b>\n', 'UPGRADED': '⬆️ <b>PICK MEJORADO</b>\n', 'DOWNGRADED': '⬇️ <b>PICK AJUSTADO</b>\n'}.get(record.get('telegramStatus'), '')
     return (f"{prefix}{icon} <b>{tag}</b>\n"
             f"📅 {when}\n🏆 {clean(record.get('league') or 'SPORTS')}\n🏟️ {teams}\n"
             f"🎯 Pick: {clean(record.get('pick'))} ({clean(record.get('market'))})\n"
-            f"💵 Cuota: {clean(current.get('odds'))}\n💰 Stake: {stake_text}")
+            f"💵 Cuota: {clean(current.get('odds'))}\n📈 EV: {ev_text}\n"
+            f"🧠 Prob. Modelo: {model_prob_text}\n💰 Stake: {stake_text}")
 
 
 def load_subscribers(path):

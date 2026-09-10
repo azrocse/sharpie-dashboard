@@ -38,7 +38,7 @@ class TelegramTests(unittest.TestCase):
         self.key='a'*24
         self.record={'trackingId':self.key,'game':'A vs B','pick':'A','market':'Moneyline',
                      'iso':'2026-09-07T15:00:00','state':'READY','freeRelease':True,'pickCategory':'FREE',
-                     'current':{'odds':'+110','ev':10,'modelEdge':5,'stake':1.5},'lastObservation':self.now.isoformat()}
+                     'current':{'odds':'+110','ev':10,'modelProb':58.72,'modelEdge':5,'stake':1.5},'lastObservation':self.now.isoformat()}
         self.data={'records':{self.key:self.record}}
         self.config={'token':'secret','username':'sample_bot','allowedChatIds':['1'],'publicSubscriptions':False}
         self.bot=FakeBot()
@@ -142,6 +142,8 @@ class TelegramTests(unittest.TestCase):
         msg=message_for(self.record)
         self.assertIn('&lt;A&gt; &amp; B',msg)
         self.assertIn('1.5u',msg)
+        self.assertIn('📈 EV: +10.00%',msg)
+        self.assertIn('🧠 Prob. Modelo: 58.72%',msg)
         self.assertLess(len(msg),350)
         with patch.object(Bot,'call') as call:
             Bot('secret').send('1',msg,[[{'text':'Pausar','callback_data':'pause'}]])
