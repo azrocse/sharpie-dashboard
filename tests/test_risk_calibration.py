@@ -21,9 +21,9 @@ class RiskCalibrationTests(unittest.TestCase):
         self.assertEqual(analyze.calculate_stake(40.53, 2.77, 12.27, odds_stake_cap=1.0, actionable=True, category="PREMIUM"), 1.0)
         self.assertEqual(analyze.calculate_stake(55, 2, 10, actionable=False, category="FREE"), 0.0)
 
-    def test_personal_stake_uses_three_eighths_kelly_and_private_caps(self):
+    def test_personal_stake_uses_half_kelly_and_private_caps(self):
         self.assertEqual(analyze.calculate_personal_stake(58.72, 2.25, 32.12, "+125", category="PREMIUM"), 4.0)
-        self.assertEqual(analyze.calculate_personal_stake(40.53, 2.77, 12.27, "+177", category="PREMIUM"), 2.0)
+        self.assertEqual(analyze.calculate_personal_stake(40.53, 2.77, 12.27, "+177", category="PREMIUM"), 3.0)
         self.assertEqual(analyze.calculate_personal_stake(55, 2, 10, "+100", actionable=False, category="FREE"), 0.0)
 
     def test_signals_are_independent_of_financial_metrics(self):

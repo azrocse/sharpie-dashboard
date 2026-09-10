@@ -10,7 +10,7 @@ from urllib.parse import parse_qs, urlparse
 
 import main
 from config.league_config import enabled_leagues
-from dashboard.generate_dashboard import assign_medals, build_market_observations, build_picks, generate_dashboard
+from dashboard.generate_dashboard import assign_medals, assign_personal_stakes, build_market_observations, build_picks, generate_dashboard
 from pipeline import analyze, download, parse
 from scraper.draftkings import DraftKingsScraper
 
@@ -184,6 +184,23 @@ class CurrentPipelineTests(unittest.TestCase):
         assign_medals(picks)
         ranked = sorted((p['medalRank'], p['pick']) for p in picks if 'medalRank' in p)
         self.assertEqual(ranked, [(1,'Whale'),(2,'Premium A'),(3,'Premium B')])
+
+    def test_private_portfolio_limits_pick_count_by_day_and_event_exposure(self):
+        def pick(date, index, game=None):
+            return {'date':date,'iso':f'{date}T{10+index:02d}:00:00','game':game or f'Game {index}',
+                    'pick':f'Pick {index}','actionKey':'bet','pickCategory':'PREMIUM','odds':'+125',
+                    'modelProb':60,'modelEdge':15,'ev':35}
+        weekday = [pick('2026-09-11', index) for index in range(5)]
+        weekend = [pick('2026-09-12', index) for index in range(7)]
+        same_event = [pick('2026-09-13', index, game='Same event') for index in range(3)]
+        rows = assign_personal_stakes(weekday + weekend + same_event)
+        active = lambda date: [row for row in rows if row['date'] == date and row['personalStake'] > 0]
+        self.assertEqual(len(active('2026-09-11')), 4)
+        self.assertLessEqual(sum(row['personalStake'] for row in active('2026-09-11')), 20)
+        self.assertEqual(len(active('2026-09-12')), 6)
+        self.assertLessEqual(sum(row['personalStake'] for row in active('2026-09-12')), 30)
+        self.assertEqual(len(active('2026-09-13')), 2)
+        self.assertEqual(sum(row['personalStake'] for row in active('2026-09-13')), 8)
 
     def test_observations_exclude_live_data_and_duplicate_timestamps(self):
         before = {"time": "2026-09-07T17:00:00+00:00", "betsPct": 40, "handlePct": 75, "odds": "+130"}

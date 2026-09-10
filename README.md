@@ -107,9 +107,10 @@ La antigua watchlist de localStorage ya no controla el seguimiento.
 
 El seguimiento utiliza la misma clasificación del dashboard: acción `bet` y
 categoría FREE, PREMIUM o WHALE. El dashboard, Opportunities y X usan el stake
-público de 1/8 Kelly. Telegram usa el stake personal de 3/8 Kelly y su cartera
-privada, con máximo de 4u por evento y 10u por fecha. Solo se avisa con datos de
-hasta 15 minutos, dentro de las 24 horas anteriores al encuentro.
+público de 1/8 Kelly. Telegram usa el stake personal de 1/2 Kelly, entre 3u y
+5u, y su cartera privada. Admite hasta 4 picks y 20u de lunes a viernes, o 6
+picks y 30u en sábado y domingo, con máximo de 8u por evento. Solo se avisa con
+datos de hasta 15 minutos, dentro de las 24 horas anteriores al encuentro.
 
 El Top 3 se calcula en el backend y se identifica con 🥇, 🥈 y 🥉. Ordena las
 oportunidades vigentes por categoría, Kelly completo previo al redondeo, Edge,

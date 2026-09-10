@@ -21,14 +21,14 @@ SHARPIE_PATH = os.path.join(OUTPUT_DIR, "sharpie.json")
 PROVISIONAL_DIVERGENCE_WEIGHT = 0.12
 MAX_DIVERGENCE_ADJUSTMENT = 6.0
 KELLY_FRACTION = 0.125
-PERSONAL_KELLY_FRACTION = 0.375
+PERSONAL_KELLY_FRACTION = 0.5
 MAX_KELLY_FRACTION_PCT = 10.0
 STAKE_MIN_UNITS = 1.0
 STAKE_MAX_UNITS = 5.0
 OPERATIONAL_STAKE_MAX_UNITS = 5.0
 LONGSHOT_ODDS_MIN = 151
 LONGSHOT_STAKE_CAP = 1.0
-PERSONAL_LONGSHOT_STAKE_CAP = 2.0
+PERSONAL_LONGSHOT_STAKE_CAP = 3.0
 EXTREME_LONGSHOT_ODDS_MIN = 251
 VALUE_EDGE_MIN = 2.0
 VALUE_EV_MIN = 3.0
@@ -218,10 +218,10 @@ def calculate_stake(model_prob, decimal_odds, ev, confidence_score=None, odds_st
     )
 
 def calculate_personal_stake(model_prob, decimal_odds, ev, raw_odds, actionable=True, category=None):
-    """Stake privado: 3/8 Kelly, mínimo 1.5u y topes FREE/PREMIUM/WHALE."""
+    """Stake privado: 1/2 Kelly, mínimo 3u y topes FREE/PREMIUM/WHALE."""
     return _fractional_kelly_stake(
         model_prob, decimal_odds, ev, PERSONAL_KELLY_FRACTION,
-        {"FREE": 3.0, "PREMIUM": 4.0, "WHALE": 5.0}, 1.5,
+        {"FREE": 3.0, "PREMIUM": 4.0, "WHALE": 5.0}, 3.0,
         personal_odds_stake_cap(raw_odds), actionable, category,
     )
 

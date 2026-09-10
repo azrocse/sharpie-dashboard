@@ -667,19 +667,29 @@ def assign_personal_stakes(items):
             item.get("iso") or "",
         ),
     )
-    event_used, day_used = {}, {}
+    event_used, day_used, day_count = {}, {}, {}
     for item in candidates:
         event_key = (item.get("date"), item.get("game"))
         day_key = item.get("date")
-        available = min(4.0 - event_used.get(event_key, 0.0), 10.0 - day_used.get(day_key, 0.0))
+        try:
+            weekend = datetime.fromisoformat(str(day_key)).weekday() >= 5
+        except (TypeError, ValueError):
+            weekend = False
+        pick_limit = 6 if weekend else 4
+        day_cap = 30.0 if weekend else 20.0
+        if day_count.get(day_key, 0) >= pick_limit:
+            item["personalStake"] = 0.0
+            continue
+        available = min(8.0 - event_used.get(event_key, 0.0), day_cap - day_used.get(day_key, 0.0))
         adjusted = min(float(item["personalStake"]), max(0.0, available))
         adjusted = math.floor(adjusted * 2.0) / 2.0
-        if adjusted < 1.5:
+        if adjusted < 3.0:
             item["personalStake"] = 0.0
             continue
         item["personalStake"] = adjusted
         event_used[event_key] = event_used.get(event_key, 0.0) + adjusted
         day_used[day_key] = day_used.get(day_key, 0.0) + adjusted
+        day_count[day_key] = day_count.get(day_key, 0) + 1
     return items
 
 
