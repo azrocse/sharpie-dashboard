@@ -12,6 +12,32 @@ from storage import atomic_write_json
 
 
 CDMX = ZoneInfo("America/Mexico_City")
+OPPORTUNITY_CATEGORIES = {"FREE", "PREMIUM", "WHALE"}
+OPPORTUNITY_SIGNALS = {"SMART_MONEY", "CONSENSUS"}
+LEGACY_CATEGORIES = {"VALUE": "FREE", "FREE_RELEASE": "FREE"}
+
+
+def _positive_number(value):
+    try:
+        return float(value) > 0
+    except (TypeError, ValueError):
+        return False
+
+
+def _normalize_category(pick):
+    category = LEGACY_CATEGORIES.get(pick.get("pickCategory"), pick.get("pickCategory"))
+    if category:
+        pick["pickCategory"] = category
+    return category
+
+
+def _is_opportunity(pick):
+    return (
+        pick.get("actionKey") == "bet"
+        and _normalize_category(pick) in OPPORTUNITY_CATEGORIES
+        and pick.get("marketSignal") in OPPORTUNITY_SIGNALS
+        and _positive_number(pick.get("stake"))
+    )
 
 
 def _event_time(pick):
@@ -32,11 +58,10 @@ def _identity(pick, kickoff):
 
 
 def save_opportunities(picks, path, now=None):
-    """Actualiza una fila por oportunidad hasta el inicio; luego la congela.
+    """Guarda exclusivamente picks apostables con stake positivo.
 
-    Usa el mismo criterio de oportunidades del dashboard: FREE/PREMIUM/WHALE y
-    actionKey=bet. Una oportunidad que deja de calificar conserva su última
-    versión elegible. No importa archivos anteriores ni registra seguimiento.
+    Si un pick deja de calificar se retira de esta sábana; su evolución completa
+    permanece en tracking.json. Si vuelve a ser apostable, se registra otra vez.
     """
     path = Path(path)
     now = now or datetime.now(CDMX)
@@ -52,6 +77,12 @@ def save_opportunities(picks, path, now=None):
     for record in payload["picks"]:
         if not isinstance(record, dict) or not record.get("opportunityId"):
             raise ValueError(f"Registro de oportunidad inválido: {path}")
+        if not _is_opportunity(record):
+            continue
+        record["transitions"] = [
+            item for item in record.get("transitions", [])
+            if item.get("state") != "NO_LONGER_VALUE"
+        ]
         kickoff = _event_time(record)
         key = _identity(record, kickoff) if kickoff is not None else record["opportunityId"]
         record["opportunityId"] = key
@@ -73,26 +104,28 @@ def save_opportunities(picks, path, now=None):
         winner.setdefault("ruleVersion", "legacy-v1")
         records[key] = winner
 
-    for record in records.values():
-        kickoff = _event_time(record)
-        if not record.get("frozenAt") and kickoff is not None and kickoff <= now:
-            record["frozenAt"] = kickoff.isoformat(timespec="seconds")
-            record["opportunityState"] = "CLOSED"
-
     for pick in picks:
         kickoff = _event_time(pick)
-        if kickoff is None or kickoff <= now or pick.get("status") not in {None, "", "UPCOMING", "PENDING", "SCHEDULED"}:
+        if kickoff is None:
             continue
         key = _identity(pick, kickoff)
         previous = records.get(key)
+        actionable = _is_opportunity(pick)
+        if kickoff <= now:
+            if not actionable:
+                records.pop(key, None)
+            continue
+        if pick.get("status") not in {None, "", "UPCOMING", "PENDING", "SCHEDULED"}:
+            records.pop(key, None)
+            continue
         if previous and previous.get("frozenAt"):
             continue
-        actionable = pick.get("actionKey") == "bet" and pick.get("pickCategory") in {"FREE", "PREMIUM", "WHALE"}
-        if not actionable and previous is None:
+        if not actionable:
+            records.pop(key, None)
             continue
         previous_category = previous.get("pickCategory") if previous else None
         transitions = deepcopy(previous.get("transitions", [])) if previous else []
-        state = "ACTIVE" if actionable else "NO_LONGER_VALUE"
+        state = "ACTIVE"
         previous_state = previous.get("opportunityState") if previous else None
         if previous is None or previous_category != pick.get("pickCategory") or previous_state != state:
             transitions.append({"at": timestamp, "state": state, "category": pick.get("pickCategory")})
@@ -106,6 +139,12 @@ def save_opportunities(picks, path, now=None):
             "opportunityState": state,
             "transitions": transitions,
         }
+
+    for record in records.values():
+        kickoff = _event_time(record)
+        if not record.get("frozenAt") and kickoff is not None and kickoff <= now:
+            record["frozenAt"] = kickoff.isoformat(timespec="seconds")
+            record["opportunityState"] = "CLOSED"
 
     payload["picks"] = sorted(records.values(), key=lambda item: (item.get("date") or "", item.get("iso") or "", item["opportunityId"]))
     payload["updatedAt"] = timestamp

@@ -29,11 +29,13 @@ class OpportunitiesViewerTests(unittest.TestCase):
             self.assertIn('aria-label="Buscar equipo"', html)
             self.assertIn('placeholder="Buscar equipo…"', html)
             self.assertIn('teamSearchText(p).includes(query)', html)
+            self.assertIn('const isOpportunity =', html)
+            self.assertIn('isOpportunity(p) && day && day<=today', html)
             self.assertNotIn('[p.game,p.pick,p.market,p.league,p.opportunityId]', html)
             self.assertIn("VALUE:'FREE'", html)
             self.assertIn('Últimos 5 movimientos', html)
             self.assertIn('Cambios del pick', html)
-            self.assertIn('Ya no apostar', html)
+            self.assertNotIn('Ya no apostar', html)
 
     def test_empty_archive_has_a_viewer(self):
         with tempfile.TemporaryDirectory() as directory:

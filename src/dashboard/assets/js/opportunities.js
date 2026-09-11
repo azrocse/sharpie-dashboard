@@ -21,13 +21,14 @@ const eventDay = p => { const date=dateValue(p.iso); return date ? cdmxDay(date)
 const category = p => ({VALUE:'FREE',FREE_RELEASE:'FREE'}[p.pickCategory] || p.pickCategory || 'FREE');
 const opportunityState = p => p.opportunityState || (p.frozenAt ? 'CLOSED' : 'ACTIVE');
 const categoryMeta = value => ({FREE:['🔓','FREE'],PREMIUM:['💎','PREMIUM'],WHALE:['🐋','WHALE']}[value] || ['🎯',value]);
-const stateMeta = value => ({ACTIVE:['🟢','Vigente'],NO_LONGER_VALUE:['🔴','Ya no apostar'],CLOSED:['🏁','Cerrada']}[value] || ['⚪','Guardada']);
+const stateMeta = value => ({ACTIVE:['🟢','Vigente'],CLOSED:['🏁','Cerrada']}[value] || ['⚪','Guardada']);
 function historicalRows() {
     const today=cdmxDay(new Date());
-    return archive.picks.filter(p=>{ const day=eventDay(p); return day && day<=today; });
+    return archive.picks.filter(p=>{ const day=eventDay(p); return isOpportunity(p) && day && day<=today; });
 }
 const signalColors = {SMART_MONEY:'#2563eb',CONSENSUS:'#2dd4bf',STEAM_MOVE:'#14b8a6',REVERSE_LINE_MOVEMENT:'#8b5cf6',PUBLIC_HEAVY:'#f43f5e',SHARP_VS_PUBLIC:'#f59e0b',BALANCED_ACTION:'#94a3b8',LOW_LIQUIDITY:'#38bdf8',NO_ACTION:'#64748b'};
 const displayGame = p => p && p.away && p.home ? `${p.away} vs ${p.home}` : ((p && p.game) || 'Evento');
+const isOpportunity = p => p && p.actionKey==='bet' && ['FREE','PREMIUM','WHALE','VALUE','FREE_RELEASE'].includes(p.pickCategory) && ['SMART_MONEY','CONSENSUS'].includes(p.marketSignal) && Number(p.stake)>0;
 const teamSearchText = p => normalize(
     p && (p.away || p.home)
         ? [p.away,p.home].filter(Boolean).join(' ')

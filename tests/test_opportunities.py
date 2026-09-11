@@ -18,6 +18,7 @@ class OpportunityTests(unittest.TestCase):
             "sourceLeague": "SPORTS", "league": "MLB", "game": "Dodgers @ Padres",
             "market": "Moneyline", "pick": "Dodgers", "odds": "+130",
             "actionKey": "bet", "pickCategory": "FREE", "status": "UPCOMING",
+            "marketSignal": "SMART_MONEY",
             "ev": 7.71, "modelEdge": 3.35, "modelProb": 46.83, "stake": 1.5,
             "freeRelease": True, "history": [{"betsPct": 40, "handlePct": 75}],
         }
@@ -25,7 +26,8 @@ class OpportunityTests(unittest.TestCase):
     def test_saves_only_recommended_opportunities_without_recalculating(self):
         picks = [self.pick, {**self.pick, "pick": "Premium", "pickCategory": "PREMIUM"},
                  {**self.pick, "pick": "Longshot", "pickCategory": "LONGSHOT", "actionKey": "speculative"},
-                 {**self.pick, "pick": "Watch", "actionKey": "pass"}]
+                 {**self.pick, "pick": "Watch", "actionKey": "pass"},
+                 {**self.pick, "pick": "No signal", "marketSignal": "NO_ACTION"}]
         data = save_opportunities(picks, self.path, self.now)
         self.assertEqual(data["count"], 2)
         saved = next(p for p in data["picks"] if p["pick"] == "Dodgers")
@@ -56,12 +58,32 @@ class OpportunityTests(unittest.TestCase):
         data = save_opportunities([{**self.pick, "odds": "+999", "iso": "2026-09-07T14:00:00"}], self.path, self.now + timedelta(hours=3))
         self.assertEqual(data["picks"][0]["odds"], "+130")
 
-    def test_preserves_opportunity_and_records_loss_of_value(self):
+    def test_removes_pick_that_loses_value_and_restores_it_if_value_returns(self):
         save_opportunities([self.pick], self.path, self.now)
         data = save_opportunities([{**self.pick, "actionKey": "pass", "stake": 0}], self.path, self.now + timedelta(minutes=5))
-        self.assertEqual(data["picks"][0]["stake"], 0)
-        self.assertEqual(data["picks"][0]["opportunityState"], "NO_LONGER_VALUE")
-        self.assertGreaterEqual(len(data["picks"][0]["transitions"]), 2)
+        self.assertEqual(data["count"], 0)
+        restored = save_opportunities([self.pick], self.path, self.now + timedelta(minutes=10))
+        self.assertEqual(restored["count"], 1)
+        self.assertEqual(restored["picks"][0]["opportunityState"], "ACTIVE")
+        self.assertEqual(restored["picks"][0]["stake"], 1.5)
+
+    def test_purges_zero_stake_and_non_bet_legacy_rows(self):
+        data = save_opportunities([self.pick], self.path, self.now)
+        bad = {
+            **data["picks"][0], "opportunityId": "bad", "actionKey": "pass",
+            "pickCategory": None, "stake": 0, "opportunityState": "CLOSED",
+        }
+        data["picks"].append(bad)
+        self.path.write_text(json.dumps(data), encoding="utf-8")
+        cleaned = save_opportunities([], self.path, self.now)
+        self.assertEqual(cleaned["count"], 1)
+        self.assertEqual(cleaned["picks"][0]["pick"], "Dodgers")
+
+    def test_normalizes_legacy_value_category_without_losing_valid_pick(self):
+        legacy = {**self.pick, "pickCategory": "VALUE"}
+        data = save_opportunities([legacy], self.path, self.now)
+        self.assertEqual(data["count"], 1)
+        self.assertEqual(data["picks"][0]["pickCategory"], "FREE")
 
     def test_does_not_capture_events_already_started(self):
         self.assertEqual(save_opportunities([self.pick], self.path, self.now + timedelta(hours=2))["count"], 0)
