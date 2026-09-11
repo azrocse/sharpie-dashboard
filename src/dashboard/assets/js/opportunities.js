@@ -28,6 +28,11 @@ function historicalRows() {
 }
 const signalColors = {SMART_MONEY:'#2563eb',CONSENSUS:'#2dd4bf',STEAM_MOVE:'#14b8a6',REVERSE_LINE_MOVEMENT:'#8b5cf6',PUBLIC_HEAVY:'#f43f5e',SHARP_VS_PUBLIC:'#f59e0b',BALANCED_ACTION:'#94a3b8',LOW_LIQUIDITY:'#38bdf8',NO_ACTION:'#64748b'};
 const displayGame = p => p && p.away && p.home ? `${p.away} vs ${p.home}` : ((p && p.game) || 'Evento');
+const teamSearchText = p => normalize(
+    p && (p.away || p.home)
+        ? [p.away,p.home].filter(Boolean).join(' ')
+        : ((p && p.game) || '')
+);
 let modelChart = null;
 let signalsChart = null;
 
@@ -45,7 +50,7 @@ function matchingRows() {
     const filters = Object.fromEntries(filterIds.map(id => [id,byId(id).value]));
     const query = normalize(filters.search.trim());
     return historicalRows().filter(p => {
-        if (query && !normalize([p.game,p.pick,p.market,p.league,p.opportunityId].join(' ')).includes(query)) return false;
+        if (query && !teamSearchText(p).includes(query)) return false;
         const day = eventDay(p);
         if (filters.date && day !== filters.date || filters.from && day < filters.from || filters.to && day > filters.to) return false;
         if (filters.league && p.league !== filters.league || filters.market && p.market !== filters.market || filters.category && category(p) !== filters.category || filters.signal && p.marketSignal !== filters.signal) return false;

@@ -97,6 +97,11 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertIn('data-market="Moneyline"', html)
         self.assertIn('window.SHARPIE_LEAGUES=["SPORTS"]', html)
         self.assertIn('function displayGame(p)', html)
+        self.assertIn('aria-label="Buscar equipo"', html)
+        self.assertIn('placeholder="Buscar equipo…"', html)
+        self.assertIn('function teamSearchText(p)', html)
+        self.assertIn('teamSearchText(p).includes(text)', html)
+        self.assertNotIn("p.market || ''} ${p.reason", html)
 
     def test_team_order_is_visitor_then_home_for_at_and_vs(self):
         parser = DraftKingsParser()

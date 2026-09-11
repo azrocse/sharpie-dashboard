@@ -646,6 +646,11 @@ function normalizeMediaText(value) {
     return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
+function teamSearchText(p) {
+    const participants = [p && p.away, p && p.home].filter(Boolean);
+    return normalizeMediaText(participants.length ? participants.join(" ") : ((p && p.game) || ""));
+}
+
 function isMediaFeaturedPick(p) {
     const source = normalizeMediaText([p.game, p.away, p.home, p.pick].filter(Boolean).join(" | "));
     return MEDIA_TEAM_ALIASES.some(alias => source.includes(normalizeMediaText(alias)));
@@ -999,7 +1004,7 @@ function clearSpecificAdvFilter(type) {
 
 function applyFiltersAndSort(list) {
     if (!Array.isArray(list)) return [];
-    const text = state.search.toLowerCase().trim();
+    const text = normalizeMediaText(state.search).trim();
 
     let result = list.filter(p => {
         if (state.league && p.league !== state.league) return false;
@@ -1059,8 +1064,7 @@ function applyFiltersAndSort(list) {
         if (state.freeReleaseOnly && !p.freeRelease) return false;
 
         if (text) {
-            const blob = `${p.game || ''} ${p.pick || ''} ${p.market || ''} ${p.reason || ''}`.toLowerCase();
-            if (!blob.includes(text)) return false;
+            if (!teamSearchText(p).includes(text)) return false;
         }
         return true;
     });
@@ -1238,11 +1242,9 @@ function populateSelectOptions() {
     PICKS.forEach(p => {
         if (p.date) dates.add(p.date);
         if (p.league) leagues.add(p.league);
-        if (p.league) suggestions.add(p.league);
         if (p.away) suggestions.add(p.away);
         if (p.home) suggestions.add(p.home);
-        if (p.pick) suggestions.add(p.pick);
-        if (p.market) suggestions.add(p.market);
+        if (!p.away && !p.home && p.game) suggestions.add(p.game);
     });
 
     const searchList = document.getElementById("searchSuggestions");
