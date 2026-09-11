@@ -106,6 +106,10 @@ def _merge_market_history(game, market, previous_index):
     points.append(_history_point(market))
     merged = dict(market)
     merged["history"] = _normalize_history(points)
+    if previous.get("playdoitHistory"):
+        merged["playdoitHistory"] = [
+            point for point in previous["playdoitHistory"] if isinstance(point, dict)
+        ][-MAX_HISTORY_POINTS_PER_MARKET:]
     return merged
 
 

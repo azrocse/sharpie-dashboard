@@ -559,6 +559,8 @@ def build_picks(raw_data):
             "market": market_name or "Línea estándar",
             "pick": pick or "Sin selección",
             "odds": odds_str,
+            "oddsSource": market.get("oddsSource", "DRAFTKINGS_FALLBACK"),
+            "draftKingsOdds": market.get("draftKingsOdds"),
             "actionKey": market.get("actionKey", classify_action(action_text)),
             "trendKey": market_signal,
             "marketSignal": market_signal,

@@ -260,10 +260,15 @@ def action_from_category(category):
     if category == "FREE": return "🔓 FREE PICK", "bet", "⚡ PRONTO"
     return "🟡 SEGUIMIENTO", "pass", "👀 OBSERVAR"
 
-def normalize_history(market):
+def normalize_history(market, source_specific=False):
     points = []
     seen = set()
-    for item in market.get("history", []):
+    source_points = (
+        market.get("playdoitHistory", [])
+        if source_specific and market.get("oddsSource") == "PLAYDOIT"
+        else market.get("history", [])
+    )
+    for item in source_points:
         if not isinstance(item, dict): continue
         bets = safe_pct(item.get("betsPct", item.get("bets")))
         handle = safe_pct(item.get("handlePct", item.get("handle")))
@@ -339,7 +344,7 @@ def _group_market_indices(markets):
 
 def _history_map(market):
     result = {}
-    for point in normalize_history(market):
+    for point in normalize_history(market, source_specific=True):
         try:
             stamp = datetime.fromisoformat(str(point.get("time")).replace("Z", "+00:00")).replace(second=0, microsecond=0)
         except (TypeError, ValueError):
@@ -442,6 +447,8 @@ def process_market(league_name, game, market, grouped_markets):
         "date": game.get("date"), "startIso": game.get("startIso"),
         "sourceTimeRaw": game.get("sourceTimeRaw"), "timezone": game.get("timezone"),
         "time": game_time, "market": market_type, "pick": market.get("pick"), "odds": raw_odds,
+        "oddsSource": market.get("oddsSource", "DRAFTKINGS_FALLBACK"),
+        "draftKingsOdds": market.get("draftKingsOdds"),
         "decimalOdds": round(decimal_odds, 4), "impliedProb": implied_prob, "fairProb": fair_prob,
         "handlePct": handle, "betsPct": bets, "divergence": divergence, "signedDivergence": divergence,
         "flowAdjustment": flow_adjustment, "modelProb": model_prob, "modelSource": model_source,

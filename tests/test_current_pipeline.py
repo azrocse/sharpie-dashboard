@@ -44,6 +44,7 @@ class CurrentPipelineTests(unittest.TestCase):
         self.stack.enter_context(patch("pipeline.download.enabled_leagues", return_value=one_source))
         self.stack.enter_context(patch.object(analyze, "enabled_leagues", return_value=one_source))
         self.stack.enter_context(patch("dashboard.generate_dashboard.enabled_leagues", return_value=one_source))
+        self.stack.enter_context(patch("main.apply_playdoit_odds", side_effect=lambda files: files))
         self.stack.enter_context(patch("main.generate_dashboard", side_effect=lambda **kw: generate_dashboard(output_dir=self.root, **kw)))
 
     def run_feed(self, minute=0, html=None):
