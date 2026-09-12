@@ -3,16 +3,30 @@ import argparse
 import json
 import re
 import subprocess
+import ssl
+import sys
 import time
+from urllib.request import Request, urlopen
+from urllib.parse import urlencode
 from datetime import datetime
 from pathlib import Path
-
-import requests
 
 from dashboard.generate_opportunities_viewer import generate_opportunities_viewer
 from opportunities import CDMX, save_opportunities
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def fetch_public(url, stamp):
+    request = Request(url + '?' + urlencode({'publication': stamp}),
+                      headers={'Cache-Control': 'no-cache'})
+    # Windows can trust enterprise roots with legacy Basic Constraints encoding.
+    # Retain hostname and chain validation, using the pre-3.13 compatibility mode.
+    context = ssl.create_default_context()
+    if sys.platform == 'win32':
+        context.verify_flags &= ~ssl.VERIFY_X509_STRICT
+    with urlopen(request, timeout=20, context=context) as response:
+        return response.read()
 
 
 def git(*args):
@@ -53,14 +67,11 @@ def confirm_and_archive(commit='HEAD', *, root=ROOT, url=None, attempts=12, dela
         try:
             stamp = f'{revision}-{time.time_ns()}'
             for name, expected in [('index.html', expected_index), ('picks.json', expected_picks)]:
-                response = requests.get(base.rstrip('/') + '/' + name,
-                                        params={'publication': stamp}, timeout=20,
-                                        headers={'Cache-Control': 'no-cache'})
-                response.raise_for_status()
-                if response.content.replace(b'\r\n', b'\n') != expected.replace(b'\r\n', b'\n'):
+                content = fetch_public(base.rstrip('/') + '/' + name, stamp)
+                if content.replace(b'\r\n', b'\n') != expected.replace(b'\r\n', b'\n'):
                     raise ValueError('El sitio aun no sirve la version del dashboard enviada')
             break
-        except (requests.RequestException, ValueError) as exc:
+        except (OSError, ValueError) as exc:
             last_error = exc
             if attempt + 1 == attempts:
                 raise RuntimeError('Publicacion no confirmada; Opportunities no se modifica') from last_error

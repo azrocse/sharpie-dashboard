@@ -1,15 +1,24 @@
 import json
 import tempfile
+import ssl
 import unittest
 from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 from opportunities import CDMX
-from publish_opportunities import confirm_and_archive
+from publish_opportunities import confirm_and_archive, fetch_public
 
 
 class PublicationTests(unittest.TestCase):
+    def test_transport_keeps_certificate_and_hostname_validation(self):
+        with patch('publish_opportunities.urlopen') as opened:
+            opened.return_value.__enter__.return_value.read.return_value = b'ok'
+            self.assertEqual(fetch_public('https://example.test/index.html', 'v1'), b'ok')
+            context = opened.call_args.kwargs['context']
+            self.assertEqual(context.verify_mode, ssl.CERT_REQUIRED)
+            self.assertTrue(context.check_hostname)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
@@ -31,11 +40,11 @@ class PublicationTests(unittest.TestCase):
         return self.html if args[-1].endswith(':index.html') else self.raw
 
     def response(self, content):
-        return Mock(content=content)
+        return content
 
     def run_confirmation(self, responses):
         with patch('publish_opportunities.git', side_effect=self.git), patch(
-                'publish_opportunities.requests.get', side_effect=responses):
+                'publish_opportunities.fetch_public', side_effect=responses):
             return confirm_and_archive(root=self.root, url='https://example.test/', attempts=1)
 
     def test_old_deployment_does_not_change_archive_or_viewer(self):
