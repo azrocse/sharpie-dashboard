@@ -59,7 +59,7 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertEqual(json.loads((self.root / "picks.json").read_text()), [])
         self.run_feed(minute=1)
         files = {path.relative_to(self.root).as_posix() for path in self.root.rglob("*") if path.is_file()}
-        self.assertEqual(files, {"data/parsed/sports.json", "data/analyzed/sharpie.json", "data/opportunities.json", "opportunities.html", "index.html", "picks.json", ".runtime/tracking.json"})
+        self.assertEqual(files, {"data/parsed/sports.json", "data/analyzed/sharpie.json", "data/opportunities.json", "opportunities.html", "index.html", "picks.json", "dashboard-version.json", ".runtime/tracking.json"})
         picks = json.loads((self.root / "picks.json").read_text(encoding="utf-8"))
         self.assertEqual(len(picks), 2)
         self.assertTrue(all(pick["league"] == "SPORTS" for pick in picks))
@@ -82,12 +82,10 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertNotIn("results.html", html)
         saved = json.loads((self.root / "data/opportunities.json").read_text(encoding="utf-8"))["picks"]
         recommended = [p for p in picks if p["actionKey"] == "bet" and p["pickCategory"] in {"FREE", "PREMIUM", "WHALE"}]
-        self.assertEqual(len(saved), len(recommended))
-        self.assertGreater(len(saved), 0)
-        for pick in recommended:
-            record = next(row for row in saved if row["id"] == pick["id"])
-            for key, value in pick.items():
-                self.assertEqual(record[key], value)
+        self.assertGreater(len(recommended), 0)
+        self.assertEqual(saved, [], 'Una generacion local no acredita publicacion')
+        version = json.loads((self.root / 'dashboard-version.json').read_text())['version']
+        self.assertIn(f'window.SHARPIE_APP_VERSION="{version}"', html)
         self.assertNotIn('>FREE RELEASE', html)
         self.assertNotIn('confidenceScore', html)
         self.assertIn('TOP 3 DEL MOMENTO', html)

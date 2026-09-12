@@ -1,4 +1,5 @@
 import json
+import hashlib
 import math
 import os
 import unicodedata
@@ -8,7 +9,6 @@ from zoneinfo import ZoneInfo
 
 from dashboard.template_loader import read_utf8, render_template
 from storage import atomic_write_json, atomic_write_text
-from opportunities import save_opportunities
 from tracking import update_tracking
 from telegram_alerts import subscription_url
 from dashboard.generate_opportunities_viewer import generate_opportunities_viewer
@@ -741,6 +741,10 @@ def generate_dashboard(source_json_path=None, output_dir=None):
 
     # Una descarga válida sin picks pregame muestra el estado vacío actual.
     json_data = json.dumps(public_events, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    app_version = hashlib.sha256(b"".join(
+        path.read_bytes() for path in sorted(Path(CURRENT_DIR).rglob("*"))
+        if path.is_file() and path.suffix in {".js", ".css", ".html"}
+    )).hexdigest()[:20]
     league_data = json.dumps(
         [league["league"] for league in enabled_leagues()],
         ensure_ascii=False,
@@ -757,6 +761,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
             "DASHBOARD_JS": read_utf8(ASSETS_DIR / "js" / "dashboard.js"),
             "GENERATED_AT": now_str,
             "PICKS_JSON": json_data,
+            "APP_VERSION": app_version,
             "LEAGUES_JSON": league_data,
             "TELEGRAM_URL": json.dumps(telegram_url),
         },
@@ -765,7 +770,9 @@ def generate_dashboard(source_json_path=None, output_dir=None):
     output_file = os.path.join(output_dir, "index.html")
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    save_opportunities(public_events, Path(output_dir) / "data" / "opportunities.json", now=cdmx_now)
+    archive_path = Path(output_dir) / "data" / "opportunities.json"
+    if not archive_path.exists():
+        atomic_write_json(archive_path, {"schemaVersion": 1, "picks": [], "count": 0})
     generate_opportunities_viewer(output_dir=output_dir)
     atomic_write_text(output_file, html_content)
 
@@ -774,6 +781,7 @@ def generate_dashboard(source_json_path=None, output_dir=None):
     # refrescarse solo, sin que el usuario tenga que presionar F5.
     picks_json_path = os.path.join(output_dir, "picks.json")
     atomic_write_json(picks_json_path, public_events, compact=True)
+    atomic_write_json(Path(output_dir) / "dashboard-version.json", {"version": app_version}, compact=True)
 
     print(f"[OK] Dashboard generado con éxito: {output_file}")
     return output_file

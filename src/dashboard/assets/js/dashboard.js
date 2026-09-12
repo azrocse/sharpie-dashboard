@@ -49,6 +49,13 @@ let ACTIVE_FILTER_MATCH_KEYS = new Set();
 
 async function checkForNewPicks() {
     try {
+        const versionResponse = await fetch('dashboard-version.json?v=' + Date.now(), { cache: 'no-store' });
+        if (!versionResponse.ok) return;
+        const release = await versionResponse.json();
+        if (release.version && release.version !== window.SHARPIE_APP_VERSION) {
+            window.location.reload();
+            return;
+        }
         const response = await fetch('picks.json?v=' + Date.now(), { cache: 'no-store' });
         if (!response.ok) return;
 

@@ -16,8 +16,8 @@ class AutoPublishTests(unittest.TestCase):
             harness = r'''
 $global:LASTEXITCODE = 0
 function global:python {
-    Add-Content -LiteralPath (Join-Path $env:SHARPIE_TEST_ROOT 'calls.txt') -Value 'python'
-    $global:LASTEXITCODE = if ($env:SHARPIE_TEST_CASE -eq 'python_failure') { 7 } else { 0 }
+    Add-Content -LiteralPath (Join-Path $env:SHARPIE_TEST_ROOT 'calls.txt') -Value ('python ' + ($args -join ' '))
+    $global:LASTEXITCODE = if ($env:SHARPIE_TEST_CASE -eq 'python_failure' -or ($env:SHARPIE_TEST_CASE -eq 'verification_failure' -and $args -contains 'src/publish_opportunities.py')) { 7 } else { 0 }
 }
 function global:git {
     Add-Content -LiteralPath (Join-Path $env:SHARPIE_TEST_ROOT 'calls.txt') -Value ('git ' + ($args -join ' '))
@@ -57,3 +57,16 @@ exit $LASTEXITCODE
         self.assertIn("git push", calls)
         self.assertNotIn("publicado correctamente", log)
         self.assertIn("ERROR:", log)
+        self.assertNotIn('src/publish_opportunities.py', calls)
+
+    def test_archive_confirmation_happens_only_after_dashboard_push(self):
+        code, calls, log = self.run_script('success')
+        self.assertEqual(code, 0)
+        self.assertLess(calls.index('git push'), calls.index('src/publish_opportunities.py'))
+        self.assertEqual(calls.count('git push'), 2)
+
+    def test_failed_web_confirmation_does_not_publish_archive(self):
+        code, calls, log = self.run_script('verification_failure')
+        self.assertNotEqual(code, 0)
+        self.assertEqual(calls.count('git push'), 1)
+        self.assertNotIn('Archive opportunities from verified public dashboard', calls)

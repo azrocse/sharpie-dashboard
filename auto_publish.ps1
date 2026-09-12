@@ -33,7 +33,7 @@ try {
         $changes = @(& git status --porcelain --untracked-files=all)
         if ($LASTEXITCODE -ne 0) { throw 'No se pudo consultar Git' }
         $sourceChanges = @($changes | Where-Object {
-            $_.Substring(3) -notmatch '^(index\.html|opportunities\.html|picks\.json|data/parsed/[^/]+\.json|data/analyzed/sharpie\.json|data/opportunities\.json)$'
+            $_.Substring(3) -notmatch '^(index\.html|opportunities\.html|picks\.json|dashboard-version\.json|data/parsed/[^/]+\.json|data/analyzed/sharpie\.json|data/opportunities\.json)$'
         })
         if ($sourceChanges.Count -gt 0) {
             Write-RunLog 'Cambios locales pendientes de revision; se actualizan los registros localmente sin publicar.'
@@ -48,7 +48,7 @@ try {
         exit 0
     }
 
-    Invoke-Checked -Program 'git' -Arguments @('add', '--', 'index.html', 'opportunities.html', 'picks.json', 'data/parsed', 'data/analyzed', 'data/opportunities.json')
+    Invoke-Checked -Program 'git' -Arguments @('add', '--', 'index.html', 'opportunities.html', 'picks.json', 'dashboard-version.json', 'data/parsed', 'data/analyzed', 'data/opportunities.json')
     & git diff --cached --quiet
     $diffStatus = $LASTEXITCODE
     if ($diffStatus -gt 1) { throw 'No se pudieron comprobar los cambios preparados' }
@@ -57,6 +57,15 @@ try {
         Invoke-Checked -Program 'git' -Arguments @('commit', '-m', $message)
     }
     Invoke-Checked -Program 'git' -Arguments @('push', 'origin', 'main', '--quiet')
+    Invoke-Checked -Program 'python' -Arguments @('-B', 'src/publish_opportunities.py')
+    Invoke-Checked -Program 'git' -Arguments @('add', '--', 'opportunities.html', 'data/opportunities.json')
+    & git diff --cached --quiet
+    $archiveDiff = $LASTEXITCODE
+    if ($archiveDiff -gt 1) { throw 'No se pudo comprobar el archivo de oportunidades' }
+    if ($archiveDiff -eq 1) {
+        Invoke-Checked -Program 'git' -Arguments @('commit', '-m', 'Archive opportunities from verified public dashboard')
+        Invoke-Checked -Program 'git' -Arguments @('push', 'origin', 'main', '--quiet')
+    }
     Write-RunLog 'Dashboard actualizado y publicado correctamente.'
 } catch {
     Write-RunLog ('ERROR: ' + $_.Exception.Message)
