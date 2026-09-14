@@ -192,6 +192,10 @@ class DraftKingsParser:
                 "scrapedAt": scraped_at,
                 "markets": [],
             }
+            event_link = title.select_one('a[href]')
+            event_match = re.search(r'^https://sportsbook\.draftkings\.com/event/(?:[^/?]+/)?(\d+)(?:[/?]|$)', event_link.get('href', '')) if event_link else None
+            if event_match:
+                game['sourceEventId'] = event_match.group(1)
             seen_market_rows = set()
 
             for block_index, block in enumerate(event.select(".tb-market-wrap > div")):

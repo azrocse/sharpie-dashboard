@@ -2,7 +2,7 @@
 
 from pipeline.download import download_all
 from pipeline.parse import parse_all
-from pipeline.odds import apply_playdoit_odds
+from pipeline.dk_metadata import enrich_event_sports
 from pipeline.analyze import analyze_all
 from dashboard.generate_dashboard import generate_dashboard
 from pathlib import Path
@@ -14,7 +14,7 @@ def main(runtime_dir=None):
     try:
         downloaded = download_all()
         parsed = parse_all(downloaded)
-        parsed = apply_playdoit_odds(parsed)
+        parsed = enrich_event_sports(parsed)
         analyzed = analyze_all(parsed)
         output = generate_dashboard(source_json_path=analyzed)
     except Exception:

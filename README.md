@@ -82,9 +82,29 @@ borrarse como si fuera una salida regenerable.
 El JSON actual conserva hasta 200 observaciones por mercado presente en el feed
 para calcular movimiento de cuota y mostrar su evolución. Los mercados que
 desaparecen del feed dejan de conservarse en la siguiente descarga válida.
-Cada Moneyline se procesa con las dos contrapartes que DK entrega. El devig
-normaliza exclusivamente esas dos selecciones, incluso si su suma implícita es
-menor de 100%; Sharpie no crea una opción de empate ausente del feed.
+La única fuente activa de cuotas y splits es DK; el pipeline no consulta ni
+sustituye precios con Playdoit. Los mercados binarios conservan su cálculo.
+El ML de fútbol usa `soccer_ml_draw_estimate_v1`: supone un overround de 5%
+y reserva `1.05 - 1/cuota_local_decimal - 1/cuota_visita_decimal` para la
+probabilidad implícita del empate. Divide las tres probabilidades por 1.05;
+no fuerza a los dos equipos a sumar 100%. El margen es un supuesto explícito,
+no un dato observado ni una calibración estadística. La cuota de empate
+estimada se distingue de cualquier precio real de DK.
+
+La mezcla 60% actual, 30% mediana de 60 minutos y 10% apertura se recalcula
+con vectores completos de tres resultados. El ajuste de splits es una
+transferencia entre equipos (máximo 6 puntos), sin atribuir dinero al empate.
+Probabilidad, EV y stake usan la estimación central del 5%; el JSON conserva
+también sensibilidad a márgenes de 0%, 5% y 10% donde sean matemáticamente
+válidos. No se añade DNB. Esto corrige la normalización incompleta, pero no
+demuestra calibración o rentabilidad del modelo.
+
+Para SPORTS, se identifica el deporte por el eventId enlazado desde los splits
+y sus parámetros en la página de DK, con caché local. No se infieren deportes
+por nombres de equipos o por `vs`. Un ML de SPORTS sin deporte verificado y
+con suma implícita menor de 100% no se normaliza como binario. Los históricos
+cerrados de Opportunities conservan los valores que se publicaron en su momento;
+las nuevas capturas incorporan los supuestos de empate en `drawEstimation`.
 
 Se requieren dos observaciones pregame para mostrar un mercado en el dashboard.
 Una instalación sin datos previos puede mostrar el estado vacío durante el primer

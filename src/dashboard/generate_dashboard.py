@@ -570,6 +570,8 @@ def build_picks(raw_data):
             "modelProb": model_prob,
             "modelEdge": model_edge,
             "modelHistoryPoints": int(market.get("modelHistoryPoints") or 0),
+            "modelSource": market.get("modelSource"),
+            "drawEstimation": market.get("drawEstimation"),
             
             "ev": ev,
             "whale": "SMART_MONEY" in set(market.get("marketSignals") or [market_signal]),

@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 
 from config.league_config import enabled_leagues, league_slug
 from storage import atomic_write_json
+from pipeline.dk_metadata import SOCCER_LEAGUES
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 INPUT_DIR = os.path.join(BASE_DIR, "data", "parsed")
@@ -20,6 +21,9 @@ SHARPIE_PATH = os.path.join(OUTPUT_DIR, "sharpie.json")
 
 PROVISIONAL_DIVERGENCE_WEIGHT = 0.12
 MAX_DIVERGENCE_ADJUSTMENT = 6.0
+# Assumptions, not observed DK draw odds or a calibrated draw model.
+SOCCER_ASSUMED_MARGIN_PCT = 5.0
+SOCCER_MARGIN_SCENARIOS = (0.0, 5.0, 10.0)
 KELLY_FRACTION = 0.125
 PERSONAL_KELLY_FRACTION = 0.5
 MAX_KELLY_FRACTION_PCT = 10.0
@@ -352,6 +356,81 @@ def _history_map(market):
         result[stamp] = point
     return result
 
+
+def is_soccer_market(league_name, game, market):
+    return normalize_market_type(market.get('market')) == 'Moneyline' and (
+        str(league_name).casefold() in SOCCER_LEAGUES
+        or str(game.get('sport', '')).casefold() in {'soccer', 'futbol', 'fútbol'}
+        or str(game.get('sourceSportId', '')) == '1')
+
+
+def soccer_price_vector(decimals, margin):
+    if len(decimals) != 2 or any(d is None or not math.isfinite(d) or d <= 1 for d in decimals):
+        return None
+    total = 1 + margin / 100
+    if not 0 < total - sum(1 / d for d in decimals) < 1:
+        return None
+    teams = [100 / (d * total) for d in decimals]
+    draw = 100 - sum(teams)
+    return [*teams, draw] if draw > 0 else None
+
+
+def soccer_fair_model(market, grouped_markets):
+    """Three-outcome mass; team flow is a zero-sum transfer, never draw money."""
+    if len(grouped_markets) != 2:
+        return None
+    decimals = [american_to_decimal(_current_odds(m)) for m in grouped_markets]
+    current = soccer_price_vector(decimals, SOCCER_ASSUMED_MARGIN_PCT)
+    if current is None:
+        return None
+    volumes = [(safe_pct(m.get('handle')), safe_pct(m.get('bets'))) for m in grouped_markets]
+    if any(h is None or b is None for h, b in volumes):
+        return None
+    delta = ((volumes[0][0] - volumes[0][1]) - (volumes[1][0] - volumes[1][1])) / 2
+    requested_flow = max(-MAX_DIVERGENCE_ADJUSTMENT, min(MAX_DIVERGENCE_ADJUSTMENT,
+                                                       delta * PROVISIONAL_DIVERGENCE_WEIGHT))
+    maps = [_history_map(m) for m in grouped_markets]
+    common = sorted(set(maps[0]) & set(maps[1]))
+    observations = [(stamp, [american_to_decimal(values[stamp].get('odds')) for values in maps]) for stamp in common]
+
+    def evaluate(margin):
+        present = soccer_price_vector(decimals, margin)
+        if present is None:
+            return None
+        history = [(stamp, soccer_price_vector(odds, margin)) for stamp, odds in observations]
+        history = [(stamp, p) for stamp, p in history if p is not None]
+        base = present
+        if history:
+            latest = history[-1][0]
+            recent = [p for stamp, p in history if (latest-stamp).total_seconds() <= 3600]
+            medians = [statistics.median(p[i] for p in recent) for i in range(3)]
+            medians = [100 * p / sum(medians) for p in medians]
+            base = [.6 * present[i] + .3 * medians[i] + .1 * history[0][1][i] for i in range(3)]
+        flow = max(-base[0], min(base[1], requested_flow))
+        model = [round(base[0] + flow, 2), round(base[1] - flow, 2)]
+        model.append(round(100 - sum(model), 2))
+        return model, round(flow, 2), len(history)
+
+    model, flow, points = evaluate(SOCCER_ASSUMED_MARGIN_PCT)
+    index = grouped_markets.index(market)
+    scenarios = [(m, evaluate(m)) for m in SOCCER_MARGIN_SCENARIOS]
+    probabilities = [p[0][index] for _, p in scenarios if p is not None]
+    draw_implied = (1 + SOCCER_ASSUMED_MARGIN_PCT / 100) - sum(1 / d for d in decimals)
+    draw_decimal = 1 / draw_implied
+    draw_odds = 100 * (draw_decimal - 1) if draw_decimal >= 2 else -100 / (draw_decimal - 1)
+    return {
+        'modelProb': model[index], 'fairProb': round(current[index], 2),
+        'flowAdjustment': flow if index == 0 else -flow, 'modelHistoryPoints': points,
+        'modelSource': 'soccer_ml_draw_estimate_v1',
+        'drawEstimation': {'method': 'assumed_overround_residual', 'assumedMarginPct': SOCCER_ASSUMED_MARGIN_PCT,
+                           'probability': model[2], 'estimatedAmericanOdds': round(draw_odds),
+                           'currentFairProbability': round(current[2], 2),
+                           'impliedProbability': round(draw_implied * 100, 2),
+                           'modelProbabilityMin': min(probabilities), 'modelProbabilityMax': max(probabilities),
+                           'marginScenariosPct': [m for m, p in scenarios if p is not None],
+                           'calibrated': False},
+    }
+
 def historical_fair_model(market, grouped_markets, decimal_odds, divergence):
     """60% fair actual, 30% mediana 60m, 10% apertura, con flujo limitado."""
     # En este feed los tres mercados admitidos se evalúan contra una sola
@@ -416,7 +495,22 @@ def process_market(league_name, game, market, grouped_markets):
     for item in grouped_markets:
         odds = _current_odds(item)
         if odds is not None and is_price(odds, item.get("market", "")): all_decimal_odds.append(american_to_decimal(odds))
-    model_prob, fair_prob, flow_adjustment, model_source, model_history_points = historical_fair_model(market, grouped_markets, decimal_odds, divergence)
+    draw_estimation = None
+    if is_soccer_market(league_name, game, market):
+        estimate = soccer_fair_model(market, grouped_markets)
+        if estimate is None:
+            model_prob = fair_prob = flow_adjustment = None
+            model_source, model_history_points = 'soccer_ml_incomplete', 0
+        else:
+            model_prob, fair_prob, flow_adjustment = estimate['modelProb'], estimate['fairProb'], estimate['flowAdjustment']
+            model_source, model_history_points = estimate['modelSource'], estimate['modelHistoryPoints']
+            draw_estimation = estimate['drawEstimation']
+    elif (str(league_name).casefold() == 'sports' and not game.get('sport')
+          and market_type == 'Moneyline' and sum(1 / d for d in all_decimal_odds) < 1):
+        model_prob = fair_prob = flow_adjustment = None
+        model_source, model_history_points = 'sport_not_verified', 0
+    else:
+        model_prob, fair_prob, flow_adjustment, model_source, model_history_points = historical_fair_model(market, grouped_markets, decimal_odds, divergence)
     model_edge = calculate_model_edge(model_prob, implied_prob)
     ev = calculate_ev(model_prob, decimal_odds)
     history = normalize_history(market)
@@ -453,6 +547,7 @@ def process_market(league_name, game, market, grouped_markets):
         "handlePct": handle, "betsPct": bets, "divergence": divergence, "signedDivergence": divergence,
         "flowAdjustment": flow_adjustment, "modelProb": model_prob, "modelSource": model_source,
         "modelHistoryPoints": model_history_points,
+        "drawEstimation": draw_estimation,
         "modelEdge": model_edge, "ev": ev, "stake": stake, "marketSignal": market_signal,
         "marketSignals": market_signals,
         "oddsStakeCap": odds_stake_cap,
@@ -514,7 +609,8 @@ def analyze_all(parsed_files=None):
         league_name = data.get("league", "UNKNOWN")
         league_result = {"league": league_name, "date": datetime.now().strftime("%Y-%m-%d"), "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"), "markets": []}
         for game in data.get("games", []):
-            markets = game.get("markets", [])
+            markets = [{**m, 'odds': m.get('draftKingsOdds') if m.get('oddsSource') == 'PLAYDOIT' else m.get('odds'),
+                        'oddsSource': 'DRAFTKINGS'} for m in game.get("markets", [])]
             grouped_indices = _group_market_indices(markets)
             for index, market in enumerate(markets):
                 group = [markets[i] for i in grouped_indices.get(index, [index])]

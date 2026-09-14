@@ -44,7 +44,7 @@ class CurrentPipelineTests(unittest.TestCase):
         self.stack.enter_context(patch("pipeline.download.enabled_leagues", return_value=one_source))
         self.stack.enter_context(patch.object(analyze, "enabled_leagues", return_value=one_source))
         self.stack.enter_context(patch("dashboard.generate_dashboard.enabled_leagues", return_value=one_source))
-        self.stack.enter_context(patch("main.apply_playdoit_odds", side_effect=lambda files: files))
+        self.stack.enter_context(patch("main.enrich_event_sports", side_effect=lambda files: files))
         self.stack.enter_context(patch("main.generate_dashboard", side_effect=lambda **kw: generate_dashboard(output_dir=self.root, **kw)))
 
     def run_feed(self, minute=0, html=None):
@@ -124,9 +124,9 @@ class CurrentPipelineTests(unittest.TestCase):
         self.assertNotIn("itm_content", query)
         self.assertEqual(query["tb_edate"], ["n30days"])
 
-    def test_binary_moneyline_devigs_the_two_dk_counterparts_even_when_underround(self):
-        first = {"market": "Moneyline", "pick": "Slavia Prague", "odds": "+175", "history": []}
-        second = {"market": "Moneyline", "pick": "Lens", "odds": "+150", "history": []}
+    def test_confirmed_binary_market_can_normalize_two_counterparts(self):
+        first = {"market": "Moneyline", "pick": "Player A", "odds": "+175", "history": []}
+        second = {"market": "Moneyline", "pick": "Player B", "odds": "+150", "history": []}
         model, fair, adjustment, source, points = analyze.historical_fair_model(
             first, [first, second], 2.75, -20,
         )
