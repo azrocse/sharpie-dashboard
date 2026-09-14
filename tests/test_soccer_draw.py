@@ -64,7 +64,7 @@ class SoccerDrawTests(unittest.TestCase):
     def test_soccer_metadata_from_global_catalog_is_used(self):
         pair=self.pair(('+150','+150'),(80,30,20,70))
         result=analyze.process_market('SPORTS',{'game':'A vs B','sourceSportId':'1'},pair[0],pair)
-        self.assertEqual(result['modelSource'],'soccer_ml_draw_estimate_v1')
+        self.assertEqual(result['modelSource'],'soccer_ml_mixed_50_50_v1')
         self.assertIsNotNone(result['drawEstimation'])
         self.assertEqual(result['actionKey'],'bet')
         self.assertGreater(result['stake'],0)
@@ -109,7 +109,18 @@ class SoccerDrawTests(unittest.TestCase):
             markets=json.loads(output.read_text())[0]['markets']
             self.assertEqual([p['odds'] for p in markets],['+500','-193'])
             self.assertTrue(all(p['oddsSource']=='DRAFTKINGS' for p in markets))
-            self.assertEqual(markets[0]['modelProb'],15.87)
+            comparison = markets[0]['modelComparison']['evaluations']
+            self.assertEqual(comparison['drawAware']['modelProb'],15.87)
+            self.assertEqual(markets[0]['modelProb'],round((comparison['binary']['modelProb']+15.87)/2,2))
+
+    def test_mixed_recomputes_ev_and_preserves_comparison(self):
+        pair=self.pair(('+150','+150'),(80,30,20,70))
+        result=analyze.process_market('MLS',{'game':'A vs B'},pair[0],pair)
+        evaluations=result['modelComparison']['evaluations']
+        self.assertEqual(result['modelProb'],round((evaluations['binary']['modelProb']+evaluations['drawAware']['modelProb'])/2,2))
+        self.assertEqual(result['ev'],analyze.calculate_ev(result['modelProb'],2.5))
+        self.assertEqual(result['stake'],evaluations['mixed']['stakeBeforeExposure'])
+        self.assertFalse(result['modelComparison']['calibrated'])
 
 
 class DkSportMetadataTests(unittest.TestCase):

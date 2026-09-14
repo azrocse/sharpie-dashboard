@@ -1478,7 +1478,7 @@ function render() {
                     </div>
 
                     ${unifiedDecisionPanelHtml(p)}
-                    ${p.drawEstimation ? `<p class="market-type">Empate estimado: ${escapeHTML(p.drawEstimation.probability)}% · margen supuesto ${escapeHTML(p.drawEstimation.assumedMarginPct)}%. Modelo con empate incluido; estimación sin calibrar.</p>` : ''}
+                    ${p.drawEstimation ? `<p class="market-type">${p.modelComparison ? 'Mixto 50/50 en evaluación · Empate de referencia:' : 'Empate estimado:'} ${escapeHTML(p.drawEstimation.probability)}% · margen supuesto ${escapeHTML(p.drawEstimation.assumedMarginPct)}%. Estimación sin calibrar.</p>` : ''}
                     <section class="pick-evolution" aria-label="Evolución del mercado">${buildEvolutionHtml(p)}</section>
 
                 </div>

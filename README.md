@@ -84,7 +84,17 @@ para calcular movimiento de cuota y mostrar su evolución. Los mercados que
 desaparecen del feed dejan de conservarse en la siguiente descarga válida.
 La única fuente activa de cuotas y splits es DK; el pipeline no consulta ni
 sustituye precios con Playdoit. Los mercados binarios conservan su cálculo.
-El ML de fútbol usa `soccer_ml_draw_estimate_v1`: supone un overround de 5%
+El ML de fútbol usa ahora `soccer_ml_mixed_50_50_v1`, en evaluación: promedia
+50% de la probabilidad binaria anterior y 50% de la probabilidad con empate
+estimado descrita abajo. EV, categoría y stake se recalculan desde esa media;
+después se aplican los topes de exposición habituales. No es una calibración.
+`modelComparison` conserva probabilidades, EV, edge, categorías y stakes antes
+de exposición de las tres versiones en cada pick, incluso los no elegibles del
+dashboard. Los commits de datos permiten recuperar cada captura. No son
+resultados liquidados ni apuestas ejecutadas. `drawEstimation` describe solo
+el componente con empate, no la masa de empate del mixto.
+
+El componente `soccer_ml_draw_estimate_v1` supone un overround de 5%
 y reserva `1.05 - 1/cuota_local_decimal - 1/cuota_visita_decimal` para la
 probabilidad implícita del empate. Divide las tres probabilidades por 1.05;
 no fuerza a los dos equipos a sumar 100%. El margen es un supuesto explícito,
@@ -94,7 +104,7 @@ estimada se distingue de cualquier precio real de DK.
 La mezcla 60% actual, 30% mediana de 60 minutos y 10% apertura se recalcula
 con vectores completos de tres resultados. El ajuste de splits es una
 transferencia entre equipos (máximo 6 puntos), sin atribuir dinero al empate.
-Probabilidad, EV y stake usan la estimación central del 5%; el JSON conserva
+El componente con empate usa la estimación central del 5%; el JSON conserva
 también sensibilidad a márgenes de 0%, 5% y 10% donde sean matemáticamente
 válidos. No se añade DNB. Esto corrige la normalización incompleta, pero no
 demuestra calibración o rentabilidad del modelo.

@@ -496,6 +496,7 @@ def process_market(league_name, game, market, grouped_markets):
         odds = _current_odds(item)
         if odds is not None and is_price(odds, item.get("market", "")): all_decimal_odds.append(american_to_decimal(odds))
     draw_estimation = None
+    model_comparison = None
     if is_soccer_market(league_name, game, market):
         estimate = soccer_fair_model(market, grouped_markets)
         if estimate is None:
@@ -505,6 +506,24 @@ def process_market(league_name, game, market, grouped_markets):
             model_prob, fair_prob, flow_adjustment = estimate['modelProb'], estimate['fairProb'], estimate['flowAdjustment']
             model_source, model_history_points = estimate['modelSource'], estimate['modelHistoryPoints']
             draw_estimation = estimate['drawEstimation']
+            old_prob = historical_fair_model(market, grouped_markets, decimal_odds, divergence)[0]
+            if old_prob is None:
+                model_prob = None
+                model_source = 'soccer_ml_incomplete'
+            else:
+                corrected_prob = model_prob
+                model_prob = round((old_prob + corrected_prob) / 2, 2)
+                model_source = 'soccer_ml_mixed_50_50_v1'
+                model_comparison = {
+                    'version': model_source, 'binaryWeight': 0.5, 'drawAwareWeight': 0.5,
+                    'calibrated': False,
+                    'evaluations': {
+                        name: {'modelProb': probability,
+                               'ev': calculate_ev(probability, decimal_odds),
+                               'modelEdge': calculate_model_edge(probability, implied_prob)}
+                        for name, probability in [('binary', old_prob), ('drawAware', corrected_prob), ('mixed', model_prob)]
+                    },
+                }
     elif (str(league_name).casefold() == 'sports' and not game.get('sport')
           and market_type == 'Moneyline' and sum(1 / d for d in all_decimal_odds) < 1):
         model_prob = fair_prob = flow_adjustment = None
@@ -533,6 +552,14 @@ def process_market(league_name, game, market, grouped_markets):
         model_prob, decimal_odds, ev, odds_stake_cap=odds_stake_cap,
         actionable=action_key == "bet", category=pick_category,
     )
+    if model_comparison is not None:
+        for evaluation in model_comparison['evaluations'].values():
+            category = classify_pick_category(evaluation['ev'], evaluation['modelEdge'], market_signals,
+                                              divergence, evaluation['modelProb'], raw_odds, handle=handle)
+            evaluation['pickCategory'] = category
+            evaluation['stakeBeforeExposure'] = calculate_stake(
+                evaluation['modelProb'], decimal_odds, evaluation['ev'], odds_stake_cap=odds_stake_cap,
+                actionable=category is not None, category=category)
     game_time = game.get("time_raw") or game.get("startIso") or game.get("time") or market.get("time_raw") or datetime.now().strftime("%H:%M")
     return {
         "league": league_name, "sourceLeague": league_name,
@@ -548,6 +575,7 @@ def process_market(league_name, game, market, grouped_markets):
         "flowAdjustment": flow_adjustment, "modelProb": model_prob, "modelSource": model_source,
         "modelHistoryPoints": model_history_points,
         "drawEstimation": draw_estimation,
+        "modelComparison": model_comparison,
         "modelEdge": model_edge, "ev": ev, "stake": stake, "marketSignal": market_signal,
         "marketSignals": market_signals,
         "oddsStakeCap": odds_stake_cap,
