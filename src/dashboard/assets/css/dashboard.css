@@ -1616,3 +1616,50 @@
             .countdown-timer { text-align: center; }
             .pcard { padding: 12px; }
         }
+
+/* Binary controls: a stable label and an explicit on/off state. */
+button.dashboard-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 9px;
+    width: auto;
+    height: auto;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card-bg, transparent);
+    color: var(--text);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+button.dashboard-switch::before {
+    content: 'OFF';
+    order: 1;
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: .04em;
+}
+button.dashboard-switch::after {
+    content: '';
+    order: 2;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 22px;
+    border-radius: 20px;
+    background: radial-gradient(circle at 11px 11px, white 7px, transparent 8px), #64748b;
+}
+button.dashboard-switch[aria-checked='true'] { border-color: var(--teal); }
+button.dashboard-switch[aria-checked='true']::before { content: 'ON'; color: var(--teal); }
+button.dashboard-switch[aria-checked='true']::after {
+    background: radial-gradient(circle at 25px 11px, white 7px, transparent 8px), var(--teal, #14b8a6);
+}
+button.dashboard-switch:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+@media (max-width: 600px) {
+    .filter-row button.dashboard-switch { flex: 1 1 200px; white-space: normal; text-align: left; }
+}

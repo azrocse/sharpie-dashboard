@@ -1383,6 +1383,27 @@ function updateFilterCounts(pendingPicks) {
     if (freeReleaseBtn) freeReleaseBtn.textContent = `📣 Free para redes (${pendingPicks.filter(p => p.freeRelease).length})`;
 }
 
+function syncDashboardSwitches() {
+    const switches = {
+        themeToggle: ['Modo oscuro', document.documentElement.getAttribute('data-theme') === 'dark'],
+        viewModeToggle: ['Vista avanzada', state.advancedView],
+        fullMarketToggle: ['Mercado completo', state.showFullMarket],
+        featuredOnly: ['Solo picks destacados', state.featuredOnly],
+        freeReleaseOnly: ['Solo Free para redes', state.freeReleaseOnly],
+        btnAdvToggle: ['Filtros avanzados', document.getElementById('advFiltersPanel')?.classList.contains('show')],
+    };
+    Object.entries(switches).forEach(([id, [label, enabled]]) => {
+        const button = document.getElementById(id);
+        if (!button) return;
+        button.classList.add('dashboard-switch');
+        button.setAttribute('role', 'switch');
+        button.setAttribute('aria-checked', String(Boolean(enabled)));
+        button.removeAttribute('aria-pressed');
+        button.textContent = label;
+        button.title = `${label}: ${enabled ? 'activado' : 'desactivado'}`;
+    });
+}
+
 function render() {
     updateThemeByTime();
     syncAdvCardActiveStates();
@@ -1394,6 +1415,7 @@ function render() {
     const activeList = window.SHARPIE_LINKED_PICK_ID ? filteredList.filter(p => getPickId(p) === window.SHARPIE_LINKED_PICK_ID) : filteredList;
 
     updateFilterCounts(visibleUniverse);
+    syncDashboardSwitches();
 
     ACTIVE_FILTER_MATCH_KEYS = new Set(activeList.map(getPickId));
 
@@ -1631,6 +1653,7 @@ function setupListeners() {
                 advPanel.classList.add("show");
                 btnAdvToggle.setAttribute("aria-pressed", "true");
             }
+            syncDashboardSwitches();
         });
     }
 
