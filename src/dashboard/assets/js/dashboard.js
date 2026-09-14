@@ -358,6 +358,12 @@ function renderSavedFilterChips() {
             }
         });
     });
+    container.querySelectorAll(".saved-filter-edit").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const preset = loadSavedFilters().find(p => p.id === btn.dataset.id);
+            if (preset) editFilterPreset(preset);
+        });
+    });
     container.querySelectorAll(".saved-filter-delete").forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -1298,13 +1304,6 @@ function populateSelectOptions() {
         if (p.home) suggestions.add(p.home);
         if (!p.away && !p.home && p.game) suggestions.add(p.game);
     });
-    container.querySelectorAll(".saved-filter-edit").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const preset = loadSavedFilters().find(p => p.id === btn.dataset.id);
-            if (preset) editFilterPreset(preset);
-        });
-    });
-
     const searchList = document.getElementById("searchSuggestions");
     if (searchList) {
         searchList.innerHTML = Array.from(suggestions).sort()
