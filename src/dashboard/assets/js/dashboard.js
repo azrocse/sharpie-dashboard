@@ -1104,7 +1104,7 @@ function fallbackCopyText(text) {
 }
 
 function displayGame(p) {
-    return p && p.away && p.home ? `${p.away} vs ${p.home}` : ((p && p.game) || "Evento");
+    return (p && p.game) || "Evento";
 }
 
 function getHeaderTag(category, freeRelease = false) {
