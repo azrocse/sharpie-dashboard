@@ -212,27 +212,67 @@ function loadSavedFilters() {
     catch (e) { return []; }
 }
 
+let editingFilterPreset = null;
+
 function saveSavedFilters(list) {
-    try { localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(list)); }
-    catch (e) { console.error("Error al guardar filtros:", e); }
+    try { localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(list)); return true; }
+    catch (e) {
+        console.error("Error al guardar filtros:", e);
+        showAttractiveNotification({ title: "No se pudo guardar", body: "Revisa el almacenamiento del navegador e inténtalo de nuevo.", variant: "info" });
+        return false;
+    }
+}
+
+function finishFilterEditing(restore = false) {
+    if (restore && editingFilterPreset) {
+        Object.assign(state, editingFilterPreset.previousFilters);
+        syncFilterInputsFromState();
+        render();
+    }
+    editingFilterPreset = null;
+    document.getElementById("btnSaveFilter").textContent = "💾 Guardar filtro";
+    document.getElementById("cancelFilterEdit").hidden = true;
+    document.getElementById("filterEditStatus").textContent = "";
+}
+
+function editFilterPreset(preset) {
+    const previousFilters = editingFilterPreset?.previousFilters || Object.fromEntries(FILTER_KEYS.map(k => [k, state[k]]));
+    applyFilterPreset(preset);
+    editingFilterPreset = { id: preset.id, name: preset.name, previousFilters };
+    document.getElementById("btnSaveFilter").textContent = "💾 Guardar cambios";
+    document.getElementById("cancelFilterEdit").hidden = false;
+    document.getElementById("filterEditStatus").textContent = `Editando «${preset.name}». Ajusta los filtros y pulsa Guardar cambios; también podrás cambiar el nombre.`;
 }
 
 function saveCurrentFilterPreset() {
-    if (!isAnyFilterActive()) {
+    if (!editingFilterPreset && !isAnyFilterActive()) {
         showAttractiveNotification({ title: "⚠️ Sin filtros activos", body: "Aplica al menos un filtro antes de guardarlo.", variant: "info" });
         return;
     }
-    const name = prompt("Nombre para este filtro:");
+    const name = prompt("Nombre para este filtro:", editingFilterPreset?.name || "");
     if (!name || !name.trim()) return;
 
     const snapshot = {};
     FILTER_KEYS.forEach(k => { snapshot[k] = state[k]; });
 
     const list = loadSavedFilters();
-    list.push({ id: Date.now().toString(36), name: name.trim(), filters: snapshot });
-    saveSavedFilters(list);
+    const isEditing = Boolean(editingFilterPreset);
+    if (isEditing) {
+        const index = list.findIndex(p => p.id === editingFilterPreset.id);
+        if (index < 0) {
+            showAttractiveNotification({ title: "Filtro no disponible", body: "El filtro fue eliminado. Guarda uno nuevo.", variant: "info" });
+            finishFilterEditing();
+            renderSavedFilterChips();
+            return;
+        }
+        list[index] = { ...list[index], name: name.trim(), filters: snapshot };
+    } else {
+        list.push({ id: Date.now().toString(36), name: name.trim(), filters: snapshot });
+    }
+    if (!saveSavedFilters(list)) return;
+    finishFilterEditing();
     renderSavedFilterChips();
-    showAttractiveNotification({ title: "💾 Filtro guardado", body: name.trim(), variant: "success" });
+    showAttractiveNotification({ title: isEditing ? "💾 Filtro actualizado" : "💾 Filtro guardado", body: name.trim(), variant: "success" });
 }
 
 function syncFilterInputsFromState() {
@@ -284,7 +324,8 @@ function applyFilterPreset(preset) {
 }
 
 function deleteFilterPreset(id) {
-    saveSavedFilters(loadSavedFilters().filter(p => p.id !== id));
+    if (!saveSavedFilters(loadSavedFilters().filter(p => p.id !== id))) return;
+    if (editingFilterPreset?.id === id) finishFilterEditing(true);
     renderSavedFilterChips();
 }
 
@@ -303,14 +344,18 @@ function renderSavedFilterChips() {
     container.innerHTML = list.map(p => `
         <span class="saved-filter-chip">
             <button type="button" class="saved-filter-apply" data-id="${p.id}">🎯 ${escapeHTML(p.name)}</button>
+            <button type="button" class="saved-filter-apply saved-filter-edit" data-id="${p.id}" aria-label="Editar filtro guardado">✎ Editar</button>
             <button type="button" class="saved-filter-delete" data-id="${p.id}" aria-label="Eliminar filtro guardado">✕</button>
         </span>
     `).join("");
 
-    container.querySelectorAll(".saved-filter-apply").forEach(btn => {
+    container.querySelectorAll(".saved-filter-apply:not(.saved-filter-edit)").forEach(btn => {
         btn.addEventListener("click", () => {
             const preset = list.find(p => p.id === btn.dataset.id);
-            if (preset) applyFilterPreset(preset);
+            if (preset) {
+                finishFilterEditing();
+                applyFilterPreset(preset);
+            }
         });
     });
     container.querySelectorAll(".saved-filter-delete").forEach(btn => {
@@ -1253,6 +1298,12 @@ function populateSelectOptions() {
         if (p.home) suggestions.add(p.home);
         if (!p.away && !p.home && p.game) suggestions.add(p.game);
     });
+    container.querySelectorAll(".saved-filter-edit").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const preset = loadSavedFilters().find(p => p.id === btn.dataset.id);
+            if (preset) editFilterPreset(preset);
+        });
+    });
 
     const searchList = document.getElementById("searchSuggestions");
     if (searchList) {
@@ -1637,6 +1688,7 @@ function setupListeners() {
 
     const btnSaveFilter = document.getElementById("btnSaveFilter");
     if (btnSaveFilter) btnSaveFilter.addEventListener("click", saveCurrentFilterPreset);
+    document.getElementById("cancelFilterEdit")?.addEventListener("click", () => finishFilterEditing(true));
 
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
