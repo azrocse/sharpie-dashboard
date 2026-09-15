@@ -2,6 +2,7 @@
 (() => {
     'use strict';
     const config = window.SHARPIE_FIREBASE_CONFIG;
+    if (window.SHARPIE_FIREBASE_ENABLED === false) return;
     if (!config?.apiKey || !config?.projectId || !config?.appId) return;
     let adapter, sdk, auth, db, user = null, epoch = 0, ready = false, applying = false;
     let unsubscribers = [], filters = [], remotePreferences = {}, timer, pending = 0, failed = false;
@@ -21,6 +22,8 @@
         'auth/account-exists-with-different-credential': 'Este correo usa otro método de acceso. Inicia sesión con ese método.',
         'auth/too-many-requests': 'Demasiados intentos. Espera unos minutos.',
         'auth/network-request-failed': 'No hay conexión. Inténtalo de nuevo.',
+        'auth/unauthorized-domain': 'El acceso aún no está habilitado para este dominio. Contacta al administrador.',
+        'auth/operation-not-allowed': 'Este método de acceso todavía no está habilitado. Contacta al administrador.',
         'permission-denied': 'No se pudo acceder a tu configuración. Inténtalo de nuevo.',
     }[error.code] || 'No se pudo completar la operación. Inténtalo de nuevo.');
 

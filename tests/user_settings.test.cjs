@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const fs = require('node:fs');
 const source = fs.readFileSync('src/dashboard/assets/js/user-settings.js','utf8');
 const tick = () => new Promise(resolve=>setImmediate(resolve));
-function harness(configured=true) {
+function harness(configured=true, enabled=true) {
   const elements = new Map(), events={}, docs=new Map(), listeners=[], writes=[];
   let authListener, state={search:'guest',advancedView:false}, fail=false;
   const node = id => {
@@ -32,7 +32,7 @@ function harness(configured=true) {
     }};},
   };
   const timers=new Map();let nextTimer=0;
-  const window={SHARPIE_FIREBASE_CONFIG:configured?{apiKey:'test',projectId:'test',appId:'test'}:null,
+  const window={SHARPIE_FIREBASE_ENABLED:enabled,SHARPIE_FIREBASE_CONFIG:configured?{apiKey:'test',projectId:'test',appId:'test'}:null,
     SHARPIE_SETTINGS_ADAPTER:{page:'dashboard',defaults:{search:'',advancedView:false},getPreferences:()=>state,
       applyPreferences:p=>{state=p;},getGuestFilters:()=>[{id:'guest',name:'Guest',filters:{search:'guest'}}],refreshFilters(){}},
     addEventListener:(name,fn)=>events[name]=fn};
@@ -45,6 +45,9 @@ function harness(configured=true) {
 }
 test('disabled configuration leaves the dashboard and local filters alone',()=>{
   const h=harness(false);assert.equal(h.window.SHARPIE_ACCOUNT,undefined);assert.equal(h.state.search,'guest');
+});
+test('activation gate keeps login disabled until project permissions are ready',()=>{
+  const h=harness(true,false);assert.equal(h.window.SHARPIE_ACCOUNT,undefined);assert.equal(h.state.search,'guest');
 });
 test('isolates accounts, restores guest state and ignores callbacks from the previous account',async()=>{
   const h=harness();await tick();

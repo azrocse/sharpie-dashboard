@@ -1,6 +1,6 @@
 # Firebase: configuración privada por usuario
 
-Estado: implementación preparada, desactivada hasta completar `src/dashboard/assets/js/firebase-config.js` y verificar Authentication y reglas.
+Estado: configuración pública incorporada; `SHARPIE_FIREBASE_ENABLED=false` hasta verificar Authentication y reglas. Comprobación del 15/09/2026: API de proyecto responde correctamente; `azrocse.github.io` falta en los dominios autorizados; Firestore rechaza la lectura anónima de preferencias. Esto no verifica todavía el aislamiento entre cuentas autenticadas.
 
 Proyecto elegido: `sharpie-dashboard`. El sitio permanece en GitHub Pages.
 
