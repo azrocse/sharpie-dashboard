@@ -81,3 +81,22 @@ test('Google and email flows are wired independently of the public feed',async()
   h.login(null);h.node('accountEmail').value='email@example.test';h.node('accountPassword').value='dummy-test';
   h.node('accountForm').onsubmit({preventDefault(){}});await tick();assert.equal(h.window.SHARPIE_ACCOUNT.signedIn,true);
 });
+test('import reports success without deleting local data and retry really retries the failed import',async()=>{
+  const h=harness();await tick();h.login('A');await tick();h.fail(true);
+  h.node('accountImport').onclick();await tick();
+  assert.equal(h.window.SHARPIE_ACCOUNT.getFilters().length,0);
+  h.fail(false);h.node('accountRetry').onclick();await tick();
+  assert.equal(h.docs.get('users/A/filters/imported').name,'Guest');
+  assert.match(h.node('accountStatus').textContent,/importado/);
+  h.node('accountImport').onclick();await tick();
+  assert.equal(h.window.SHARPIE_ACCOUNT.getFilters().length,1);
+  assert.match(h.node('accountStatus').textContent,/ya están/);
+  assert.equal(h.window.SHARPIE_SETTINGS_ADAPTER.getGuestFilters().length,1);
+});
+test('permission errors explain blocked import and do not prevent logout after failed reading',async()=>{
+  const h=harness();await tick();h.login('A');await tick();
+  h.listeners.find(l=>l.path==='users/A/filters').error({code:'permission-denied'});
+  h.node('accountImport').onclick();assert.match(h.node('accountStatus').textContent,/reglas/);
+  assert.equal(h.writes.length,0);
+  await h.node('accountLogout').onclick();assert.equal(h.window.SHARPIE_ACCOUNT.signedIn,false);
+});

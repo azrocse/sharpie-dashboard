@@ -8,6 +8,7 @@
     let unsubscribers = [], filters = [], remotePreferences = {}, timer, pending = 0, failed = false;
     let guestPreferences, guestFilters, lastPreferences = '', initialized = false;
     let latestFilters = null;
+    let failedFilters = null, lastSyncError = '';
     const clean = value => JSON.parse(JSON.stringify(value));
     const el = id => document.getElementById(id);
     const status = text => { el('accountStatus').textContent = text; };
@@ -24,7 +25,8 @@
         'auth/network-request-failed': 'No hay conexión. Inténtalo de nuevo.',
         'auth/unauthorized-domain': 'El acceso aún no está habilitado para este dominio. Contacta al administrador.',
         'auth/operation-not-allowed': 'Este método de acceso todavía no está habilitado. Contacta al administrador.',
-        'permission-denied': 'No se pudo acceder a tu configuración. Inténtalo de nuevo.',
+        'permission-denied': 'Firebase rechazó el acceso a tu configuración. Deben publicarse las reglas de permisos para settings y filters. Tus filtros locales siguen intactos.',
+        'unavailable': 'No hay conexión con Firebase. Tus filtros locales siguen intactos; vuelve a intentar cuando haya conexión.',
     }[error.code] || 'No se pudo completar la operación. Inténtalo de nuevo.');
 
     function mount() {
@@ -57,21 +59,29 @@
             clearTimeout(timer);
             // Flush pending preference changes before leaving the account.
             if (ready) await savePreferences();
-            if (pending || failed) { status('Hay cambios sin guardar. Reintenta antes de cerrar sesión.'); return; }
+            if (pending || (failed && ready)) { status('Hay cambios sin guardar. Reintenta antes de cerrar sesión.'); return; }
             try { await sdk.signOut(auth); } catch { status('No se pudo cerrar sesión. Inténtalo de nuevo.'); }
         };
         el('accountRetry').onclick = () => {
-            if (user && ready) { failed=false; savePreferences(); }
+            if (user && ready) {
+                failed=false;lastSyncError='';
+                if (failedFilters) { const retry=failedFilters;failedFilters=null;saveFilters(retry.list,retry.importCount); }
+                else savePreferences();
+            }
             else if(user) connectUser(user);
             else initializeSdk();
         };
         el('accountImport').onclick = () => {
-            if (!ready || !guestFilters?.length) return;
+            if (!ready || failed) { status(lastSyncError || 'Todavía no se ha podido leer tu cuenta. Primero reintenta la conexión; tus filtros locales no se han borrado.');return; }
+            if (!guestFilters?.length) { status('No hay filtros locales para importar en este navegador.');return; }
+            if (pending) { status('Espera a que termine el guardado actual antes de importar.');return; }
             const merged = [...filters];
             guestFilters.forEach(p => {
                 if (!merged.some(q => q.name === p.name && same(q.filters,p.filters))) merged.push({...p, id: crypto.randomUUID()});
             });
-            saveFilters(merged);
+            const count=merged.length-filters.length;
+            if(!count) { status('Tus filtros locales ya están en esta cuenta. No se crearon duplicados.');return; }
+            saveFilters(merged,count);
         };
     }
 
@@ -87,10 +97,10 @@
         pending++; status('Guardando…');
         try {
             await operation();
-            if (generation === epoch) { failed = false; el('accountRetry').hidden = true; }
+            if (generation === epoch) { failed = false;lastSyncError=''; el('accountRetry').hidden = true; }
             return true;
         } catch (error) {
-            if (generation === epoch) { failed = true; status(errorText(error)); el('accountRetry').hidden = false; }
+            if (generation === epoch) { failed = true;lastSyncError=errorText(error); status(lastSyncError); el('accountRetry').hidden = false; }
             return false;
         } finally {
             if (generation === epoch) {
@@ -106,7 +116,7 @@
         if (!user || !ready || applying || failed) return;
         if (pending) { clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);return; }
         const preferences = clean(adapter.getPreferences());
-        if (same(preferences, remotePreferences)) return;
+        if (same(preferences, remotePreferences)) { el('accountRetry').hidden=true;status('Configuración sincronizada');return; }
         const target = ref('settings', adapter.page), generation = epoch;
         const ok = await write(() => sdk.setDoc(target, {schemaVersion:1, preferences, updatedAt:sdk.serverTimestamp()}));
         if (ok && generation === epoch) remotePreferences = preferences;
@@ -119,7 +129,7 @@
         lastPreferences = signature;
         clearTimeout(timer); timer = setTimeout(() => {timer=null;savePreferences();}, 600);
     }
-    function saveFilters(list) {
+    function saveFilters(list, importCount=0) {
         if (!user) return null;
         if (!ready || pending || failed) { status('Espera a que termine la sincronización y vuelve a guardar.'); return false; }
         const old = clean(filters), next = clean(list), batch = sdk.writeBatch(db), generation = epoch;
@@ -133,14 +143,16 @@
         old.filter(p=>!next.some(q=>q.id===p.id)).forEach(p=>batch.delete(ref('filters',p.id)));
         filters = next; refreshFilters();
         write(()=>batch.commit()).then(ok=>{
-            if (!ok && generation===epoch) { filters=old; refreshFilters(); }
+            if(generation!==epoch)return;
+            if (!ok) { failedFilters={list:next,importCount};filters=old; refreshFilters(); }
+            else { failedFilters=null;if(importCount)status(`${importCount} filtro(s) importado(s) a tu cuenta. Los originales siguen en este navegador.`); }
         });
         return true;
     }
     function connectUser(nextUser) {
         epoch++; const generation = epoch;
         clearTimeout(timer); timer=null; unsubscribers.forEach(fn=>fn()); unsubscribers=[];
-        ready=false; pending=0; failed=false; filters=[]; latestFilters=null;remotePreferences={};
+        ready=false; pending=0; failed=false;failedFilters=null;lastSyncError=''; filters=[]; latestFilters=null;remotePreferences={};
         if (!user && nextUser) { guestPreferences=clean(adapter.getPreferences()); guestFilters=clean(adapter.getGuestFilters?.() || []); }
         user=nextUser;
         el('accountLogin').hidden=Boolean(user); el('accountLogout').hidden=!user;
@@ -152,7 +164,7 @@
         el('accountDialog').close(); status('Cargando tu configuración…');
         let prefsLoaded=false, filtersLoaded=!adapter.getGuestFilters;
         const check=()=>{ ready=prefsLoaded && filtersLoaded; if(ready && !pending && !failed) status('Configuración sincronizada'); };
-        const onError=error=>{ if(generation!==epoch)return;ready=false;failed=true;status(errorText(error));el('accountRetry').hidden=false; };
+        const onError=error=>{ if(generation!==epoch)return;ready=false;failed=true;lastSyncError=errorText(error);status(lastSyncError);el('accountRetry').hidden=false; };
         unsubscribers.push(sdk.onSnapshot(ref('settings',adapter.page), {includeMetadataChanges:true}, snapshot=>{
             if(generation!==epoch || snapshot.metadata.fromCache || snapshot.metadata.hasPendingWrites)return;
             const value=snapshot.exists() ? snapshot.data().preferences : adapter.defaults;
