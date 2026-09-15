@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/settings/{page} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && page in ['dashboard', 'opportunities']
+        && request.resource.data.keys().hasOnly(['schemaVersion', 'preferences', 'updatedAt'])
+        && request.resource.data.schemaVersion == 1
+        && request.resource.data.preferences is map
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /users/{userId}/filters/{filterId} {
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['schemaVersion', 'name', 'filters', 'updatedAt'])
+        && request.resource.data.schemaVersion == 1
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.filters is map
+        && request.resource.data.updatedAt == request.time;
+    }
+  }
+}

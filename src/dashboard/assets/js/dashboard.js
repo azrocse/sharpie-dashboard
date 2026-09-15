@@ -206,8 +206,32 @@ const FILTER_KEYS = [
     "evMin", "evMax", "stakeMin", "stakeMax", "divergenciaMin", "divergenciaMax",
 ];
 const SAVED_FILTERS_KEY = "sharpie_saved_filters_v1";
+const SETTINGS_KEYS = [...FILTER_KEYS, 'showFullMarket', 'sort', 'advancedView', 'autoThemeEnabled'];
+const DEFAULT_SETTINGS = Object.fromEntries(SETTINGS_KEYS.map(key => [key, state[key]]));
+
+function getDashboardPreferences() {
+    return { ...Object.fromEntries(SETTINGS_KEYS.map(key => [key, state[key]])),
+        theme: document.documentElement.getAttribute('data-theme'),
+        filtersExpanded: Boolean(document.getElementById('advFiltersPanel')?.classList.contains('show')) };
+}
+
+function applyDashboardPreferences(preferences) {
+    const source = preferences && typeof preferences === 'object' ? preferences : {};
+    SETTINGS_KEYS.forEach(key => {
+        const value=source[key], fallback=DEFAULT_SETTINGS[key];
+        state[key] = fallback === null ? (typeof value === 'number' && Number.isFinite(value) ? value : null)
+            : typeof value === typeof fallback ? value : fallback;
+    });
+    if (['light','dark'].includes(source.theme)) document.documentElement.setAttribute('data-theme', source.theme);
+    document.getElementById('advFiltersPanel')?.classList.toggle('show', source.filtersExpanded === true);
+    finishFilterEditing();
+    syncFilterInputsFromState();
+    document.getElementById('fSort').value=state.sort;
+    render();
+}
 
 function loadSavedFilters() {
+    if (window.SHARPIE_ACCOUNT?.signedIn) return window.SHARPIE_ACCOUNT.getFilters();
     try { return JSON.parse(localStorage.getItem(SAVED_FILTERS_KEY)) || []; }
     catch (e) { return []; }
 }
@@ -215,6 +239,7 @@ function loadSavedFilters() {
 let editingFilterPreset = null;
 
 function saveSavedFilters(list) {
+    if (window.SHARPIE_ACCOUNT?.signedIn) return window.SHARPIE_ACCOUNT.saveFilters(list);
     try { localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(list)); return true; }
     catch (e) {
         console.error("Error al guardar filtros:", e);
@@ -272,7 +297,7 @@ function saveCurrentFilterPreset() {
     if (!saveSavedFilters(list)) return;
     finishFilterEditing();
     renderSavedFilterChips();
-    showAttractiveNotification({ title: isEditing ? "💾 Filtro actualizado" : "💾 Filtro guardado", body: name.trim(), variant: "success" });
+    showAttractiveNotification({ title: window.SHARPIE_ACCOUNT?.signedIn ? "Guardando filtro en tu cuenta…" : (isEditing ? "💾 Filtro actualizado" : "💾 Filtro guardado"), body: name.trim(), variant: "success" });
 }
 
 function syncFilterInputsFromState() {
@@ -1796,4 +1821,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Auto-refresh: detecta picks nuevos sin necesitar F5
     startAutoRefresh();
+    window.SHARPIE_SETTINGS_ADAPTER = {
+        page: 'dashboard', defaults: {...DEFAULT_SETTINGS,theme:document.documentElement.getAttribute('data-theme'),filtersExpanded:false},
+        getPreferences:getDashboardPreferences, applyPreferences:applyDashboardPreferences,
+        getGuestFilters:()=>{ try {const list=JSON.parse(localStorage.getItem(SAVED_FILTERS_KEY));return Array.isArray(list)?list:[];} catch {return [];} },
+        refreshFilters:renderSavedFilterChips,
+    };
+    window.dispatchEvent(new Event('sharpie:settings-ready'));
 });

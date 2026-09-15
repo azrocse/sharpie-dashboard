@@ -194,4 +194,21 @@ byId('themeToggle').addEventListener('click',()=>{document.documentElement.datas
 byId('rows').addEventListener('click',event=>{const button=event.target.closest('button[data-detail]');if(!button)return;byId('detailJson').textContent=JSON.stringify(archive.picks.find(p=>p.opportunityId===button.dataset.detail),null,2);byId('detail').showModal();});
 byId('closeDetail').addEventListener('click',()=>byId('detail').close());
 populateOptions();initCharts();render();
+window.SHARPIE_SETTINGS_ADAPTER = {
+    page:'opportunities',
+    defaults:{filters:Object.fromEntries(filterIds.map(id=>[id,byId(id).value])),compact:false,expanded:false,theme:document.documentElement.dataset.theme},
+    getPreferences:()=>({filters:Object.fromEntries(filterIds.map(id=>[id,byId(id).value])),compact:document.querySelector('.history-table-wrap').classList.contains('compact'),expanded:!byId('advanced').hidden,theme:document.documentElement.dataset.theme}),
+    applyPreferences:preferences=>{
+        filterIds.forEach(id=>{byId(id).value=typeof preferences?.filters?.[id]==='string' ? preferences.filters[id] : '';});
+        const compact=preferences?.compact===true;
+        document.querySelector('.history-table-wrap').classList.toggle('compact',compact);
+        byId('densityToggle').setAttribute('aria-pressed',String(compact));
+        byId('densityToggle').textContent=compact?'Vista cómoda':'Vista compacta';
+        byId('advanced').hidden=preferences?.expanded!==true;
+        byId('advancedToggle').setAttribute('aria-expanded',String(!byId('advanced').hidden));
+        if(['dark','light'].includes(preferences?.theme))document.documentElement.dataset.theme=preferences.theme;
+        page=0;initCharts();render();
+    },
+};
+window.dispatchEvent(new Event('sharpie:settings-ready'));
 if (location.protocol==='http:' || location.protocol==='https:') setInterval(refresh,90000);

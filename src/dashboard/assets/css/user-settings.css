@@ -1,0 +1,10 @@
+.account-panel { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin:14px 0; padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--panel); color:var(--text); }
+.account-panel p { margin:6px 0 0; font-size:12px; color:var(--muted); }
+.account-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.account-panel [hidden] { display:none !important; }
+#accountDialog { width:min(440px,calc(100vw - 32px)); max-height:90vh; overflow:auto; box-sizing:border-box; background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:16px; padding:24px; }
+#accountDialog::backdrop { background:rgba(0,0,0,.55); }
+#accountDialog h2 { margin-top:0; }
+#accountDialog label { display:flex; flex-direction:column; gap:8px; margin:16px 0; }
+#accountDialog input { box-sizing:border-box; width:100%; padding:12px; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; }
+#accountDialog #accountError { color:var(--text); min-height:18px; margin-bottom:12px; }

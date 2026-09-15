@@ -23,6 +23,9 @@ def generate_opportunities_viewer(source_path=None, output_dir=None):
         "THEME_INIT_JS": read_utf8(CURRENT_DIR / "assets/js/theme-init.js"),
         "VIEWER_CSS": read_utf8(CURRENT_DIR / "assets/css/opportunities.css"),
         "VIEWER_JS": read_utf8(CURRENT_DIR / "assets/js/opportunities.js"),
+        "FIREBASE_CONFIG_JS": read_utf8(CURRENT_DIR / "assets/js/firebase-config.js"),
+        "USER_SETTINGS_JS": read_utf8(CURRENT_DIR / "assets/js/user-settings.js"),
+        "USER_SETTINGS_CSS": read_utf8(CURRENT_DIR / "assets/css/user-settings.css"),
         "EXCEL_JS": read_utf8(CURRENT_DIR / "assets/js/xlsx.full.min.js"),
         "OPPORTUNITIES_JSON": json.dumps(payload, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"),
     })
