@@ -150,3 +150,13 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,su
 .podium-numbers span { color:var(--teal); }.podium-numbers b { color:var(--amber); font-weight:650; }
 .medal-rank-1,.medal-rank-2,.medal-rank-3 { font-size:15px; }
 @media(max-width:500px) { .podium-row { gap:6px; }.podium-numbers { display:grid; gap:1px; text-align:right; }.podium-pick { max-width:180px; }.soon-empty { min-height:102px; padding:12px; }.soon-card .podium-list { min-height:102px; }.soon-empty-icon { width:42px; height:42px; flex-basis:42px; font-size:19px; } }
+@media (max-width: 800px) {
+    .header-meta #themeToggle.dashboard-switch {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        width: 100%;
+        min-width: 0;
+        justify-self: stretch;
+    }
+    .header-meta { grid-template-columns: minmax(0, 1fr); }
+}
