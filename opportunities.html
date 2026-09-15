@@ -2110,12 +2110,22 @@ window.dispatchEvent(new Event('sharpie:settings-ready'));
 if (location.protocol==='http:' || location.protocol==='https:') setInterval(refresh,90000);
 </script>
   <script>// Public Firebase web-app configuration only. Never put service-account keys here.
-window.SHARPIE_FIREBASE_CONFIG = null;
+// Enable after the Pages domain, both providers and per-user Firestore rules are verified.
+window.SHARPIE_FIREBASE_ENABLED = false;
+window.SHARPIE_FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCSbvzVKLcOy01ptDVmq9V_r5aWE75O-Sk",
+    authDomain: "sharpie-dashboard.firebaseapp.com",
+    projectId: "sharpie-dashboard",
+    storageBucket: "sharpie-dashboard.firebasestorage.app",
+    messagingSenderId: "767206545709",
+    appId: "1:767206545709:web:cc111c59cba7796b789ba4"
+};
 </script>
   <script>/* Account preferences are independent of the public picks feed. */
 (() => {
     'use strict';
     const config = window.SHARPIE_FIREBASE_CONFIG;
+    if (window.SHARPIE_FIREBASE_ENABLED === false) return;
     if (!config?.apiKey || !config?.projectId || !config?.appId) return;
     let adapter, sdk, auth, db, user = null, epoch = 0, ready = false, applying = false;
     let unsubscribers = [], filters = [], remotePreferences = {}, timer, pending = 0, failed = false;
@@ -2135,6 +2145,8 @@ window.SHARPIE_FIREBASE_CONFIG = null;
         'auth/account-exists-with-different-credential': 'Este correo usa otro método de acceso. Inicia sesión con ese método.',
         'auth/too-many-requests': 'Demasiados intentos. Espera unos minutos.',
         'auth/network-request-failed': 'No hay conexión. Inténtalo de nuevo.',
+        'auth/unauthorized-domain': 'El acceso aún no está habilitado para este dominio. Contacta al administrador.',
+        'auth/operation-not-allowed': 'Este método de acceso todavía no está habilitado. Contacta al administrador.',
         'permission-denied': 'No se pudo acceder a tu configuración. Inténtalo de nuevo.',
     }[error.code] || 'No se pudo completar la operación. Inténtalo de nuevo.');
 
