@@ -578,6 +578,15 @@
         }
 
         .saved-filter-delete:hover { background: var(--red-soft); color: var(--red); border-left-color: var(--red); }
+        .saved-filter-chip { max-width:100%; }
+        .saved-filter-apply:not(.saved-filter-edit) { min-width:0;max-width:230px;overflow:hidden;text-overflow:ellipsis; }
+        .saved-filter-drag,.saved-filter-rename { border:0;background:transparent;color:var(--teal);padding:6px 9px;font:inherit;font-size:11px;cursor:pointer;flex-shrink:0; }
+        .saved-filter-drag { cursor:grab;touch-action:none;user-select:none;font-size:18px; }
+        .saved-filter-drag:active { cursor:grabbing; }
+        .saved-filter-rename { border-left:1px solid var(--border); }
+        .saved-filter-chip.dragging { opacity:.5; }
+        .saved-filter-chip.drop-target { outline:2px solid var(--teal);outline-offset:3px; }
+        .saved-filter-drag:focus-visible,.saved-filter-rename:focus-visible { outline:2px solid var(--teal);outline-offset:-3px; }
 
         /* SECCIÓN DE FILTROS AVANZADOS OPTIMIZADA UI/UX */
         .adv-filters-panel {
@@ -2182,7 +2191,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 
 <div id="reminderNotifContainer" class="reminder-notif-container"></div>
 </div>
-<script>window.SHARPIE_APP_VERSION="40968ef7bc91e264528d";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
+<script>window.SHARPIE_APP_VERSION="a2753b69f56f0166d388";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
 <script>
 /* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
@@ -2651,6 +2660,72 @@ function deleteFilterPreset(id) {
     renderSavedFilterChips();
 }
 
+function renameFilterPreset(id) {
+    const list=loadSavedFilters(),preset=list.find(p=>p.id===id);
+    if(!preset)return;
+    const answer=prompt('Nuevo nombre del filtro:',preset.name);
+    if(answer===null)return;
+    const name=answer.trim();
+    if(!name || name.length>100){showAttractiveNotification({title:'Nombre no válido',body:'Escribe entre 1 y 100 caracteres.',variant:'info'});return;}
+    if(name===preset.name)return;
+    preset.name=name;
+    if(!saveSavedFilters(list))return;
+    if(editingFilterPreset?.id===id){
+        editingFilterPreset.name=name;
+        document.getElementById('filterEditStatus').textContent=`Editando «${name}». Ajusta los parámetros y guarda los cambios.`;
+    }
+    renderSavedFilterChips();
+}
+
+function moveSavedFilter(id,targetId) {
+    const list=loadSavedFilters(),from=list.findIndex(p=>p.id===id),to=list.findIndex(p=>p.id===targetId);
+    if(from<0 || to<0 || from===to)return false;
+    const [preset]=list.splice(from,1);list.splice(to,0,preset);
+    if(!saveSavedFilters(list))return false;
+    renderSavedFilterChips();return true;
+}
+
+function bindSavedFilterSorting(container) {
+    container.querySelectorAll('.saved-filter-drag').forEach(handle=>{
+        let gesture=null;
+        const clear=()=>{container.querySelectorAll('.saved-filter-chip').forEach(chip=>{chip.classList.remove('dragging');chip.classList.remove('drop-target');});gesture=null;};
+        handle.addEventListener('pointerdown',event=>{
+            if(event.button!==0)return;
+            event.preventDefault();event.stopPropagation();
+            gesture={id:handle.dataset.id,target:null,x:event.clientX,y:event.clientY,moved:false};
+            handle.setPointerCapture(event.pointerId);
+        });
+        handle.addEventListener('pointermove',event=>{
+            if(!gesture)return;
+            if(Math.hypot(event.clientX-gesture.x,event.clientY-gesture.y)<6 && !gesture.moved)return;
+            gesture.moved=true;
+            const target=document.elementFromPoint(event.clientX,event.clientY)?.closest('.saved-filter-chip');
+            gesture.target=target && container.contains(target)?target.dataset.id:null;
+            container.querySelectorAll('.saved-filter-chip').forEach(chip=>{
+                chip.classList.toggle('dragging',chip.dataset.id===gesture.id);
+                chip.classList.toggle('drop-target',chip.dataset.id===gesture.target && gesture.target!==gesture.id);
+            });
+        });
+        handle.addEventListener('pointerup',event=>{
+            if(!gesture)return;
+            const {id,target,moved}=gesture;clear();
+            if(handle.hasPointerCapture(event.pointerId))handle.releasePointerCapture(event.pointerId);
+            if(moved && target)moveSavedFilter(id,target);
+        });
+        handle.addEventListener('pointercancel',clear);
+        handle.addEventListener('lostpointercapture',clear);
+        handle.addEventListener('keydown',event=>{
+            if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(event.key))return;
+            event.preventDefault();
+            const list=loadSavedFilters(),index=list.findIndex(p=>p.id===handle.dataset.id);
+            const target=event.key==='Home'?0:event.key==='End'?list.length-1:index+(['ArrowLeft','ArrowUp'].includes(event.key)?-1:1);
+            if(list[target] && moveSavedFilter(handle.dataset.id,list[target].id)) {
+                Array.from(container.querySelectorAll('.saved-filter-drag')).find(button=>button.dataset.id===handle.dataset.id)?.focus();
+            }
+        });
+    });
+}
+
 function renderSavedFilterChips() {
     const container = document.getElementById("savedFiltersRow");
     if (!container) return;
@@ -2664,13 +2739,17 @@ function renderSavedFilterChips() {
 
     container.style.display = "flex";
     container.innerHTML = list.map(p => `
-        <span class="saved-filter-chip">
+        <span class="saved-filter-chip" data-id="${escapeHTML(p.id)}">
+            <button type="button" class="saved-filter-drag" data-id="${escapeHTML(p.id)}" aria-label="Ordenar ${escapeHTML(p.name)}" title="Arrastra para ordenar. También puedes usar las flechas del teclado.">⠿</button>
             <button type="button" class="saved-filter-apply" data-id="${p.id}">🎯 ${escapeHTML(p.name)}</button>
             <button type="button" class="saved-filter-apply saved-filter-edit" data-id="${p.id}" aria-label="Editar filtro guardado">✎ Editar</button>
+            <button type="button" class="saved-filter-rename" data-id="${escapeHTML(p.id)}" aria-label="Renombrar ${escapeHTML(p.name)}">Renombrar</button>
             <button type="button" class="saved-filter-delete" data-id="${p.id}" aria-label="Eliminar filtro guardado">✕</button>
         </span>
     `).join("");
 
+    bindSavedFilterSorting(container);
+    container.querySelectorAll('.saved-filter-rename').forEach(button=>button.addEventListener('click',()=>renameFilterPreset(button.dataset.id)));
     container.querySelectorAll(".saved-filter-apply:not(.saved-filter-edit)").forEach(btn => {
         btn.addEventListener("click", () => {
             const preset = list.find(p => p.id === btn.dataset.id);
@@ -4167,6 +4246,12 @@ window.SHARPIE_FIREBASE_CONFIG = {
     let latestFilters = null;
     let failedFilters = null, lastSyncError = '';
     let observedPreferences = {}, dirtyPreferences = new Set();
+    let filterOrder = [];
+    const currentPreferences = () => ({...adapter.getPreferences(),...(adapter.getGuestFilters?{savedFilterOrder:[...filterOrder]}:{})});
+    const orderedFilters = () => {
+        const ranks=new Map(filterOrder.map((id,index)=>[id,index]));
+        return uniqueFilters([...filters].sort((a,b)=>(ranks.get(a.id)??Infinity)-(ranks.get(b.id)??Infinity)));
+    };
     const clean = value => JSON.parse(JSON.stringify(value));
     const el = id => document.getElementById(id);
     const status = text => { el('accountStatus').textContent = text; };
@@ -4247,7 +4332,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
             if (!ready || failed) { status(lastSyncError || 'Todavía no se ha podido leer tu cuenta. Primero reintenta la conexión; tus filtros locales no se han borrado.');return; }
             if (!guestFilters?.length) { status('No hay filtros locales para importar en este navegador.');return; }
             if (pending) { status('Espera a que termine el guardado actual antes de importar.');return; }
-            const merged = uniqueFilters(filters);
+            const merged = orderedFilters();
             const existingCount = merged.length;
             guestFilters.forEach(p => {
                 if (!merged.some(q => q.name === p.name && same(q.filters,p.filters))) merged.push({...p, id: crypto.randomUUID()});
@@ -4260,7 +4345,10 @@ window.SHARPIE_FIREBASE_CONFIG = {
 
     function applyPreferences(value) {
         applying = true;
-        try { adapter.applyPreferences(clean(value)); observedPreferences=clean(adapter.getPreferences());lastPreferences = JSON.stringify(observedPreferences); }
+        try {
+            filterOrder=Array.isArray(value.savedFilterOrder)?value.savedFilterOrder.filter(id=>typeof id==='string'):[];
+            adapter.applyPreferences(clean(value)); observedPreferences=clean(currentPreferences());lastPreferences = JSON.stringify(observedPreferences);
+        }
         finally { applying = false; }
     }
     function refreshFilters() { applying = true; try { adapter.refreshFilters?.(); } finally { applying = false; } }
@@ -4288,13 +4376,13 @@ window.SHARPIE_FIREBASE_CONFIG = {
     async function savePreferences() {
         if (!user || !ready || applying || failed) return;
         if (pending) { clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);return; }
-        const preferences = clean(adapter.getPreferences());
+        const preferences = clean(currentPreferences());
         if (same(preferences, remotePreferences)) { dirtyPreferences.clear();el('accountRetry').hidden=true;status('Configuración sincronizada');return; }
         const target = ref('settings', adapter.page), generation = epoch;
         const ok = await write(() => sdk.setDoc(target, {schemaVersion:1, preferences, updatedAt:sdk.serverTimestamp()}));
         if (ok && generation === epoch) {
             remotePreferences = preferences;
-            const current=adapter.getPreferences();
+            const current=currentPreferences();
             for(const key of dirtyPreferences)if(same(current[key],preferences[key]))dirtyPreferences.delete(key);
             if(dirtyPreferences.size){clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);}
         }
@@ -4302,7 +4390,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
     function changed(forcedKeys=[]) {
         if (applying) return;
         if (!user) { adapter.saveGuestPreferences?.(adapter.getPreferences()); return; }
-        const preferences=clean(adapter.getPreferences()),signature = JSON.stringify(preferences);
+        const preferences=clean(currentPreferences()),signature = JSON.stringify(preferences);
         if (signature === lastPreferences && !forcedKeys.length) return;
         for(const key of forcedKeys)dirtyPreferences.add(key);
         for(const key of new Set([...Object.keys(observedPreferences),...Object.keys(preferences)])) {
@@ -4325,11 +4413,26 @@ window.SHARPIE_FIREBASE_CONFIG = {
             if (!same(previous,p)) batch.set(ref('filters',p.id),{schemaVersion:1,name:p.name,filters:p.filters,updatedAt:sdk.serverTimestamp()});
         });
         old.filter(p=>!next.some(q=>q.id===p.id)).forEach(p=>batch.delete(ref('filters',p.id)));
+        const oldOrder=[...filterOrder],nextOrder=next.map(p=>p.id);
+        let savedPreferences=null;
+        if(!same(oldOrder,nextOrder)) {
+            filterOrder=nextOrder;
+            savedPreferences=clean(currentPreferences());
+            batch.set(ref('settings',adapter.page),{schemaVersion:1,preferences:savedPreferences,updatedAt:sdk.serverTimestamp()});
+        }
         filters = next; refreshFilters();
         write(()=>batch.commit()).then(ok=>{
             if(generation!==epoch)return;
-            if (!ok) { failedFilters={list:next,importCount};filters=old; refreshFilters(); }
-            else { failedFilters=null;if(importCount)status(`${importCount} filtro(s) importado(s) a tu cuenta. Los originales siguen en este navegador.`); }
+            if (!ok) { failedFilters={list:next,importCount};filters=old;filterOrder=oldOrder; refreshFilters(); }
+            else {
+                failedFilters=null;
+                if(savedPreferences){
+                    remotePreferences=savedPreferences;
+                    const current=currentPreferences();
+                    for(const key of dirtyPreferences)if(same(current[key],savedPreferences[key]))dirtyPreferences.delete(key);
+                }
+                if(importCount)status(`${importCount} filtro(s) importado(s) a tu cuenta. Los originales siguen en este navegador.`);
+            }
         });
         return true;
     }
@@ -4338,6 +4441,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
         clearTimeout(timer); timer=null; unsubscribers.forEach(fn=>fn()); unsubscribers=[];
         ready=false; pending=0; failed=false;failedFilters=null;lastSyncError=''; filters=[]; latestFilters=null;remotePreferences={};
         dirtyPreferences=new Set();
+        filterOrder=[];
         if (!user && nextUser) { guestPreferences=clean(adapter.getPreferences()); guestFilters=clean(adapter.getGuestFilters?.() || []); }
         user=nextUser;
         window.SHARPIE_PRIVATE_SESSION?.(user ? {user,sdk,db} : null);
@@ -4361,11 +4465,13 @@ window.SHARPIE_FIREBASE_CONFIG = {
             if(generation!==epoch || snapshot.metadata.fromCache || snapshot.metadata.hasPendingWrites)return;
             const value=snapshot.exists() ? snapshot.data().preferences : adapter.defaults;
             remotePreferences=clean(value || adapter.defaults);
+            if(adapter.getGuestFilters && !Array.isArray(remotePreferences.savedFilterOrder))remotePreferences.savedFilterOrder=[];
             if(!prefsLoaded) {
-                const merged={...remotePreferences},current=adapter.getPreferences();
+                const merged={...remotePreferences},current=currentPreferences();
                 for(const key of dirtyPreferences)merged[key]=current[key];
                 if(!same(merged,current))applyPreferences(merged);
-            } else if(!pending && !timer && !dirtyPreferences.size && !same(remotePreferences,adapter.getPreferences())) applyPreferences(remotePreferences);
+            } else if(!pending && !timer && !dirtyPreferences.size && !same(remotePreferences,currentPreferences())) applyPreferences(remotePreferences);
+            refreshFilters();
             prefsLoaded=true;check();
         },onError));
         if(adapter.getGuestFilters) unsubscribers.push(sdk.onSnapshot(sdk.collection(db,'users',user.uid,'filters'),{includeMetadataChanges:true},snapshot=>{
@@ -4392,7 +4498,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
         initialized=true;adapter=window.SHARPIE_SETTINGS_ADAPTER;
         guestPreferences=clean(adapter.getPreferences());guestFilters=clean(adapter.getGuestFilters?.() || []);
         mount();
-        window.SHARPIE_ACCOUNT={get signedIn(){return Boolean(user);},getFilters:()=>clean(uniqueFilters(filters)),saveFilters,changed};
+        window.SHARPIE_ACCOUNT={get signedIn(){return Boolean(user);},getFilters:()=>clean(orderedFilters()),saveFilters,changed};
         document.addEventListener('input',event=>{if(!event.target.closest('.account-panel'))changed();});
         document.addEventListener('change',event=>{if(!event.target.closest('.account-panel'))changed();});
         document.addEventListener('click',event=>{if(!event.target.closest('.account-panel'))changed();});
