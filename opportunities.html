@@ -1798,6 +1798,10 @@ pre { overflow:auto; background:var(--panel2); padding:16px; border-radius:8px; 
 #accountDialog #accountError { color:var(--text); min-height:18px; margin-bottom:12px; }
 
 [hidden] { display:none !important; }
+.session-startup { min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-size:30px;font-weight:800; }
+.session-startup span { font-size:14px;font-weight:400; }
+.workspace-load-status { margin:16px auto;padding:16px 20px;max-width:1120px;border:1px solid #47614f;border-radius:12px; }
+body:has(#sessionStartup:not([hidden])) #accountMount { visibility:hidden; }
 body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padding:0; }
 .landing { max-width:1200px; margin:auto; padding:32px 40px 20px; font-family:'Plus Jakarta Sans',sans-serif; }
 .landing-nav { display:flex; align-items:center; justify-content:space-between; gap:20px; padding-bottom:32px; border-bottom:1px solid #244039; }
@@ -1829,7 +1833,8 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 </script>
 </head>
 <body>
-<section id="publicLanding" class="landing" aria-label="Bienvenido a Sharpie">
+<div id="sessionStartup" class="session-startup" role="status">SharpIE<span>Recuperando tu sesión…</span></div>
+<section id="publicLanding" class="landing" aria-label="Bienvenido a Sharpie" hidden>
   <nav class="landing-nav"><a class="landing-brand" href="index.html" aria-label="Sharpie inicio">Sharp<span>IE</span><small>LECTURA DE MERCADO</small></a><button type="button" class="landing-login" onclick="document.getElementById('accountLogin')?.click()">Entrar a mi cuenta <span aria-hidden="true">↗</span></button></nav>
   <div class="landing-hero"><div class="landing-copy"><p class="landing-eyebrow">MENOS RUIDO. MÁS CONTEXTO.</p><h1>El mercado se mueve.<br><em>Lee las señales.</em></h1><p class="landing-description">Un espacio para analizar oportunidades deportivas, comparar señales y seguir tus selecciones con tus propios filtros.</p><button type="button" class="landing-cta" onclick="document.getElementById('accountLogin')?.click()">Acceder a Sharpie <span aria-hidden="true">→</span></button><p class="landing-note">Inicia sesión con Google o con tu correo.</p><p id="privateDataStatus" role="status">Los picks, métricas e históricos están disponibles dentro de tu cuenta.</p></div>
   <div class="landing-art" aria-hidden="true"><div class="landing-orbit orbit-one"></div><div class="landing-orbit orbit-two"></div><div class="landing-orbit orbit-three"></div><div class="landing-core">S<span>IE</span></div><span class="orbit-label label-one">OBSERVAR</span><span class="orbit-label label-two">COMPARAR</span><span class="orbit-label label-three">DECIDIR</span></div></div>
@@ -1837,6 +1842,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
   <footer class="landing-footer"><span>SharpIE · Análisis deportivo</span><span>Herramientas para evaluar. Ningún resultado está garantizado.</span></footer>
 </section>
 <div id="accountMount"></div>
+<div id="workspaceLoadStatus" class="workspace-load-status" role="status" hidden></div>
 
 <div id="privateWorkspace" hidden>
   <header class="header">
@@ -1908,7 +1914,17 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 (() => {
     window.SHARPIE_PRIVATE_DATA = true;
     let session=null, epoch=0, version=null, loading=false, retryTimer=null, retries=0;
-    const message=text=>{const node=document.getElementById('privateDataStatus');if(node)node.textContent=text;};
+    const message=text=>{
+        const node=document.getElementById(session?'workspaceLoadStatus':'privateDataStatus');
+        if(node){node.textContent=text;node.hidden=!text;}
+    };
+    function route() {
+        const startup=document.getElementById('sessionStartup');
+        if(startup)startup.hidden=true;
+        document.getElementById('privateWorkspace').hidden=!session;
+        document.getElementById('publicLanding').hidden=Boolean(session);
+        if(!session){const status=document.getElementById('workspaceLoadStatus');if(status)status.hidden=true;}
+    }
     function accessButtons(busy=false) {
         document.querySelectorAll?.('.landing-login,.landing-cta').forEach(button=>{
             button.disabled=busy;
@@ -1920,8 +1936,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
     }
     function clear() {
         version=null;
-        document.getElementById('privateWorkspace').hidden=true;
-        document.getElementById('publicLanding').hidden=false;
+        route();
         window.SHARPIE_SETTINGS_ADAPTER?.clearPrivateData?.();
     }
     async function refresh() {
@@ -1929,7 +1944,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
         const current=session, generation=epoch;loading=true;
         clearTimeout(retryTimer);retryTimer=null;
         accessButtons(true);
-        if(!version)message('Recuperando tus datos. Entrarás automáticamente…');
+        if(!version)message('Cargando picks y métricas…');
         try {
             const {sdk,db}=current;
             const manifest=await sdk.getDocFromServer(sdk.doc(db,'marketFeed','current'));
@@ -1959,6 +1974,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
             document.getElementById('publicLanding').hidden=true;
             version=meta.version;
             retries=0;
+            message('');
         } catch(error) {
             if(generation!==epoch)return;
             clear();
@@ -1976,6 +1992,10 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
         if(next)refresh();
     };
     window.SHARPIE_REFRESH_PRIVATE=refresh;
+    window.SHARPIE_PRIVATE_AUTH_ERROR=()=>{
+        if(session)return;
+        route();message('No se pudo recuperar tu sesión. Reintenta la conexión desde tu cuenta.');
+    };
     setInterval(refresh,90000);
     document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh();});
 })();
@@ -2446,7 +2466,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
             auth=sdk.getAuth(application);db=sdk.getFirestore(application);
             await sdk.setPersistence(auth,sdk.browserLocalPersistence);
             sdk.onAuthStateChanged(auth,connectUser);
-        } catch { status('No se pudo conectar tu cuenta. Los picks siguen disponibles.');el('accountRetry').hidden=false; }
+        } catch { status('No se pudo conectar tu cuenta. Reintenta la conexión.');el('accountRetry').hidden=false;window.SHARPIE_PRIVATE_AUTH_ERROR?.(); }
     }
     function start() {
         if(initialized || !window.SHARPIE_SETTINGS_ADAPTER)return;
