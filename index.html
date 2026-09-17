@@ -2182,7 +2182,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 
 <div id="reminderNotifContainer" class="reminder-notif-container"></div>
 </div>
-<script>window.SHARPIE_APP_VERSION="5e4a3721d3d4702fd422";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
+<script>window.SHARPIE_APP_VERSION="40968ef7bc91e264528d";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
 <script>
 /* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
@@ -2277,6 +2277,16 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 </script>
 <script>
 let PICKS = [];
+
+function formatReportTime(value) {
+    const date = value ? new Date(value) : null;
+    if (!date || !Number.isFinite(date.getTime())) return '—';
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('es-MX', {
+        timeZone: 'America/Mexico_City', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+    }).formatToParts(date).map(part => [part.type, part.value]));
+    return `${parts.day}/${parts.month}/${parts.year} ${parts.hour}:${parts.minute}:${parts.second}`;
+}
 
 // Reloj en tiempo real
 function startRealtimeClock() {
@@ -2380,8 +2390,7 @@ async function checkForNewPicks() {
         const generatedAtEl = document.getElementById("generatedAtVal");
         if (generatedAtEl) {
             const now = new Date();
-            const pad = (n) => String(n).padStart(2, '0');
-            generatedAtEl.textContent = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+            generatedAtEl.textContent = formatReportTime(now);
         }
 
         const parts = [];
@@ -4126,7 +4135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         page: 'dashboard', defaults: {...DEFAULT_SETTINGS,theme:document.documentElement.getAttribute('data-theme'),filtersExpanded:false},
         getPreferences:getDashboardPreferences, applyPreferences:applyDashboardPreferences,
         clearPrivateData:()=>{PICKS=[];window.SHARPIE_PICKS=[];window.SHARPIE_LINKED_PICK_ID=null;RECENTLY_ADDED_IDS.clear();RECENTLY_UPDATED_IDS.clear();ACTIVE_FILTER_MATCH_KEYS.clear();document.querySelectorAll('.reminder-notif').forEach(node=>node.remove());populateSelectOptions();render();},
-        setPrivateData:(picks,generatedAt)=>{PICKS=picks;populateSelectOptions();render();document.getElementById('generatedAtVal').textContent=generatedAt || '';},
+        setPrivateData:(picks,generatedAt)=>{PICKS=picks;populateSelectOptions();render();document.getElementById('generatedAtVal').textContent=formatReportTime(generatedAt);},
         getGuestFilters:()=>{ try {const list=JSON.parse(localStorage.getItem(SAVED_FILTERS_KEY));return Array.isArray(list)?list:[];} catch {return [];} },
         refreshFilters:renderSavedFilterChips,
     };
