@@ -2239,7 +2239,19 @@ window.SHARPIE_FIREBASE_CONFIG = {
     const clean = value => JSON.parse(JSON.stringify(value));
     const el = id => document.getElementById(id);
     const status = text => { el('accountStatus').textContent = text; };
-    const same = (a,b) => JSON.stringify(a) === JSON.stringify(b);
+    // Firestore can return map keys in a different order than localStorage.
+    const canonical = value => Array.isArray(value) ? value.map(canonical)
+        : value && typeof value === 'object'
+            ? Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])) : value;
+    const same = (a,b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
+    const uniqueFilters = list => {
+        const seen = new Set();
+        return list.filter(p=>{
+            const key=JSON.stringify([p.name,canonical(p.filters)]);
+            if(seen.has(key))return false;
+            seen.add(key);return true;
+        });
+    };
     const errorText = error => ({
         'auth/invalid-credential': 'El correo o la contraseña no son correctos.',
         'auth/email-already-in-use': 'Este correo ya tiene una cuenta. Inicia sesión o recupera la contraseña.',
@@ -2304,11 +2316,12 @@ window.SHARPIE_FIREBASE_CONFIG = {
             if (!ready || failed) { status(lastSyncError || 'Todavía no se ha podido leer tu cuenta. Primero reintenta la conexión; tus filtros locales no se han borrado.');return; }
             if (!guestFilters?.length) { status('No hay filtros locales para importar en este navegador.');return; }
             if (pending) { status('Espera a que termine el guardado actual antes de importar.');return; }
-            const merged = [...filters];
+            const merged = uniqueFilters(filters);
+            const existingCount = merged.length;
             guestFilters.forEach(p => {
                 if (!merged.some(q => q.name === p.name && same(q.filters,p.filters))) merged.push({...p, id: crypto.randomUUID()});
             });
-            const count=merged.length-filters.length;
+            const count=merged.length-existingCount;
             if(!count) { status('Tus filtros locales ya están en esta cuenta. No se crearon duplicados.');return; }
             saveFilters(merged,count);
         };
@@ -2361,7 +2374,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
     function saveFilters(list, importCount=0) {
         if (!user) return null;
         if (!ready || pending || failed) { status('Espera a que termine la sincronización y vuelve a guardar.'); return false; }
-        const old = clean(filters), next = clean(list), batch = sdk.writeBatch(db), generation = epoch;
+        const old = clean(filters), next = uniqueFilters(clean(list)), batch = sdk.writeBatch(db), generation = epoch;
         if (next.length > 200 || next.some(p=>!/^[\w-]{1,128}$/.test(p.id) || typeof p.name!=='string' || !p.name.trim() || p.name.length>100)) {
             status('Usa nombres de hasta 100 caracteres y un máximo de 200 filtros.');return false;
         }
@@ -2426,7 +2439,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
         initialized=true;adapter=window.SHARPIE_SETTINGS_ADAPTER;
         guestPreferences=clean(adapter.getPreferences());guestFilters=clean(adapter.getGuestFilters?.() || []);
         mount();
-        window.SHARPIE_ACCOUNT={get signedIn(){return Boolean(user);},getFilters:()=>clean(filters),saveFilters,changed};
+        window.SHARPIE_ACCOUNT={get signedIn(){return Boolean(user);},getFilters:()=>clean(uniqueFilters(filters)),saveFilters,changed};
         document.addEventListener('input',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
         document.addEventListener('change',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
         document.addEventListener('click',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
