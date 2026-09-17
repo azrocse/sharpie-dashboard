@@ -2270,6 +2270,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
     let guestPreferences, guestFilters, lastPreferences = '', initialized = false;
     let latestFilters = null;
     let failedFilters = null, lastSyncError = '';
+    let observedPreferences = {}, dirtyPreferences = new Set();
     const clean = value => JSON.parse(JSON.stringify(value));
     const el = id => document.getElementById(id);
     const status = text => { el('accountStatus').textContent = text; };
@@ -2363,7 +2364,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
 
     function applyPreferences(value) {
         applying = true;
-        try { adapter.applyPreferences(clean(value)); lastPreferences = JSON.stringify(adapter.getPreferences()); }
+        try { adapter.applyPreferences(clean(value)); observedPreferences=clean(adapter.getPreferences());lastPreferences = JSON.stringify(observedPreferences); }
         finally { applying = false; }
     }
     function refreshFilters() { applying = true; try { adapter.refreshFilters?.(); } finally { applying = false; } }
@@ -2392,17 +2393,28 @@ window.SHARPIE_FIREBASE_CONFIG = {
         if (!user || !ready || applying || failed) return;
         if (pending) { clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);return; }
         const preferences = clean(adapter.getPreferences());
-        if (same(preferences, remotePreferences)) { el('accountRetry').hidden=true;status('Configuración sincronizada');return; }
+        if (same(preferences, remotePreferences)) { dirtyPreferences.clear();el('accountRetry').hidden=true;status('Configuración sincronizada');return; }
         const target = ref('settings', adapter.page), generation = epoch;
         const ok = await write(() => sdk.setDoc(target, {schemaVersion:1, preferences, updatedAt:sdk.serverTimestamp()}));
-        if (ok && generation === epoch) remotePreferences = preferences;
+        if (ok && generation === epoch) {
+            remotePreferences = preferences;
+            const current=adapter.getPreferences();
+            for(const key of dirtyPreferences)if(same(current[key],preferences[key]))dirtyPreferences.delete(key);
+            if(dirtyPreferences.size){clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);}
+        }
     }
-    function changed() {
+    function changed(forcedKeys=[]) {
         if (applying) return;
         if (!user) { adapter.saveGuestPreferences?.(adapter.getPreferences()); return; }
-        const signature = JSON.stringify(adapter.getPreferences());
-        if (!ready || signature === lastPreferences) return;
+        const preferences=clean(adapter.getPreferences()),signature = JSON.stringify(preferences);
+        if (signature === lastPreferences && !forcedKeys.length) return;
+        for(const key of forcedKeys)dirtyPreferences.add(key);
+        for(const key of new Set([...Object.keys(observedPreferences),...Object.keys(preferences)])) {
+            if(!same(preferences[key],observedPreferences[key]))dirtyPreferences.add(key);
+        }
+        observedPreferences=preferences;
         lastPreferences = signature;
+        if(!ready)return;
         clearTimeout(timer); timer = setTimeout(() => {timer=null;savePreferences();}, 600);
     }
     function saveFilters(list, importCount=0) {
@@ -2429,6 +2441,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
         epoch++; const generation = epoch;
         clearTimeout(timer); timer=null; unsubscribers.forEach(fn=>fn()); unsubscribers=[];
         ready=false; pending=0; failed=false;failedFilters=null;lastSyncError=''; filters=[]; latestFilters=null;remotePreferences={};
+        dirtyPreferences=new Set();
         if (!user && nextUser) { guestPreferences=clean(adapter.getPreferences()); guestFilters=clean(adapter.getGuestFilters?.() || []); }
         user=nextUser;
         window.SHARPIE_PRIVATE_SESSION?.(user ? {user,sdk,db} : null);
@@ -2440,13 +2453,23 @@ window.SHARPIE_FIREBASE_CONFIG = {
         if (!user) { status('Modo local · inicia sesión para sincronizar'); return; }
         el('accountDialog').close(); status('Cargando tu configuración…');
         let prefsLoaded=false, filtersLoaded=!adapter.getGuestFilters;
-        const check=()=>{ ready=prefsLoaded && filtersLoaded; if(ready && !pending && !failed) status('Configuración sincronizada'); };
+        const check=()=>{
+            ready=prefsLoaded && filtersLoaded;
+            if(ready && !pending && !failed) {
+                if(dirtyPreferences.size){clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);}
+                else status('Configuración sincronizada');
+            }
+        };
         const onError=error=>{ if(generation!==epoch)return;ready=false;failed=true;lastSyncError=errorText(error);status(lastSyncError);el('accountRetry').hidden=false; };
         unsubscribers.push(sdk.onSnapshot(ref('settings',adapter.page), {includeMetadataChanges:true}, snapshot=>{
             if(generation!==epoch || snapshot.metadata.fromCache || snapshot.metadata.hasPendingWrites)return;
             const value=snapshot.exists() ? snapshot.data().preferences : adapter.defaults;
             remotePreferences=clean(value || adapter.defaults);
-            if(!pending && !timer) applyPreferences(remotePreferences);
+            if(!prefsLoaded) {
+                const merged={...remotePreferences},current=adapter.getPreferences();
+                for(const key of dirtyPreferences)merged[key]=current[key];
+                if(!same(merged,current))applyPreferences(merged);
+            } else if(!pending && !timer && !dirtyPreferences.size && !same(remotePreferences,adapter.getPreferences())) applyPreferences(remotePreferences);
             prefsLoaded=true;check();
         },onError));
         if(adapter.getGuestFilters) unsubscribers.push(sdk.onSnapshot(sdk.collection(db,'users',user.uid,'filters'),{includeMetadataChanges:true},snapshot=>{
@@ -2474,9 +2497,9 @@ window.SHARPIE_FIREBASE_CONFIG = {
         guestPreferences=clean(adapter.getPreferences());guestFilters=clean(adapter.getGuestFilters?.() || []);
         mount();
         window.SHARPIE_ACCOUNT={get signedIn(){return Boolean(user);},getFilters:()=>clean(uniqueFilters(filters)),saveFilters,changed};
-        document.addEventListener('input',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
-        document.addEventListener('change',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
-        document.addEventListener('click',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
+        document.addEventListener('input',event=>{if(!event.target.closest('.account-panel'))changed();});
+        document.addEventListener('change',event=>{if(!event.target.closest('.account-panel'))changed();});
+        document.addEventListener('click',event=>{if(!event.target.closest('.account-panel'))changed();});
         initializeSdk();
     }
     window.addEventListener('sharpie:settings-ready',start);start();

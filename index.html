@@ -2182,7 +2182,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 
 <div id="reminderNotifContainer" class="reminder-notif-container"></div>
 </div>
-<script>window.SHARPIE_APP_VERSION="d2a3367d2aeb7f1aade7";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
+<script>window.SHARPIE_APP_VERSION="5e4a3721d3d4702fd422";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
 <script>
 /* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
@@ -2490,6 +2490,14 @@ const SAVED_FILTERS_KEY = "sharpie_saved_filters_v1";
 const PRESET_KEYS = FILTER_KEYS.filter(key => key !== 'date' && key !== 'dateRange');
 const SETTINGS_KEYS = [...FILTER_KEYS, 'showFullMarket', 'sort', 'advancedView', 'autoThemeEnabled'];
 const DEFAULT_SETTINGS = Object.fromEntries(SETTINGS_KEYS.map(key => [key, state[key]]));
+function normalizePreference(key, value) {
+    const fallback=DEFAULT_SETTINGS[key];
+    if(key==='cuotaMin' || key==='cuotaMax') {
+        return (typeof value==='string' || typeof value==='number') && parseOddsToDecimal(value)>1 ? value : null;
+    }
+    return fallback === null ? (typeof value==='number' && Number.isFinite(value) ? value : null)
+        : typeof value===typeof fallback ? value : fallback;
+}
 
 function getDashboardPreferences() {
     return { ...Object.fromEntries(SETTINGS_KEYS.map(key => [key, state[key]])),
@@ -2500,9 +2508,7 @@ function getDashboardPreferences() {
 function applyDashboardPreferences(preferences) {
     const source = preferences && typeof preferences === 'object' ? preferences : {};
     SETTINGS_KEYS.forEach(key => {
-        const value=source[key], fallback=DEFAULT_SETTINGS[key];
-        state[key] = fallback === null ? (typeof value === 'number' && Number.isFinite(value) ? value : null)
-            : typeof value === typeof fallback ? value : fallback;
+        state[key] = normalizePreference(key,source[key]);
     });
     if (['light','dark'].includes(source.theme)) document.documentElement.setAttribute('data-theme', source.theme);
     document.getElementById('advFiltersPanel')?.classList.toggle('show', source.filtersExpanded === true);
@@ -2543,7 +2549,7 @@ function finishFilterEditing(restore = false) {
 }
 
 function editFilterPreset(preset) {
-    const previousFilters = editingFilterPreset?.previousFilters || Object.fromEntries(FILTER_KEYS.map(k => [k, state[k]]));
+    const previousFilters = editingFilterPreset?.previousFilters || Object.fromEntries(PRESET_KEYS.map(k => [k, state[k]]));
     applyFilterPreset(preset);
     editingFilterPreset = { id: preset.id, name: preset.name, previousFilters };
     document.getElementById("btnSaveFilter").textContent = "💾 Guardar cambios";
@@ -2583,6 +2589,7 @@ function saveCurrentFilterPreset() {
 }
 
 function syncFilterInputsFromState() {
+    populateSelectOptions();
     const idMap = {
         search: "search", date: "fDate", league: "fLeague", trend: "fTrend", timeRange: "fTimeRange",
         modeloMin: "fModeloMin", modeloMax: "fModeloMax", cuotaMin: "fCuotaMin", cuotaMax: "fCuotaMax",
@@ -2621,12 +2628,11 @@ function syncPrimaryFilterButtons() {
 
 function applyFilterPreset(preset) {
     PRESET_KEYS.forEach(k => {
-        const isToggle = ["featuredOnly", "freeReleaseOnly"].includes(k);
-        const defaultVal = isToggle ? false : (k === "dateRange" ? "today" : (typeof state[k] === "string" ? "" : null));
-        state[k] = (preset.filters[k] !== undefined) ? preset.filters[k] : defaultVal;
+        state[k] = normalizePreference(k,preset.filters[k]);
     });
     syncFilterInputsFromState();
     render();
+    window.SHARPIE_ACCOUNT?.changed(PRESET_KEYS);
     showAttractiveNotification({ title: "🎯 Filtro aplicado", body: preset.name, variant: "info" });
 }
 
@@ -2954,7 +2960,8 @@ function cdmxDateAtOffset(days = 0) {
 }
 
 function pickMatchesDateRange(pick, range) {
-    if (!pick?.date || !range) return true;
+    if (!range) return true;
+    if (!pick?.date) return false;
     const today = cdmxDateAtOffset(0);
     if (range === "today") return pick.date === today;
     if (range === "tomorrow") return pick.date === cdmxDateAtOffset(1);
@@ -3279,8 +3286,8 @@ function parseOddsToDecimal(odds) {
     if (odds == null || odds === "") return 0;
     
     let str = String(odds).trim();
-    let val = parseFloat(str);
-    if (isNaN(val)) return 0;
+    let val = Number(str);
+    if (!Number.isFinite(val) || !str) return 0;
 
     if (str.startsWith('+') || str.startsWith('-')) {
         if (val > 0) {
@@ -3290,7 +3297,7 @@ function parseOddsToDecimal(odds) {
         }
     }
     
-    return val;
+    return val>1 ? val : 0;
 }
 
 function renderActiveChips() {
@@ -3376,10 +3383,17 @@ function applyFiltersAndSort(list) {
         if (state.market && p.market !== state.market) return false;
         if (state.date && p.date !== state.date) return false;
         if (state.trend && p.trendKey !== state.trend) return false;
+        // Missing measurements must not pass a quantitative bound as zero.
+        const measurements={modelo:p.modelProb,edge:p.modelEdge,bets:p.betsPct,handle:p.handlePct,ev:p.ev,stake:p.stake,divergencia:p.signedDivergence};
+        for(const [key,value] of Object.entries(measurements)) {
+            if((state[key+'Min']!==null || state[key+'Max']!==null) &&
+                (value==null || value==='' || !Number.isFinite(Number(value))))return false;
+        }
 
         if (!state.date && state.dateRange && !pickMatchesDateRange(p, state.dateRange)) return false;
 
-        if (state.timeRange && p.iso) {
+        if (state.timeRange) {
+            if(!p.iso || !Number.isFinite(new Date(p.iso).getTime()))return false;
             const timer = getCountdownText(p.iso);
             if (state.timeRange === "in_play" && !timer.expired) return false;
             if (state.timeRange === "30m" && (timer.diffMin < 0 || timer.diffMin > 30)) return false;
@@ -3391,6 +3405,7 @@ function applyFiltersAndSort(list) {
         if (state.modeloMax !== null && !isNaN(state.modeloMax) && (p.modelProb || 0) > state.modeloMax) return false;
 
         const itemOddsDec = parseOddsToDecimal(p.odds || p.cuota);
+        if((state.cuotaMin!==null || state.cuotaMax!==null) && itemOddsDec<=1)return false;
         if (state.cuotaMin !== null) {
             const minDec = parseOddsToDecimal(state.cuotaMin);
             if (minDec > 0 && itemOddsDec < minDec) return false;
@@ -3611,6 +3626,8 @@ function populateSelectOptions() {
         if (p.home) suggestions.add(p.home);
         if (!p.away && !p.home && p.game) suggestions.add(p.game);
     });
+    if(state.date)dates.add(state.date);
+    if(state.league)leagues.add(state.league);
     const searchList = document.getElementById("searchSuggestions");
     if (searchList) {
         searchList.innerHTML = Array.from(suggestions).sort()
@@ -3903,6 +3920,7 @@ function setupListeners() {
         else if (!state.dateRange) state.dateRange = "today";
         syncPrimaryFilterButtons();
         render();
+        window.SHARPIE_ACCOUNT?.changed(['date','dateRange']);
     });
 
     const fLeagueEl = document.getElementById("fLeague");
@@ -3914,6 +3932,7 @@ function setupListeners() {
         if (fDateEl) fDateEl.value = "";
         syncPrimaryFilterButtons();
         render();
+        window.SHARPIE_ACCOUNT?.changed(['date','dateRange']);
     }));
     document.querySelectorAll("[data-market]").forEach(button => button.addEventListener("click", () => {
         state.market = button.dataset.market;
@@ -4138,6 +4157,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
     let guestPreferences, guestFilters, lastPreferences = '', initialized = false;
     let latestFilters = null;
     let failedFilters = null, lastSyncError = '';
+    let observedPreferences = {}, dirtyPreferences = new Set();
     const clean = value => JSON.parse(JSON.stringify(value));
     const el = id => document.getElementById(id);
     const status = text => { el('accountStatus').textContent = text; };
@@ -4231,7 +4251,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
 
     function applyPreferences(value) {
         applying = true;
-        try { adapter.applyPreferences(clean(value)); lastPreferences = JSON.stringify(adapter.getPreferences()); }
+        try { adapter.applyPreferences(clean(value)); observedPreferences=clean(adapter.getPreferences());lastPreferences = JSON.stringify(observedPreferences); }
         finally { applying = false; }
     }
     function refreshFilters() { applying = true; try { adapter.refreshFilters?.(); } finally { applying = false; } }
@@ -4260,17 +4280,28 @@ window.SHARPIE_FIREBASE_CONFIG = {
         if (!user || !ready || applying || failed) return;
         if (pending) { clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);return; }
         const preferences = clean(adapter.getPreferences());
-        if (same(preferences, remotePreferences)) { el('accountRetry').hidden=true;status('Configuración sincronizada');return; }
+        if (same(preferences, remotePreferences)) { dirtyPreferences.clear();el('accountRetry').hidden=true;status('Configuración sincronizada');return; }
         const target = ref('settings', adapter.page), generation = epoch;
         const ok = await write(() => sdk.setDoc(target, {schemaVersion:1, preferences, updatedAt:sdk.serverTimestamp()}));
-        if (ok && generation === epoch) remotePreferences = preferences;
+        if (ok && generation === epoch) {
+            remotePreferences = preferences;
+            const current=adapter.getPreferences();
+            for(const key of dirtyPreferences)if(same(current[key],preferences[key]))dirtyPreferences.delete(key);
+            if(dirtyPreferences.size){clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);}
+        }
     }
-    function changed() {
+    function changed(forcedKeys=[]) {
         if (applying) return;
         if (!user) { adapter.saveGuestPreferences?.(adapter.getPreferences()); return; }
-        const signature = JSON.stringify(adapter.getPreferences());
-        if (!ready || signature === lastPreferences) return;
+        const preferences=clean(adapter.getPreferences()),signature = JSON.stringify(preferences);
+        if (signature === lastPreferences && !forcedKeys.length) return;
+        for(const key of forcedKeys)dirtyPreferences.add(key);
+        for(const key of new Set([...Object.keys(observedPreferences),...Object.keys(preferences)])) {
+            if(!same(preferences[key],observedPreferences[key]))dirtyPreferences.add(key);
+        }
+        observedPreferences=preferences;
         lastPreferences = signature;
+        if(!ready)return;
         clearTimeout(timer); timer = setTimeout(() => {timer=null;savePreferences();}, 600);
     }
     function saveFilters(list, importCount=0) {
@@ -4297,6 +4328,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
         epoch++; const generation = epoch;
         clearTimeout(timer); timer=null; unsubscribers.forEach(fn=>fn()); unsubscribers=[];
         ready=false; pending=0; failed=false;failedFilters=null;lastSyncError=''; filters=[]; latestFilters=null;remotePreferences={};
+        dirtyPreferences=new Set();
         if (!user && nextUser) { guestPreferences=clean(adapter.getPreferences()); guestFilters=clean(adapter.getGuestFilters?.() || []); }
         user=nextUser;
         window.SHARPIE_PRIVATE_SESSION?.(user ? {user,sdk,db} : null);
@@ -4308,13 +4340,23 @@ window.SHARPIE_FIREBASE_CONFIG = {
         if (!user) { status('Modo local · inicia sesión para sincronizar'); return; }
         el('accountDialog').close(); status('Cargando tu configuración…');
         let prefsLoaded=false, filtersLoaded=!adapter.getGuestFilters;
-        const check=()=>{ ready=prefsLoaded && filtersLoaded; if(ready && !pending && !failed) status('Configuración sincronizada'); };
+        const check=()=>{
+            ready=prefsLoaded && filtersLoaded;
+            if(ready && !pending && !failed) {
+                if(dirtyPreferences.size){clearTimeout(timer);timer=setTimeout(()=>{timer=null;savePreferences();},600);}
+                else status('Configuración sincronizada');
+            }
+        };
         const onError=error=>{ if(generation!==epoch)return;ready=false;failed=true;lastSyncError=errorText(error);status(lastSyncError);el('accountRetry').hidden=false; };
         unsubscribers.push(sdk.onSnapshot(ref('settings',adapter.page), {includeMetadataChanges:true}, snapshot=>{
             if(generation!==epoch || snapshot.metadata.fromCache || snapshot.metadata.hasPendingWrites)return;
             const value=snapshot.exists() ? snapshot.data().preferences : adapter.defaults;
             remotePreferences=clean(value || adapter.defaults);
-            if(!pending && !timer) applyPreferences(remotePreferences);
+            if(!prefsLoaded) {
+                const merged={...remotePreferences},current=adapter.getPreferences();
+                for(const key of dirtyPreferences)merged[key]=current[key];
+                if(!same(merged,current))applyPreferences(merged);
+            } else if(!pending && !timer && !dirtyPreferences.size && !same(remotePreferences,adapter.getPreferences())) applyPreferences(remotePreferences);
             prefsLoaded=true;check();
         },onError));
         if(adapter.getGuestFilters) unsubscribers.push(sdk.onSnapshot(sdk.collection(db,'users',user.uid,'filters'),{includeMetadataChanges:true},snapshot=>{
@@ -4342,9 +4384,9 @@ window.SHARPIE_FIREBASE_CONFIG = {
         guestPreferences=clean(adapter.getPreferences());guestFilters=clean(adapter.getGuestFilters?.() || []);
         mount();
         window.SHARPIE_ACCOUNT={get signedIn(){return Boolean(user);},getFilters:()=>clean(uniqueFilters(filters)),saveFilters,changed};
-        document.addEventListener('input',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
-        document.addEventListener('change',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
-        document.addEventListener('click',event=>{if(!event.target.closest('.account-panel'))setTimeout(changed,0);});
+        document.addEventListener('input',event=>{if(!event.target.closest('.account-panel'))changed();});
+        document.addEventListener('change',event=>{if(!event.target.closest('.account-panel'))changed();});
+        document.addEventListener('click',event=>{if(!event.target.closest('.account-panel'))changed();});
         initializeSdk();
     }
     window.addEventListener('sharpie:settings-ready',start);start();
