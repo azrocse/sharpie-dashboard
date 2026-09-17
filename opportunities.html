@@ -1907,8 +1907,17 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
   <script>/* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
     window.SHARPIE_PRIVATE_DATA = true;
-    let session=null, epoch=0, version=null, loading=false;
+    let session=null, epoch=0, version=null, loading=false, retryTimer=null, retries=0;
     const message=text=>{const node=document.getElementById('privateDataStatus');if(node)node.textContent=text;};
+    function accessButtons(busy=false) {
+        document.querySelectorAll?.('.landing-login,.landing-cta').forEach(button=>{
+            button.disabled=busy;
+            button.textContent=busy?'Cargando tu dashboard…':session?'Reintentar carga':'Acceder a Sharpie →';
+            button.onclick=()=>session?refresh():document.getElementById('accountLogin')?.click();
+        });
+        const note=document.querySelector?.('.landing-note');
+        if(note)note.textContent=session?'Tu sesión está activa.':'Inicia sesión con Google o con tu correo.';
+    }
     function clear() {
         version=null;
         document.getElementById('privateWorkspace').hidden=true;
@@ -1918,6 +1927,9 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
     async function refresh() {
         if(!session || loading)return;
         const current=session, generation=epoch;loading=true;
+        clearTimeout(retryTimer);retryTimer=null;
+        accessButtons(true);
+        if(!version)message('Recuperando tus datos. Entrarás automáticamente…');
         try {
             const {sdk,db}=current;
             const manifest=await sdk.getDocFromServer(sdk.doc(db,'marketFeed','current'));
@@ -1946,18 +1958,20 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
             document.getElementById('privateWorkspace').hidden=false;
             document.getElementById('publicLanding').hidden=true;
             version=meta.version;
+            retries=0;
         } catch(error) {
             if(generation!==epoch)return;
             clear();
             message(error.code==='permission-denied'?'Tu cuenta no tiene permiso para consultar los datos.': 'No se pudieron cargar los datos privados. Se reintentará automáticamente.');
-        } finally { if(generation===epoch)loading=false; }
+            if(error.code!=='permission-denied' && retries<2) {
+                retries++;
+                retryTimer=setTimeout(()=>{if(generation===epoch)refresh();},3000*retries);
+            }
+        } finally { if(generation===epoch){loading=false;accessButtons();} }
     }
     window.SHARPIE_PRIVATE_SESSION=next=>{
-        epoch++;session=next;loading=false;clear();
-        document.querySelectorAll?.('.landing-login,.landing-cta').forEach(button=>{
-            button.textContent=next?'Actualizar acceso →':'Acceder a Sharpie →';
-            button.onclick=()=>next?refresh():document.getElementById('accountLogin')?.click();
-        });
+        epoch++;session=next;loading=false;retries=0;clearTimeout(retryTimer);retryTimer=null;clear();
+        accessButtons(Boolean(next));
         message(next?'Cargando tu área privada…':'Inicia sesión para consultar picks, métricas e históricos.');
         if(next)refresh();
     };
