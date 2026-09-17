@@ -2176,7 +2176,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 
 <div id="reminderNotifContainer" class="reminder-notif-container"></div>
 </div>
-<script>window.SHARPIE_APP_VERSION="f5655e58663322894e3b";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
+<script>window.SHARPIE_APP_VERSION="5788a0c128ca571d4f9a";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
 <script>
 /* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
@@ -2452,6 +2452,8 @@ const FILTER_KEYS = [
     "evMin", "evMax", "stakeMin", "stakeMax", "divergenciaMin", "divergenciaMax",
 ];
 const SAVED_FILTERS_KEY = "sharpie_saved_filters_v1";
+// The selected period belongs to the dashboard, not to a saved strategy.
+const PRESET_KEYS = FILTER_KEYS.filter(key => key !== 'date' && key !== 'dateRange');
 const SETTINGS_KEYS = [...FILTER_KEYS, 'showFullMarket', 'sort', 'advancedView', 'autoThemeEnabled'];
 const DEFAULT_SETTINGS = Object.fromEntries(SETTINGS_KEYS.map(key => [key, state[key]]));
 
@@ -2524,7 +2526,7 @@ function saveCurrentFilterPreset() {
     if (!name || !name.trim()) return;
 
     const snapshot = {};
-    FILTER_KEYS.forEach(k => { snapshot[k] = state[k]; });
+    PRESET_KEYS.forEach(k => { snapshot[k] = state[k]; });
 
     const list = loadSavedFilters();
     const isEditing = Boolean(editingFilterPreset);
@@ -2584,7 +2586,7 @@ function syncPrimaryFilterButtons() {
 }
 
 function applyFilterPreset(preset) {
-    FILTER_KEYS.forEach(k => {
+    PRESET_KEYS.forEach(k => {
         const isToggle = ["featuredOnly", "freeReleaseOnly"].includes(k);
         const defaultVal = isToggle ? false : (k === "dateRange" ? "today" : (typeof state[k] === "string" ? "" : null));
         state[k] = (preset.filters[k] !== undefined) ? preset.filters[k] : defaultVal;
