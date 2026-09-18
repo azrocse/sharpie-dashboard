@@ -578,6 +578,13 @@
         .saved-filter-drag { cursor:grab;touch-action:none;user-select:none;font-size:18px; }
         .saved-filter-drag:active { cursor:grabbing; }
         .saved-filter-rename { border-left:1px solid var(--border); }
+        .saved-filter-telegram { border:0;border-left:1px solid var(--border);background:transparent;color:var(--teal);padding:6px 9px;font:inherit;font-size:11px;font-weight:700;cursor:pointer; }
+        .saved-filter-chip { flex-wrap:wrap; }
+        .filter-telegram-dialog { max-width:460px;width:calc(100% - 40px);border:1px solid var(--teal);border-radius:16px;background:var(--panel);color:var(--text);padding:24px; }
+        .filter-telegram-dialog::backdrop { background:#0009; }
+        .filter-telegram-dialog select { display:block;width:100%;margin:10px 0;padding:10px; }
+        .filter-telegram-dialog p { line-height:1.6; }
+        .filter-telegram-dialog button { padding:9px 12px;cursor:pointer; }
         .saved-filter-edit,.saved-filter-rename { font-family:inherit;font-size:11px;font-weight:700;line-height:1.3; }
         .active-preset-heading { margin:24px 0 12px;padding:14px 18px;border-left:3px solid var(--teal);background:var(--teal-soft);border-radius:0 12px 12px 0; }
         .active-preset-heading>span { color:var(--muted);font-size:11px; }
@@ -1949,6 +1956,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
     }
     function clear() {
         version=null;
+        window.SHARPIE_PRIVATE_VERSION=null;
         route();
         window.SHARPIE_SETTINGS_ADAPTER?.clearPrivateData?.();
     }
@@ -1986,6 +1994,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
             document.getElementById('privateWorkspace').hidden=false;
             document.getElementById('publicLanding').hidden=true;
             version=meta.version;
+            window.SHARPIE_PRIVATE_VERSION=meta.version;
             retries=0;
             message('');
         } catch(error) {
@@ -2483,6 +2492,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
         if (!user && nextUser) { guestPreferences=clean(adapter.getPreferences()); guestFilters=clean(adapter.getGuestFilters?.() || []); }
         user=nextUser;
         window.SHARPIE_PRIVATE_SESSION?.(user ? {user,sdk,db} : null);
+        window.SHARPIE_FILTER_TELEGRAM_SESSION?.(user ? {user,sdk,db} : null);
         el('accountLogin').hidden=Boolean(user); el('accountLogout').hidden=!user;
         el('accountImport').hidden=!user || !guestFilters?.length;
         el('accountRetry').hidden=true;

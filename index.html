@@ -584,6 +584,13 @@
         .saved-filter-drag { cursor:grab;touch-action:none;user-select:none;font-size:18px; }
         .saved-filter-drag:active { cursor:grabbing; }
         .saved-filter-rename { border-left:1px solid var(--border); }
+        .saved-filter-telegram { border:0;border-left:1px solid var(--border);background:transparent;color:var(--teal);padding:6px 9px;font:inherit;font-size:11px;font-weight:700;cursor:pointer; }
+        .saved-filter-chip { flex-wrap:wrap; }
+        .filter-telegram-dialog { max-width:460px;width:calc(100% - 40px);border:1px solid var(--teal);border-radius:16px;background:var(--panel);color:var(--text);padding:24px; }
+        .filter-telegram-dialog::backdrop { background:#0009; }
+        .filter-telegram-dialog select { display:block;width:100%;margin:10px 0;padding:10px; }
+        .filter-telegram-dialog p { line-height:1.6; }
+        .filter-telegram-dialog button { padding:9px 12px;cursor:pointer; }
         .saved-filter-edit,.saved-filter-rename { font-family:inherit;font-size:11px;font-weight:700;line-height:1.3; }
         .active-preset-heading { margin:24px 0 12px;padding:14px 18px;border-left:3px solid var(--teal);background:var(--teal-soft);border-radius:0 12px 12px 0; }
         .active-preset-heading>span { color:var(--muted);font-size:11px; }
@@ -2199,7 +2206,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 
 <div id="reminderNotifContainer" class="reminder-notif-container"></div>
 </div>
-<script>window.SHARPIE_APP_VERSION="72170888ad89421d3bcf";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
+<script>window.SHARPIE_APP_VERSION="92a7a61b2483b628afbd";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
 <script>
 /* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
@@ -2227,6 +2234,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
     }
     function clear() {
         version=null;
+        window.SHARPIE_PRIVATE_VERSION=null;
         route();
         window.SHARPIE_SETTINGS_ADAPTER?.clearPrivateData?.();
     }
@@ -2264,6 +2272,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
             document.getElementById('privateWorkspace').hidden=false;
             document.getElementById('publicLanding').hidden=true;
             version=meta.version;
+            window.SHARPIE_PRIVATE_VERSION=meta.version;
             retries=0;
             message('');
         } catch(error) {
@@ -2739,6 +2748,18 @@ function bindSavedFilterSorting(container) {
     });
 }
 
+function getTelegramFilterSelection(id) {
+    const preset=loadSavedFilters().find(p=>p.id===id);
+    if(!preset || !window.SHARPIE_PRIVATE_VERSION)return null;
+    const previous={...state};
+    try {
+        PRESET_KEYS.forEach(key=>{state[key]=normalizePreference(key,preset.filters[key]);});
+        const universe=PICKS.filter(p=>isEventPending(p) && (state.showFullMarket || isRecommendedPick(p)));
+        return {name:preset.name,pickIds:applyFiltersAndSort(universe).map(getPickId),version:window.SHARPIE_PRIVATE_VERSION,
+            context:{date:state.date,dateRange:state.dateRange,showFullMarket:state.showFullMarket,sort:state.sort}};
+    } finally {Object.assign(state,previous);}
+}
+
 function renderActivePresetTitle() {
     const section=document.getElementById('activePresetHeading');
     if(!section)return;
@@ -2769,11 +2790,13 @@ function renderSavedFilterChips() {
             <button type="button" class="saved-filter-apply" data-id="${p.id}">🎯 ${escapeHTML(p.name)}</button>
             <button type="button" class="saved-filter-apply saved-filter-edit" data-id="${p.id}" aria-label="Editar filtro guardado">📝 Editar</button>
             <button type="button" class="saved-filter-rename" data-id="${escapeHTML(p.id)}" aria-label="Renombrar ${escapeHTML(p.name)}">✏️ Renombrar</button>
+            <button type="button" class="saved-filter-telegram" data-id="${escapeHTML(p.id)}" aria-label="Telegram para ${escapeHTML(p.name)}">📨 Telegram</button>
             <button type="button" class="saved-filter-delete" data-id="${p.id}" aria-label="Eliminar filtro guardado">✕</button>
         </span>
     `).join("");
 
     bindSavedFilterSorting(container);
+    container.querySelectorAll('.saved-filter-telegram').forEach(button=>button.addEventListener('click',()=>window.SHARPIE_FILTER_TELEGRAM?.open(button.dataset.id)));
     container.querySelectorAll('.saved-filter-rename').forEach(button=>button.addEventListener('click',()=>renameFilterPreset(button.dataset.id)));
     container.querySelectorAll(".saved-filter-apply:not(.saved-filter-edit)").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -4245,6 +4268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         setPrivateData:(picks,generatedAt)=>{PICKS=picks;populateSelectOptions();render();document.getElementById('generatedAtVal').textContent=formatReportTime(generatedAt);},
         getGuestFilters:()=>{ try {const list=JSON.parse(localStorage.getItem(SAVED_FILTERS_KEY));return Array.isArray(list)?list:[];} catch {return [];} },
         refreshFilters:renderSavedFilterChips,
+        getTelegramSelection:getTelegramFilterSelection,
     };
     window.dispatchEvent(new Event('sharpie:settings-ready'));
 });
@@ -4262,7 +4286,87 @@ window.SHARPIE_FIREBASE_CONFIG = {
     appId: "1:767206545709:web:cc111c59cba7796b789ba4"
 };
 </script>
-<script>/* Account preferences are independent of the public picks feed. */
+<script>/* Only authenticated job requests. The Telegram token stays on the worker. */
+(() => {
+    let session=null, epoch=0, stops=[], channels=[], bindings={}, activeId=null, jobStop=null, busy=false;
+    const el=id=>document.getElementById(id);
+    const say=text=>{if(el('filterTelegramStatus'))el('filterTelegramStatus').textContent=text;};
+    function mount(){
+        if(el('filterTelegramDialog'))return;
+        const dialog=document.createElement('dialog');dialog.id='filterTelegramDialog';dialog.className='filter-telegram-dialog';
+        dialog.innerHTML='<form method="dialog"><h2>📨 Telegram por filtro</h2><p id="filterTelegramName"></p><label>Canal de este filtro<select id="filterTelegramChannel"></select></label><p id="filterTelegramPreview"></p><p id="filterTelegramStatus" role="status"></p><div class="account-actions"><button type="button" id="filterTelegramSave">Guardar canal</button><button type="button" id="filterTelegramSend">Enviar picks al canal</button><button value="cancel">Cerrar</button></div></form>';
+        document.body.appendChild(dialog);
+        el('filterTelegramSave').onclick=()=>saveChannel();
+        el('filterTelegramSend').onclick=()=>send();
+        dialog.addEventListener('close',()=>{jobStop?.();jobStop=null;activeId=null;busy=false;});
+    }
+    function selection(){return window.SHARPIE_SETTINGS_ADAPTER?.getTelegramSelection?.(activeId);}
+    function paint(){
+        if(!activeId || !el('filterTelegramDialog'))return;
+        const data=selection();
+        el('filterTelegramName').textContent=data?`Filtro: ${data.name}`:'El filtro ya no está disponible.';
+        const select=el('filterTelegramChannel'),chosen=select.value||bindings[activeId]?.channelId||'';
+        select.replaceChildren(new Option('Selecciona un canal autorizado',''));
+        channels.forEach(c=>select.add(new Option(c.title||c.id,c.id)));select.value=chosen;
+        el('filterTelegramPreview').textContent=data?`${data.pickIds.length} picks coinciden con este filtro en el período seleccionado. Se enviarán sus parámetros guardados.`:'';
+        el('filterTelegramSave').disabled=!session||!channels.length;
+        el('filterTelegramSend').disabled=busy||!session||!data?.pickIds.length||data.pickIds.length>50||!channels.length;
+        if(!channels.length)say('Aún no tienes canales autorizados. Añade el bot como administrador del canal y solicita su vinculación con tu cuenta.');
+        else if(data?.pickIds.length>50)say('Hay más de 50 picks. Reduce el período antes de enviar.');
+    }
+    async function saveChannel(){
+        if(!session || !activeId)return false;
+        const current=session,generation=epoch,id=activeId,channelId=el('filterTelegramChannel').value;
+        if(!channels.some(c=>c.id===channelId)){say('Selecciona un canal autorizado.');return false;}
+        try{
+            say('Guardando canal…');
+            await current.sdk.setDoc(current.sdk.doc(current.db,'users',current.user.uid,'telegramFilters',id),{channelId,updatedAt:current.sdk.serverTimestamp()});
+            if(generation!==epoch || id!==activeId)return false;
+            bindings[id]={channelId};say('Canal guardado para este filtro.');return true;
+        }catch{say('No se pudo guardar el canal. Revisa la conexión y los permisos.');return false;}
+    }
+    async function send(){
+        if(!session || !activeId || busy)return;
+        const current=session,generation=epoch,id=activeId,data=selection();
+        if(!data || !data.pickIds.length || data.pickIds.length>50)return;
+        const channel=channels.find(c=>c.id===el('filterTelegramChannel').value);
+        if(!channel){say('Selecciona un canal autorizado.');return;}
+        if(!confirm(`Enviar ${data.pickIds.length} picks del filtro «${data.name}» a «${channel.title||channel.id}»?`))return;
+        el('filterTelegramSend').disabled=true;
+        busy=true;
+        if(!await saveChannel()){busy=false;paint();return;}
+        if(generation!==epoch || id!==activeId)return;
+        const jobId=crypto.randomUUID(),ref=current.sdk.doc(current.db,'telegramFilterJobs',jobId);
+        try{
+            await current.sdk.setDoc(ref,{userId:current.user.uid,filterId:id,channelId:channel.id,
+                pickIds:data.pickIds,context:data.context,sourceVersion:data.version,status:'queued',createdAt:current.sdk.serverTimestamp()});
+            if(generation!==epoch || id!==activeId)return;
+            say('Envío solicitado. Esperando al publicador de Telegram…');
+            jobStop?.();jobStop=current.sdk.onSnapshot(ref,snapshot=>{
+                if(generation!==epoch || id!==activeId || !snapshot.exists())return;
+                const result=snapshot.data();
+                const labels={queued:'Envío en cola.',sending:'Enviando al canal…',sent:`Enviado: ${result.sentCount||0} picks.`,failed:result.message||'No se pudo enviar.',uncertain:'El envío se interrumpió. Revisa el canal antes de repetirlo.'};
+                say(labels[result.status]||'Procesando…');
+                if(['sent','failed','uncertain'].includes(result.status)){busy=false;el('filterTelegramSend').disabled=false;}
+            },()=>say('No se pudo consultar el resultado. Revisa el canal antes de repetir el envío.'));
+        }catch{say('No se pudo confirmar la solicitud. Revisa la conexión antes de repetirla.');}
+    }
+    window.SHARPIE_FILTER_TELEGRAM={open(id){mount();activeId=id;el('filterTelegramChannel').value='';say('');paint();el('filterTelegramDialog').showModal();}};
+    window.SHARPIE_FILTER_TELEGRAM_SESSION=next=>{
+        epoch++;stops.forEach(fn=>fn());stops=[];jobStop?.();jobStop=null;
+        el('filterTelegramDialog')?.close();session=next;channels=[];bindings={};activeId=null;
+        if(!next)return;
+        const {sdk,db,user}=next,generation=epoch;
+        stops.push(sdk.onSnapshot(sdk.collection(db,'users',user.uid,'telegramChannels'),snapshot=>{
+            if(generation!==epoch)return;channels=snapshot.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.enabled===true);paint();
+        },()=>say('No se pudieron cargar tus canales autorizados.')));
+        stops.push(sdk.onSnapshot(sdk.collection(db,'users',user.uid,'telegramFilters'),snapshot=>{
+            if(generation!==epoch)return;bindings=Object.fromEntries(snapshot.docs.map(d=>[d.id,d.data()]));paint();
+        },()=>say('No se pudo cargar la configuración de Telegram.')));
+    };
+})();
+
+/* Account preferences are independent of the public picks feed. */
 (() => {
     'use strict';
     const config = window.SHARPIE_FIREBASE_CONFIG;
@@ -4473,6 +4577,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
         if (!user && nextUser) { guestPreferences=clean(adapter.getPreferences()); guestFilters=clean(adapter.getGuestFilters?.() || []); }
         user=nextUser;
         window.SHARPIE_PRIVATE_SESSION?.(user ? {user,sdk,db} : null);
+        window.SHARPIE_FILTER_TELEGRAM_SESSION?.(user ? {user,sdk,db} : null);
         el('accountLogin').hidden=Boolean(user); el('accountLogout').hidden=!user;
         el('accountImport').hidden=!user || !guestFilters?.length;
         el('accountRetry').hidden=true;
