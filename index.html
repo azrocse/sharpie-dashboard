@@ -2206,7 +2206,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 
 <div id="reminderNotifContainer" class="reminder-notif-container"></div>
 </div>
-<script>window.SHARPIE_APP_VERSION="26e7a5bfdd310339f456";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
+<script>window.SHARPIE_APP_VERSION="4f5f6ae7ada392b0c653";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
 <script>
 /* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
@@ -4309,7 +4309,7 @@ window.SHARPIE_FIREBASE_CONFIG = {
         select.replaceChildren(new Option('Selecciona un canal autorizado',''));
         channels.forEach(c=>select.add(new Option(c.title||c.id,c.id)));select.value=chosen;
         const automatic=channels.find(c=>c.id===bindings[activeId]?.channelId)?.automatic===true;
-        el('filterTelegramPreview').textContent=(automatic?'🔔 Automático activo: los picks pendientes que cumplan el filtro se publican sin abrir el dashboard. ':'')+(data?`${data.pickIds.length} picks en el período seleccionado para envío manual. El envío manual puede repetir publicaciones.`:'');
+        el('filterTelegramPreview').textContent=(automatic?'🔔 Automático activo: solo picks de hoy (CDMX). Se publican al aparecer y se retiran al salir del filtro o iniciar el encuentro. ':'')+(data?`${data.pickIds.length} picks en el período seleccionado para envío manual. El envío manual puede repetir publicaciones.`:'');
         el('filterTelegramSave').disabled=!session||!channels.length;
         el('filterTelegramSend').disabled=busy||!session||!data?.pickIds.length||data.pickIds.length>50||!channels.length;
         if(!channels.length)say('Aún no tienes canales autorizados. Añade el bot como administrador del canal y solicita su vinculación con tu cuenta.');
