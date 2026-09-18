@@ -2199,7 +2199,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 
 <div id="reminderNotifContainer" class="reminder-notif-container"></div>
 </div>
-<script>window.SHARPIE_APP_VERSION="82dd176563942b26ed85";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
+<script>window.SHARPIE_APP_VERSION="72170888ad89421d3bcf";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
 <script>
 /* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
@@ -3823,11 +3823,11 @@ function updateFilterCounts(pendingPicks) {
 function syncDashboardSwitches() {
     const switches = {
         themeToggle: ['Modo oscuro', document.documentElement.getAttribute('data-theme') === 'dark'],
-        viewModeToggle: ['Vista avanzada', state.advancedView],
-        fullMarketToggle: ['Mercado completo', state.showFullMarket],
-        featuredOnly: ['Solo picks destacados', state.featuredOnly],
-        freeReleaseOnly: ['Solo Free para redes', state.freeReleaseOnly],
-        btnAdvToggle: ['Filtros avanzados', document.getElementById('advFiltersPanel')?.classList.contains('show')],
+        viewModeToggle: ['🔬 Vista avanzada', state.advancedView],
+        fullMarketToggle: ['🌐 Mercado completo', state.showFullMarket],
+        featuredOnly: ['⭐ Solo picks destacados', state.featuredOnly],
+        freeReleaseOnly: ['📣 Solo Free para redes', state.freeReleaseOnly],
+        btnAdvToggle: ['⚙️ Filtros avanzados', document.getElementById('advFiltersPanel')?.classList.contains('show')],
     };
     Object.entries(switches).forEach(([id, [label, enabled]]) => {
         const button = document.getElementById(id);
