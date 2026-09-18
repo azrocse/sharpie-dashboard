@@ -2191,7 +2191,7 @@ body:has(#publicLanding:not([hidden])) { background:#071615; color:#e8f3ed; padd
 
 <div id="reminderNotifContainer" class="reminder-notif-container"></div>
 </div>
-<script>window.SHARPIE_APP_VERSION="4b1b76fc6b43dc029eb2";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
+<script>window.SHARPIE_APP_VERSION="f744e72002b4a389e612";window.SHARPIE_PICKS=[];window.SHARPIE_LEAGUES=["SPORTS","NFL","NBA","NHL","MLB","WNBA","UFC","UFL","NCAA Football","NCAA Basketball","NCAA Womens Basketball","NCAA Baseball","NCAA Ice Hockey","England Premier League","Champions League","Europa League","MLS"];window.SHARPIE_TELEGRAM_URL="https://t.me/SharpieMXBot?start=alerts";</script>
 <script>
 /* Only authenticated Firestore reads. No fallback to public JSON files. */
 (() => {
@@ -2479,6 +2479,7 @@ const state = {
     divergenciaMin: null,
     divergenciaMax: null,
     recommendation: ""
+    ,activePresetId: ""
 };
 
 function isAnyFilterActive() {
@@ -2506,7 +2507,7 @@ const FILTER_KEYS = [
 const SAVED_FILTERS_KEY = "sharpie_saved_filters_v1";
 // The selected period belongs to the dashboard, not to a saved strategy.
 const PRESET_KEYS = FILTER_KEYS.filter(key => key !== 'date' && key !== 'dateRange');
-const SETTINGS_KEYS = [...FILTER_KEYS, 'showFullMarket', 'sort', 'advancedView', 'autoThemeEnabled'];
+const SETTINGS_KEYS = [...FILTER_KEYS, 'showFullMarket', 'sort', 'advancedView', 'autoThemeEnabled', 'activePresetId'];
 const DEFAULT_SETTINGS = Object.fromEntries(SETTINGS_KEYS.map(key => [key, state[key]]));
 function normalizePreference(key, value) {
     const fallback=DEFAULT_SETTINGS[key];
@@ -2557,6 +2558,7 @@ function saveSavedFilters(list) {
 function finishFilterEditing(restore = false) {
     if (restore && editingFilterPreset) {
         Object.assign(state, editingFilterPreset.previousFilters);
+        state.activePresetId=editingFilterPreset.previousPresetId;
         syncFilterInputsFromState();
         render();
     }
@@ -2568,8 +2570,9 @@ function finishFilterEditing(restore = false) {
 
 function editFilterPreset(preset) {
     const previousFilters = editingFilterPreset?.previousFilters || Object.fromEntries(PRESET_KEYS.map(k => [k, state[k]]));
+    const previousPresetId=editingFilterPreset?.previousPresetId ?? state.activePresetId;
     applyFilterPreset(preset);
-    editingFilterPreset = { id: preset.id, name: preset.name, previousFilters };
+    editingFilterPreset = { id: preset.id, name: preset.name, previousFilters, previousPresetId };
     document.getElementById("btnSaveFilter").textContent = "💾 Guardar cambios";
     document.getElementById("cancelFilterEdit").hidden = false;
     document.getElementById("filterEditStatus").textContent = `Editando «${preset.name}». Ajusta los filtros y pulsa Guardar cambios; también podrás cambiar el nombre.`;
@@ -2601,6 +2604,7 @@ function saveCurrentFilterPreset() {
         list.push({ id: Date.now().toString(36), name: name.trim(), filters: snapshot });
     }
     if (!saveSavedFilters(list)) return;
+    state.activePresetId=isEditing?editingFilterPreset.id:list[list.length-1].id;
     finishFilterEditing();
     renderSavedFilterChips();
     showAttractiveNotification({ title: window.SHARPIE_ACCOUNT?.signedIn ? "Guardando filtro en tu cuenta…" : (isEditing ? "💾 Filtro actualizado" : "💾 Filtro guardado"), body: name.trim(), variant: "success" });
@@ -2645,12 +2649,13 @@ function syncPrimaryFilterButtons() {
 }
 
 function applyFilterPreset(preset) {
+    state.activePresetId=preset.id || '';
     PRESET_KEYS.forEach(k => {
         state[k] = normalizePreference(k,preset.filters[k]);
     });
     syncFilterInputsFromState();
     render();
-    window.SHARPIE_ACCOUNT?.changed(PRESET_KEYS);
+    window.SHARPIE_ACCOUNT?.changed([...PRESET_KEYS,'activePresetId']);
     showAttractiveNotification({ title: "🎯 Filtro aplicado", body: preset.name, variant: "info" });
 }
 
@@ -2726,7 +2731,19 @@ function bindSavedFilterSorting(container) {
     });
 }
 
+function renderActivePresetTitle() {
+    const section=document.getElementById('activePresetHeading');
+    if(!section)return;
+    const preset=loadSavedFilters().find(p=>p.id===state.activePresetId);
+    section.hidden=!preset;
+    if(!preset)return;
+    document.getElementById('activePresetName').textContent=preset.name;
+    const modified=PRESET_KEYS.some(key=>state[key]!==normalizePreference(key,preset.filters[key]));
+    document.getElementById('activePresetDetail').textContent=modified?'Parámetros ajustados sin guardar':'Filtro personalizado en uso';
+}
+
 function renderSavedFilterChips() {
+    renderActivePresetTitle();
     const container = document.getElementById("savedFiltersRow");
     if (!container) return;
     const list = loadSavedFilters();
@@ -2743,7 +2760,7 @@ function renderSavedFilterChips() {
             <button type="button" class="saved-filter-drag" data-id="${escapeHTML(p.id)}" aria-label="Ordenar ${escapeHTML(p.name)}" title="Arrastra para ordenar. También puedes usar las flechas del teclado.">⠿</button>
             <button type="button" class="saved-filter-apply" data-id="${p.id}">🎯 ${escapeHTML(p.name)}</button>
             <button type="button" class="saved-filter-apply saved-filter-edit" data-id="${p.id}" aria-label="Editar filtro guardado">✎ Editar</button>
-            <button type="button" class="saved-filter-rename" data-id="${escapeHTML(p.id)}" aria-label="Renombrar ${escapeHTML(p.name)}">✏️ Renombrar</button>
+            <button type="button" class="saved-filter-rename" data-id="${escapeHTML(p.id)}" aria-label="Renombrar ${escapeHTML(p.name)}">✎ Renombrar</button>
             <button type="button" class="saved-filter-delete" data-id="${p.id}" aria-label="Eliminar filtro guardado">✕</button>
         </span>
     `).join("");
@@ -3817,6 +3834,7 @@ function syncDashboardSwitches() {
 }
 
 function render() {
+    renderActivePresetTitle();
     updateThemeByTime();
     syncAdvCardActiveStates();
 
@@ -4128,6 +4146,8 @@ function setupListeners() {
 
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
+            finishFilterEditing();
+            state.activePresetId='';
             state.search = "";
             state.date = "";
             state.league = "";
